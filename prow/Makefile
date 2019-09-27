@@ -8,4 +8,4 @@ update-plugins:
 
 validate:
 	eval "$(go env)"
-	cd "${GOPATH}/src/k8s.io/test-infra/prow" && bazel run //prow/cmd/checkconfig -- --plugin-config=config/plugins.yaml --config-path=config/config.yaml
+	CURDIR="$(pwd)" && cd "${GOPATH}/src/k8s.io/test-infra/prow" && bazel run //prow/cmd/checkconfig -- --plugin-config="${CURDIR}/config/plugins.yaml" --config-path="${CURDIR}/config/config.yaml"
