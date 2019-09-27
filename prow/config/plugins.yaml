@@ -1,6 +1,21 @@
 plugins:
   metal3-io:
+  - assign
+  - cat
+  - dog
+  - heart
+  - help
+  - hold
+  - label
+  - lgtm
+  - lifecycle
+  - pony
+  - retitle
+  - shrug
   - size
+  - verify-owners
+  - wip
+  - yuks
   metal3-io/baremetal-operator:
   metal3-io/base-image:
   metal3-io/cluster-api-provider-baremetal:
