@@ -1,0 +1,2 @@
+prowjob_namespace: default
+pod_namespace: test-pods

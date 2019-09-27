@@ -1,0 +1,3 @@
+plugins:
+  metal3-io/prow-testing:
+  - size
