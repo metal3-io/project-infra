@@ -1,2 +1,34 @@
 prowjob_namespace: default
 pod_namespace: test-pods
+
+plank:
+  allow_cancellations: true
+  default_decoration_config:
+    utility_images:
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20190926-a128cddb1"
+      initupload: "gcr.io/k8s-prow/initupload:v20190926-a128cddb1"
+      entrypoint: "gcr.io/k8s-prow/entrypoint:v20190926-a128cddb1"
+      sidecar: "gcr.io/k8s-prow/sidecar:v20190926-a128cddb1"
+    gcs_configuration:
+      bucket: metal3-prow-artifacts
+      path_strategy: explicit
+    gcs_credentials_secret: gcs-credentials
+
+presubmits:
+  metal3-io/project-infra:
+  - name: check-prow-config
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - image: gcr.io/k8s-prow/checkconfig:v20190926-a128cddb1
+        args:
+        - "/checkconfig"
+        - "--config-path"
+        - "prow/config/config.yaml"
+        - "--plugin-config"
+        - "prow/config/plugins.yaml"
+        - "--strict"
+        resources:
+          requests:
+            memory: "500Mi"

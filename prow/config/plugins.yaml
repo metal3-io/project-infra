@@ -13,6 +13,7 @@ plugins:
   - retitle
   - shrug
   - size
+  - trigger
   - verify-owners
   - wip
   - yuks
@@ -30,5 +31,4 @@ plugins:
   metal3-io/metal3-io.github.io:
   metal3-io/metal3-smart-exporter:
   metal3-io/project-infra:
-  metal3-io/prow-testing:
   metal3-io/static-ip-manager-image:
