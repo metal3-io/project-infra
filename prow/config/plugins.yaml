@@ -13,6 +13,7 @@ plugins:
   - retitle
   - shrug
   - size
+  - trigger
   - verify-owners
   - wip
   - yuks
