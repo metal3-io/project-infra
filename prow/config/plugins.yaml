@@ -31,4 +31,12 @@ plugins:
   metal3-io/metal3-io.github.io:
   metal3-io/metal3-smart-exporter:
   metal3-io/project-infra:
+  - config-updater
   metal3-io/static-ip-manager-image:
+
+config_updater:
+  maps:
+    prow/config/config.yaml:
+      name: config
+    prow/config/plugins.yaml:
+      name: plugins
