@@ -19,6 +19,7 @@ tide:
     metal3-io/project-config: merge
   queries:
   - repos:
+    - metal3-io/metal3-dev-env
     - metal3-io/project-infra
     labels:
     - lgtm
