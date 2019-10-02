@@ -23,7 +23,7 @@ presubmits:
       containers:
       - image: koalaman/shellcheck-alpine
         args:
-        - "shellcheck"
+        - "/bin/shellcheck"
         - "-s"
         - "bash"
         - "*.sh"
