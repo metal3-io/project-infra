@@ -15,6 +15,19 @@ plank:
     gcs_credentials_secret: gcs-credentials
 
 presubmits:
+  metal3-io/metal3-dev-env:
+  - name: shellcheck
+    always_run: false
+    decorate: true
+    spec:
+      containers:
+      - image: koalaman/shellcheck-alpine
+        args:
+        - "shellcheck"
+        - "-s"
+        - "bash"
+        - "*.sh"
+
   metal3-io/project-infra:
   - name: check-prow-config
     always_run: true
