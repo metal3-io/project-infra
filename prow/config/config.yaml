@@ -21,12 +21,15 @@ presubmits:
     decorate: true
     spec:
       containers:
-      - image: koalaman/shellcheck-alpine
-        args:
-        - "/bin/shellcheck"
-        - "-s"
-        - "bash"
-        - "*.sh"
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: koalaman/shellcheck-alpine:stable
+        imagePullPolicy: Always
 
   metal3-io/project-infra:
   - name: check-prow-config
