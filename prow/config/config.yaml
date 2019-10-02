@@ -14,6 +14,21 @@ plank:
       path_strategy: explicit
     gcs_credentials_secret: gcs-credentials
 
+tide:
+  merge_method:
+    metal3-io/project-config: merge
+  queries:
+  - repos:
+    - metal3-io/project-infra
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+
 presubmits:
   metal3-io/metal3-dev-env:
   - name: shellcheck

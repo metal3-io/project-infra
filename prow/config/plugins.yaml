@@ -1,5 +1,6 @@
 plugins:
   metal3-io:
+  - approve
   - assign
   - cat
   - dog
