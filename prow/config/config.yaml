@@ -17,7 +17,7 @@ plank:
 presubmits:
   metal3-io/metal3-dev-env:
   - name: shellcheck
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
