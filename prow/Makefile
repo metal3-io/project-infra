@@ -7,5 +7,10 @@ update-plugins:
 	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml --dry-run -o yaml | kubectl replace configmap plugins -f -
 
 validate:
-	eval "$(go env)"
-	CURDIR="$(pwd)" && cd "${GOPATH}/src/k8s.io/test-infra/prow" && bazel run //prow/cmd/checkconfig -- --plugin-config="${CURDIR}/config/plugins.yaml" --config-path="${CURDIR}/config/config.yaml"
+	podman run --rm \
+		--volume "${PWD}:/workdir:ro,z" \
+		--entrypoint /checkconfig \
+		gcr.io/k8s-prow/checkconfig:v20190926-a128cddb1 \
+		--config-path /workdir/config/config.yaml \
+		--plugin-config /workdir/config/plugins.yaml \
+		--strict
