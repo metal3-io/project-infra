@@ -19,8 +19,21 @@ tide:
     metal3-io/project-config: merge
   queries:
   - repos:
+    - metal3-io/baremetal-operator
+    - metal3-io/base-image
+    - metal3-io/cluster-api-provider-baremetal
+    - metal3-io/ironic-hardware-inventory-recorder-image
+    - metal3-io/ironic-image
+    - metal3-io/ironic-inspector-image
+    - metal3-io/ironic-ipa-downloader
+    - metal3-io/ironic-prometheus-exporter
     - metal3-io/metal3-dev-env
+    - metal3-io/metal3-docs
+    - metal3-io/metal3-helm-chart
+    - metal3-io/metal3-io.github.io
+    - metal3-io/metal3-smart-exporter
     - metal3-io/project-infra
+    - metal3-io/static-ip-manager-image
     labels:
     - lgtm
     - approved
