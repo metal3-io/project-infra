@@ -15,6 +15,7 @@ plank:
     gcs_credentials_secret: gcs-credentials
 
 tide:
+bork bork
   merge_method:
     metal3-io/project-config: merge
   queries:
