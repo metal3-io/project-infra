@@ -6,5 +6,4 @@ default:
 	./sync_labels.sh
 
 confirm:
-	export LABEL_SYNC_CONFIRM="--confirm"
-	./sync_labels.sh
+	./sync_labels.sh confirm

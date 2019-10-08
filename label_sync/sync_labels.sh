@@ -8,6 +8,11 @@ function clean {
 }
 trap clean EXIT
 
+if [ "$1" == "confirm" ]
+then
+  LABEL_SYNC_CONFIRM="--confirm"
+fi
+
 # Find out where we're executed from
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -55,12 +60,17 @@ fi
 token_file=$(mktemp "token--XXXXXXXXXX")
 echo "$LABEL_SYNC_GITHUB_TOKEN" > "$token_file"
 
+if [ -n "$LABEL_SYNC_SKIP" ]
+then
+  LABEL_SYNC_SKIP_REPOS="--skip $LABEL_SYNC_SKIP"
+fi
+
 pushd .
 cd test-infra
 bazel run //label_sync -- \
   --config "$LABEL_SYNC_CONFIG" \
   --token "$SCRIPTDIR/$token_file" \
-  --orgs "$LABEL_SYNC_GITHUB_ORG" $LABEL_SYNC_CONFIRM
+  --orgs "$LABEL_SYNC_GITHUB_ORG" $LABEL_SYNC_CONFIRM $LABEL_SYNC_SKIP_REPOS
 popd
 
 echo "Success!"
