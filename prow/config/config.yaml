@@ -3,6 +3,8 @@ pod_namespace: test-pods
 
 plank:
   allow_cancellations: true
+  job_url_prefix_config:
+    '*': https://prow.apps.ci.metal3.io/view/gcs/
   default_decoration_config:
     utility_images:
       clonerefs: "gcr.io/k8s-prow/clonerefs:v20190926-a128cddb1"
