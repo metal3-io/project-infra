@@ -1,6 +1,8 @@
 prowjob_namespace: default
 pod_namespace: test-pods
 
+foo:
+
 plank:
   allow_cancellations: true
   job_url_prefix_config:
