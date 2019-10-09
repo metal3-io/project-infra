@@ -71,6 +71,20 @@ presubmits:
           value: "TRUE"
         image: koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
+  - name: markdownlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:latest
+        imagePullPolicy: Always
 
   metal3-io/project-infra:
   - name: check-prow-config
