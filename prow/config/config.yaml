@@ -45,6 +45,16 @@ tide:
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
 
+deck:
+  spyglass:
+    viewers:
+      "started.json|finished.json":
+      - "metadata"
+      "build-log.txt":
+      - "build-log"
+      "clone-log.txt":
+      - "clone-log"
+
 presubmits:
   metal3-io/metal3-dev-env:
   - name: shellcheck
