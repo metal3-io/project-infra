@@ -51,9 +51,9 @@ deck:
       "started.json|finished.json":
       - "metadata"
       "build-log.txt":
-      - "build-log"
+      - "buildlog"
       "clone-log.txt":
-      - "clone-log"
+      - "buildlog"
 
 presubmits:
   metal3-io/metal3-dev-env:
