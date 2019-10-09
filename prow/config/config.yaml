@@ -72,7 +72,7 @@ presubmits:
         image: registry.hub.docker.com/library/golang:1.12
         imagePullPolicy: Always
   - name: govet
-    always_run: true
+    always_run: false
     decorate: true
     spec:
       containers:
@@ -114,7 +114,7 @@ presubmits:
         image: koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
-    always_run: true
+    always_run: false
     decorate: true
     spec:
       containers:
