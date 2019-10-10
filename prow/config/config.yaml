@@ -125,7 +125,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: quay.io/metal3-io/capbm-unit
         imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
