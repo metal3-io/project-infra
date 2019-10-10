@@ -72,7 +72,7 @@ presubmits:
         image: registry.hub.docker.com/library/golang:1.12
         imagePullPolicy: Always
   - name: govet
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
