@@ -71,6 +71,20 @@ presubmits:
           value: "TRUE"
         image: registry.hub.docker.com/library/golang:1.12
         imagePullPolicy: Always
+  - name: gosec
+    always_run: false
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gosec.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/securego/gosec:latest
+        imagePullPolicy: Always
   - name: govet
     always_run: false
     decorate: true
