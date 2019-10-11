@@ -41,3 +41,10 @@ config_updater:
       name: config
     prow/config/plugins.yaml:
       name: plugins
+    prow/config/labels.yaml:
+      name: labels
+      key: labels.yaml
+
+label:
+  additional_labels:
+  - CI

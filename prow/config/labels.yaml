@@ -151,6 +151,12 @@ default:
       target: prs
       prowPlugin: lgtm
       addedBy: reviewers or members
+    - color: 800000
+      description: Tests a PR with Metal3 CI
+      name: CI
+      target: prs
+      prowPlugin: label
+      addedBy: reviewers or members
     - color: b60205
       description: Indicates a PR that requires an org member to verify it is safe to test. # This is to prevent spam/abuse of our CI system, and can be circumvented by becoming an org member. Org members can remove this label with the `/ok-to-test` command.
       name: needs-ok-to-test

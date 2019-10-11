@@ -1,5 +1,5 @@
 # Which file to read the labels.yaml from
-export LABEL_SYNC_CONFIG=labels.yaml
+export LABEL_SYNC_CONFIG=../prow/config/labels.yaml
 
 # GitHub oauth token here:
 export LABEL_SYNC_GITHUB_TOKEN=""
