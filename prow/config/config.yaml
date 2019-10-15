@@ -58,7 +58,7 @@ deck:
 presubmits:
   metal3-io/baremetal-operator:
   - name: gofmt
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
@@ -72,7 +72,7 @@ presubmits:
         image: registry.hub.docker.com/library/golang:1.12
         imagePullPolicy: Always
   - name: gosec
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
@@ -86,7 +86,7 @@ presubmits:
         image: registry.hub.docker.com/securego/gosec:latest
         imagePullPolicy: Always
   - name: govet
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
@@ -100,7 +100,7 @@ presubmits:
         image: registry.hub.docker.com/library/golang:1.12
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
@@ -114,7 +114,7 @@ presubmits:
         image: registry.hub.docker.com/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
@@ -128,7 +128,7 @@ presubmits:
         image: koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
-    always_run: false
+    always_run: true
     decorate: true
     spec:
       containers:
