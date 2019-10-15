@@ -210,6 +210,8 @@ presubmits:
   - name: unit
     always_run: true
     decorate: true
+    skip_branches:
+      - ^v1alpha2*$
     spec:
       containers:
       - args:
@@ -219,7 +221,23 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capbm-unit
+        image: quay.io/metal3-io/capbm-unit:master
+        imagePullPolicy: Always
+  - name: unit-v1alpha2
+    always_run: true
+    decorate: true
+    branches:
+      - ^v1alpha2*$
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capbm-unit:v1alpha2
         imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
