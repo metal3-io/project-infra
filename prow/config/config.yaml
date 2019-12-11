@@ -210,8 +210,8 @@ presubmits:
   - name: unit
     always_run: true
     decorate: true
-    skip_branches:
-      - ^v1alpha2*$
+    branches:
+      - ^v1alpha1*$
     spec:
       containers:
       - args:
@@ -226,8 +226,8 @@ presubmits:
   - name: unit-v1alpha2
     always_run: true
     decorate: true
-    branches:
-      - ^v1alpha2*$
+    skip_branches:
+      - ^v1alpha1*$
     spec:
       containers:
       - args:
