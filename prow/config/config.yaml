@@ -207,7 +207,7 @@ presubmits:
           value: "TRUE"
         image: koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
-  - name: unit
+  - name: unit-v1alpha1
     always_run: true
     decorate: true
     branches:
@@ -221,9 +221,9 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capbm-unit:master
+        image: quay.io/metal3-io/capbm-unit:v1alpha1
         imagePullPolicy: Always
-  - name: unit-v1alpha2
+  - name: unit
     always_run: true
     decorate: true
     skip_branches:
@@ -237,7 +237,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capbm-unit:v1alpha2
+        image: quay.io/metal3-io/capbm-unit:master
         imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
