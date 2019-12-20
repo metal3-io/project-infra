@@ -36,3 +36,10 @@ oc edit route deck
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
 ```
+
+GCS cloud storage is required to store job artificates.  Follow the docs to set
+up GCS, and then create a secret with the credentials.
+
+```
+kubectl create secret generic gcs-credentials --from-file=service-account.json
+```
