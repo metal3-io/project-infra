@@ -43,3 +43,12 @@ up GCS, and then create a secret with the credentials.
 ```
 kubectl create secret generic gcs-credentials --from-file=service-account.json
 ```
+
+The job artifacts viewer is called Spyglass and is not enabled by default.  To
+enable it, you add `--spyglass` as an additional argument to `deck`.
+
+https://github.com/kubernetes/test-infra/tree/master/prow/spyglass#enabling-spyglass
+
+```
+oc edit deployment deck
+```
