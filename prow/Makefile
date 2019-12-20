@@ -10,7 +10,7 @@ validate:
 	podman run --rm \
 		--volume "${PWD}:/workdir:ro,z" \
 		--entrypoint /checkconfig \
-		gcr.io/k8s-prow/checkconfig:v20190926-a128cddb1 \
+		gcr.io/k8s-prow/checkconfig:v20191219-ecbeba384 \
 		--config-path /workdir/config/config.yaml \
 		--plugin-config /workdir/config/plugins.yaml \
 		--strict
