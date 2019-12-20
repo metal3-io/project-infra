@@ -8,3 +8,17 @@ For more info about the CI cluster, see
 ## Prow Setup
 
 Prow was set up by following these instructions: https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md
+
+```
+go get -u k8s.io/test-infra/prow/cmd/tackle
+tackle
+```
+
+After running tackle, it will do most of the setup but hang waiting for an
+Ingress resource to get initialized.  I killed tackle at that point.
+
+```
+oc delete ingress ing
+oc expose service hook --hostname=prow.apps.ci.metal3.io --path="/hook"
+oc expose service deck --hostname=prow.apps.ci.metal3.io
+```
