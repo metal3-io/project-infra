@@ -22,3 +22,17 @@ oc delete ingress ing
 oc expose service hook --hostname=prow.apps.ci.metal3.io --path="/hook"
 oc expose service deck --hostname=prow.apps.ci.metal3.io
 ```
+
+This just exposes the routes on http.  Edit each route and add the following
+yaml snippet to the spec to turn on https.
+
+```
+oc edit route hook
+oc edit route deck
+```
+
+```
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+```
