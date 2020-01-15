@@ -131,6 +131,12 @@ default:
       prowPlugin: label
       addedBy: anyone
     - color: c7def8
+      description: Categorizes issue or PR as related to CI or testing.
+      name: kind/ci
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: c7def8
       description: Categorizes issue or PR as related to a new feature.
       name: kind/feature
       previously:
