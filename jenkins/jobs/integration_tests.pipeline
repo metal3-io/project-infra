@@ -1,0 +1,113 @@
+import java.text.SimpleDateFormat
+
+ci_git_url = "${ghprbAuthorRepoGitUrl}"
+ci_git_credential_id = "metal3-jenkins-github-token"
+def TIMEOUT = 5400
+
+script {
+  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
+    ci_git_branch="${ghprbActualCommit}"
+  } else {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} master"
+    ci_git_branch = "master"
+  }
+  def date = new Date()
+  def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
+  VM_NAME = "ci-test-vm-" + dateFormat.format(date)
+}
+
+pipeline {
+  agent { label 'airship-static-workers' }
+  environment {
+    AIRSHIP_CI_USER="airshipci"
+    REPO_ORG = "${PROJECT_REPO_ORG}"
+    REPO_NAME = "${PROJECT_REPO_NAME}"
+    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
+    REPO_BRANCH = "${ghprbActualCommit}"
+    OS_USERNAME="airshipci"
+    OS_AUTH_URL="https://kna1.citycloud.com:5000"
+    OS_USER_DOMAIN_NAME="CCP_Domain_37137"
+    OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
+    OS_REGION_NAME="Kna1"
+    OS_PROJECT_NAME="Default Project 37137"
+    OS_TENANT_NAME="Default Project 37137"
+    OS_AUTH_VERSION=3
+    OS_IDENTITY_API_VERSION=3
+    TEST_EXECUTER_VM_NAME = "${VM_NAME}"
+    BUILD_URL = "${env.BUILD_URL}"
+    PR_ID = "${ghprbPullId}"
+    DISTRIBUTION = "${DISTRIBUTION}"
+    CAPI_VERSION = "${CAPI_VERSION}"
+    IMAGE_OS = "${TARGET_NODE_OS}"
+    DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
+  }
+  stages {
+    stage('SCM') {
+      options {
+        timeout(time: 5, unit: 'MINUTES')
+      }
+      steps {
+        /* Checkout CI Repo */
+        checkout([$class: 'GitSCM',
+                 branches: [[name: ci_git_branch]],
+                 doGenerateSubmoduleConfigurations: false,
+                 extensions: [[$class: 'WipeWorkspace'],
+                 [$class: 'CleanCheckout'],
+                 [$class: 'CleanBeforeCheckout']],
+                 submoduleCfg: [],
+                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
+                 url: ci_git_url]]])
+
+      }
+    }
+    stage('Run integration test') {
+      options {
+        timeout(time: TIMEOUT, unit: 'SECONDS')
+      }
+      steps {
+        script {
+          CURRENT_START_TIME = System.currentTimeMillis()
+          try {
+            withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+              withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
+                sh "./jenkins/scripts/integration_test.sh"
+              }
+            }
+          }
+          catch (org.hidetake.groovy.ssh.session.BadExitStatusException err) {
+              echo "Caught: ssh error"
+              echo "${err}"
+              currentBuild.result = 'FAILURE'
+          }
+          catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException err) {
+              echo "Caught: timeout error"
+              echo "${err}"
+              currentBuild.result = 'FAILURE'
+          }
+          catch (err) {
+              echo "Caught: runtime error"
+              echo "${err}"
+              currentBuild.result = 'FAILURE'
+          }
+        }
+      }
+    }
+  }
+  post {
+    cleanup {
+      script {
+        CURRENT_BUILD_TIME = System.currentTimeMillis()
+        if ((((CURRENT_BUILD_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+          echo "Failed due to timeout"
+          currentBuild.result = 'FAILURE'
+        }
+      }
+      withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+          sh "./jenkins/scripts/integration_delete.sh"
+        }
+      }
+    }
+  }
+}
