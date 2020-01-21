@@ -2,7 +2,6 @@ prowjob_namespace: default
 pod_namespace: test-pods
 
 plank:
-  allow_cancellations: true
   job_url_prefix_config:
     '*': https://prow.apps.ci.metal3.io/view/gcs/
   default_decoration_config:
