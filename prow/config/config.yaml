@@ -71,7 +71,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
   - name: gosec
     always_run: true
@@ -99,7 +99,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
   - name: markdownlint
     always_run: true
@@ -149,7 +149,7 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
 
   metal3-io/cluster-api-provider-baremetal:
@@ -165,7 +165,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13
+        image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -179,7 +179,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13
+        image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
   - name: markdownlint
     always_run: true
