@@ -43,6 +43,9 @@ tide:
     - do-not-merge/hold
     - do-not-merge/invalid-owners-file
     - do-not-merge/work-in-progress
+  context_options:
+    # Use branch protection options to define required and optional contexts
+    from-branch-protection: true
 
 deck:
   spyglass:
