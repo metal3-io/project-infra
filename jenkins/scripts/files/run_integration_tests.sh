@@ -22,6 +22,10 @@ then
    export BMOBRANCH="${REPO_BRANCH}"
    export BAREMETAL_OPERATOR_LOCAL_IMAGE="${UPDATED_REPO}"
    export BAREMETAL_OPERATOR_LOCAL_IMAGE_BRANCH="${REPO_BRANCH}"
+elif [ "${REPO_NAME}" == "ironic-client" ]
+then
+   export IRONIC_CLIENT_LOCAL_IMAGE="${UPDATED_REPO}"
+   export IRONIC_CLIENT_LOCAL_IMAGE_BRANCH="${REPO_BRANCH}"
 elif [ "${REPO_NAME}" == "ironic-image" ]
 then
    export IRONIC_LOCAL_IMAGE="${UPDATED_REPO}"
