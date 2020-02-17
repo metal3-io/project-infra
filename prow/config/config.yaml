@@ -165,7 +165,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: registry.hub.docker.com/library/golang:1.13
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -179,7 +179,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.12
+        image: registry.hub.docker.com/library/golang:1.13
         imagePullPolicy: Always
   - name: markdownlint
     always_run: true
