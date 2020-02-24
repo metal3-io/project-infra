@@ -2,8 +2,6 @@
 
 set -eux
 
-export CONTAINER_RUNTIME="docker"
-
 REPO_ORG="${1:-metal3-io}"
 REPO_NAME="${2:-metal3-dev-env}"
 REPO_BRANCH="${3:-master}"
@@ -11,6 +9,10 @@ UPDATED_REPO="${4:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 export CAPI_VERSION="${5:-v1alpha3}"
 export IMAGE_OS="${6:-Ubuntu}"
 export DEFAULT_HOSTS_MEMORY="${7:-4096}"
+
+if [ "${IMAGE_OS}" == "Ubuntu" ]; then
+  export CONTAINER_RUNTIME="docker"
+fi
 
 if [ "${REPO_NAME}" == "metal3-dev-env" ]
 then
