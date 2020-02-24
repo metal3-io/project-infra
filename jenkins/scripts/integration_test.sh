@@ -83,4 +83,5 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh "${REPO_ORG}" "${REPO_NAME}" "${REPO_BRANCH}" \
-  "${UPDATED_REPO}" "${CAPI_VERSION}" "${IMAGE_OS}" "${DEFAULT_HOSTS_MEMORY}"
+  "${UPDATED_REPO}" "${CAPI_VERSION}" "${IMAGE_OS}" "${DEFAULT_HOSTS_MEMORY}" \
+  "${DISTRIBUTION}"
