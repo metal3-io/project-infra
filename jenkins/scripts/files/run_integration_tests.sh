@@ -39,10 +39,10 @@ then
   export IPA_DOWNLOADER_LOCAL_IMAGE_BRANCH="${REPO_BRANCH}"
 elif [ "${REPO_NAME}" == "cluster-api-provider-baremetal" ]
 then
-   export CAPBMREPO="${UPDATED_REPO}"
-   export CAPBMBRANCH="${REPO_BRANCH}"
-   export CAPBM_LOCAL_IMAGE="${UPDATED_REPO}"
-   export CAPBM_LOCAL_IMAGE_BRANCH="${REPO_BRANCH}"
+   export CAPM3REPO="${UPDATED_REPO}"
+   export CAPM3BRANCH="${REPO_BRANCH}"
+   export CAPM3_LOCAL_IMAGE="${UPDATED_REPO}"
+   export CAPM3_LOCAL_IMAGE_BRANCH="${REPO_BRANCH}"
 fi
 
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
