@@ -1,0 +1,63 @@
+import java.text.SimpleDateFormat
+
+ci_git_credential_id = "metal3-jenkins-github-token"
+def TIMEOUT = 1800
+
+script {
+  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
+    ci_git_branch="${ghprbActualCommit}"
+    ci_git_url = "${ghprbAuthorRepoGitUrl}"
+  } else {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} master"
+    ci_git_branch = "master"
+    ci_git_url = "https://github.com/metal3-io/project-infra.git"
+  }
+}
+
+pipeline {
+  agent { label 'airship-static-workers' }
+  environment {
+    OS_USERNAME="airshipci"
+    OS_AUTH_URL="https://kna1.citycloud.com:5000"
+    OS_USER_DOMAIN_NAME="CCP_Domain_37137"
+    OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
+    OS_REGION_NAME="Kna1"
+    OS_PROJECT_NAME="Default Project 37137"
+    OS_TENANT_NAME="Default Project 37137"
+    OS_AUTH_VERSION=3
+    OS_IDENTITY_API_VERSION=3
+  }
+  stages {
+    stage('SCM') {
+      options {
+        timeout(time: 5, unit: 'MINUTES')
+      }
+      steps {
+        /* Checkout CI Repo */
+        checkout([$class: 'GitSCM',
+                 branches: [[name: ci_git_branch]],
+                 doGenerateSubmoduleConfigurations: false,
+                 extensions: [[$class: 'WipeWorkspace'],
+                 [$class: 'CleanCheckout'],
+                 [$class: 'CleanBeforeCheckout']],
+                 submoduleCfg: [],
+                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
+                 url: ci_git_url]]])
+
+      }
+    }
+    stage('Clean old integration test vms') {
+      options {
+        timeout(time: TIMEOUT, unit: 'SECONDS')
+      }
+      steps {
+        script {
+          withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+            sh "./jenkins/scripts/integration_clean.sh"
+          }
+        }
+      }
+    }
+  }
+}
