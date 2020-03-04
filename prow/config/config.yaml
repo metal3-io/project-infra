@@ -72,7 +72,7 @@ periodics:
          -label:lifecycle/frozen
          -label:lifecycle/stale
        - --updated=2160h
-       - --token=/etc/token/bot-github-token
+       - --token=/etc/token/oauth
        - |-
          --comment=Issues go stale after 90d of inactivity.
          Mark the issue as fresh with `/remove-lifecycle stale`.
@@ -105,7 +105,7 @@ periodics:
          -label:lifecycle/frozen
          label:lifecycle/stale
        - --updated=720h
-       - --token=/etc/token/bot-github-token
+       - --token=/etc/token/oauth
        - |-
          --comment=Stale issues close after 30d of inactivity. Reopen the issue with `/reopen`. Mark the issue as fresh with `/remove-lifecycle stale`.
 
