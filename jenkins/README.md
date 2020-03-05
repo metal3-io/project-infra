@@ -45,6 +45,13 @@ If the author is not in the whitelist but should be trusted then by adding a
 comment **add to whitelist** on the PR, the author will then be able to run the
 jobs on its own.
 
+### Cloud Resources cleanup
+
+There is a Jenkins [master job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
+that every 6 hours cleans up all the leftover VMs from
+[CityCloud](https://www.citycloud.com/) which fail to be deleted at the end of
+v1alphaX integration test.
+
 ### "Can one of the admins verify this patch?"
 
 For all the PRs from authors that are not whitelisted, the bot will add a
