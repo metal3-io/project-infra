@@ -10,7 +10,7 @@ resources to run integration tests for Metal3.
 
 In Github the Jenkins bot uses *metal3-jenkins* username. It will post comments
 on Pull Requests in the metal3-dev-env, baremetal-operator and
-cluster-api-provider-baremetal repositories.
+cluster-api-provider-metal3 repositories.
 
 ### Admins whitelist
 
@@ -26,11 +26,11 @@ publicly visible will get admin rights on the CI jobs. This means :
 
 We have multiple jobs that run some integration tests. The jobs can be
 triggered on PR from metal3-dev-env, baremetal-operator and
-cluster-api-provider-baremetal repositories by commenting the commands below.
+cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
- * **/test-integration** run integration tests for V1alpha1 on Ubuntu
- * **/test-centos-integration** run integration tests for V1alpha1 on CentOS
+ * **/test-integration** run integration tests for master on Ubuntu
+ * **/test-centos-integration** run integration tests for master on CentOS
  * **/test-v1a2-integration** run integration tests for V1alpha2 on Ubuntu
  * **/test-v1a2-centos-integration** run integration tests for V1alpha2 on
    CentOS
