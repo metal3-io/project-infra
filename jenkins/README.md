@@ -10,7 +10,7 @@ resources to run integration tests for Metal3.
 
 In Github the Jenkins bot uses *metal3-jenkins* username. It will post comments
 on Pull Requests in the metal3-dev-env, baremetal-operator and
-cluster-api-provider-baremetal repositories.
+cluster-api-provider-metal3 repositories.
 
 ### Admins whitelist
 
@@ -26,14 +26,17 @@ publicly visible will get admin rights on the CI jobs. This means :
 
 We have multiple jobs that run some integration tests. The jobs can be
 triggered on PR from metal3-dev-env, baremetal-operator and
-cluster-api-provider-baremetal repositories by commenting the commands below.
+cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
  * **/test-v1a2-integration** run integration tests for V1alpha2 on Ubuntu
  * **/test-v1a2-centos-integration** run integration tests for V1alpha2 on
    CentOS
- * **/test-integration** run integration tests for V1alpha3 on Ubuntu
- * **/test-centos-integration** run integration tests for V1alpha3 on
+ * **/test-v1a3-integration** run integration tests for V1alpha3 on Ubuntu
+ * **/test-v1a3-centos-integration** run integration tests for V1alpha3 on
+   CentOS   
+ * **/test-integration** run integration tests for V1alpha4 on Ubuntu
+ * **/test-centos-integration** run integration tests for V1alpha4 on
    CentOS
 
 It is also possible to prevent any job run by adding **/skip-test** in the PR
@@ -42,6 +45,13 @@ description.
 If the author is not in the whitelist but should be trusted then by adding a
 comment **add to whitelist** on the PR, the author will then be able to run the
 jobs on its own.
+
+### Cloud Resources cleanup
+
+There is a Jenkins [master job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
+that every 6 hours cleans up all the leftover VMs from
+[CityCloud](https://www.citycloud.com/) which fail to be deleted at the end of
+v1alphaX integration test.
 
 ### "Can one of the admins verify this patch?"
 
