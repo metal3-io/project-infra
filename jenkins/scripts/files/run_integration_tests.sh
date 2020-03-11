@@ -54,11 +54,9 @@ git checkout "${METAL3BRANCH}"
 make
 
 if [ "${CAPI_VERSION}" == v1alpha1 ]; then
+  make test_v1a1
+else
   make test
-elif [ "${CAPI_VERSION}" == v1alpha2 ]; then
-  make test_v1a2
-elif [ "${CAPI_VERSION}" == v1alpha3 ]; then
-  make test_v1a3
 fi
 
 make clean
