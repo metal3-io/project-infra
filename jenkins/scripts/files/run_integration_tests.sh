@@ -22,9 +22,11 @@ git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
 cd tested_repo
 git checkout "${REPO_BRANCH}"
 # If the target and source repos and branches are identical, don't try to merge
-if [ "${UPDATED_REPO}" != "*${REPO_ORG}/${REPO_NAME}*" ] || \
-  ["${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]
+if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] || \
+  [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]
 then
+  git config user.email "test@test.test"
+  git config user.name "Test"
   git remote add test "${UPDATED_REPO}"
   git fetch test
   # Merging the PR with the target branch
