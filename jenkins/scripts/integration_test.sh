@@ -29,6 +29,7 @@ REPO_ORG="${REPO_ORG:-metal3-io}"
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH:-master}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
+UPDATED_BRANCH="${UPDATED_BRANCH:-master}"
 CAPI_VERSION="${CAPI_VERSION:-v1alpha3}"
 IMAGE_OS="${IMAGE_OS:-Ubuntu}"
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
@@ -83,5 +84,5 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh "${REPO_ORG}" "${REPO_NAME}" "${REPO_BRANCH}" \
-  "${UPDATED_REPO}" "${CAPI_VERSION}" "${IMAGE_OS}" "${DEFAULT_HOSTS_MEMORY}" \
-  "${DISTRIBUTION}"
+  "${UPDATED_REPO}" "${UPDATED_BRANCH}" "${CAPI_VERSION}" "${IMAGE_OS}" \
+  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}"
