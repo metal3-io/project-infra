@@ -26,7 +26,7 @@ pipeline {
     REPO_NAME = "${PROJECT_REPO_NAME}"
     UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
     REPO_BRANCH = "${ghprbTargetBranch}"
-    UPDATED_BRANCH = "${ghprbActualCommit}"
+    UPDATED_BRANCH = "${ghprbSourceBranch}"
     OS_USERNAME="airshipci"
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
     OS_USER_DOMAIN_NAME="CCP_Domain_37137"

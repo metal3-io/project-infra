@@ -18,19 +18,19 @@ export FORCE_REPO_UPDATE=false
 
 # Clone the source repository
 cd "/home/${USER}"
-git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
-cd tested_repo
-git checkout "${REPO_BRANCH}"
+git clone "${UPDATED_REPO}"
+cd baremetal-operator
+
 # If the target and source repos and branches are identical, don't try to merge
-if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] || \
+if [[ "${UPDATED_REPO}" != "https://github.com/${REPO_ORG}/${REPO_NAME}" ]] || \
   [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]
 then
   git config user.email "test@test.test"
   git config user.name "Test"
-  git remote add test "${UPDATED_REPO}"
+  git remote add test "https://github.com/${REPO_ORG}/${REPO_NAME}.git"
   git fetch test
   # Merging the PR with the target branch
-  git merge "${UPDATED_BRANCH}" || exit
+  git merge "origin/${UPDATED_BRANCH}" || exit
 fi
 cd "/home/${USER}"
 
