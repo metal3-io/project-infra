@@ -29,15 +29,12 @@ triggered on PR from metal3-dev-env, baremetal-operator and
 cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
- * **/test-v1a2-integration** run integration tests for V1alpha2 on Ubuntu
- * **/test-v1a2-centos-integration** run integration tests for V1alpha2 on
+ * **/test-integration** run integration tests for V1alpha3 on Ubuntu
+ * **/test-centos-integration** run integration tests for V1alpha3 on
    CentOS
  * **/test-v1a4-integration** run integration tests for V1alpha4 on Ubuntu
  * **/test-v1a4-centos-integration** run integration tests for V1alpha4 on
    CentOS   
- * **/test-integration** run integration tests for V1alpha3 on Ubuntu
- * **/test-centos-integration** run integration tests for V1alpha3 on
-   CentOS
 
 It is also possible to prevent any job run by adding **/skip-test** in the PR
 description.
