@@ -37,6 +37,9 @@ cd "/home/${USER}"
 
 if [ "${DISTRIBUTION}" == "ubuntu" ]; then
   export CONTAINER_RUNTIME="docker"
+  export EPHEMERAL_CLUSTER="kind"
+else
+  export EPHEMERAL_CLUSTER="minikube"
 fi
 
 if [ "${REPO_NAME}" == "metal3-dev-env" ]
