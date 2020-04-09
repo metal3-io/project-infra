@@ -37,7 +37,7 @@ cd "/home/${USER}"
 
 if [ "${DISTRIBUTION}" == "ubuntu" ]; then
   export CONTAINER_RUNTIME="docker"
-  export EPHEMERAL_CLUSTER="kind"
+  export EPHEMERAL_CLUSTER="minikube"
 else
   export EPHEMERAL_CLUSTER="minikube"
 fi
