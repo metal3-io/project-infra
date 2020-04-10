@@ -81,11 +81,5 @@ else
   git checkout "${METAL3BRANCH}"
 fi
 make
-
-if [ "${CAPI_VERSION}" == v1alpha1 ]; then
-  make test_v1a1
-else
-  make test
-fi
-
+make test
 make clean
