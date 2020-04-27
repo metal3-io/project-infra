@@ -11,6 +11,7 @@ export CAPI_VERSION="${6:-v1alpha3}"
 export IMAGE_OS="${7:-Ubuntu}"
 export DEFAULT_HOSTS_MEMORY="${8:-4096}"
 DISTRIBUTION="${9:-ubuntu}"
+GITHUB_TOKEN="${10}"
 
 # Since we take care of the repo tested here (to merge the PR), do not update
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
@@ -68,6 +69,8 @@ then
    export CAPM3PATH="/home/${USER}/tested_repo"
    export CAPM3_LOCAL_IMAGE="/home/${USER}/tested_repo"
 fi
+
+export GITHUB_TOKEN="${GITHUB_TOKEN}"
 
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-master}"

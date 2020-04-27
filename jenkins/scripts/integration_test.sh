@@ -96,4 +96,4 @@ ssh \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh "${REPO_ORG}" "${REPO_NAME}" "${REPO_BRANCH}" \
   "${UPDATED_REPO}" "${UPDATED_BRANCH}" "${CAPI_VERSION}" "${IMAGE_OS}" \
-  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}"
+  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}" "${GITHUB_TOKEN}"
