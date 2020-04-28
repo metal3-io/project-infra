@@ -73,7 +73,7 @@ pipeline {
           try {
             withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
               withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
-                withCredentials([usernamePassword(credentialsId: 'nordix-airship-ci-github-prod-token', passwordVariable: 'GITHUB_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'nordix-airship-ci-github-prod-token', usernameVariable: 'foobar'  passwordVariable: 'GITHUB_TOKEN')]) {
                   sh "./jenkins/scripts/integration_test.sh"
                 }
               }
