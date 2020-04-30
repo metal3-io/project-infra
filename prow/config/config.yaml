@@ -48,6 +48,49 @@ tide:
     # Use branch protection options to define required and optional contexts
     from-branch-protection: true
 
+#
+# Use prow to manage the configuration of github branch protection.
+# This is what controls which github status checks (or CI jobs) must
+# be passing for a PR to merge.
+#
+# Docs: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/branchprotector
+#
+branch-protection:
+  orgs:
+    metal3-io:
+      # Require "always_run: true" jobs to pass before merging.
+      # To turn this off for a given job, set "optional: true"
+      # in the job definition.
+      protect: true
+      repos:
+        baremetal-operator:
+          # Use this to specify that a status coming from outside of prow is
+          # required.  We use this to require functional jobs running in
+          # jenkins are required, for example.
+          required_status_checks:
+            contexts: ["test-integration"]
+        cluster-api-provider-metal3:
+          # You can specify a default set of required status contexts
+          # for a repo, and then override that list for a specific branch.
+          required_status_checks:
+            contexts: ["test-integration"]
+          branches:
+            master:
+              required_status_checks:
+                contexts: ["test-v1a4-integration"]
+        ironic-image:
+          required_status_checks:
+            contexts: ["test-integration"]
+        ironic-inspector-image:
+          required_status_checks:
+            contexts: ["test-integration"]
+        ironic-ipa-downloader:
+          required_status_checks:
+            contexts: ["test-integration"]
+        metal3-dev-env:
+          required_status_checks:
+            contexts: ["test-centos-integration", "test-integration"]
+
 deck:
   spyglass:
     viewers:
