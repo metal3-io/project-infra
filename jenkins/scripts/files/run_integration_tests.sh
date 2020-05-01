@@ -45,8 +45,16 @@ fi
 
 if [ "${REPO_NAME}" == "metal3-dev-env" ]
 then
-   METAL3REPO="${UPDATED_REPO}"
-   METAL3BRANCH="${UPDATED_BRANCH}"
+   export METAL3REPO="${UPDATED_REPO}"
+   export METAL3BRANCH="${UPDATED_BRANCH}"
+   export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
+   export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
+   if [ "${CAPI_VERSION}" == "v1alpha3" ]
+   then
+     export CAPM3_LOCAL_IMAGE_BRANCH="release-0.3"
+   else
+     export CAPM3_LOCAL_IMAGE_BRANCH="master"
+   fi
 elif [ "${REPO_NAME}" == "baremetal-operator" ]
 then
    export BMOREPO="${UPDATED_REPO}"
@@ -58,16 +66,26 @@ then
    export IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
 elif [ "${REPO_NAME}" == "ironic-inspector-image" ]
 then
-  export IRONIC_INSPECTOR_LOCAL_IMAGE="/home/${USER}/tested_repo"
+   export IRONIC_INSPECTOR_LOCAL_IMAGE="/home/${USER}/tested_repo"
 elif [ "${REPO_NAME}" == "ironic-ipa-downloader" ]
 then
-  export IPA_DOWNLOADER_LOCAL_IMAGE="/home/${USER}/tested_repo"
+   export IPA_DOWNLOADER_LOCAL_IMAGE="/home/${USER}/tested_repo"
 elif [[ "${REPO_NAME}" == "cluster-api-provider-"* ]]
 then
    export CAPM3REPO="${UPDATED_REPO}"
    export CAPM3BRANCH="${UPDATED_BRANCH}"
    export CAPM3PATH="/home/${USER}/tested_repo"
    export CAPM3_LOCAL_IMAGE="/home/${USER}/tested_repo"
+elif [[ "${REPO_NAME}" == "project-infra" ]]
+then
+   export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
+   export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
+   if [ "${CAPI_VERSION}" == "v1alpha3" ]
+   then
+     export CAPM3_LOCAL_IMAGE_BRANCH="release-0.3"
+   else
+     export CAPM3_LOCAL_IMAGE_BRANCH="master"
+   fi
 fi
 
 export GITHUB_TOKEN="${GITHUB_TOKEN}"
