@@ -70,14 +70,13 @@ branch-protection:
           required_status_checks:
             contexts: ["test-integration"]
         cluster-api-provider-metal3:
-          # You can specify a default set of required status contexts
-          # for a repo, and then override that list for a specific branch.
-          required_status_checks:
-            contexts: ["test-integration"]
           branches:
             master:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
+            release-0.3:
+              required_status_checks:
+                contexts: ["test-integration"]
         ironic-image:
           required_status_checks:
             contexts: ["test-integration"]
