@@ -35,6 +35,9 @@ then
 fi
 cd "/home/${USER}"
 
+#Temporary ironic patch
+export IRONIC_IMAGE="mikkos73/ironic"
+export IRONIC_INSPECTOR_IMAGE="mikkos73/ironic-inspector"
 
 if [ "${DISTRIBUTION}" == "ubuntu" ]; then
   export CONTAINER_RUNTIME="docker"
