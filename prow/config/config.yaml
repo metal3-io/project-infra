@@ -552,8 +552,6 @@ presubmits:
   - name: unit
     always_run: true
     decorate: true
-    branches:
-      - ^v1alpha1*$
     spec:
       containers:
       - args:
