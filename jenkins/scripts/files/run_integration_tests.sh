@@ -83,7 +83,8 @@ then
    if [ "${CAPI_VERSION}" == "v1alpha3" ]
    then
      export CAPM3_LOCAL_IMAGE_BRANCH="release-0.3"
-   else
+   elif [ "${CAPI_VERSION}" == "v1alpha4" ]
+   then
      export CAPM3_LOCAL_IMAGE_BRANCH="master"
    fi
 fi
