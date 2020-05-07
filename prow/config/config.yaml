@@ -259,7 +259,7 @@ presubmits:
         image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
   - name: operator-sdk-generate
-    always_run: true
+    always_run: false
     decorate: true
     spec:
       containers:
