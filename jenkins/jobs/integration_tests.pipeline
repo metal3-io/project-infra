@@ -99,6 +99,14 @@ pipeline {
     }
   }
   post {
+    always {
+      withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+          sh "./jenkins/scripts/fetch_logs_clean.sh"
+        }
+      }
+      archiveArtifacts 'metal3-dev-env_logs.tgz'
+    }
     cleanup {
       script {
         CURRENT_BUILD_TIME = System.currentTimeMillis()
