@@ -38,6 +38,8 @@ pipeline {
     OS_IDENTITY_API_VERSION=3
     TEST_EXECUTER_VM_NAME = "${VM_NAME}"
     BUILD_URL = "${env.BUILD_URL}"
+    BUILD_NUMBER = "${env.BUILD_NUMBER}"
+    JOB_NAME = "${env.JOB_BASE_NAME}"
     PR_ID = "${ghprbPullId}"
     DISTRIBUTION = "${DISTRIBUTION}"
     CAPI_VERSION = "${CAPI_VERSION}"
@@ -94,18 +96,25 @@ pipeline {
               echo "${err}"
               currentBuild.result = 'FAILURE'
           }
+          finally {
+            withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+              withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+                sh "./jenkins/scripts/fetch_logs.sh"
+              }
+            }
+            archiveArtifacts "logs_${env.JOB_BASE_NAME}_${env.BUILD_NUMBER}.tgz"
+          }
         }
       }
     }
   }
   post {
-    always {
+    success {
       withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
         withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
-          sh "./jenkins/scripts/fetch_logs_clean.sh"
+          sh "./jenkins/scripts/integration_test_clean.sh"
         }
       }
-      archiveArtifacts 'metal3-dev-env_logs.tgz'
     }
     cleanup {
       script {

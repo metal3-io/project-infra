@@ -3,35 +3,36 @@
 set -eu
 
 LOGS_TARBALL=${1:-container_logs.tgz}
-mkdir -p logs
+LOGS_DIR="${2:-logs}"
+mkdir -p ${LOGS_DIR}
 
 NAMESPACES="$(kubectl get namespace -o json | jq -r '.items[].metadata.name')"
-mkdir -p logs/k8s
+mkdir -p "${LOGS_DIR}/k8s"
 for NAMESPACE in $NAMESPACES
 do
-  mkdir -p "logs/k8s/${NAMESPACE}"
+  mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}"
   PODS="$(kubectl get pods -n "$NAMESPACE" -o json | jq -r '.items[].metadata.name')"
   for POD in $PODS
   do
-    mkdir -p "logs/k8s/${NAMESPACE}/${POD}"
+    mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}"
     CONTAINERS="$(kubectl get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.containers[].name')"
     for CONTAINER in $CONTAINERS
     do
-      mkdir -p "logs/k8s/${NAMESPACE}/${POD}/${CONTAINER}"
+      mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}"
       kubectl logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
-      > "logs/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
-      2> "logs/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
+      > "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
+      2> "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
     done
   done
 done
 
-mkdir -p logs/docker
+mkdir -p "${LOGS_DIR}/docker"
 DOCKER_CONTAINERS="$(docker ps --format "{{json .}}" | jq -r '.Names')"
 for DOCKER_CONTAINER in $DOCKER_CONTAINERS
 do
-  mkdir -p "logs/docker/${DOCKER_CONTAINER}"
-  docker logs "$DOCKER_CONTAINER" > "logs/docker/${DOCKER_CONTAINER}/stdout.log" \
-  2> "logs/docker/${DOCKER_CONTAINER}/stderr.log"
+  mkdir -p "${LOGS_DIR}/docker/${DOCKER_CONTAINER}"
+  docker logs "$DOCKER_CONTAINER" > "${LOGS_DIR}/docker/${DOCKER_CONTAINER}/stdout.log" \
+  2> "${LOGS_DIR}/docker/${DOCKER_CONTAINER}/stderr.log"
 done
 
-tar -cvzf "$LOGS_TARBALL" logs/*
+tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
