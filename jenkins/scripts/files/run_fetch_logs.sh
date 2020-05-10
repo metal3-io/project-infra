@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -eu
+#Do not fail on error (for example k8s cluster not available)
+set -u
 
 LOGS_TARBALL=${1:-container_logs.tgz}
 LOGS_DIR="${2:-logs}"

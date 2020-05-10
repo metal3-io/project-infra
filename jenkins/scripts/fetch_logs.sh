@@ -11,8 +11,7 @@ set -eu
 #
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
-JOB_NAME="${JOB_NAME:-integration-tests}"
-BUILD_NUMBER="${BUILD_NUMBER:-0}"
+BUILD_TAG="${BUILD_TAG:-logs_integration_tests}"
 
 
 # shellcheck disable=SC1090
@@ -42,13 +41,13 @@ ssh \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_fetch_logs.sh "logs_${JOB_NAME}_${BUILD_NUMBER}.tgz" \
-  "logs_${JOB_NAME}_${BUILD_NUMBER}"
+  /tmp/run_fetch_logs.sh "logs-${BUILD_TAG}.tgz" \
+  "logs-${BUILD_TAG}"
 
 # fetch logs tarball
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:logs_${JOB_NAME}_${BUILD_NUMBER}.tgz" \
+  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:logs-${BUILD_TAG}.tgz" \
   "./" > /dev/null
