@@ -103,4 +103,3 @@ else
 fi
 make
 make test
-make clean
