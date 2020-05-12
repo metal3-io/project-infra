@@ -36,6 +36,7 @@ tide:
     - metal3-io/metal3-smart-exporter
     - metal3-io/project-infra
     - metal3-io/static-ip-manager-image
+    - metal3-io/ipam
     labels:
     - lgtm
     - approved
@@ -505,4 +506,76 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: registry.hub.docker.com/pipelinecomponents/markdownlint:latest
+        imagePullPolicy: Always
+
+  metal3-io/ipam:
+  - name: gofmt
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gofmt.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/library/golang:1.13.7
+        imagePullPolicy: Always
+  - name: govet
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/govet.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/library/golang:1.13.7
+        imagePullPolicy: Always
+  - name: markdownlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:latest
+        imagePullPolicy: Always
+  - name: shellcheck
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: koalaman/shellcheck-alpine:stable
+        imagePullPolicy: Always
+  - name: unit
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
