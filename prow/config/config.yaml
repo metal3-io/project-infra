@@ -36,7 +36,7 @@ tide:
     - metal3-io/metal3-smart-exporter
     - metal3-io/project-infra
     - metal3-io/static-ip-manager-image
-    - metal3-io/metal3-ipam
+    - metal3-io/ip-address-manager
     labels:
     - lgtm
     - approved
@@ -508,7 +508,7 @@ presubmits:
         image: registry.hub.docker.com/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
 
-  metal3-io/metal3-ipam:
+  metal3-io/ip-address-manager:
   - name: gofmt
     always_run: true
     decorate: true
