@@ -282,6 +282,20 @@ presubmits:
           value: "http://localhost:5050/v1/"
         image: quay.io/metal3-io/operator-sdk:latest
         imagePullPolicy: Always
+  - name: golint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/golint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/golint:latest
+        imagePullPolicy: Always
 
   metal3-io/cluster-api-provider-baremetal:
   - name: gofmt
