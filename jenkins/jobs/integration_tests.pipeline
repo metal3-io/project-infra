@@ -2,6 +2,7 @@ import java.text.SimpleDateFormat
 
 ci_git_credential_id = "metal3-jenkins-github-token"
 def TIMEOUT = 5400
+def CLEAN_TIMEOUT = 600
 
 script {
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
@@ -37,7 +38,8 @@ pipeline {
     OS_AUTH_VERSION=3
     OS_IDENTITY_API_VERSION=3
     TEST_EXECUTER_VM_NAME = "${VM_NAME}"
-    BUILD_URL = "${env.BUILD_URL}"
+    BUILD_TAG = "${env.BUILD_TAG}"
+    JOB_NAME = "${env.JOB_BASE_NAME}"
     PR_ID = "${ghprbPullId}"
     DISTRIBUTION = "${DISTRIBUTION}"
     CAPI_VERSION = "${CAPI_VERSION}"
@@ -60,7 +62,9 @@ pipeline {
                  submoduleCfg: [],
                  userRemoteConfigs: [[credentialsId: ci_git_credential_id,
                  url: ci_git_url]]])
-
+        script {
+          CURRENT_START_TIME = System.currentTimeMillis()
+        }
       }
     }
     stage('Run integration test') {
@@ -68,45 +72,43 @@ pipeline {
         timeout(time: TIMEOUT, unit: 'SECONDS')
       }
       steps {
-        script {
-          CURRENT_START_TIME = System.currentTimeMillis()
-          try {
-            withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-              withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
-                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
-                  sh "./jenkins/scripts/integration_test.sh"
-                }
-              }
+        withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+          withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+              sh "./jenkins/scripts/integration_test.sh"
             }
           }
-          catch (org.hidetake.groovy.ssh.session.BadExitStatusException err) {
-              echo "Caught: ssh error"
-              echo "${err}"
+        }
+      }
+      post {
+        always {
+          script {
+            CURRENT_END_TIME = System.currentTimeMillis()
+            if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+              echo "Failed due to timeout"
               currentBuild.result = 'FAILURE'
+            }
           }
-          catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException err) {
-              echo "Caught: timeout error"
-              echo "${err}"
-              currentBuild.result = 'FAILURE'
+          withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+            withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+              sh "./jenkins/scripts/fetch_logs.sh"
+            }
           }
-          catch (err) {
-              echo "Caught: runtime error"
-              echo "${err}"
-              currentBuild.result = 'FAILURE'
-          }
+          archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+
         }
       }
     }
   }
   post {
-    cleanup {
-      script {
-        CURRENT_BUILD_TIME = System.currentTimeMillis()
-        if ((((CURRENT_BUILD_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
-          echo "Failed due to timeout"
-          currentBuild.result = 'FAILURE'
+    success {
+      withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+          sh "./jenkins/scripts/integration_test_clean.sh"
         }
       }
+    }
+    cleanup {
       withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
         withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
           sh "./jenkins/scripts/integration_delete.sh"
