@@ -5,6 +5,13 @@ set -u
 
 LOGS_TARBALL=${1:-container_logs.tgz}
 LOGS_DIR="${2:-logs}"
+DISTRIBUTION="${3:-ubuntu}"
+if [ "${DISTRIBUTION}" == "ubuntu" ]; then
+  #Must match with run_integration_tests.sh
+  CONTAINER_RUNTIME="docker"
+else
+  CONTAINER_RUNTIME="podman"
+fi
 mkdir -p ${LOGS_DIR}
 
 NAMESPACES="$(kubectl get namespace -o json | jq -r '.items[].metadata.name')"
@@ -27,13 +34,13 @@ do
   done
 done
 
-mkdir -p "${LOGS_DIR}/docker"
-DOCKER_CONTAINERS="$(docker ps --format "{{json .}}" | jq -r '.Names')"
-for DOCKER_CONTAINER in $DOCKER_CONTAINERS
+mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}"
+LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps --format "{{.Names}}")"
+for LOCAL_CONTAINER in $LOCAL_CONTAINERS
 do
-  mkdir -p "${LOGS_DIR}/docker/${DOCKER_CONTAINER}"
-  docker logs "$DOCKER_CONTAINER" > "${LOGS_DIR}/docker/${DOCKER_CONTAINER}/stdout.log" \
-  2> "${LOGS_DIR}/docker/${DOCKER_CONTAINER}/stderr.log"
+  mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}"
+  sudo "${CONTAINER_RUNTIME}" logs "$LOCAL_CONTAINER" > "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}/stdout.log" \
+  2> "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}/stderr.log"
 done
 
 tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
