@@ -11,6 +11,7 @@ set -eu
 #
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
+DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
 BUILD_TAG="${BUILD_TAG:-logs_integration_tests}"
 
 
@@ -42,7 +43,7 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_fetch_logs.sh "logs-${BUILD_TAG}.tgz" \
-  "logs-${BUILD_TAG}"
+  "logs-${BUILD_TAG}" "${DISTRIBUTION}"
 
 # fetch logs tarball
 scp \
