@@ -62,12 +62,12 @@ trusted.
 ## Jenkins configuration
 
 The jenkins configuration is stored in two places. The Nordix gerrit instance
-contains the jenkins job configuration and the Github airship-dev-tools
+contains the jenkins job configuration and the Github metal3-io/project-infra
 repository contains the jobs pipeline.
 
 ### job configuration
 
-The job configuration is stored here. Please
+The job configuration is stored [here](https://gerrit.nordix.org/admin/repos/infra/cicd). Please
 announce if some reviews are needed on #cluster-api-baremetal in Kubernetes
 slack or send an email to estjorvas [at] est.tech mailing list.
 
@@ -82,6 +82,14 @@ We use pre-baked images to run the tests. The images are based on Ubuntu or
 CentOS.
 
 The image building scripts can be found here for [Ubuntu](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_image.sh).
+
+## Job logs
+
+We collect all the container logs at the end of each Jenkins job run and
+archive them so that they can be later used for debugging purposes. You can
+find the archived logs under the  "*Build artifacts*" section of the job. Please
+note that, depending on which one happens first, logs will be wiped out after
+either 30 days of its life or 100 job runs.
 
 ## Contact
 

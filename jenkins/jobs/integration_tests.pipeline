@@ -39,7 +39,6 @@ pipeline {
     OS_IDENTITY_API_VERSION=3
     TEST_EXECUTER_VM_NAME = "${VM_NAME}"
     BUILD_TAG = "${env.BUILD_TAG}"
-    JOB_NAME = "${env.JOB_BASE_NAME}"
     PR_ID = "${ghprbPullId}"
     DISTRIBUTION = "${DISTRIBUTION}"
     CAPI_VERSION = "${CAPI_VERSION}"
