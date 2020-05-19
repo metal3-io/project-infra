@@ -2,10 +2,27 @@
 
 Prow dashboard: http://prow.apps.ci.metal3.io
 
-For more info about the CI cluster, see
-[project-infra/clusters/ci/README.md](../clusters/ci/README.md).
+## Access Controls
+
+* To merge, patches must have `/approve` and `/lgtm`, which apply the `approved` and `lgtm` labels
+
+* Only members of the `metal3-io` github org can use `/lgtm`.
+
+* The use of `/approve` is controlled by the `OWNERS` file in each repository.
+  See the [OWNERS spec](https://go.k8s.io/owners) for more details about how
+  to manage access to all or part of a repo with this file.
+
+* Tests will run automatically for PRs authored by **public** members of the
+  `metal3-io` github organization.  Members of the github org can run
+  `/ok-to-test` for PRs authored by those not in the github org.
+
+See the [Prow command help](https://prow.apps.ci.metal3.io/command-help) for
+more information about who can run each prow command.
 
 ## Prow Setup
+
+For more info about the CI cluster, see
+[project-infra/clusters/ci/README.md](../clusters/ci/README.md).
 
 Prow was set up by following these instructions: https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md
 
