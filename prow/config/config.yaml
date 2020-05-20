@@ -182,7 +182,7 @@ periodics:
        command:
        - /autobump.sh
        args:
-       - /etc/github-token/token
+       - /etc/github-token/oauth
        # Make the bot name and email match the user data of the provided token's user.
        - "metal3-io-bot"
        - metal3.io.bot@gmail.com
