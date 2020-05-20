@@ -194,7 +194,7 @@ periodics:
      # autobump.sh args
        # GitHub org containing the repo where the Prow config and component files live.
        - name: GH_ORG
-         value: project-infra
+         value: metal3-io
        # GitHub repo where the Prow config and component deployment files live.
        - name: GH_REPO
          value: project-infra
