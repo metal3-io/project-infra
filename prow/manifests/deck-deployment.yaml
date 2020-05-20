@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: deck
+  name: deck
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: deck
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: deck
+    spec:
+      containers:
+      - args:
+        - --config-path=/etc/config/config.yaml
+        - --plugin-config=/etc/plugins/plugins.yaml
+        - --tide-url=http://tide/
+        - --hook-url=http://hook:8888/plugin-help
+        - --github-token-path=/etc/github/oauth
+        - --plugin-config=/etc/plugins/plugins.yaml
+        - --spyglass
+        image: gcr.io/k8s-prow/deck:v20191219-ecbeba384
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: deck
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz/ready
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 600
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+        - mountPath: /etc/github
+          name: oauth
+          readOnly: true
+        - mountPath: /etc/plugins
+          name: plugins
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: deck
+      serviceAccountName: deck
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config
+      - name: oauth
+        secret:
+          defaultMode: 420
+          secretName: oauth-token
+      - configMap:
+          defaultMode: 420
+          name: plugins
+        name: plugins
