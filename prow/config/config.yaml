@@ -98,9 +98,7 @@ deck:
     viewers:
       "started.json|finished.json":
       - "metadata"
-      "build-log.txt":
-      - "buildlog"
-      "clone-log.txt":
+      "build-log.txt|clone-log.txt":
       - "buildlog"
 
 periodics:
