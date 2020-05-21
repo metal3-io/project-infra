@@ -23,7 +23,8 @@ spec:
       containers:
       - args:
         - --config-path=/etc/config/config.yaml
-        image: gcr.io/k8s-prow/horologium:v20200518-8da074ad4
+        - --deck-url=https://https://prow.apps.ci.metal3.io/
+        image: gcr.io/k8s-prow/horologium:v20191219-ecbeba384
         imagePullPolicy: IfNotPresent
         name: horologium
         resources: {}
