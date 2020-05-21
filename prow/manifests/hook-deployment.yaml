@@ -27,7 +27,7 @@ spec:
       - args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
-        image: gcr.io/k8s-prow/hook:v20200518-8da074ad4
+        image: gcr.io/k8s-prow/hook:v20191219-ecbeba384
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
