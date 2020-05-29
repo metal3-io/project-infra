@@ -35,6 +35,8 @@ REPO_BRANCH="${REPO_BRANCH:-master}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-master}"
 CAPI_VERSION="${CAPI_VERSION:-v1alpha3}"
+NUM_NODES="${NUM_NODES:-2}"
+TESTS_FOR="${TESTS_FOR:-integration_test}"
 
 DEFAULT_HOSTS_MEMORY="8192"
 
@@ -91,4 +93,5 @@ ssh \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh "${REPO_ORG}" "${REPO_NAME}" "${REPO_BRANCH}" \
   "${UPDATED_REPO}" "${UPDATED_BRANCH}" "${CAPI_VERSION}" "${IMAGE_OS}" \
-  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}" "${GITHUB_TOKEN}"
+  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}" "${GITHUB_TOKEN}" "${NUM_NODES}" \
+  "${TESTS_FOR}"

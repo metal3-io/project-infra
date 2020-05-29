@@ -12,6 +12,13 @@ export IMAGE_OS="${7:-Ubuntu}"
 export DEFAULT_HOSTS_MEMORY="${8:-4096}"
 DISTRIBUTION="${9:-ubuntu}"
 GITHUB_TOKEN="${10}"
+export NUM_NODES="${11:-2}"
+TESTS_FOR="${12:-integration_test}"
+
+if [ "${NUM_NODES}" == "null" ]
+then
+  unset NUM_NODES
+fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
@@ -102,5 +109,11 @@ else
   pushd metal3
   git checkout "${METAL3BRANCH}"
 fi
-make
-make test
+
+if [ "${TESTS_FOR}" == "feature_tests" ]
+then
+  make feature_tests
+else
+  make
+  make test
+fi
