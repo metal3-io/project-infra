@@ -43,4 +43,8 @@ do
   2> "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}/stderr.log"
 done
 
+mkdir -p "${LOGS_DIR}/qemu"
+sudo cp -r /var/log/libvirt/qemu/* "${LOGS_DIR}/qemu/"
+sudo chown -R ${USER}:${USER} "${LOGS_DIR}/qemu"
+
 tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
