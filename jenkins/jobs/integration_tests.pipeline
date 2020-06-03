@@ -1,8 +1,15 @@
 import java.text.SimpleDateFormat
 
 ci_git_credential_id = "metal3-jenkins-github-token"
-def TIMEOUT = 5400
+
 def CLEAN_TIMEOUT = 600
+def TIMEOUT = 5400
+
+if (env.TESTS_FOR) {
+  if ("${TESTS_FOR}" == "feature_tests") {
+    TIMEOUT = 14400
+  }
+}
 
 script {
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
@@ -44,6 +51,8 @@ pipeline {
     CAPI_VERSION = "${CAPI_VERSION}"
     IMAGE_OS = "${TARGET_NODE_OS}"
     DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
+    NUM_NODES="${NUM_NODES}"
+    TESTS_FOR="${TESTS_FOR}"
   }
   stages {
     stage('SCM') {
