@@ -359,7 +359,21 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13.7
+        image: quay.io/metal3-io/capm3-unit:master
+        imagePullPolicy: Always
+  - name: golint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/golint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -373,7 +387,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13.7
+        image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
   - name: markdownlint
     always_run: true
@@ -402,6 +416,20 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: koalaman/shellcheck-alpine:stable
+        imagePullPolicy: Always
+  - name: generate
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
   - name: unit
     always_run: true
