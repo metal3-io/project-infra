@@ -20,8 +20,9 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 source "${CI_DIR}/utils.sh"
 
 VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
-  startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
-  strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600)) | .ID ')
+  startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") | 
+  split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600)) 
+  | .ID ')
 
 echo "Cleaning old resources"
 

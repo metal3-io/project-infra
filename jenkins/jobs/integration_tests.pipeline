@@ -23,7 +23,9 @@ script {
   }
   def date = new Date()
   def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
-  VM_NAME = "ci-test-vm-" + dateFormat.format(date)
+  def rand = new Random()
+  VM_KEY = (1..4).collect { ('a'..'z').join("")[ rand.nextInt( 26 ) ] }.join("")
+  VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
 }
 
 pipeline {
