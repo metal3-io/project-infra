@@ -7,7 +7,7 @@ def TIMEOUT = 5400
 
 if (env.TESTS_FOR) {
   if ("${TESTS_FOR}" == "feature_tests") {
-    TIMEOUT = 14400
+    TIMEOUT = 36000
   }
 }
 
