@@ -1,3 +1,10 @@
+owners:
+  # By default, prow will use github org membership as the list of who is allowed to
+  # /lgtm PRs.  This configuration setting tells it to use the OWNERS file only and
+  # can be applied to a specific repo or entire github org.
+  skip_collaborators:
+    - "metal3-io"
+
 plugins:
   metal3-io:
   - approve
