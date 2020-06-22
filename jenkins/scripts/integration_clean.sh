@@ -20,8 +20,8 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 source "${CI_DIR}/utils.sh"
 
 VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
-  startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") | 
-  split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600)) 
+  startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
+  split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
   | .ID ')
 
 echo "Cleaning old resources"
@@ -36,8 +36,8 @@ done
 
 PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
   startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
-  rtrimstr("-int-port") | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600)) |
-  .ID ')
+  rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
+  mktime) < (now - 21600)) | .ID ')
 
 for PORT_NAME in $PORT_LIST
 do
