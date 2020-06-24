@@ -92,6 +92,7 @@ ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
