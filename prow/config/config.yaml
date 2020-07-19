@@ -580,6 +580,20 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
+  - name: generate
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:master
+        imagePullPolicy: Always
 
   metal3-io/hardware-classification-controller:
   - name: gofmt
