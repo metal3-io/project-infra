@@ -14,6 +14,10 @@ else
 fi
 mkdir -p ${LOGS_DIR}
 
+# Fetch cluster manifests
+mkdir -p "${LOGS_DIR}/manifests"
+cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
+
 NAMESPACES="$(kubectl get namespace -o json | jq -r '.items[].metadata.name')"
 mkdir -p "${LOGS_DIR}/k8s"
 for NAMESPACE in $NAMESPACES
