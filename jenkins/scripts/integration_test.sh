@@ -33,6 +33,7 @@ REPO_BRANCH="${REPO_BRANCH:-master}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-master}"
 CAPI_VERSION="${CAPI_VERSION:-v1alpha3}"
+CAPM3_VERSION="${CAPM3_VERSION:-v1alpha3}"
 NUM_NODES="${NUM_NODES:-2}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 
@@ -72,12 +73,28 @@ echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
 #Wait for the host to come up
 wait_for_ssh "${AIRSHIP_CI_USER}" "${AIRSHIP_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
 
+cat <<-EOF > "${CI_DIR}/files/vars.sh"
+REPO_ORG="${REPO_ORG}"
+REPO_NAME="${REPO_NAME}"
+REPO_BRANCH="${REPO_BRANCH}"
+UPDATED_REPO="${UPDATED_REPO}"
+UPDATED_BRANCH="${UPDATED_BRANCH}"
+CAPI_VERSION="${CAPI_VERSION}"
+CAPM3_VERSION="${CAPM3_VERSION}"
+IMAGE_OS="${IMAGE_OS}"
+DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY}"
+DISTRIBUTION="${DISTRIBUTION}"
+NUM_NODES="${NUM_NODES}"
+TESTS_FOR="${TESTS_FOR}"
+EOF
+
 # Send Remote script to Executer
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${CI_DIR}/files/run_integration_tests.sh" \
+  "${CI_DIR}/files/vars.sh" \
   "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 echo "Running the tests"
@@ -91,7 +108,4 @@ ssh \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_integration_tests.sh "${REPO_ORG}" "${REPO_NAME}" "${REPO_BRANCH}" \
-  "${UPDATED_REPO}" "${UPDATED_BRANCH}" "${CAPI_VERSION}" "${IMAGE_OS}" \
-  "${DEFAULT_HOSTS_MEMORY}" "${DISTRIBUTION}" "${GITHUB_TOKEN}" "${NUM_NODES}" \
-  "${TESTS_FOR}"
+  /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
