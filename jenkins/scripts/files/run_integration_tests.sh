@@ -2,18 +2,16 @@
 
 set -eux
 
-REPO_ORG="${1:-metal3-io}"
-REPO_NAME="${2:-metal3-dev-env}"
-REPO_BRANCH="${3:-master}"
-UPDATED_REPO="${4:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
-UPDATED_BRANCH="${5:-master}"
-export CAPI_VERSION="${6:-v1alpha3}"
-export IMAGE_OS="${7:-Ubuntu}"
-export DEFAULT_HOSTS_MEMORY="${8:-4096}"
-DISTRIBUTION="${9:-ubuntu}"
-GITHUB_TOKEN="${10}"
-export NUM_NODES="${11:-2}"
-TESTS_FOR="${12:-integration_test}"
+VARS_FILE="${1}"
+GITHUB_TOKEN="${2}"
+
+source "${VARS_FILE}"
+
+export CAPI_VERSION
+export CAPM3_VERSION
+export IMAGE_OS
+export DEFAULT_HOSTS_MEMORY
+export NUM_NODES
 
 if [ "${NUM_NODES}" == "null" ]
 then
