@@ -75,10 +75,10 @@ branch-protection:
           branches:
             master:
               required_status_checks:
-                contexts: ["test-v1a4-integration"]
+                contexts: ["test-integration"]
             release-0.3:
               required_status_checks:
-                contexts: ["test-integration"]
+                contexts: ["test-v1a3-integration"]
         ironic-image:
           required_status_checks:
             contexts: ["test-integration"]
