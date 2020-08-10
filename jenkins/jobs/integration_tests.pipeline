@@ -6,7 +6,7 @@ def CLEAN_TIMEOUT = 600
 def TIMEOUT = 5400
 
 if (env.TESTS_FOR) {
-  if ("${TESTS_FOR}" == "feature_tests") {
+  if ( (env.TESTS_FOR).startsWith('feature_tests') ) {
     TIMEOUT = 36000
   }
 }
