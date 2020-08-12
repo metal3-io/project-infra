@@ -74,6 +74,7 @@ then
   export BMOBRANCH="${UPDATED_BRANCH}"
   export BMOPATH="/home/${USER}/tested_repo"
   export BAREMETAL_OPERATOR_LOCAL_IMAGE="${BMOPATH}"
+  export IRONIC_KEEPALIVED_LOCAL_IMAGE="${BMOPATH}/resources/keepalived-docker"
 
 elif [ "${REPO_NAME}" == "ironic-image" ]
 then
