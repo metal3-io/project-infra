@@ -78,6 +78,18 @@ pipeline {
         }
       }
     }
+    stage('VM Setup') {
+      options {
+        timeout(time: 15, unit: 'MINUTES')
+      }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'airshipci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+          withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
+            sh "./jenkins/scripts/integration_test_setup.sh"
+          }
+        }
+      }
+    }
     stage('Run integration test') {
       options {
         timeout(time: TIMEOUT, unit: 'SECONDS')
@@ -106,7 +118,6 @@ pipeline {
             }
           }
           archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-
         }
       }
     }
