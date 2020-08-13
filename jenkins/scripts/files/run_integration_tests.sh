@@ -121,9 +121,9 @@ else
   git checkout "${METAL3BRANCH}"
 fi
 
-if [ "${TESTS_FOR}" == "feature_tests" ]
+if [[ "${TESTS_FOR}" == "feature_tests"* ]]
 then
-  make feature_tests
+  make ${TESTS_FOR}
 else
   make
   make test
