@@ -6,6 +6,8 @@ set -u
 LOGS_TARBALL=${1:-container_logs.tgz}
 LOGS_DIR="${2:-logs}"
 DISTRIBUTION="${3:-ubuntu}"
+TESTS_FOR="${4:-}"
+
 if [ "${DISTRIBUTION}" == "ubuntu" ]; then
   #Must match with run_integration_tests.sh
   CONTAINER_RUNTIME="docker"
@@ -50,5 +52,12 @@ done
 mkdir -p "${LOGS_DIR}/qemu"
 sudo sh -c "cp -r /var/log/libvirt/qemu/* ${LOGS_DIR}/qemu/"
 sudo chown -R ${USER}:${USER} "${LOGS_DIR}/qemu"
+
+if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
+then
+  mkdir -p "${LOGS_DIR}/upgrade"
+  sudo sh -c "cp /tmp/\.*upgrade.result.txt ${LOGS_DIR}/upgrade/"
+  sudo chown -R ${USER}:${USER} "${LOGS_DIR}/upgrade"
+fi
 
 tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
