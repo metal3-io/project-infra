@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 ci_git_credential_id = "metal3-jenkins-github-token"
 
 def CLEAN_TIMEOUT = 600
-def TIMEOUT = 7200
+def TIMEOUT = 5400
 
 if (env.TESTS_FOR) {
   if ( (env.TESTS_FOR).startsWith('feature_tests') ) {
