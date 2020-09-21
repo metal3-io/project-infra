@@ -125,6 +125,7 @@ if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
   make "${TESTS_FOR}"
 elif [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
+then
   make feature_tests
 else
   make
