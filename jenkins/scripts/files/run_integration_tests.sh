@@ -121,9 +121,11 @@ else
   git checkout "${METAL3BRANCH}"
 fi
 
-if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
-  make ${TESTS_FOR}
+  make "${TESTS_FOR}"
+elif [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
+  make feature_tests
 else
   make
   make test
