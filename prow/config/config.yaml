@@ -259,6 +259,20 @@ presubmits:
           value: "TRUE"
         image: registry.hub.docker.com/library/golang:1.13.7
         imagePullPolicy: Always
+  - name: gomod
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: registry.hub.docker.com/library/golang:1.15.2
+        imagePullPolicy: Always
   - name: markdownlint
     always_run: true
     decorate: true
