@@ -76,6 +76,13 @@ then
   export BAREMETAL_OPERATOR_LOCAL_IMAGE="${BMOPATH}"
   export IRONIC_KEEPALIVED_LOCAL_IMAGE="${BMOPATH}/resources/keepalived-docker"
 
+elif [ "${REPO_NAME}" == "ip-address-manager" ]
+then
+  export IPAMREPO="${UPDATED_REPO}"
+  export IPAMBRANCH="${UPDATED_BRANCH}"
+  export IPAMPATH="/home/${USER}/tested_repo"
+  export IPAM_LOCAL_IMAGE="${IPAMPATH}"
+
 elif [ "${REPO_NAME}" == "ironic-image" ]
 then
   export IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
