@@ -326,7 +326,7 @@ presubmits:
           value: "http://localhost:5050/v1/"
         image: registry.hub.docker.com/library/golang:1.14
         imagePullPolicy: Always
-  - name: operator-sdk-generate
+  - name: generate
     always_run: true
     decorate: true
     spec:
