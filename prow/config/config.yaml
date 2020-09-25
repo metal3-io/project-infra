@@ -88,6 +88,9 @@ branch-protection:
         ironic-ipa-downloader:
           required_status_checks:
             contexts: ["test-integration"]
+        ip-address-manager:
+          required_status_checks:
+            contexts: ["test-integration"]
         metal3-dev-env:
           required_status_checks:
             contexts: ["test-centos-integration", "test-integration"]
