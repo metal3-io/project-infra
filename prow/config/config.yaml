@@ -232,7 +232,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13.7
+        image: registry.hub.docker.com/library/golang:1.14
         imagePullPolicy: Always
   - name: gosec
     always_run: true
@@ -260,7 +260,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: registry.hub.docker.com/library/golang:1.13.7
+        image: registry.hub.docker.com/library/golang:1.14
         imagePullPolicy: Always
   - name: gomod
     always_run: true
@@ -324,9 +324,9 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: registry.hub.docker.com/library/golang:1.13.7
+        image: registry.hub.docker.com/library/golang:1.14
         imagePullPolicy: Always
-  - name: operator-sdk-generate
+  - name: generate
     always_run: true
     decorate: true
     spec:
@@ -346,7 +346,7 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: quay.io/metal3-io/operator-sdk:latest
+        image: registry.hub.docker.com/library/golang:1.14
         imagePullPolicy: Always
   - name: golint
     always_run: true
