@@ -18,7 +18,7 @@ plank:
 
 tide:
   merge_method:
-    metal3-io/project-config: merge
+    metal3-io/project-config: rebase
   queries:
   - repos:
     - metal3-io/baremetal-operator
