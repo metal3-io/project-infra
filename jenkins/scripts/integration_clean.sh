@@ -33,6 +33,21 @@ do
   openstack server delete "${VM_NAME}"
 done
 
+DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
+if [ "${DISTRIBUTION}" == "ubuntu" ]
+then
+  VOLUME_LIST=$(openstack volume list -f json | jq -r '.[] | select(.Name |
+    startswith("ci-test-volume-")) | select((.Name | ltrimstr("ci-test-volume-") |
+    split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
+    | .ID ')
+
+  for VOLUME_NAME in $VOLUME_LIST
+  do
+    # Delete executer volume
+    echo "Deleting executer volume ${VOLUME_NAME}."
+    openstack volume delete --force "${VOLUME_NAME}"
+  done
+fi
 
 PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
   startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
@@ -41,7 +56,7 @@ PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
 
 for PORT_NAME in $PORT_LIST
 do
-  # Delete executer vm
+  # Delete executer vm port
   echo "Deleting executer VM port ${PORT_NAME}."
   openstack port delete "${PORT_NAME}"
 done
