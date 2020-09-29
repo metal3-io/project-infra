@@ -45,7 +45,7 @@ then
   do
     # Delete executer volume
     echo "Deleting executer volume ${VOLUME_NAME}."
-    openstack volume delete --force "${VOLUME_NAME}"
+    openstack volume delete "${VOLUME_NAME}"
   done
 fi
 
