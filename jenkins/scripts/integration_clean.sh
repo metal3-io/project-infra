@@ -37,7 +37,7 @@ DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
 if [ "${DISTRIBUTION}" == "ubuntu" ]
 then
   VOLUME_LIST=$(openstack volume list -f json | jq -r '.[] | select(.Name |
-    startswith("ci-test-volume-")) | select((.Name | ltrimstr("ci-test-volume-") |
+    startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
     split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
     | .ID ')
 
