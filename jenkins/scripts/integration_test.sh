@@ -72,34 +72,25 @@ then
 
   # Create test executer volume from copy of base volume
   echo "Creating a test executer volume from copy of base volume."
-  TEST_EXECUTER_VOLUME_ID="$(openstack volume create -f json \
-    --source "${BASE_VOLUME_NAME_ID}" \
-    "${TEST_EXECUTER_VM_NAME}" | jq -r '.id')"
+  create_test_executer_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
   
-  #--size 200 \
-  # Wait for a test executer volume to be available...
+  # Wait for a test executer volume to be available
   echo "Waiting for a test executer volume to be available."
-  until openstack volume show "${TEST_EXECUTER_VM_NAME}" -f json \
-    | jq .status | grep "available"
-  do
-    sleep 10
-  done
-  
+  wait_for_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
+
+  # Resize test executer volume
   echo "Resizing test executer volume."
   openstack volume set --size "${RESIZED_VM_SIZE}" "${TEST_EXECUTER_VM_NAME}"
   
+  # Wait for a resized test executer volume to be available
   echo "Waiting for a resized test executer volume to be available."
-  until openstack volume show "${TEST_EXECUTER_VM_NAME}" -f json \
-    | jq .size | grep "${RESIZED_VM_SIZE}"
-  do
-    sleep 10
-  done
+  wait_for_resized_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}" "${RESIZED_VM_SIZE}"
 
   RESIZED_TEST_EXECUTER_VOLUME_ID="$(openstack volume show -f json \
     "${TEST_EXECUTER_VM_NAME}" | jq -r '.id')"
 
-  # Create a test executer VM from copy of the test executer volume
-  echo "Creating a test executer VM from the test executer volume."
+  # Create a test executer VM from resized test executer volume
+  echo "Creating a test executer VM from the resized test executer volume."
   openstack server create \
     --volume "${RESIZED_TEST_EXECUTER_VOLUME_ID}" \
     --flavor "${TEST_EXECUTER_FLAVOR}" \
