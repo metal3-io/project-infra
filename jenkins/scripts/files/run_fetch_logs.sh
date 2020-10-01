@@ -20,25 +20,33 @@ mkdir -p ${LOGS_DIR}
 mkdir -p "${LOGS_DIR}/manifests"
 cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 
-NAMESPACES="$(kubectl get namespace -o json | jq -r '.items[].metadata.name')"
-mkdir -p "${LOGS_DIR}/k8s"
+function fetch_k8s_logs() {
+dir_name=k8s_${1}
+kconfig=$2 
+
+NAMESPACES="$(kubectl --kubeconfig=${kconfig} get namespace -o json | jq -r '.items[].metadata.name')"
+mkdir -p "${LOGS_DIR}/${dir_name}"
 for NAMESPACE in $NAMESPACES
 do
-  mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}"
-  PODS="$(kubectl get pods -n "$NAMESPACE" -o json | jq -r '.items[].metadata.name')"
+  mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}"
+  PODS="$(kubectl --kubeconfig=${kconfig} get pods -n "$NAMESPACE" -o json | jq -r '.items[].metadata.name')"
   for POD in $PODS
   do
-    mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}"
-    CONTAINERS="$(kubectl get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.containers[].name')"
+    mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}"
+    CONTAINERS="$(kubectl --kubeconfig=${kconfig} get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.containers[].name')"
     for CONTAINER in $CONTAINERS
     do
-      mkdir -p "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}"
-      kubectl logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
-      > "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
-      2> "${LOGS_DIR}/k8s/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
+      mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}"
+      kubectl --kubeconfig=${kconfig} logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
+      > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
+      2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
     done
   done
 done
+}
+
+# Fetch k8s logs
+fetch_k8s_logs "management_cluster" "/home/airshipci/.kube/config"
 
 mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}"
 LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps --format "{{.Names}}")"
@@ -58,6 +66,16 @@ then
   mkdir -p "${LOGS_DIR}/upgrade"
   sudo sh -c "cp /tmp/\.*upgrade.result.txt ${LOGS_DIR}/upgrade/"
   sudo chown -R ${USER}:${USER} "${LOGS_DIR}/upgrade"
+fi
+
+if [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
+then
+  target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
+  if [ "${target_config}" != "" ]
+  then
+    #fetch target cluster k8s logs
+    fetch_k8s_logs "target_cluster" $target_config
+  fi
 fi
 
 tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
