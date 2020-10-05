@@ -64,7 +64,7 @@ sudo chown -R ${USER}:${USER} "${LOGS_DIR}/qemu"
 if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
   mkdir -p "${LOGS_DIR}/upgrade"
-  sudo sh -c "cp /tmp/\.*upgrade.result.txt ${LOGS_DIR}/upgrade/"
+  sudo sh -c "cp /tmp/*upgrade.result.txt ${LOGS_DIR}/upgrade/"
   sudo chown -R ${USER}:${USER} "${LOGS_DIR}/upgrade"
 fi
 
