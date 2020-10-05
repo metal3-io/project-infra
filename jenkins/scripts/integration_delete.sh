@@ -31,7 +31,7 @@ then
     do
         sleep 10
         if [[ "$(openstack volume show "${TEST_EXECUTER_VM_NAME}" -f json \
-            | jq .status)" == "error" ]];
+            | jq .status)" == *"error"* ]];
         then
             exit 1
         fi
