@@ -82,11 +82,12 @@ wait_for_volume() {
     sleep 10
     # Check if test executer volume creation is failed
     if [[ "$(openstack volume show "${TEST_EXECUTER_VM_NAME}" -f json \
-      | jq .status)" == "error"* ]];
+      | jq .status)" == *"error"* ]];
     then
       # If test executer volume creation is failed, then retry volume creation only once
       if [ $retry -eq 0 ]; then
         openstack volume delete "${TEST_EXECUTER_VM_NAME}"
+        sleep 10
         create_test_executer_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
         retry=1
       else
@@ -117,12 +118,13 @@ wait_for_resized_volume() {
   do
     sleep 10
     if [[ "$(openstack volume show "${TEST_EXECUTER_VM_NAME}" -f json \
-      | jq .status)" == "error"* ]];
+      | jq .status)" == *"error"* ]];
     then
       echo "Volume resizing is failed, retrying volume creation and resizing once again."
       # If volume resizing is failed, then retry volume creation and resizing only once
       if [ $resize_retry -eq 0 ]; then
         openstack volume delete "${TEST_EXECUTER_VM_NAME}"
+        sleep 10
         create_test_executer_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
         wait_for_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
         openstack volume set --size "${RESIZED_VM_SIZE}" "${TEST_EXECUTER_VM_NAME}"
