@@ -38,14 +38,25 @@ NUM_NODES="${NUM_NODES:-2}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
-RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-100}"
+if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+then
+  RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-300}"
+else
+  RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-100}"
+fi
+
 VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
 if [[ "${TESTS_FOR}" == "feature_tests"* ]]
 then
-  TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
+  if [ "${DISTRIBUTION}" == "ubuntu" ]
+  then
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB}"
+  else
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
+  fi
 else
   if [ "${DISTRIBUTION}" == "ubuntu" ]
   then
@@ -73,7 +84,7 @@ then
   # Create test executer volume from copy of base volume
   echo "Creating a test executer volume from copy of base volume."
   create_test_executer_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
-  
+
   # Wait for a test executer volume to be available
   echo "Waiting for a test executer volume to be available."
   wait_for_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
@@ -81,7 +92,7 @@ then
   # Resize test executer volume
   echo "Resizing test executer volume."
   openstack volume set --size "${RESIZED_VM_SIZE}" "${TEST_EXECUTER_VM_NAME}"
-  
+
   # Wait for a resized test executer volume to be available
   echo "Waiting for a resized test executer volume to be available."
   wait_for_resized_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}" "${RESIZED_VM_SIZE}"
