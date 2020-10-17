@@ -17,9 +17,9 @@ cluster-api-provider-metal3 repositories.
 All members of the metal3-io organization that set their membership to be
 publicly visible will get admin rights on the CI jobs. This means :
 
- * They can start the jobs on their PR directly
- * They can start the jobs for PR of authors that are not in the organization
- * They can add authors to whitelist so that the authors can start jobs on any
+* They can start the jobs on their PR directly
+* They can start the jobs for PR of authors that are not in the organization
+* They can add authors to whitelist so that the authors can start jobs on any
    further PR on their own, by commenting **add to whitelist** on the PR
 
 ### Commands
@@ -29,11 +29,11 @@ triggered on PR from metal3-dev-env, baremetal-operator and
 cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
- * **/test-integration** run integration tests for V1alpha4 on Ubuntu
- * **/test-centos-integration** run integration tests for V1alpha4 on
+* **/test-integration** run integration tests for V1alpha4 on Ubuntu
+* **/test-centos-integration** run integration tests for V1alpha4 on
    CentOS
- * **/test-v1a3-integration** run integration tests for V1alpha3 on Ubuntu
- * **/test-v1a3-centos-integration** run integration tests for V1alpha3 on
+* **/test-v1a3-integration** run integration tests for V1alpha3 on Ubuntu
+* **/test-v1a3-centos-integration** run integration tests for V1alpha3 on
    CentOS
 
 It is also possible to prevent any job run by adding **/skip-test** in the PR
@@ -46,18 +46,17 @@ jobs on its own.
 ### Cloud Resources cleanup
 
 There is a Jenkins [master job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
-that every 6 hours cleans up all the leftover VMs from
-[CityCloud](https://www.citycloud.com/) which fail to be deleted at the end of
-v1alphaX integration test.
+that cleans up all the leftover VMs from
+[CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
+deleted at the end of v1alphaX integration test.
 
 ### "Can one of the admins verify this patch?"
 
 For all the PRs from authors that are not whitelisted, the bot will add a
 comment "*Can one of the admins verify this patch?*". This means that the author
 is not in the whitelist and that someone from the metal3-io organization should
-review the PR
-and run the tests (with */test-integration*) or add the author to whitelist if
-trusted.
+review the PR and run the tests (with */test-integration*) or add the author to
+whitelist if trusted.
 
 ## Jenkins configuration
 
@@ -65,23 +64,30 @@ The jenkins configuration is stored in two places. The Nordix gerrit instance
 contains the jenkins job configuration and the Github metal3-io/project-infra
 repository contains the jobs pipeline.
 
-### job configuration
+### Job configuration
 
-The job configuration is stored [here](https://gerrit.nordix.org/admin/repos/infra/cicd). Please
-announce if some reviews are needed on #cluster-api-baremetal in Kubernetes
+The job configuration is stored [here](https://gerrit.nordix.org/admin/repos/infra/cicd).
+Please announce if some reviews are needed on #cluster-api-baremetal in Kubernetes
 slack or send an email to estjorvas [at] est.tech mailing list.
 
-### job pipeline
+### Job pipeline
 
 The pipeline for the jobs is in the `jobs` folder. The scripts running
 the tests are in the `scripts` folder.
 
 ## Job image
 
-We use pre-baked images to run the tests. The images are based on Ubuntu or
-CentOS.
+We use a volume and pre-baked image (for Ubuntu and Centos, respectively) to run
+the integration tests.
 
-The image building scripts can be found here for [Ubuntu](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_image.sh).
+* There is a Jenkins job that builds the base Ubuntu volume
+every night which will include pre-executed script for installing metal3
+requirements. The base volume then will be cloned and attached to the VM which
+will be running integration tests. The volume building script for Ubuntu can be
+found [here](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_volume.sh).
+* Pre-baked image is used to speed up the integrations tests which comes with
+pre-baked Kubernetes executables. The image building script for CentOS can be
+found [here](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_centos_image.sh).
 
 ## Job logs
 
