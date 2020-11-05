@@ -68,14 +68,11 @@ then
   sudo chown -R ${USER}:${USER} "${LOGS_DIR}/upgrade"
 fi
 
-if [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
+target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
+if [ "${target_config}" != "" ]
 then
-  target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
-  if [ "${target_config}" != "" ]
-  then
-    #fetch target cluster k8s logs
-    fetch_k8s_logs "target_cluster" $target_config
-  fi
+  #fetch target cluster k8s logs
+  fetch_k8s_logs "target_cluster" $target_config
 fi
 
 tar -cvzf "$LOGS_TARBALL" ${LOGS_DIR}/*
