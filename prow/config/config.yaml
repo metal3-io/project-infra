@@ -363,6 +363,20 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/golint:latest
         imagePullPolicy: Always
+  - name: manifestlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: garethr/kubeval:latest
+        imagePullPolicy: Always
 
   metal3-io/cluster-api-provider-metal3:
   - name: gofmt
@@ -462,6 +476,20 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:master
+        imagePullPolicy: Always
+  - name: manifestlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: garethr/kubeval:latest
         imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
@@ -612,6 +640,20 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
+  - name: manifestlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: garethr/kubeval:latest
+        imagePullPolicy: Always
 
   metal3-io/hardware-classification-controller:
   - name: gofmt
@@ -683,4 +725,18 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:master
+        imagePullPolicy: Always
+  - name: manifestlint
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: garethr/kubeval:latest
         imagePullPolicy: Always
