@@ -69,7 +69,7 @@ then
 fi
 
 target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
-if [ "${target_config}" != "" ]
+if [ ! -z "${target_config}" ]
 then
   #fetch target cluster k8s logs
   fetch_k8s_logs "target_cluster" $target_config
