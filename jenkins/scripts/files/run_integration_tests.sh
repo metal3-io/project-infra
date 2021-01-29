@@ -13,6 +13,11 @@ export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 
+# Overrides docker.io
+export OVERRIDE_DOCKER_IO_REGISTRY=${OVERRIDE_DOCKER_IO_REGISTRY:-"registry.nordix.org/docker-hub-proxy/library"}
+# Overrides registry.hub.docker.com
+export OVERRIDE_DOCKER_HUB_REGISTRY=${OVERRIDE_DOCKER_HUB_REGISTRY:-"registry.nordix.org/docker-hub-proxy"}
+
 if [ "${NUM_NODES}" == "null" ]
 then
   unset NUM_NODES
