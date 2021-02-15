@@ -130,8 +130,6 @@ fi
 
 if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
-  export IRONIC_BASIC_AUTH="false"
-  export IRONIC_TLS_SETUP="false"
   export NODE_DRAIN_TIMEOUT="300s"
   make "${TESTS_FOR}"
 elif [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
