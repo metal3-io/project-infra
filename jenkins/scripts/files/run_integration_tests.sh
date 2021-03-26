@@ -53,6 +53,9 @@ if [ "${REPO_NAME}" == "metal3-dev-env" ]
 then
   export METAL3REPO="${UPDATED_REPO}"
   export METAL3BRANCH="${UPDATED_BRANCH}"
+  # Build/test the sushy-tools/vbmc images, since they are defined in this repo
+  export SUSHY_TOOLS_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/sushy-tools"
+  export VBMC_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/vbmc"
 
   # If the target repo and branch are the same as the source repo and branch
   # we're running a master test, that is not for a PR, so we build the image
