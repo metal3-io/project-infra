@@ -382,6 +382,7 @@ presubmits:
   - name: gofmt
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -396,6 +397,7 @@ presubmits:
   - name: golint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -410,6 +412,7 @@ presubmits:
   - name: govet
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -424,6 +427,7 @@ presubmits:
   - name: markdownlint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -438,6 +442,7 @@ presubmits:
   - name: shellcheck
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -452,6 +457,7 @@ presubmits:
   - name: generate
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -466,6 +472,7 @@ presubmits:
   - name: unit
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -480,6 +487,7 @@ presubmits:
   - name: manifestlint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -496,6 +504,7 @@ presubmits:
   - name: shellcheck
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -510,6 +519,7 @@ presubmits:
   - name: markdownlint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -526,6 +536,7 @@ presubmits:
   - name: check-prow-config
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - image: gcr.io/k8s-prow/checkconfig:v20191219-ecbeba384
