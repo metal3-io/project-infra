@@ -224,6 +224,7 @@ presubmits:
   - name: gofmt
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -238,6 +239,7 @@ presubmits:
   - name: gosec
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -252,6 +254,7 @@ presubmits:
   - name: gomod
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -266,6 +269,7 @@ presubmits:
   - name: markdownlint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -280,6 +284,7 @@ presubmits:
   - name: shellcheck
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -294,6 +299,7 @@ presubmits:
   - name: unit
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -316,6 +322,7 @@ presubmits:
   - name: generate
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
@@ -337,6 +344,7 @@ presubmits:
         imagePullPolicy: Always
   - name: golint
     always_run: true
+    optional: true
     decorate: true
     spec:
       containers:
@@ -352,6 +360,7 @@ presubmits:
   - name: manifestlint
     always_run: true
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
