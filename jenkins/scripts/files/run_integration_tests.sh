@@ -119,6 +119,10 @@ fi
 
 export GITHUB_TOKEN="${GITHUB_TOKEN}"
 
+# Make the ipa-downloader pull the ironic-python-agent from Artifactory to
+# reduce dependency on upstream services and improve build times
+export IPA_BASEURI="https://artifactory.nordix.org/artifactory/airship/ironic-python-agent"
+
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-master}"
 
