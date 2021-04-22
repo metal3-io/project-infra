@@ -1,23 +1,23 @@
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
-  namespace: cert-manager
+  # ClusterIssuers are non-namespaced resources
 spec:
   acme:
     # You must replace this email address with your own.
     # Let's Encrypt will use this to contact you about expiring
     # certificates, and issues related to your account.
-    email: rbryant@redhat.com
+    email: estjorvas@est.tech
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      # Secret resource used to store the account's private key.
+      # Name of a secret used to store the ACME account private key
       name: letsencrypt-prod
     solvers:
     - dns01:
         cloudflare:
           email: russell@russellbryant.net
           apiKeySecretRef:
-            name: cloudflare-apikey-secret
+            name: cloudflare-api-token-secret
             key: apikey
       selector: {}
