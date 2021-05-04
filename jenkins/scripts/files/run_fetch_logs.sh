@@ -49,7 +49,7 @@ done
 fetch_k8s_logs "management_cluster" "/home/airshipci/.kube/config"
 
 mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}"
-LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps --format "{{.Names}}")"
+LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
 for LOCAL_CONTAINER in $LOCAL_CONTAINERS
 do
   mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}"
