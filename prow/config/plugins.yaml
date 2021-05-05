@@ -3,28 +3,28 @@ owners:
   # /lgtm PRs.  This configuration setting tells it to use the OWNERS file only and
   # can be applied to a specific repo or entire github org.
   skip_collaborators:
-    - "metal3-io"
-
+  - "metal3-io"
 plugins:
   metal3-io:
-  - approve
-  - assign
-  - cat
-  - dog
-  - heart
-  - help
-  - hold
-  - label
-  - lgtm
-  - lifecycle
-  - pony
-  - retitle
-  - shrug
-  - size
-  - trigger
-  - verify-owners
-  - wip
-  - yuks
+    plugins:
+    - approve
+    - assign
+    - cat
+    - dog
+    - heart
+    - help
+    - hold
+    - label
+    - lgtm
+    - lifecycle
+    - pony
+    - retitle
+    - shrug
+    - size
+    - trigger
+    - verify-owners
+    - wip
+    - yuks
   metal3-io/baremetal-operator:
   metal3-io/base-image:
   metal3-io/cluster-api-provider-baremetal:
@@ -41,12 +41,34 @@ plugins:
   metal3-io/metal3-io.github.io:
   metal3-io/metal3-smart-exporter:
   metal3-io/project-infra:
-  - config-updater
-  metal3-io/static-ip-manager-image:
+    plugins:
+    - config-updater
+
+external_plugins:
+  metal3-io:
+  - name: needs-rebase
+    # No endpoint specified implies "http://{{name}}".
+    events:
+    - pull_request
+    # Dispatching issue_comment events to the needs-rebase plugin is optional. If enabled, this may cost up to two token per comment on a PR. If `ghproxy`
+    # is in use, these two tokens are only needed if the PR or its mergeability changed.
+    - issue_comment
+
+external_plugins:
+  metal3-io:
+  - name: needs-rebase
+    # No endpoint specified implies "http://{{name}}".
+    events:
+    - pull_request
+    # Dispatching issue_comment events to the needs-rebase plugin is optional. If enabled, this may cost up to two token per comment on a PR. If `ghproxy`
+    # is in use, these two tokens are only needed if the PR or its mergeability changed.
+    - issue_comment
 
 config_updater:
   maps:
+    # Update the config configmap whenever config.yaml changes
     prow/config/config.yaml:
       name: config
+    # Update the plugins configmap whenever plugins.yaml changes
     prow/config/plugins.yaml:
       name: plugins

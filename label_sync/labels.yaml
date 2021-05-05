@@ -294,3 +294,18 @@ default:
       name: lifecycle/stale
       target: both
       prowPlugin: lifecycle
+    - color: 8fc951
+      description: Indicates that an issue or PR is actively being worked on by a contributor.
+      name: lifecycle/active
+      previously:
+        - name: active
+      target: both
+      prowPlugin: lifecycle
+      addedBy: anyone
+    - color: e11d21
+      description: Indicates that a PR cannot be merged because it has merge conflicts with HEAD.
+      name: needs-rebase
+      target: prs
+      prowPlugin: needs-rebase
+      isExternalPlugin: true
+      addedBy: prow
