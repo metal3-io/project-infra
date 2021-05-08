@@ -44,19 +44,19 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
    Create a /mnt/prow directory to store the persistent volume data:
 
      ```shell
-     $ sudo mkdir /mnt/prow
+     sudo mkdir /mnt/prow
      ```
 
      Create the PersistentVolume:
 
      ```shell
-     $ kubectl apply -f persistent_volume.yaml
+     kubectl apply -f persistent_volume.yaml
      ```
 
 1. Grant a user `cluster-admin` role in all namespaces to create cluster resources.
 
     ```shell
-    $ kubectl create clusterrolebinding cluster-admin-binding-"${USER}" \
+    kubectl create clusterrolebinding cluster-admin-binding-"${USER}" \
       --clusterrole=cluster-admin --user="${USER}"
     ```
 
@@ -64,8 +64,8 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
    on GitHub webhook configuration.
 
     ```shell
-    $ openssl rand -hex 20 > /path/hmac-token
-    $ kubectl create secret generic hmac-token --from-file=hmac=/path/hmac-token
+    openssl rand -hex 20 > /path/hmac-token
+    kubectl create secret generic hmac-token --from-file=hmac=/path/hmac-token
     ```
 
 1. Create a personal access token for the GitHub
@@ -79,13 +79,13 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 
     Create a secret out of that token:
     ```shell
-    $ kubectl create secret generic github-token --from-file=token=/path/github-token
+    kubectl create secret generic github-token --from-file=token=/path/github-token
     ```
 
 1. Create a secret with the GCS credentials
 
    ```shell
-   $ kubectl create secret generic gcs-credentials --from-file=service-account.json=service-account.json
+   kubectl create secret generic gcs-credentials --from-file=service-account.json=service-account.json
    ```
 
 1. While applying prow manifests, we are going to create an Ingress object to redirect traffic to the deck and hook services.
@@ -106,14 +106,26 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 
    This will create a couple of Deployments, Services, ServiceAccounts, Roles, RoleBindings and Ingress resources.
 
+1. Update configMaps
+
+   ```shell
+   cd prow
+   # Update the config configMap based on config.yaml content
+   make update-config
+   # Update the plugins configMap based on plugins.yaml content
+   make update-plugins
+   # Update the labels configMap based on labels.yaml content
+   make update-labels
+   ```
+
 ## Secure Ingress with Cert-Manager and Let's Encrypt
 
 1. Install [cert-manager](https://github.com/jetstack/cert-manager)
 
    ```
-   $ helm repo add jetstack https://charts.jetstack.io
-   $ helm repo update
-   $ helm install \
+   helm repo add jetstack https://charts.jetstack.io
+   helm repo update
+   helm install \
    cert-manager jetstack/cert-manager \
    --namespace cert-manager \
    --create-namespace \
@@ -123,7 +135,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 
    Verify that you have the following pods running
    ```shell
-   $ kubectl get pods --namespace cert-manager
+   kubectl get pods --namespace cert-manager
 
      NAME                                       READY   STATUS    RESTARTS   AGE
      cert-manager-5c6866597-zw7kh               1/1     Running   0          2m
@@ -134,7 +146,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 1. Create a secret containing your Cloudflare API token.
 
    ```shell
-   $ kubectl create secret generic cloudflare-api-token-secret --from-literal "apikey=<API_KEY>" --namespace=cert-manager
+   kubectl create secret generic cloudflare-api-token-secret --from-literal "apikey=<API_KEY>" --namespace=cert-manager
    ```
 
    metal3.io domain DNS configurations are managed via Cloudflare. We use [DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) in our [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/)
@@ -152,7 +164,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 1. Create a ClusterIssuer that contacts [Let’s Encrypt](https://letsencrypt.org/) in order to issue certificates.
 
    ```shell
-   $ kubectl apply -f ssl/cluster_issuer.yaml
+   kubectl apply -f ssl/cluster_issuer.yaml
    ```
 
 1. Update the Ingress to include tls
@@ -160,7 +172,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
    You need to annotate the Ingress with `cert-manager.io/cluster-issuer: letsencrypt-prod` to trigger certificats to be automatically created. See the list of available annotations [here](https://cert-manager.io/docs/usage/ingress/#supported-annotations)
 
    ```shell
-   $ kubectl annotate ingress prow cert-manager.io/cluster-issuer=letsencrypt-prod
+   kubectl annotate ingress prow cert-manager.io/cluster-issuer=letsencrypt-prod
    ```
 
    Edit the ingress to add the following under the spec
@@ -173,7 +185,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
         secretName: metal3-io-tls
    ```
 
-## GitHub weebhook configuration
+## GitHub webhook configuration
 
 GitHub webhook needs to be configured with a payload URL pointing to the hook service. For that you need
 1. HMAC token generated earlier
@@ -182,3 +194,9 @@ GitHub webhook needs to be configured with a payload URL pointing to the hook se
 Add the URL and token as below. Select **"Send me everything"**, and for Content ype: **application/json**.
 
 ![webhook](images/webhook.png)
+
+## Label synchronization CronJob
+
+Label synchronization CronJob updates prow labels based on `labels.yaml` file. Whenever someone updates the
+`labels.yaml` file by submitting a pull request, prow config-checker will update the labels configMap in the
+cluster, so that CronJob will have the latest labels it needs to apply to the cluster.

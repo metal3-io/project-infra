@@ -7,7 +7,7 @@ update-plugins:
 	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml --dry-run=client -o yaml | kubectl replace configmap plugins -f -
 
 update-labels:
-	kubectl create configmap labels --from-file=labels.yaml=config/labels.yaml --dry-run=client -o yaml | kubectl replace configmap labels -f -
+	kubectl create configmap labels-config --from-file=labels.yaml=config/labels.yaml --dry-run=client -o yaml | kubectl replace configmap labels-config -f -
 
 validate:
 	podman run --rm \
