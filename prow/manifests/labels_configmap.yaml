@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: default
+  name: labels-config
+data: # actual labels will be read and added here from config/labels.yaml by config_updater
+  labels.yaml: |

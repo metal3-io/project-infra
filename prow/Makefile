@@ -6,6 +6,9 @@ update-config:
 update-plugins:
 	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml --dry-run=client -o yaml | kubectl replace configmap plugins -f -
 
+update-labels:
+	kubectl create configmap labels --from-file=labels.yaml=config/labels.yaml --dry-run=client -o yaml | kubectl replace configmap labels -f -
+
 validate:
 	podman run --rm \
 		--volume "${PWD}:/workdir:ro,z" \

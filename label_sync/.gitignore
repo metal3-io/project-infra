@@ -1,4 +1,0 @@
-config_*.sh
-!config_example.sh
-token--*
-test-infra/
