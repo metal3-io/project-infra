@@ -7,7 +7,7 @@ def TIMEOUT = 5400
 
 if (env.TESTS_FOR) {
   if ( (env.TESTS_FOR).startsWith('feature_tests') ) {
-    TIMEOUT = 12600
+    TIMEOUT = 18000
   }
 }
 
