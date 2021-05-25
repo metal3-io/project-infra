@@ -9,6 +9,12 @@ sinker:
   max_pod_age: 30m
   terminated_pod_ttl: 2h
 
+# Prometheus push gateway.
+push_gateway:
+    # Endpoint is the location of the prometheus pushgateway
+    # where prow will push metrics to.
+    endpoint: pushgateway
+
 plank:
   job_url_template: 'https://prow.apps.test.metal3.io/view/gs/metal3-prow/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
   job_url_prefix_config:
