@@ -18,6 +18,7 @@ mkdir -p ${LOGS_DIR}
 
 # Fetch cluster manifests
 mkdir -p "${LOGS_DIR}/manifests"
+. ./fetch_manifests.sh
 cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 
 function fetch_k8s_logs() {
