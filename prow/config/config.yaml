@@ -36,7 +36,6 @@ tide:
     - metal3-io/ironic-client
     - metal3-io/ironic-hardware-inventory-recorder-image
     - metal3-io/ironic-image
-    - metal3-io/ironic-inspector-image
     - metal3-io/ironic-ipa-downloader
     - metal3-io/ironic-prometheus-exporter
     - metal3-io/metal3-dev-env
@@ -91,9 +90,6 @@ branch-protection:
               required_status_checks:
                 contexts: ["test-v1a3-integration"]
         ironic-image:
-          required_status_checks:
-            contexts: ["test-integration"]
-        ironic-inspector-image:
           required_status_checks:
             contexts: ["test-integration"]
         ironic-ipa-downloader:
