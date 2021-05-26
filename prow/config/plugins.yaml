@@ -44,6 +44,17 @@ plugins:
     plugins:
     - config-updater
 
+approve:
+  - repos:
+    - metal3-io
+
+    # RequireSelfApproval requires PR authors to explicitly approve their PRs.
+    # Otherwise the plugin assumes the author of the PR approves the changes in the PR.
+    require_self_approval: true
+
+    # A /lgtm from a single approver should not allow a PR to merge.
+    lgtm_acts_as_approve: false
+
 external_plugins:
   metal3-io:
   - name: needs-rebase
