@@ -104,6 +104,8 @@ then
 
 elif [[ "${REPO_NAME}" == "project-infra" ]]
 then
+  # export METAL3REPO="${METAL3REPO:-https://github.com/Nordix/metal3-dev-env.git}"
+  # export METAL3BRANCH="${METAL3BRANCH:-use-centos-stream/furkat}"
   if [ "${CAPM3_VERSION}" == "v1alpha4" ]
   then
     export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"

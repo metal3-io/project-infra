@@ -7,6 +7,8 @@ CI_EXT_NET="airship-ci-ext-net"
 CI_EXT_SUBNET_CIDR="10.100.10.0/24"
 CI_METAL3_IMAGE="airship-ci-ubuntu-metal3-img"
 CI_METAL3_CENTOS_IMAGE="airship-ci-centos-metal3-img"
+#base centos stream image name built locally and pushed to CityCloud
+#CI_METAL3_CENTOS_IMAGE="airship-ci-centos-stream-metal3-img_test"
 
 
 # Description:
