@@ -90,10 +90,6 @@ then
   export SUSHY_TOOLS_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/sushy-tools"
   export VBMC_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/vbmc"
 
-elif [ "${REPO_NAME}" == "ironic-inspector-image" ]
-then
-  export IRONIC_INSPECTOR_LOCAL_IMAGE="/home/${USER}/tested_repo"
-
 elif [ "${REPO_NAME}" == "ironic-ipa-downloader" ]
 then
   export IPA_DOWNLOADER_LOCAL_IMAGE="/home/${USER}/tested_repo"
