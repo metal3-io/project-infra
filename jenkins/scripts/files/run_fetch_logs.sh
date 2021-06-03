@@ -61,6 +61,9 @@ mkdir -p "${LOGS_DIR}/qemu"
 sudo sh -c "cp -r /var/log/libvirt/qemu/* ${LOGS_DIR}/qemu/"
 sudo chown -R ${USER}:${USER} "${LOGS_DIR}/qemu"
 
+mkdir -p "${LOGS_DIR}/cluster-api-config"
+cp -r "/home/airshipci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
+
 if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
   mkdir -p "${LOGS_DIR}/upgrade"
