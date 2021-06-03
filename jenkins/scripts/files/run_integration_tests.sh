@@ -113,6 +113,10 @@ fi
 
 export GITHUB_TOKEN="${GITHUB_TOKEN}"
 
+# Ansible colors
+ANSIBLE_FORCE_COLOR=true
+ANSIBLE_COLOR_CHANGED="dark gray"
+
 # Make the ipa-downloader pull the ironic-python-agent from Artifactory to
 # reduce dependency on upstream services and improve build times
 export IPA_BASEURI="https://artifactory.nordix.org/artifactory/airship/ironic-python-agent"
