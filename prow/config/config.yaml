@@ -86,9 +86,9 @@ branch-protection:
             master:
               required_status_checks:
                 contexts: ["test-integration"]
-            release-0.3:
+            release-0.4:
               required_status_checks:
-                contexts: ["test-v1a3-integration"]
+                contexts: ["test-v1a4-integration"]
         ironic-image:
           required_status_checks:
             contexts: ["test-integration"]
@@ -96,8 +96,13 @@ branch-protection:
           required_status_checks:
             contexts: ["test-integration"]
         ip-address-manager:
-          required_status_checks:
-            contexts: ["test-integration"]
+          branches:
+            master:
+              required_status_checks:
+                contexts: ["test-integration"]
+            release-0.0:
+              required_status_checks:
+                contexts: ["test-v1a4-integration"]
         metal3-dev-env:
           required_status_checks:
             contexts: ["test-centos-integration", "test-integration"]
