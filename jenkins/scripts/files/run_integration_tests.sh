@@ -60,9 +60,9 @@ then
   if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
     export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
     export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
-    if [ "${CAPM3_VERSION}" == "v1alpha3" ]
+    if [ "${CAPM3_VERSION}" == "v1alpha4" ]
     then
-      export CAPM3_LOCAL_IMAGE_BRANCH="release-0.3"
+      export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
     else
       export CAPM3_LOCAL_IMAGE_BRANCH="master"
     fi
@@ -103,9 +103,9 @@ then
 
 elif [[ "${REPO_NAME}" == "project-infra" ]]
 then
-  if [ "${CAPM3_VERSION}" == "v1alpha3" ]
+  if [ "${CAPM3_VERSION}" == "v1alpha4" ]
   then
-    export CAPM3_LOCAL_IMAGE_BRANCH="release-0.3"
+    export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
   else
     export CAPM3_LOCAL_IMAGE_BRANCH="master"
   fi
