@@ -85,10 +85,10 @@ branch-protection:
           branches:
             master:
               required_status_checks:
-                contexts: ["test-integration"]
+                contexts: ["test-v1a5-integration"]
             release-0.4:
               required_status_checks:
-                contexts: ["test-v1a4-integration"]
+                contexts: ["test-integration"]
         ironic-image:
           required_status_checks:
             contexts: ["test-integration"]
@@ -99,10 +99,10 @@ branch-protection:
           branches:
             master:
               required_status_checks:
-                contexts: ["test-integration"]
+                contexts: ["test-v1a5-integration"]
             release-0.0:
               required_status_checks:
-                contexts: ["test-v1a4-integration"]
+                contexts: ["test-integration"]
         metal3-dev-env:
           required_status_checks:
             contexts: ["test-centos-integration", "test-integration"]
