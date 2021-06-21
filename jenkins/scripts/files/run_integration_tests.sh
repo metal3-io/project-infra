@@ -57,15 +57,16 @@ then
   # If the target repo and branch are the same as the source repo and branch
   # we're running a master test, that is not for a PR, so we build the image
   # for CAPM3 to verify the process (not BMO due to the build time for BMO image)
-  if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
-    export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
-    export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
-    if [ "${CAPM3_VERSION}" == "v1alpha4" ]
-    then
-      export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
-    else
-      export CAPM3_LOCAL_IMAGE_BRANCH="master"
-    fi
+
+  # TODO(fmuyassarov) This is a temporary addition added for testing CAPI v1alpha4.
+  # It should be removed once CI is in place for CAPI v1alpha4 & CAPM3 v1alpha5.
+  export CAPM3_LOCAL_IMAGE="${CAPM3PATH}"
+  export IPAM_LOCAL_IMAGE="${IPAMPATH}"
+  if [ "${CAPM3_VERSION}" == "v1alpha4" ]
+  then
+    export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
+  else
+    export CAPM3_LOCAL_IMAGE_BRANCH="master"
   fi
 
 elif [ "${REPO_NAME}" == "baremetal-operator" ]
