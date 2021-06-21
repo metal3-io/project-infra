@@ -67,6 +67,7 @@ then
     else
       export CAPM3_LOCAL_IMAGE_BRANCH="master"
     fi
+  fi
 
 elif [ "${REPO_NAME}" == "baremetal-operator" ]
 then
