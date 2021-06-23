@@ -141,6 +141,11 @@ then
 elif [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
 then
   make feature_tests
+elif [[ "${TESTS_FOR}" == "e2e_tests" ]]
+then
+  pushd "${CAPM3PATH}"
+  make test-e2e
+  popd
 else
   make
   make test
