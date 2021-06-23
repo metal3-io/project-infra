@@ -49,7 +49,7 @@ VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
-if [[ "${TESTS_FOR}" == "feature_tests"* || "${TEST_FOR}" == "e2e_tests"* ]]
+if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
   if [ "${DISTRIBUTION}" == "ubuntu" ]
   then
