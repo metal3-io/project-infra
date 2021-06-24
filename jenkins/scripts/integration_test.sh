@@ -38,7 +38,7 @@ NUM_NODES="${NUM_NODES:-2}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
-if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
   RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-300}"
 else
