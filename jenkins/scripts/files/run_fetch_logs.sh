@@ -48,13 +48,21 @@ done
 # Fetch k8s logs
 fetch_k8s_logs "management_cluster" "/home/airshipci/.kube/config"
 
-mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}"
+
+# Fetch Ironic containers logs before pivoting to the target cluster
+CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/before_pivoting"
+mkdir -p "${CONTAINER_LOGS_DIR}"
+cp -r /tmp/"${CONTAINER_RUNTIME}"/* "${CONTAINER_LOGS_DIR}"
+
+# Fetch Ironic containers logs after pivoting back to the source cluster
+CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/after_pivoting"
+mkdir -p "${CONTAINER_LOGS_DIR}"
 LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
 for LOCAL_CONTAINER in $LOCAL_CONTAINERS
 do
-  mkdir -p "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}"
-  sudo "${CONTAINER_RUNTIME}" logs "$LOCAL_CONTAINER" > "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}/stdout.log" \
-  2> "${LOGS_DIR}/${CONTAINER_RUNTIME}/${LOCAL_CONTAINER}/stderr.log"
+  mkdir -p "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}"
+  sudo "${CONTAINER_RUNTIME}" logs "$LOCAL_CONTAINER" > "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stdout.log" \
+  2> "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stderr.log"
 done
 
 mkdir -p "${LOGS_DIR}/qemu"
