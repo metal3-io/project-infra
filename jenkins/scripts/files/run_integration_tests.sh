@@ -121,7 +121,9 @@ export ANSIBLE_COLOR_CHANGED="green"
 
 # Make the ipa-downloader pull the ironic-python-agent from Artifactory to
 # reduce dependency on upstream services and improve build times
-export IPA_BASEURI="https://artifactory.nordix.org/artifactory/airship/ironic-python-agent"
+# (TODO)(fmuyassarov) This is currently using older version of IPA due to issues with upstream IPA.
+# We need to revert it back to artifactory once upstream IPA is fixed.
+export IPA_BASEURI="https://images.rdoproject.org/centos8/master/rdo_trunk/a0c4145047abba3d94f4975991d3a2e2"
 
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-master}"
@@ -148,6 +150,7 @@ then
   make test-e2e
   popd
 else
+  export IPA_BASEURI="https://images.rdoproject.org/centos8/master/rdo_trunk/a0c4145047abba3d94f4975991d3a2e2"
   make
   make test
 fi
