@@ -8,7 +8,7 @@ def CLEAN_TIMEOUT = 600
 def TIMEOUT = 5400
 
 if (env.TESTS_FOR) {
-  if ( (env.TESTS_FOR).startsWith('feature_tests') ) {
+  if ( (env.TESTS_FOR).startsWith('feature_tests') || (env.TESTS_FOR).startsWith('e2e_tests') ) {
     // 6 hours
     TIMEOUT = 21600
   }
