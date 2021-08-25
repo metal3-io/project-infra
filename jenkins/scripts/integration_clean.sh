@@ -24,13 +24,14 @@ VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
   split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
   | .ID ')
 
-echo "Cleaning old resources"
+echo "Cleaning old leftover resources"
 
 for VM_NAME in $VM_LIST
 do
   # Delete executer vm
   echo "Deleting executer VM ${VM_NAME}."
   openstack server delete "${VM_NAME}"
+  echo "Executer VM ${VM_NAME} is deleted."
 done
 
 DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
@@ -46,6 +47,7 @@ then
     # Delete executer volume
     echo "Deleting executer volume ${VOLUME_NAME}."
     openstack volume delete "${VOLUME_NAME}"
+    echo "Executer volume ${VOLUME_NAME} is deleted."
   done
 fi
 
@@ -59,6 +61,7 @@ do
   # Delete executer vm port
   echo "Deleting executer VM port ${PORT_NAME}."
   openstack port delete "${PORT_NAME}"
+  echo "Executer VM port ${PORT_NAME} is deleted."
 done
 
-echo "Old resources cleaned"
+echo "Old leftover resources are cleaned successfully!"
