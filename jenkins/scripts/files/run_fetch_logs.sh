@@ -69,6 +69,13 @@ mkdir -p "${LOGS_DIR}/qemu"
 sudo sh -c "cp -r /var/log/libvirt/qemu/* ${LOGS_DIR}/qemu/"
 sudo chown -R ${USER}:${USER} "${LOGS_DIR}/qemu"
 
+# Fetch atop and sysstat metrics
+mkdir -p "${LOGS_DIR}/metrics/atop"
+mkdir -p "${LOGS_DIR}/metrics/sysstat"
+sudo sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
+sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
+sudo chown -R ${USER}:${USER} "${LOGS_DIR}/metrics"
+
 mkdir -p "${LOGS_DIR}/cluster-api-config"
 cp -r "/home/airshipci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
