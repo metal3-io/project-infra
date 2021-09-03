@@ -124,7 +124,7 @@ echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
 #Wait for the host to come up
 wait_for_ssh "${AIRSHIP_CI_USER}" "${AIRSHIP_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
 
-cat <<-EOF > "${CI_DIR}/files/vars.sh"
+cat <<-EOF >> "${CI_DIR}/files/vars.sh"
 REPO_ORG="${REPO_ORG}"
 REPO_NAME="${REPO_NAME}"
 REPO_BRANCH="${REPO_BRANCH}"
