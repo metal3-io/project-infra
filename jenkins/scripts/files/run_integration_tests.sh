@@ -119,9 +119,9 @@ export ANSIBLE_FORCE_COLOR=true
 # Make 'changed' tasks the same color as 'succeeded' tasks in Jenkins output
 export ANSIBLE_COLOR_CHANGED="green"
 
-# Make the ipa-downloader pull the ironic-python-agent from Artifactory to
-# reduce dependency on upstream services and improve build times
-export IPA_BASEURI="https://artifactory.nordix.org/artifactory/airship/ironic-python-agent"
+# Use the IPA which is already downloaded in the image, instead of downloading
+# from upstream.
+export IPA_DOWNLOAD_ENABLED="false"
 
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-master}"
