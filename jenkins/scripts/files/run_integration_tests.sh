@@ -13,6 +13,11 @@ export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 
+if [ "${CAPM3_VERSION}" == "v1alpha4" ]
+then
+  export KUBERNETES_VERSION="v1.21.2"
+fi
+
 if [ "${NUM_NODES}" == "null" ]
 then
   unset NUM_NODES
@@ -64,7 +69,6 @@ then
     if [ "${CAPM3_VERSION}" == "v1alpha4" ]
     then
       export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
-      export KUBERNETES_VERSION="v1.21.2"
     else
       export CAPM3_LOCAL_IMAGE_BRANCH="master"
     fi
