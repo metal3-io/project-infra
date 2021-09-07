@@ -59,6 +59,7 @@ pipeline {
     DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES="${NUM_NODES}"
     TESTS_FOR="${TESTS_FOR}"
+    PROMETHEUS_MONITORING="${PROMETHEUS_MONITORING}"
   }
   stages {
     stage('SCM') {
