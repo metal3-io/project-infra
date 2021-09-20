@@ -16,6 +16,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: label-sync
+  namespace: prow
 spec:
   schedule: "17 * * * *"  # Every hour at 17 minutes past the hour
   concurrencyPolicy: Forbid
