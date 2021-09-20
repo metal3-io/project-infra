@@ -15,7 +15,7 @@ validate:
 	$(CONTAINER_RUNTIME) run --rm \
 		--volume "${PWD}:/workdir:ro,z" \
 		--entrypoint /checkconfig \
-		gcr.io/k8s-prow/checkconfig:v20210409-985ef5e721 \
+		gcr.io/k8s-prow/checkconfig:v20210916-3c87dfedd5 \
 		--config-path /workdir/config/config.yaml \
 		--plugin-config /workdir/config/plugins.yaml \
 		--strict
