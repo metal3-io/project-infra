@@ -1,10 +1,13 @@
-.phony: update-config update-plugins validate
+.phony: update-config update-plugins update-labels validate
 
 update-config:
-	kubectl create configmap config --from-file=config.yaml=config/config.yaml --dry-run=client -o yaml | kubectl replace configmap config -f -
+	kubectl create configmap config -n prow --from-file=config.yaml=config/config.yaml --dry-run=client -o yaml | kubectl replace configmap -n prow config -f -
 
 update-plugins:
-	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml --dry-run=client -o yaml | kubectl replace configmap plugins -f -
+	kubectl create configmap plugins -n prow --from-file=plugins.yaml=config/plugins.yaml --dry-run=client -o yaml | kubectl replace configmap -n prow plugins -f -
+
+update-labels:
+	kubectl create configmap label-config -n prow --from-file=labels.yaml=labels.yaml --dry-run=client -o yaml | kubectl replace configmap -n prow label-config -f -
 
 validate:
 	podman run --rm \
