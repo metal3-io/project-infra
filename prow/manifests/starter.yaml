@@ -1348,3 +1348,73 @@ stringData:
       "s3_force_path_style": true,
       "secret_key": "bar"
     }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: prow
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        args:
+        - gateway
+        - azure
+        - --console-address=:33333
+        env:
+        - name: MINIO_ROOT_USER
+          value: "foo"
+        - name: MINIO_ROOT_PASSWORD
+          value: "bar"
+        - name: MINIO_REGION_NAME
+          value: minio
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+          periodSeconds: 20
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: prow
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 9000
+    protocol: TCP
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-console
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+  - port: 8003
+    targetPort: 33333
+    protocol: TCP
+  selector:
+    app: minio
