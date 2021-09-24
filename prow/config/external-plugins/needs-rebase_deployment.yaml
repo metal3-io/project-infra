@@ -15,58 +15,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: statusreconciler
-  namespace: default
+  namespace: prow
+  name: needs-rebase
   labels:
-    app: statusreconciler
+    app: needs-rebase
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: statusreconciler
+      app: needs-rebase
   template:
     metadata:
       labels:
-        app: statusreconciler
+        app: needs-rebase
     spec:
-      serviceAccountName: statusreconciler
       terminationGracePeriodSeconds: 180
       containers:
-      - name: statusreconciler
-        image: gcr.io/k8s-prow/status-reconciler:v20210415-ecffc9c27e
+      - name: needs-rebase
+        image: gcr.io/k8s-prow/needs-rebase:v20210916-3c87dfedd5
+        imagePullPolicy: Always
         args:
         - --dry-run=false
-        - --continue-on-error=true
-        - --plugin-config=/etc/plugins/plugins.yaml
-        - --config-path=/etc/config/config.yaml
-        - --github-token-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
-        - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
-        - --status-path=gs://status-reconciler/status-reconciler-status
+        - --github-token-path=/etc/github/token
+        - --update-period=6h
+        ports:
+          - name: http
+            containerPort: 8888
         volumeMounts:
+        - name: hmac
+          mountPath: /etc/webhook
+          readOnly: true
         - name: github-token
           mountPath: /etc/github
-          readOnly: true
-        - name: config
-          mountPath: /etc/config
           readOnly: true
         - name: plugins
           mountPath: /etc/plugins
           readOnly: true
-        - name: gcs-credentials
-          mountPath: /etc/gcs-credentials
-          readOnly: true
       volumes:
+      - name: hmac
+        secret:
+          secretName: hmac-token
       - name: github-token
         secret:
           secretName: github-token
-      - name: config
-        configMap:
-          name: config
       - name: plugins
         configMap:
           name: plugins
-      - name: gcs-credentials
-        secret:
-          secretName: gcs-credentials
