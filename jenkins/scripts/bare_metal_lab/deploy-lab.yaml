@@ -1,0 +1,125 @@
+- hosts: localhost
+  vars:
+    bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
+    bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
+  environment:
+    EPHEMERAL_CLUSTER: "minikube"
+    EXTERNAL_VLAN_ID: 3
+    NUM_NODES: 0
+  tasks:
+    - name: Check required env vars are set
+      fail:
+        msg: Ensure that BML_ILO_USERNAME and BML_ILO_PASSWORD environment variables are set
+      when: not bml_ilo_username or not bml_ilo_password
+
+    - name: Install dependencies for metal3-dev-env
+      apt:
+        pkg:
+          - make
+      become: true
+
+    - name: Add passwordless sudo
+      lineinfile:
+        path: "/etc/sudoers.d/{{ ansible_user_id}}_passwordless_sudo"
+        line: "{{ ansible_user_id }} ALL = (ALL) NOPASSWD: ALL"
+        create: true
+        owner: root
+        group: root
+        mode: 0400
+      become: true
+
+    - name: Ensure that iLO credentials can be passed over SSH
+      lineinfile:
+        path: "/etc/ssh/sshd_config"
+        line: "AcceptEnv LANG LC_* BML_*"
+      become: true
+      register: sshd_config
+
+    - name: Restart sshd if required
+      systemd:
+        name: sshd
+        state: restarted
+      become: true
+      when: sshd_config.changed
+
+    - name: Clone the metal3-dev-env repo
+      git:
+        repo: https://github.com/metal3-io/metal3-dev-env.git
+        dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
+        version: master
+      tags: git
+
+    - name: Clean any existing setup
+      shell:
+        cmd: "make clean"
+        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+      tags: clean
+
+    - name: Reset network
+      script: reset_network.sh
+
+    - name: Install requirements for host
+      shell:
+        cmd: "make install_requirements"
+        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+      tags: install_requirements
+
+    - name: Configure host
+      shell:
+        cmd: "make configure_host"
+        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+
+      # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as
+      # well as allowing TFTP traffic outside the host (random port)
+    - name: Add UDP forwarding to firewall
+      iptables:
+        action: append
+        chain: FORWARD
+        protocol: udp
+        jump: ACCEPT
+      become: true
+
+    - name: Launch management cluster
+      shell: 
+        cmd: make launch_mgmt_cluster
+        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+      tags: launch_mgmt_cluster
+
+    - name: Add interface to provisioning bridge
+      shell:
+        cmd: "brctl addif provisioning eno1"
+      become: true
+
+    - name: Deploy bmhosts
+      template:
+        src: "templates/bmhosts_crs.yaml.j2"
+        dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
+
+    - name: Apply bmhosts manifest
+      shell:
+        cmd: kubectl apply -f ./bmhosts_crs.yaml -n metal3
+        chdir: "/opt/metal3-dev-env/"
+      tags: kubectl_apply
+
+    - name: Set VLAN 3 interface to be up
+      shell:
+        cmd: "ip link set up dev bmext"
+      become: true
+      tags: bmext
+
+    - name: Check if bmext interface has been added to bridge
+      shell:
+        cmd: "brctl show baremetal | grep bmext"
+      become: true
+      failed_when: false
+      changed_when: false
+      register: brctl_grep_bmext
+      tags: bmext
+
+    - name: Add VLAN 3 interface to baremetal bridge
+      shell:
+        cmd: "brctl addif baremetal bmext"
+      become: true
+      when: brctl_grep_bmext.rc != 0
+      tags: bmext
+

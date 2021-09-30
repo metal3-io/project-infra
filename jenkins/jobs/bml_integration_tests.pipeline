@@ -1,0 +1,82 @@
+import java.text.SimpleDateFormat
+
+ci_git_credential_id = "metal3-jenkins-github-token"
+
+
+script {
+  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
+    ci_git_branch="${ghprbActualCommit}"
+    ci_git_url = "${ghprbAuthorRepoGitUrl}"
+  } else {
+    echo "Checkout ${ghprbAuthorRepoGitUrl} master"
+    ci_git_branch = "master"
+    ci_git_url = "https://github.com/metal3-io/project-infra.git"
+  }
+  def date = new Date()
+  def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
+  def rand = new Random()
+  VM_KEY = (1..4).collect { ('a'..'z').join("")[ rand.nextInt( 26 ) ] }.join("")
+  VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
+}
+
+pipeline {
+  agent { label 'airship-static-workers' }
+  environment {
+    AIRSHIP_CI_USER="airshipci"
+    REPO_ORG = "${PROJECT_REPO_ORG}"
+    REPO_NAME = "${PROJECT_REPO_NAME}"
+    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
+    REPO_BRANCH = "${ghprbTargetBranch}"
+    UPDATED_BRANCH = "${ghprbActualCommit}"
+    TEST_EXECUTER_VM_NAME = "${VM_NAME}"
+    BUILD_TAG = "${env.BUILD_TAG}"
+    PR_ID = "${ghprbPullId}"
+    DISTRIBUTION = "${DISTRIBUTION}"
+    CAPI_VERSION = "${CAPI_VERSION}"
+    CAPM3_VERSION = "${CAPM3_VERSION}"
+    IMAGE_OS = "${TARGET_NODE_OS}"
+    DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
+    NUM_NODES="${NUM_NODES}"
+    TESTS_FOR="${TESTS_FOR}"
+  }
+  stages {
+    stage('SCM') {
+      options {
+        timeout(time: 5, unit: 'MINUTES')
+      }
+      steps {
+        /* Checkout CI Repo */
+        checkout([$class: 'GitSCM',
+                 branches: [[name: ci_git_branch]],
+                 doGenerateSubmoduleConfigurations: false,
+                 extensions: [[$class: 'WipeWorkspace'],
+                 [$class: 'CleanCheckout'],
+                 [$class: 'CleanBeforeCheckout']],
+                 submoduleCfg: [],
+                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
+                 url: ci_git_url]]])
+        script {
+          CURRENT_START_TIME = System.currentTimeMillis()
+        }
+      }
+    }
+    stage('Run integration test') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
+          withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
+            sh "./jenkins/scripts/bml_integration_test.sh"
+          }
+        }
+      }
+      post {
+        always {
+          withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
+            sh "./jenkins/scripts/fetch_logs.sh"
+          }
+          archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+        }
+      }
+    }
+  }
+}
