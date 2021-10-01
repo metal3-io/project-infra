@@ -12,12 +12,16 @@ export CAPM3_VERSION
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
-export KUBERNETES_VERSION
 
 if [ "${REPO_NAME}" == "airship-dev-tools" ]
 then
   export IMAGE_NAME
   export IMAGE_LOCATION
+fi
+
+if [ "${CAPM3_VERSION}" == "v1alpha4" ]
+then
+  export KUBERNETES_VERSION="v1.21.2"
 fi
 
 if [ "${NUM_NODES}" == "null" ]
