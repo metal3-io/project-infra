@@ -50,14 +50,16 @@ VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
+if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+then
+  OS_REGION_NAME="Fra1"
+  OS_AUTH_URL="https://fra1.citycloud.com:5000"
+fi
+
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
-  if [ "${DISTRIBUTION}" == "ubuntu" ]
-  then
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB}"
-  else
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
-  fi
+    # Setting this to 8C-32GB-400GB since other flavors are unavailable in Frankfurt region
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-400GB}"
 else
   if [ "${DISTRIBUTION}" == "ubuntu" ]
   then
@@ -120,6 +122,24 @@ fi
 # Get the IP
 TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
+
+if [[ "$OS_REGION_NAME" != "Kna1" ]]
+then 
+  # Fetch Free floating IP 
+  FLOATING_IP="$(openstack floating ip list --status DOWN -c "Floating IP Address" -f value | head -1 )"
+
+  if [[ -z "$FLOATING_IP" ]]
+  then
+    echo "No floating IP is available"
+    exit 1
+  fi
+  TEST_EXECUTER_IP="$FLOATING_IP"
+  
+  # Attach floating IP
+  openstack server add floating ip \
+  "${TEST_EXECUTER_VM_NAME}" \
+  "$FLOATING_IP"
+fi
 
 echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
 #Wait for the host to come up
