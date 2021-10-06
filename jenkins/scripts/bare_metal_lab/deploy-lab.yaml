@@ -5,7 +5,6 @@
   environment:
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
-    NUM_NODES: 0
   tasks:
     - name: Check required env vars are set
       fail:
@@ -54,6 +53,13 @@
         cmd: "make clean"
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
       tags: clean
+    
+    - name: Deleting files and folders from previous run
+      become: true
+      become_user: root
+      shell:
+        cmd: rm -rf /home/{{ ansible_user_id }}/tested_repo /home/{{ ansible_user_id }}/metal3 /opt/metal3-dev-env /tmp/mariadb.csr  /tmp/ironic.csr 2>/dev/null
+      tags: cleanup
 
     - name: Reset network
       script: reset_network.sh
@@ -68,6 +74,10 @@
       shell:
         cmd: "make configure_host"
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+      environment:
+        NUM_NODES: 0
+        NUM_OF_MASTER_REPLICAS: 0
+        NUM_OF_WORKER_REPLICAS: 0
 
       # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as
       # well as allowing TFTP traffic outside the host (random port)
@@ -122,4 +132,17 @@
       become: true
       when: brctl_grep_bmext.rc != 0
       tags: bmext
-
+    
+    - name: Wait until all BMHs become ready.
+      kubernetes.core.k8s_info:
+        api_version: metal3.io/v1alpha1
+        kind: BareMetalHost
+        namespace: "metal3"
+      register: ready_bmh
+      retries: 200
+      delay: 30
+      vars:
+        query: "[? status.provisioning.state=='ready']"
+      until: (ready_bmh is succeeded) and
+            (ready_bmh.resources | length > 0) and
+            (ready_bmh.resources | json_query(query) | length ==  (2))
