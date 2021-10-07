@@ -466,7 +466,8 @@ presubmits:
 
   metal3-io/metal3-dev-env:
   - name: shellcheck
-    always_run: true
+    always_run: false
+    run_if_changed: '(\.(sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -481,7 +482,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     optional: true
     spec:
