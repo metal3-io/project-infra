@@ -19,6 +19,12 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 # shellcheck disable=SC1090
 source "${CI_DIR}/utils.sh"
 
+if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+then
+  OS_REGION_NAME="Fra1"
+  OS_AUTH_URL="https://fra1.citycloud.com:5000"
+fi
+
 VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
   startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
   split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))

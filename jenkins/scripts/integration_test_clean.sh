@@ -20,9 +20,22 @@ source "${CI_DIR}/utils.sh"
 
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
+if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+then
+  OS_REGION_NAME="Fra1"
+  OS_AUTH_URL="https://fra1.citycloud.com:5000"
+fi
+
 # Get the IP
 TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
+
+if [[ "$OS_REGION_NAME" != "Kna1" ]]
+then
+  FLOATING_IP="$(openstack floating ip list --fixed-ip-address "${TEST_EXECUTER_IP}" \
+    -c "Floating IP Address" -f value)"
+  TEST_EXECUTER_IP="${FLOATING_IP}"
+fi
 
 # Send Remote script to Executer
 scp \
