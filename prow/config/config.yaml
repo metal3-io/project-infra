@@ -242,7 +242,8 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     spec:
       containers:
@@ -256,7 +257,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: true
+    always_run: false
+    run_if_changed: '(\.(sh)|^Makefile)$'
     decorate: true
     spec:
       containers:
@@ -389,7 +391,8 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:master
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     optional: true
     spec:
@@ -404,7 +407,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: true
+    always_run: false
+    run_if_changed: '(\.(sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -518,7 +522,8 @@ presubmits:
             memory: "500Mi"
   metal3-io/metal3-docs:
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     spec:
       containers:
@@ -564,7 +569,8 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     optional: true
     spec:
@@ -579,7 +585,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: true
+    always_run: false
+    run_if_changed: '(\.(sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -669,7 +676,8 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: true
+    always_run: false
+    run_if_changed: '\.(md)$'
     decorate: true
     spec:
       containers:
@@ -683,7 +691,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: true
+    always_run: false
+    run_if_changed: '(\.(sh)|^Makefile)$'
     decorate: true
     spec:
       containers:
