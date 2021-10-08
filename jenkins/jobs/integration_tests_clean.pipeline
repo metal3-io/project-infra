@@ -27,6 +27,7 @@ pipeline {
     OS_TENANT_NAME="Default Project 37137"
     OS_AUTH_VERSION=3
     OS_IDENTITY_API_VERSION=3
+    TESTS_FOR="${TESTS_FOR}"
   }
   stages {
     stage('SCM') {
