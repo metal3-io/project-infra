@@ -3,15 +3,13 @@
 set -eu
 
 # Description:
-#   Runs the integration tests for metal3-dev-env in an executer vm
+# Runs in master integration cleanup job defined in jjb. 
+# Consumed by integration_tests_clean.pipeline and cleans any leftover executer vm/volume 
+# and port once every day.
 #   Requires:
-#     - source stackrc file
-#     - openstack ci infra should already be deployed.
-#     - environment variables set:
-#       - AIRSHIP_CI_USER: Ci user for jumphost.
-#       - AIRSHIP_CI_USER_KEY: Path of the CI user private key for jumphost.
+#     - source openstack.rc file
 # Usage:
-#  integration_test.sh
+#  integration_clean.sh
 #
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
