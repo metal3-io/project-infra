@@ -3,11 +3,13 @@
 set -eu
 
 # Description:
-#   Cleans the executer vm after integration tests
+# Runs in every single master job and in jobs triggered within the PR in metal3 repos. 
+# Consumed by integration_tests.pipeline and cleans the integration test results by
+# running 'make clean' target (check run_clean.sh script) eventually.
 #   Requires:
-#     - source stackrc file
+#     - source openstack.rc file
 # Usage:
-#  integration_delete.sh
+#  integration_test_clean.sh
 #
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
