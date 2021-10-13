@@ -101,6 +101,9 @@ branch-protection:
             contexts: ["test-integration"]
         ip-address-manager:
           branches:
+            main:
+              required_status_checks:
+                contexts: ["test-integration"]
             master:
               required_status_checks:
                 contexts: ["test-integration"]
