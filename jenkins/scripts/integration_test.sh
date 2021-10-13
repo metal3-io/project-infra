@@ -22,7 +22,7 @@ source "${CI_DIR}/utils.sh"
 DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
 if [ "${DISTRIBUTION}" == "ubuntu" ]
 then
-  BASE_VOLUME_NAME="metal3-ubuntu"
+  IMAGE_NAME="${CI_METAL3_IMAGE}"
 else
   IMAGE_NAME="${CI_METAL3_CENTOS_IMAGE}"
 fi
@@ -58,15 +58,11 @@ fi
 
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
-    # Setting this to 8C-32GB-400GB since other flavors are unavailable in Frankfurt region
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-400GB}"
+    # Four node cluster
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-200GB}"
 else
-  if [ "${DISTRIBUTION}" == "ubuntu" ]
-  then
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB}"
-  else
+    # Two node cluster
     TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB-100GB}"
-  fi
 fi
 
 # Creating new port, needed to immediately get the ip
@@ -75,49 +71,12 @@ EXT_PORT_ID="$(openstack port create -f json \
   --fixed-ip subnet="$(get_subnet_name "${CI_EXT_NET}")" \
   "${TEST_EXECUTER_PORT_NAME}" | jq -r '.id')"
 
-
-DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
-if [ "${DISTRIBUTION}" == "ubuntu" ]
-then
-  # Get the base volume
-  echo "Getting the base volume."
-  BASE_VOLUME_NAME_ID="$(openstack volume show -f json \
-    "${BASE_VOLUME_NAME}" | jq -r '.id')"
-
-  # Create test executer volume from copy of base volume
-  echo "Creating a test executer volume from copy of base volume."
-  create_test_executer_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
-
-  # Wait for a test executer volume to be available
-  echo "Waiting for a test executer volume to be available."
-  wait_for_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}"
-
-  # Resize test executer volume
-  echo "Resizing test executer volume."
-  openstack volume set --size "${RESIZED_VM_SIZE}" "${TEST_EXECUTER_VM_NAME}"
-
-  # Wait for a resized test executer volume to be available
-  echo "Waiting for a resized test executer volume to be available."
-  wait_for_resized_volume "${BASE_VOLUME_NAME_ID}" "${TEST_EXECUTER_VM_NAME}" "${RESIZED_VM_SIZE}"
-
-  RESIZED_TEST_EXECUTER_VOLUME_ID="$(openstack volume show -f json \
-    "${TEST_EXECUTER_VM_NAME}" | jq -r '.id')"
-
-  # Create a test executer VM from resized test executer volume
-  echo "Creating a test executer VM from the resized test executer volume."
-  openstack server create \
-    --volume "${RESIZED_TEST_EXECUTER_VOLUME_ID}" \
-    --flavor "${TEST_EXECUTER_FLAVOR}" \
-    --port "${EXT_PORT_ID}" \
-    "${TEST_EXECUTER_VM_NAME}"
-else
-  # Create new executer vm
-  openstack server create -f json \
-    --image "${IMAGE_NAME}" \
-    --flavor "${TEST_EXECUTER_FLAVOR}" \
-    --port "${EXT_PORT_ID}" \
-    "${TEST_EXECUTER_VM_NAME}" | jq -r '.id'
-fi
+# Create new executer vm
+openstack server create -f json \
+  --image "${IMAGE_NAME}" \
+  --flavor "${TEST_EXECUTER_FLAVOR}" \
+  --port "${EXT_PORT_ID}" \
+  "${TEST_EXECUTER_VM_NAME}" | jq -r '.id'
 
 # Get the IP
 TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
