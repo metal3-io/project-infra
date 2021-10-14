@@ -38,6 +38,13 @@ NUM_NODES="${NUM_NODES:-2}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 BARE_METAL_LAB=false
 
+# To Do: Remove the following lines once we change to main branch for all the repos
+if [[ "${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "ip-adress-manager" ]]
+then
+  REPO_BRANCH="main"
+fi
+
+
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
