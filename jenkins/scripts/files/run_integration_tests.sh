@@ -76,7 +76,7 @@ then
     then
       export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
     else
-      export CAPM3_LOCAL_IMAGE_BRANCH="master"
+      export CAPM3_LOCAL_IMAGE_BRANCH="main"
     fi
   fi
 
@@ -119,7 +119,7 @@ then
   then
     export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
   else
-    export CAPM3_LOCAL_IMAGE_BRANCH="master"
+    export CAPM3_LOCAL_IMAGE_BRANCH="main"
   fi
 fi
 
