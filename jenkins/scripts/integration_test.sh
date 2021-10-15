@@ -39,9 +39,12 @@ TESTS_FOR="${TESTS_FOR:-integration_test}"
 BARE_METAL_LAB=false
 
 # To Do: Remove the following lines once we change to main branch for all the repos
-if [[ "${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "ip-adress-manager" ]]
+if [[ "${PROJECT_REPO_ORG}" == "metal3-io" ]]
 then
-  REPO_BRANCH="main"
+ if [[ "${PROJECT_REPO_NAME}" == "ip-adress-manager" || "${PROJECT_REPO_NAME}" == "cluster-api-provider-metal3" ]]
+  then
+    REPO_BRANCH="main"
+  fi
 fi
 
 

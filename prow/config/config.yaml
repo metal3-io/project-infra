@@ -87,6 +87,9 @@ branch-protection:
             contexts: ["test-integration"]
         cluster-api-provider-metal3:
           branches:
+            main:
+              required_status_checks:
+                contexts: ["test-integration"]
             master:
               required_status_checks:
                 contexts: ["test-integration"]
@@ -358,7 +361,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: golint
     always_run: true
@@ -373,7 +376,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -388,7 +391,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: markdownlint
     always_run: false
@@ -435,7 +438,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: unit
     always_run: true
@@ -450,7 +453,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
     always_run: true
@@ -613,7 +616,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: generate
     always_run: true
@@ -628,7 +631,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
     always_run: true
@@ -717,7 +720,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:master
+        image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
     always_run: true
