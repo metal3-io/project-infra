@@ -41,7 +41,7 @@ BARE_METAL_LAB=false
 # To Do: Remove the following lines once we change to main branch for all the repos
 if [[ "${PROJECT_REPO_ORG}" == "metal3-io" ]]
 then
- if [[ "${PROJECT_REPO_NAME}" == "ip-adress-manager" || "${PROJECT_REPO_NAME}" == "cluster-api-provider-metal3" ]]
+  if [[ "${PROJECT_REPO_NAME}" == "ip-adress-manager" || "${PROJECT_REPO_NAME}" == "cluster-api-provider-metal3" ]]
   then
     REPO_BRANCH="main"
   fi
