@@ -17,7 +17,7 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 # shellcheck disable=SC1090
 source "${CI_DIR}/utils.sh"
 
-if [[ "${TESTS_FOR}" == "feature_tests"* ]]
+if [[ "${UPDATED_BRANCH}" =~ "^(main|master)$" ]]
 then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
