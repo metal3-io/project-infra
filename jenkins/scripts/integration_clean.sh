@@ -4,7 +4,7 @@ set -eu
 
 # Description:
 # Runs in master integration cleanup job defined in jjb. 
-# Consumed by integration_tests_clean.pipeline and cleans any leftover executer vm/volume 
+# Consumed by integration_tests_clean.pipeline and cleans any leftover executer vm
 # and port once every day.
 #   Requires:
 #     - source openstack.rc file
@@ -33,23 +33,6 @@ function cleanup() {
     echo "Executer VM ${VM_NAME} is deleted."
   done
   
-  DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
-  if [ "${DISTRIBUTION}" == "ubuntu" ]
-  then
-    VOLUME_LIST=$(openstack volume list -f json | jq -r '.[] | select(.Name |
-      startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
-      split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
-      | .ID ')
-  
-    for VOLUME_NAME in $VOLUME_LIST
-    do
-      # Delete executer volume
-      echo "Deleting executer volume ${VOLUME_NAME}."
-      openstack volume delete "${VOLUME_NAME}"
-      echo "Executer volume ${VOLUME_NAME} is deleted."
-    done
-  fi
-  
   PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
     startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
     rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
@@ -65,6 +48,7 @@ function cleanup() {
   
   echo "Old leftover resources are cleaned successfully!"
 }
+
 
 # Run in default region
 echo "Running in region: $OS_REGION_NAME"
