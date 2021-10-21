@@ -13,6 +13,9 @@ export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 
+# Container image registry value to override the default value in m3-dev-env
+export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
+
 if [ "${REPO_NAME}" == "airship-dev-tools" ]
 then
   export IMAGE_NAME
