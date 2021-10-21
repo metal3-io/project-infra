@@ -23,8 +23,11 @@ triggered on PR from metal3-dev-env, baremetal-operator, ironic-image, ip-addres
 and cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
-* **/test-integration** run integration tests for v1alpha5 on Ubuntu
-* **/test-centos-integration** run integration tests for v1alpha5 on
+* **/test-v1b1-integration** run integration tests for v1beta1 on Ubuntu
+* **/test-v1b1-centos-integration** run integration tests for v1beta1 on
+   CentOS
+* **/test-v1a5-integration** run integration tests for v1alpha5 on Ubuntu
+* **/test-v1a5-centos-integration** run integration tests for v1alpha5 on
    CentOS
 * **/test-v1a4-integration** run integration tests for v1alpha4 on Ubuntu
 * **/test-v1a4-centos-integration** run integration tests for v1alpha4 on
@@ -97,8 +100,8 @@ In a nutshell, pipelines defines sequence of steps to be executed. Each step can
 
 ### GitHub Pull Request Builder, a.k.a. ghprb
 
-For our Jenkins to work with GitHub we need [GitHub Pull Request Builder](https://plugins.jenkins.io/ghprb/), a.k.a. ghprb plugin installed in Jenkins. This is already done by Nordix admins. The plugin handles everything related to your PR. In short, ghprb exposes a webhook endpoint where GutHub webhook service can send webhook calls to. Current Jenkins ghprb webhook is exposed at https://jenkins.nordix.org/ghprbhook/, and most of the Metal3 GitHub repositories have webhooks configured to redirect webhook calls to that URL.
-When configuring GitHub webhooks: 
+For our Jenkins to work with GitHub we need [GitHub Pull Request Builder](https://plugins.jenkins.io/ghprb/), a.k.a. ghprb plugin installed in Jenkins. This is already done by Nordix admins. The plugin handles everything related to your PR. In short, ghprb exposes a webhook endpoint where GutHub webhook service can send webhook calls to. Current Jenkins ghprb webhook is exposed at <https://jenkins.nordix.org/ghprbhook/>, and most of the Metal3 GitHub repositories have webhooks configured to redirect webhook calls to that URL.
+When configuring GitHub webhooks:
 
 1. Paste the ghprb URL in **Payload URL**;
 
@@ -152,5 +155,4 @@ found [here](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/g
 
 In case of issues or question on the Jenkins CI, please contact the maintainers
 by email to estjorvas [at] est.tech or by posting your message on the
-[\#cluster-api-baremetal](https://kubernetes.slack.com/messages/CHD49TLE7) channel
-on Kubernetes Slack.
+[\#cluster-api-baremetal](https://kubernetes.slack.com/messages/CHD49TLE7) channel on Kubernetes Slack.

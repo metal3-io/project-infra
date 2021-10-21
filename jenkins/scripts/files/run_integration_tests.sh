@@ -78,6 +78,9 @@ then
     if [ "${CAPM3_VERSION}" == "v1alpha4" ]
     then
       export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
+    elif [ "${CAPM3_VERSION}" == "v1alpha5" ]
+    then
+      export CAPM3_LOCAL_IMAGE_BRANCH="release-0.5"
     else
       export CAPM3_LOCAL_IMAGE_BRANCH="main"
     fi
@@ -121,6 +124,9 @@ then
   if [ "${CAPM3_VERSION}" == "v1alpha4" ]
   then
     export CAPM3_LOCAL_IMAGE_BRANCH="release-0.4"
+  elif [ "${CAPM3_VERSION}" == "v1alpha5" ]
+  then
+    export CAPM3_LOCAL_IMAGE_BRANCH="release-0.5"
   else
     export CAPM3_LOCAL_IMAGE_BRANCH="main"
   fi

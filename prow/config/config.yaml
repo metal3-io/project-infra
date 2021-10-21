@@ -84,32 +84,38 @@ branch-protection:
           # required.  We use this to require functional jobs running in
           # jenkins are required, for example.
           required_status_checks:
-            contexts: ["test-integration"]
+            contexts: ["test-v1b1-integration"]
         cluster-api-provider-metal3:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-integration"]
+                contexts: ["test-v1b1-integration"]
+            release-0.5:
+              required_status_checks:
+                contexts: ["test-v1a5-integration"]
             release-0.4:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
         ironic-image:
           required_status_checks:
-            contexts: ["test-integration"]
+            contexts: ["test-v1b1-integration"]
         ironic-ipa-downloader:
           required_status_checks:
-            contexts: ["test-integration"]
+            contexts: ["test-v1b1-integration"]
         ip-address-manager:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-integration"]
+                contexts: ["test-v1b1-integration"]
+            release-0.1:
+              required_status_checks:
+                contexts: ["test-v1a5-integration"]    
             release-0.0:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
         metal3-dev-env:
           required_status_checks:
-            contexts: ["test-v1a4-centos-integration", "test-integration"]
+            contexts: ["test-v1a4-centos-integration", "test-v1b1-integration"]
 
 deck:
   spyglass:
