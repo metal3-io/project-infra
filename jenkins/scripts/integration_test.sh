@@ -74,6 +74,12 @@ then
     # Four node cluster
     TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-200GB}"
 else
+    # user-data script for the 4C flavors in this region aren't correct for CentOS
+    # so we run on a 8C machine to ensure the disk is properly resized
+    if [[ "$OS_REGION_NAME" == "Fra1" ]] && [[ "$DISTRIBUTION" != "ubuntu" ]]
+    then
+      TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-16GB-100GB}"
+    fi
     # Two node cluster
     TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB-100GB}"
 fi
