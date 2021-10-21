@@ -39,6 +39,7 @@ pipeline {
     DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES="${NUM_NODES}"
     TESTS_FOR="${TESTS_FOR}"
+    BARE_METAL_LAB=true
   }
   stages {
     stage('SCM') {
@@ -65,14 +66,18 @@ pipeline {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]) {
           withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
-            sh "./jenkins/scripts/bml_integration_test.sh"
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]){
+              sh "./jenkins/scripts/bml_integration_test.sh"
+            }
           }
         }
       }
       post {
         always {
           withCredentials([sshUserPrivateKey(credentialsId: 'airshipci_city_cloud_ssh_keypair', keyFileVariable: 'AIRSHIP_CI_USER_KEY')]){
-            sh "./jenkins/scripts/fetch_logs.sh"
+            withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
+              sh "./jenkins/scripts/fetch_logs.sh"
+            }
           }
           archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
         }

@@ -69,8 +69,8 @@ ssh \
   -o ServerAliveCountMax=10 \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  -o SendEnv="MYVAR" \
-  -o SendEnv="MYVAR" \
+  -o SendEnv="BML_ILO_USERNAME" \
+  -o SendEnv="BML_ILO_PASSWORD" \
   ansible-playbook /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"

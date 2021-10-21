@@ -9,6 +9,7 @@ set -eu
 # Usage:
 #  integration_delete.sh
 #
+BARE_METAL_LAB="${BARE_METAL_LAB:-false}"
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
@@ -29,8 +30,12 @@ fi
 echo "Running in region: $OS_REGION_NAME"
 
 # Get the IP
-TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
+if [ "${BARE_METAL_LAB}" == true ]; then
+  TEST_EXECUTER_IP="129.192.80.20"
+else
+  TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
+fi
 
 if [[ "$OS_REGION_NAME" != "Kna1" ]]
 then
