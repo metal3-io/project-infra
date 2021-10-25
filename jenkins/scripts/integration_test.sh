@@ -104,7 +104,9 @@ TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
 if [[ "$OS_REGION_NAME" != "Kna1" ]]
 then 
   # Fetch Free floating IP 
-  FLOATING_IP="$(openstack floating ip list --status DOWN -c "Floating IP Address" -f value | head -1 )"
+  # TODO: To avoid jobs taking the same floating IP, instead jobs should create / delete / cleanup
+  # their own floating IPs.
+  FLOATING_IP="$(openstack floating ip list --status DOWN -c "Floating IP Address" -f value | shuf -n 1 )"
 
   if [[ -z "$FLOATING_IP" ]]
   then
