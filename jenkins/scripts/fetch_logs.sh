@@ -27,7 +27,10 @@ then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
-echo "Running in region: $OS_REGION_NAME"
+if [[ "${BARE_METAL_LAB}" != "true" ]] 
+then
+  echo "Running in region: $OS_REGION_NAME"
+fi
 
 # Get the IP
 if [ "${BARE_METAL_LAB}" == true ]; then
@@ -35,13 +38,12 @@ if [ "${BARE_METAL_LAB}" == true ]; then
 else
   TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
-fi
-
-if [[ "$OS_REGION_NAME" != "Kna1" ]]
-then
-  FLOATING_IP="$(openstack floating ip list --fixed-ip-address "${TEST_EXECUTER_IP}" \
-    -c "Floating IP Address" -f value)"
-  TEST_EXECUTER_IP="${FLOATING_IP}"
+  if [[ "$OS_REGION_NAME" != "Kna1" ]]
+  then
+    FLOATING_IP="$(openstack floating ip list --fixed-ip-address "${TEST_EXECUTER_IP}" \
+      -c "Floating IP Address" -f value)"
+    TEST_EXECUTER_IP="${FLOATING_IP}"
+  fi
 fi
 
 # Send Remote script to Executer
