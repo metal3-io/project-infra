@@ -40,6 +40,7 @@ tide:
     - metal3-io/ironic-client
     - metal3-io/ironic-hardware-inventory-recorder-image
     - metal3-io/ironic-image
+    - metal3-io/ironic-agent-image
     - metal3-io/ironic-ipa-downloader
     - metal3-io/ironic-prometheus-exporter
     - metal3-io/metal3-dev-env
