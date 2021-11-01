@@ -105,8 +105,8 @@ elif [ "${REPO_NAME}" == "ironic-image" ]
 then
   export IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
   # Build/test the sushy-tools/vbmc images, since they are defined in this repo
-  export SUSHY_TOOLS_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/sushy-tools"
-  export VBMC_LOCAL_IMAGE="/home/${USER}/tested_repo/resources/vbmc"
+  export SUSHY_TOOLS_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/sushy-tools"
+  export VBMC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/vbmc"
 
 elif [ "${REPO_NAME}" == "ironic-ipa-downloader" ]
 then
@@ -117,7 +117,7 @@ then
   export CAPM3REPO="${UPDATED_REPO}"
   export CAPM3BRANCH="${UPDATED_BRANCH}"
   export CAPM3PATH="/home/${USER}/tested_repo"
-  export CAPM3_LOCAL_IMAGE="/home/${USER}/tested_repo"
+  export CAPM3_LOCAL_IMAGE="${CAPM3PATH}"
 
 elif [[ "${REPO_NAME}" == "project-infra" ]]
 then
