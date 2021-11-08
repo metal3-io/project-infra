@@ -29,7 +29,7 @@ fi
 
 REPO_ORG="${REPO_ORG:-metal3-io}"
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
-REPO_BRANCH="${REPO_BRANCH:-master}"
+REPO_BRANCH="${REPO_BRANCH}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-master}"
 CAPI_VERSION="${CAPI_VERSION:-v1beta1}"
@@ -37,16 +37,6 @@ CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 NUM_NODES="${NUM_NODES:-2}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 BARE_METAL_LAB=false
-
-# To Do: Remove the following lines once we change to main branch for all the repos
-if [[ "${PROJECT_REPO_ORG}" == "metal3-io" ]]
-then
- if [[ "${PROJECT_REPO_NAME}" == "ip-adress-manager" || "${PROJECT_REPO_NAME}" == "cluster-api-provider-metal3" ]]
-  then
-    REPO_BRANCH="main"
-  fi
-fi
-
 
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
