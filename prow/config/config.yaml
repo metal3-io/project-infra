@@ -116,7 +116,7 @@ branch-protection:
                 contexts: ["test-v1a4-integration"]
         metal3-dev-env:
           required_status_checks:
-            contexts: ["test-v1a4-centos-integration", "test-v1b1-integration"]
+            contexts: ["test-v1a5-centos-integration", "test-v1b1-integration"]
 
 deck:
   spyglass:
