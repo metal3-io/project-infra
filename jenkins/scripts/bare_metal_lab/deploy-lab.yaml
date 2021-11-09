@@ -58,7 +58,7 @@
       become: true
       become_user: root
       shell:
-        cmd: rm -rf /home/{{ ansible_user_id }}/tested_repo /home/{{ ansible_user_id }}/metal3 /opt/metal3-dev-env /tmp/mariadb.csr  /tmp/ironic.csr 2>/dev/null
+        cmd: rm -rf /home/{{ ansible_user_id }}/go /home/{{ ansible_user_id }}/tested_repo /home/{{ ansible_user_id }}/metal3 /opt/metal3-dev-env /tmp/mariadb.csr  /tmp/ironic.csr 2>/dev/null
       tags: cleanup
 
     - name: Reset network
@@ -133,16 +133,16 @@
       when: brctl_grep_bmext.rc != 0
       tags: bmext
     
-    - name: Wait until all BMHs become ready.
+    - name: Wait until all BMHs become available .
       kubernetes.core.k8s_info:
         api_version: metal3.io/v1alpha1
         kind: BareMetalHost
         namespace: "metal3"
-      register: ready_bmh
+      register: available_bmh
       retries: 200
       delay: 30
       vars:
-        query: "[? status.provisioning.state=='ready']"
-      until: (ready_bmh is succeeded) and
-            (ready_bmh.resources | length > 0) and
-            (ready_bmh.resources | json_query(query) | length ==  (2))
+        query: "[? status.provisioning.state=='available']"
+      until: (available_bmh is succeeded) and
+            (available_bmh.resources | length > 0) and
+            (available_bmh.resources | json_query(query) | length ==  (2))
