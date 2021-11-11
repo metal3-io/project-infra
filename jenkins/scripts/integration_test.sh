@@ -50,9 +50,9 @@ VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
-# Run feature tests and main and master integration tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] || \
-   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "master" ]]
+# Run feature tests and main, master and release* tests in the Frankfurt region
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${UPDATED_BRANCH}" == "release"* ]] || \
+   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "master" ]] 
 then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
