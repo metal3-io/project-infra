@@ -49,13 +49,15 @@ function cleanup() {
   echo "Old leftover resources are cleaned successfully!"
 }
 
+# Run feature tests and main, master and release* integration tests in the Frankfurt region
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${UPDATED_BRANCH}" == "release"* ]] || \
+   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "master" ]]
+then
+  OS_REGION_NAME="Fra1"
+  OS_AUTH_URL="https://fra1.citycloud.com:5000"
+fi
 
 # Run in default region
 echo "Running in region: $OS_REGION_NAME"
 cleanup
 
-# Run in Frankfurt region
-OS_REGION_NAME="Fra1"
-OS_AUTH_URL="https://fra1.citycloud.com:5000"
-echo "Running in region: $OS_REGION_NAME"
-cleanup
