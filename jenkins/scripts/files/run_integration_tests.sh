@@ -12,6 +12,7 @@ export CAPM3_VERSION
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
+export PROMETHEUS_MONITORING
 
 # Container image registry value to override the default value in m3-dev-env
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
