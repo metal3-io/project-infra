@@ -45,11 +45,10 @@ do
 done
 
 # Dump Prometheus data if Prometheus pod exists
-prometheus_pod=$(kubectl --kubeconfig=${kconfig} get pods --namespace monitoring -l "app=prometheus-server" -o jsonpath="{.items[0].metadata.name}")
+prometheus_pod=$(kubectl --kubeconfig=${kconfig} get pods -n monitoring -l "app=prometheus-server" -o=jsonpath="{.items[*]['metadata.name']}")
 if [ !-z "${prometheus_pod}" ]; then
   kubectl promdump meta -p $POD_NAME -n monitoring -c prometheus -d /prometheus
 fi
-
 }
 
 # Fetch k8s logs
