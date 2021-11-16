@@ -9,7 +9,7 @@ update-plugins:
 	kubectl create configmap plugins -n prow --from-file=plugins.yaml=config/plugins.yaml --dry-run=client -o yaml | kubectl replace configmap -n prow plugins -f -
 
 update-labels:
-	kubectl create configmap label-config -n prow --from-file=labels.yaml=labels.yaml --dry-run=client -o yaml | kubectl replace configmap -n prow label-config -f -
+	kubectl create configmap label-config --from-file=labels.yaml=config/labels.yaml --dry-run=client -o yaml | kubectl replace configmap label-config -f -
 
 validate:
 	$(CONTAINER_RUNTIME) run --rm \

@@ -16,9 +16,8 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: label-sync
-  namespace: prow
 spec:
-  schedule: "17 * * * *"  # Every hour at 17 minutes past the hour
+  schedule: "0 0 * * *"  # Run once a day
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -29,14 +28,14 @@ spec:
         spec:
           containers:
             - name: label-sync
-              image: gcr.io/k8s-prow/label_sync:v20210916-7657ce97bf
+              image: gcr.io/k8s-prow/label_sync:v20211111-bce61c7c4a
               args:
               - --config=/etc/config/labels.yaml
               - --confirm=true
               - --orgs=metal3-io
-              - --token=/etc/github/oauth
+              - --token=/etc/github/token
               volumeMounts:
-              - name: oauth
+              - name: github-token
                 mountPath: /etc/github
                 readOnly: true
               - name: config
@@ -44,9 +43,9 @@ spec:
                 readOnly: true
           restartPolicy: Never
           volumes:
-          - name: oauth
+          - name: github-token
             secret:
-              secretName: oauth-token
+              secretName: github-token
           - name: config
             configMap:
               name: label-config
