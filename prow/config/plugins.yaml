@@ -77,3 +77,6 @@ config_updater:
     # Update the plugins configmap whenever plugins.yaml changes
     prow/config/plugins.yaml:
       name: plugins
+    # Update the label-config configmap whenever labels.yaml changes
+    prow/config/labels.yaml:
+      name: label-config
