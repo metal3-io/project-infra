@@ -84,8 +84,13 @@ branch-protection:
           # Use this to specify that a status coming from outside of prow is
           # required.  We use this to require functional jobs running in
           # jenkins are required, for example.
-          required_status_checks:
-            contexts: ["test-v1b1-integration"]
+          branches:
+            main:
+              required_status_checks:
+                contexts: ["test-v1b1-centos-integration", "test-v1b1-integration"]
+            master:
+              required_status_checks:
+                contexts: ["test-v1b1-centos-integration", "test-v1b1-integration"]
         cluster-api-provider-metal3:
           branches:
             main:
