@@ -212,7 +212,7 @@ periodics:
 presubmits:
   metal3-io/baremetal-operator:
   - name: gofmt
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
@@ -226,7 +226,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: gosec
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -240,7 +240,7 @@ presubmits:
         image: docker.io/securego/gosec:latest
         imagePullPolicy: Always
   - name: gomod
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -254,8 +254,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     spec:
       containers:
@@ -269,8 +268,7 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: false
-    run_if_changed: '(\.(sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
       containers:
@@ -284,7 +282,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -306,7 +304,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: generate
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -328,7 +326,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: golint
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
@@ -342,7 +340,7 @@ presubmits:
         image: quay.io/metal3-io/golint:latest
         imagePullPolicy: Always
   - name: manifestlint
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -358,7 +356,7 @@ presubmits:
 
   metal3-io/cluster-api-provider-metal3:
   - name: gofmt
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     optional: true
     spec:
@@ -373,7 +371,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: golint
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     optional: true
     spec:
@@ -388,7 +386,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: govet
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     optional: true
     spec:
@@ -403,8 +401,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     optional: true
     spec:
@@ -419,8 +416,7 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: false
-    run_if_changed: '(\.(sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -435,7 +431,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: generate
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -450,7 +446,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: unit
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -465,7 +461,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -482,8 +478,7 @@ presubmits:
 
   metal3-io/metal3-dev-env:
   - name: shellcheck
-    always_run: false
-    run_if_changed: '(\.(sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -498,8 +493,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     optional: true
     spec:
@@ -516,7 +510,7 @@ presubmits:
 
   metal3-io/project-infra:
   - name: check-prow-config
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -534,8 +528,7 @@ presubmits:
             memory: "500Mi"
   metal3-io/metal3-docs:
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     spec:
       containers:
@@ -551,7 +544,7 @@ presubmits:
 
   metal3-io/ip-address-manager:
   - name: gofmt
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     optional: true
     spec:
@@ -566,7 +559,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     optional: true
     spec:
@@ -581,8 +574,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     optional: true
     spec:
@@ -597,8 +589,7 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: false
-    run_if_changed: '(\.(sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     optional: true
     spec:
@@ -613,7 +604,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -628,7 +619,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: generate
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -643,7 +634,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
     spec:
@@ -660,7 +651,7 @@ presubmits:
 
   metal3-io/hardware-classification-controller:
   - name: gofmt
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
@@ -674,7 +665,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
-    always_run: true
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
@@ -688,8 +679,7 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
-    always_run: false
-    run_if_changed: '\.(md)$'
+    run_if_changed: '\.md$'
     decorate: true
     spec:
       containers:
@@ -703,8 +693,7 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:latest
         imagePullPolicy: Always
   - name: shellcheck
-    always_run: false
-    run_if_changed: '(\.(sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|(^Makefile))$'
     decorate: true
     spec:
       containers:
@@ -718,7 +707,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -732,7 +721,7 @@ presubmits:
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
   - name: manifestlint
-    always_run: true
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
