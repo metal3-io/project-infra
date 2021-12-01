@@ -40,12 +40,6 @@ BARE_METAL_LAB=false
 PROMETHEUS_MONITORING="${PROMETHEUS_MONITORING:-false}"
 
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
-if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
-then
-  RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-300}"
-else
-  RESIZED_VM_SIZE="${RESIZED_VM_SIZE:-100}"
-fi
 
 VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
@@ -63,7 +57,7 @@ echo "Running in region: $OS_REGION_NAME"
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
     # Four node cluster
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-200GB}"
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
 else
     # user-data script for the 4C flavors in this region aren't correct for CentOS
     # so we run on a 8C machine to ensure the disk is properly resized
