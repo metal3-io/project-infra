@@ -218,7 +218,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: gosec
     always_run: true
@@ -246,7 +246,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: markdownlint
     always_run: false
@@ -298,7 +298,7 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: generate
     always_run: true
@@ -320,7 +320,7 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: golint
     always_run: true
@@ -558,7 +558,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -573,7 +573,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: markdownlint
     always_run: false
@@ -666,7 +666,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: govet
     always_run: true
@@ -680,7 +680,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.16
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: markdownlint
     always_run: false
