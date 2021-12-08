@@ -41,6 +41,14 @@
       become: true
       when: sshd_config.changed
 
+    - name: Shrink size of syslog
+      become: true
+      become_user: root
+      shell:
+        cmd: truncate --size 10737418240 /var/log/syslog && truncate --size 10737418240 /var/log/syslog.1   2>/dev/null
+      ignore_errors: true
+      tags: cleanup
+
     - name: Clone the metal3-dev-env repo
       git:
         repo: https://github.com/metal3-io/metal3-dev-env.git
