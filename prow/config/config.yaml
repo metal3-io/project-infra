@@ -356,6 +356,8 @@ presubmits:
 
   metal3-io/cluster-api-provider-metal3:
   - name: gofmt
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
     optional: true
@@ -370,7 +372,43 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
+  - name: gofmt-release-0.5
+    branches:
+    - release-0.5
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gofmt.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.5
+        imagePullPolicy: Always
+  - name: gofmt-release-0.4
+    branches:
+    - release-0.4
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gofmt.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.4
+        imagePullPolicy: Always
   - name: golint
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
     optional: true
@@ -385,7 +423,43 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
+  - name: golint-release-0.5
+    branches:
+    - release-0.5
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/golint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.5
+        imagePullPolicy: Always
+  - name: golint-release-0.4
+    branches:
+    - release-0.4
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/golint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.4
+        imagePullPolicy: Always
   - name: govet
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
     optional: true
@@ -399,6 +473,40 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:main
+        imagePullPolicy: Always
+  - name: govet-release-0.5
+    branches:
+    - release-0.5
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/govet.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.5
+        imagePullPolicy: Always
+  - name: govet-release-0.4
+    branches:
+    - release-0.4
+    run_if_changed: '\.go$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/govet.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.4
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
@@ -431,6 +539,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: generate
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
@@ -445,7 +555,43 @@ presubmits:
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:main
         imagePullPolicy: Always
+  - name: generate-release-0.5
+    branches:
+    - release-0.5
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.5
+        imagePullPolicy: Always
+  - name: generate-release-0.4
+    branches:
+    - release-0.4
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.4
+        imagePullPolicy: Always
   - name: unit
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     optional: true
@@ -459,6 +605,40 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: quay.io/metal3-io/capm3-unit:main
+        imagePullPolicy: Always
+  - name: unit-release-0.5
+    branches:
+    - release-0.5
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.5
+        imagePullPolicy: Always
+  - name: unit-release-0.4
+    branches:
+    - release-0.4
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/capm3-unit:release-0.4
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
