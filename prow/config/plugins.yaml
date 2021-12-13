@@ -35,6 +35,7 @@ plugins:
   metal3-io/ironic-agent-image:
   metal3-io/ironic-ipa-downloader:
   metal3-io/ironic-prometheus-exporter:
+  metal3-io/mariadb-image:
   metal3-io/metal3-dev-env:
   metal3-io/metal3-docs:
   metal3-io/metal3-helm-chart:

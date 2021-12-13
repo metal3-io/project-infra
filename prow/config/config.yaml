@@ -43,6 +43,7 @@ tide:
     - metal3-io/ironic-agent-image
     - metal3-io/ironic-ipa-downloader
     - metal3-io/ironic-prometheus-exporter
+    - metal3-io/mariadb-image
     - metal3-io/metal3-dev-env
     - metal3-io/metal3-docs
     - metal3-io/metal3-helm-chart
@@ -119,6 +120,9 @@ branch-protection:
             release-0.0:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
+        mariadb-image:
+          required_status_checks:
+            contexts: ["test-v1b1-integration"]
         metal3-dev-env:
           required_status_checks:
             contexts: ["test-v1a5-centos-integration", "test-v1b1-integration"]
