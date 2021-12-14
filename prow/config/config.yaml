@@ -498,7 +498,7 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: generate-release-0.5
+  - name: generate
     branches:
     - release-0.5
     - release-0.4
