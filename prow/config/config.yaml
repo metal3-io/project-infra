@@ -360,7 +360,6 @@ presubmits:
     - main
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -370,31 +369,14 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: gofmt-release-0.5
+  - name: gofmt
     branches:
     - release-0.5
-    run_if_changed: '\.go$'
-    decorate: true
-    optional: true
-    spec:
-      containers:
-      - args:
-        - ./hack/gofmt.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.5
-        imagePullPolicy: Always
-  - name: gofmt-release-0.4
-    branches:
     - release-0.4
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -404,14 +386,13 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.4
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: golint
     branches:
     - main
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -421,31 +402,14 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: golint-release-0.5
+  - name: golint
     branches:
     - release-0.5
-    run_if_changed: '\.go$'
-    decorate: true
-    optional: true
-    spec:
-      containers:
-      - args:
-        - ./hack/golint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.5
-        imagePullPolicy: Always
-  - name: golint-release-0.4
-    branches:
     - release-0.4
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -455,14 +419,13 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.4
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
     branches:
     - main
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -472,31 +435,14 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: govet-release-0.5
+  - name: govet
     branches:
     - release-0.5
-    run_if_changed: '\.go$'
-    decorate: true
-    optional: true
-    spec:
-      containers:
-      - args:
-        - ./hack/govet.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.5
-        imagePullPolicy: Always
-  - name: govet-release-0.4
-    branches:
     - release-0.4
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -506,12 +452,11 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.4
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -526,7 +471,6 @@ presubmits:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -543,7 +487,6 @@ presubmits:
     - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -553,31 +496,14 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
   - name: generate-release-0.5
     branches:
     - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    optional: true
-    spec:
-      containers:
-      - args:
-        - ./hack/codegen.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.5
-        imagePullPolicy: Always
-  - name: generate-release-0.4
-    branches:
     - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -587,14 +513,13 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.4
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: unit
     branches:
     - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -604,31 +529,14 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: unit-release-0.5
+  - name: unit
     branches:
     - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    optional: true
-    spec:
-      containers:
-      - args:
-        - ./hack/unit.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.5
-        imagePullPolicy: Always
-  - name: unit-release-0.4
-    branches:
     - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -638,12 +546,11 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:release-0.4
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -660,7 +567,6 @@ presubmits:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -675,7 +581,6 @@ presubmits:
   - name: markdownlint
     run_if_changed: '\.md$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -692,7 +597,6 @@ presubmits:
   - name: check-prow-config
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - image: gcr.io/k8s-prow/checkconfig:v20210916-7657ce97bf
@@ -724,9 +628,10 @@ presubmits:
 
   metal3-io/ip-address-manager:
   - name: gofmt
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -738,10 +643,28 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: govet
+  - name: gofmt
+    branches:
+    - release-0.0
+    - release-0.1
     run_if_changed: '\.go$'
     decorate: true
-    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gofmt.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
+        imagePullPolicy: Always
+  - name: govet
+    branches:
+    - main
+    run_if_changed: '\.go$'
+    decorate: true
     spec:
       containers:
       - args:
@@ -753,10 +676,26 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
+  - name: govet
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/govet.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
+        imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -771,7 +710,6 @@ presubmits:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -784,9 +722,10 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -796,12 +735,30 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
+  - name: unit
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: generate
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -811,12 +768,28 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
+  - name: generate
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -898,7 +871,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/capm3-unit:main
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
