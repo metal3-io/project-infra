@@ -628,6 +628,8 @@ presubmits:
 
   metal3-io/ip-address-manager:
   - name: gofmt
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
     spec:
@@ -641,7 +643,26 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
+  - name: gofmt
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gofmt.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
+        imagePullPolicy: Always
   - name: govet
+    branches:
+    - main
     run_if_changed: '\.go$'
     decorate: true
     spec:
@@ -654,6 +675,23 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/golang:1.17
+        imagePullPolicy: Always
+  - name: govet
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/govet.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
@@ -684,7 +722,26 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:stable
         imagePullPolicy: Always
   - name: unit
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
+  - name: unit
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
@@ -698,7 +755,26 @@ presubmits:
         image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: generate
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
+  - name: generate
+    branches:
+    - release-0.0
+    - release-0.1
+    run_if_changed: '\.go$'
     decorate: true
     spec:
       containers:
