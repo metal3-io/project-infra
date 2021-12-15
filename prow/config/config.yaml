@@ -362,7 +362,7 @@ presubmits:
   - name: gofmt
     branches:
     - main
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -379,7 +379,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -395,7 +395,7 @@ presubmits:
   - name: golint
     branches:
     - main
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -412,7 +412,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -428,7 +428,7 @@ presubmits:
   - name: govet
     branches:
     - main
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -445,7 +445,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -634,7 +634,7 @@ presubmits:
   - name: gofmt
     branches:
     - main
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -651,7 +651,7 @@ presubmits:
     branches:
     - release-0.0
     - release-0.1
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -667,7 +667,7 @@ presubmits:
   - name: govet
     branches:
     - main
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -684,7 +684,7 @@ presubmits:
     branches:
     - release-0.0
     - release-0.1
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -745,7 +745,7 @@ presubmits:
     branches:
     - release-0.0
     - release-0.1
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -778,7 +778,7 @@ presubmits:
     branches:
     - release-0.0
     - release-0.1
-    run_if_changed: '\.go$'
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
       containers:
