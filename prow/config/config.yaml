@@ -373,7 +373,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: gofmt
     branches:
@@ -406,7 +406,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: golint
     branches:
@@ -439,7 +439,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
     branches:
@@ -500,7 +500,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: generate
     branches:
@@ -533,7 +533,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: unit
     branches:
@@ -645,7 +645,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: gofmt
     branches:
@@ -678,7 +678,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
     branches:
@@ -739,7 +739,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: unit
     branches:
@@ -772,7 +772,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: generate
     branches:
@@ -819,7 +819,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: govet
     run_if_changed: '\.go$'
@@ -833,7 +833,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.17
+        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
