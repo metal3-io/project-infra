@@ -11,10 +11,11 @@
         msg: Ensure that BML_ILO_USERNAME and BML_ILO_PASSWORD environment variables are set
       when: not bml_ilo_username or not bml_ilo_password
 
-    - name: Install dependencies for metal3-dev-env
+    - name: Install dependencies for metal3-dev-env and hpilo_boot
       apt:
         pkg:
           - make
+          - python3-hpilo
       become: true
 
     - name: Add passwordless sudo
@@ -56,17 +57,41 @@
         version: master
       tags: git
 
+    - name: Power off BMHs
+      community.general.hpilo_boot:
+        host: "{{ item }}"
+        login: "{{ bml_ilo_username }}"
+        password: "{{ bml_ilo_password }}"
+        state: poweroff
+      loop:
+        - 192.168.1.12
+        - 192.168.1.13
+      ignore_errors: true
+      tags: clean
+
     - name: Clean any existing setup
       shell:
         cmd: "make clean"
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
       tags: clean
-    
+
     - name: Deleting files and folders from previous run
       become: true
       become_user: root
       shell:
         cmd: rm -rf /home/{{ ansible_user_id }}/go /home/{{ ansible_user_id }}/tested_repo /home/{{ ansible_user_id }}/metal3 /opt/metal3-dev-env /tmp/mariadb.csr  /tmp/ironic.csr 2>/dev/null
+      tags: cleanup
+
+    - name: Remove local container registry
+      ansible.builtin.command: docker rm -f registry
+      tags: cleanup
+
+    - name: Prune docker containers, images and volumes
+      ansible.builtin.command: docker {{ item }} prune --force
+      loop:
+        - container
+        - image
+        - volume
       tags: cleanup
 
     - name: Reset network
@@ -98,7 +123,7 @@
       become: true
 
     - name: Launch management cluster
-      shell: 
+      shell:
         cmd: make launch_mgmt_cluster
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
       tags: launch_mgmt_cluster
@@ -140,7 +165,7 @@
       become: true
       when: brctl_grep_bmext.rc != 0
       tags: bmext
-    
+
     - name: Wait until all BMHs become available .
       kubernetes.core.k8s_info:
         api_version: metal3.io/v1alpha1
