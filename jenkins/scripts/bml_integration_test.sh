@@ -3,15 +3,15 @@
 set -eu
 
 # Description:
-#   Runs the integration tests for metal3-dev-env in an executer vm
+#   Runs the integration tests for metal3-dev-env in the BML
 #   Requires:
-#     - source stackrc file
-#     - openstack ci infra should already be deployed.
+#     - jumphost (TEST_EXECUTER_IP) up and running and accessible
 #     - environment variables set:
 #       - AIRSHIP_CI_USER: Ci user for jumphost.
 #       - AIRSHIP_CI_USER_KEY: Path of the CI user private key for jumphost.
+#       - GITHUB_TOKEN: Token for interatcion with Github API (e.g. get releases)
 # Usage:
-#  integration_test.sh
+#  bml_integration_test.sh
 #
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
@@ -48,6 +48,8 @@ TESTS_FOR="${TESTS_FOR}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
 EOF
 
+cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
+
 # Send Remote script to Executer
 scp \
   -o StrictHostKeyChecking=no \
@@ -71,6 +73,7 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   -o SendEnv="BML_ILO_USERNAME" \
   -o SendEnv="BML_ILO_PASSWORD" \
+  -o SendEnv="GITHUB_TOKEN" \
   ansible-playbook /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"

@@ -87,8 +87,8 @@ TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
 
 if [[ "$OS_REGION_NAME" != "Kna1" ]]
-then 
-  # Fetch Free floating IP 
+then
+  # Fetch Free floating IP
   # TODO: To avoid jobs taking the same floating IP, instead jobs should create / delete / cleanup
   # their own floating IPs.
   FLOATING_IP="$(openstack floating ip list --status DOWN -c "Floating IP Address" -f value | shuf -n 1 )"
@@ -99,7 +99,7 @@ then
     exit 1
   fi
   TEST_EXECUTER_IP="$FLOATING_IP"
-  
+
   # Attach floating IP
   openstack server add floating ip \
   "${TEST_EXECUTER_VM_NAME}" \
@@ -126,6 +126,8 @@ TESTS_FOR="${TESTS_FOR}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
 PROMETHEUS_MONITORING="${PROMETHEUS_MONITORING}"
 EOF
+
+cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
 
 # Send Remote script to Executer
 scp \
