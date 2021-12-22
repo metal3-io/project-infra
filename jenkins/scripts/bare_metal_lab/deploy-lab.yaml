@@ -2,6 +2,7 @@
   vars:
     bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
     bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
   environment:
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
@@ -9,7 +10,7 @@
     - name: Check required env vars are set
       fail:
         msg: Ensure that BML_ILO_USERNAME and BML_ILO_PASSWORD environment variables are set
-      when: not bml_ilo_username or not bml_ilo_password
+      when: not bml_ilo_username or not bml_ilo_password or not github_token
 
     - name: Install dependencies for metal3-dev-env and hpilo_boot
       apt:

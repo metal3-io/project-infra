@@ -71,6 +71,7 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   -o SendEnv="BML_ILO_USERNAME" \
   -o SendEnv="BML_ILO_PASSWORD" \
+  "${GITHUB_TOKEN}" \
   ansible-playbook /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"
