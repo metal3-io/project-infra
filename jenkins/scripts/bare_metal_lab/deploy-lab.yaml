@@ -109,7 +109,7 @@
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
       environment:
         NUM_NODES: 0
-        NUM_OF_MASTER_REPLICAS: 0
+        NUM_OF_CONTROLPLANE_REPLICAS: 0
         NUM_OF_WORKER_REPLICAS: 0
 
       # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as

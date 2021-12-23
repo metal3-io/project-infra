@@ -3,7 +3,7 @@
 set -eu
 
 # Description:
-# Runs in master integration cleanup job defined in jjb. 
+# Runs in main integration cleanup job defined in jjb. 
 # Consumed by integration_tests_clean.pipeline and cleans any leftover executer vm
 # and port once every day.
 #   Requires:
