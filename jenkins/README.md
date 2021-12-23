@@ -86,14 +86,14 @@ added/removed in Jenkins UI under [airship window](https://jenkins.nordix.org/vi
 ### Job Declarative Pipeline
 
 We use [declarative pipeline syntax](https://www.jenkins.io/doc/book/pipeline/syntax/) to tell what we want to do
-when Jenkins executes our pipeline. Pipelines are stored in [metal3-io/project-infra](https://github.com/metal3-io/project-infra/tree/master/jenkins/jobs) repository.
-In a nutshell, pipelines defines sequence of steps to be executed. Each step can run a script or perform something else. For example, [integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/master/jenkins/jobs/integration_tests.pipeline) executes following scripts
+when Jenkins executes our pipeline. Pipelines are stored in [metal3-io/project-infra](https://github.com/metal3-io/project-infra/tree/main/jenkins/jobs) repository.
+In a nutshell, pipelines defines sequence of steps to be executed. Each step can run a script or perform something else. For example, [integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/integration_tests.pipeline) executes following scripts
 
 1. [clones](https://github.com/metal3-io/project-infra/blob/0a6cc3f9f8592914a316c27ea2411ccb48aba7c3/jenkins/jobs/integration_tests.pipeline#L65) git repository
-2. [jenkins/scripts/integration_test.sh](https://github.com/metal3-io/project-infra/blob/master/jenkins/scripts/integration_test.sh)
-3. [jenkins/scripts/fetch_logs.sh](https://github.com/metal3-io/project-infra/blob/master/jenkins/scripts/fetch_logs.sh)
-4. [jenkins/scripts/integration_test_clean.sh](https://github.com/metal3-io/project-infra/blob/master/jenkins/scripts/integration_test_clean.sh)
-5. [jenkins/scripts/integration_delete.sh](https://github.com/metal3-io/project-infra/blob/master/jenkins/scripts/integration_delete.sh)
+2. [jenkins/scripts/integration_test.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_test.sh)
+3. [jenkins/scripts/fetch_logs.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/fetch_logs.sh)
+4. [jenkins/scripts/integration_test_clean.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_test_clean.sh)
+5. [jenkins/scripts/integration_delete.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_delete.sh)
 
 ### GitHub Pull Request Builder, a.k.a. ghprb
 
