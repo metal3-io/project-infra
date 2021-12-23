@@ -21,6 +21,10 @@ script {
 }
 
 pipeline {
+  /* In the BML we always run on the same machine so concurrency must be disabled */
+  options {
+    disableConcurrentBuilds()
+  }
   agent { label 'airship-static-workers' }
   environment {
     AIRSHIP_CI_USER="airshipci"
