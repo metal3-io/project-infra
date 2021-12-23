@@ -9,12 +9,12 @@ resources to run integration tests for Metal3.
 ## Admins whitelist
 
 All members of the metal3-io organization that set their membership to be
-publicly visible will get admin rights on the CI jobs. This means :
+publicly visible will get admin rights on the CI jobs. This means:
 
 * They can start the jobs on their PR directly
 * They can start the jobs for PR of authors that are not in the organization
-* They can add authors to whitelist so that the authors can start jobs on any
-   further PR on their own, by commenting **add to whitelist** on the PR
+* They can add authors to whitelist (by commenting **/ok-to-test** on the PR) so that
+   the authors can start jobs on their PR themselves
 
 ## Commands
 
@@ -33,13 +33,6 @@ The job result will be posted as a comment.
 * **/test-v1a4-centos-integration** run integration tests for v1alpha4 on
    CentOS
 
-It is also possible to prevent any job run by adding **/skip-test** in the PR
-description.
-
-If the author is not in the whitelist but should be trusted then by adding a
-comment **add to whitelist** on the PR, the author will then be able to run the
-jobs on its own.
-
 ## Cloud Resources cleanup
 
 There is a Jenkins [master job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
@@ -47,12 +40,12 @@ that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
 deleted at the end of v1alphaX integration test.
 
-## "Can one of the admins verify this patch?"
+## "I'm waiting for a metal3-io member to verify that this patch is reasonable to test"
 
 For all the PRs from authors that are not whitelisted, the bot will add a
-comment "*Can one of the admins verify this patch?*". This means that the author
-is not in the whitelist and that someone from the metal3-io organization should
-review the PR and run the tests (with */test-integration*) or add the author to
+comment "*I'm waiting for a metal3-io member to verify that this patch is reasonable to test*".
+This means that the author is not in the whitelist and that someone from the metal3-io organization should
+review the PR and run the required tests suggested by the Github or add the author to
 whitelist if trusted.
 
 ## Job logs
