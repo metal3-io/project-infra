@@ -70,7 +70,7 @@ then
   export METAL3BRANCH="${UPDATED_BRANCH}"
 
   # If the target repo and branch are the same as the source repo and branch
-  # we're running a master test, that is not for a PR, so we build the image
+  # we're running a main test, that is not for a PR, so we build the image
   # for CAPM3 to verify the process (not BMO due to the build time for BMO image)
 
   if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then

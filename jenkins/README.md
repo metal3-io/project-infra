@@ -42,7 +42,7 @@ jobs on its own.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [master job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
 deleted at the end of v1alphaX integration test.
