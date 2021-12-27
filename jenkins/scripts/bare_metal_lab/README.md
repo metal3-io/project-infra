@@ -1,6 +1,7 @@
 # Baremetal Lab Setup
 
-This repo is created to setup the baremetal lab for metal3.
+The Bare Metal Lab needs some special treatment compared to other pipelines since it does not use VMs for the target cluster.
+This is taken care of in the `deploy-lab.yaml` playbook.
 
 ## Ansible installation
 
@@ -8,13 +9,12 @@ This repo is created to setup the baremetal lab for metal3.
 
 ## Running the playbook
 
-* Set 'bm-m3-lab' to the IP address of the lab in /etc/hosts.
 * Fill in the BMH resource definition in templates/
 * Set environment variables `BML_ILO_USERNAME` and `BML_ILO_PASSWORD` for the login to the bare metal hosts
 
 Then:
 
-`ansible-playbook ./deploy-lab.yaml -i ./hosts -u <user> --ask-become-pass`
+`ansible-playbook ./deploy-lab.yaml -u <user> --ask-become-pass`
 
 ## Running tests for pull requests on Github
 

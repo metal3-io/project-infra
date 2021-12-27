@@ -2,14 +2,15 @@
   vars:
     bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
     bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
   environment:
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
   tasks:
     - name: Check required env vars are set
       fail:
-        msg: Ensure that BML_ILO_USERNAME and BML_ILO_PASSWORD environment variables are set
-      when: not bml_ilo_username or not bml_ilo_password
+        msg: Ensure that BML_ILO_USERNAME, BML_ILO_PASSWORD and GITHUB_TOKEN environment variables are set
+      when: not bml_ilo_username or not bml_ilo_password or not github_token
 
     - name: Install dependencies for metal3-dev-env and hpilo_boot
       apt:
@@ -28,10 +29,12 @@
         mode: 0400
       become: true
 
-    - name: Ensure that iLO credentials can be passed over SSH
+    # Note: This file is persistent, so even though we do this *after* sending the
+    # variables it is still helpful for the next run.
+    - name: Ensure that iLO credentials and github token can be passed over SSH
       lineinfile:
         path: "/etc/ssh/sshd_config"
-        line: "AcceptEnv LANG LC_* BML_*"
+        line: "AcceptEnv LANG LC_* BML_* GITHUB_TOKEN"
       become: true
       register: sshd_config
 
@@ -50,12 +53,31 @@
       ignore_errors: true
       tags: cleanup
 
-    - name: Clone the metal3-dev-env repo
-      git:
-        repo: https://github.com/metal3-io/metal3-dev-env.git
-        dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
-        version: master
-      tags: git
+    - name: Find old logs
+      ansible.builtin.find:
+        paths: /home/{{ ansible_user_id }}
+        recurse: no
+        patterns: "logs-jenkins-airship*"
+        file_type: any
+      register: old_logs
+      tags: cleanup
+
+    - name: Deleting files and folders from previous run
+      become: true
+      become_user: root
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - "{{ old_logs.files | map(attribute='path') }}"
+        - /home/{{ ansible_user_id }}/go
+        - /home/{{ ansible_user_id }}/tested_repo
+        - /home/{{ ansible_user_id }}/metal3
+        - /home/{{ ansible_user_id }}/metal3-dev-env
+        - /opt/metal3-dev-env
+        - /tmp/mariadb.csr
+        - /tmp/ironic.csr
+      tags: cleanup
 
     - name: Power off BMHs
       community.general.hpilo_boot:
@@ -69,33 +91,45 @@
       ignore_errors: true
       tags: clean
 
+    - name: Clone the metal3-dev-env repo
+      git:
+        repo: https://github.com/metal3-io/metal3-dev-env.git
+        dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
+        version: master
+      tags: git
+
     - name: Clean any existing setup
       shell:
         cmd: "make clean"
         chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
       tags: clean
 
-    - name: Deleting files and folders from previous run
-      become: true
-      become_user: root
-      shell:
-        cmd: rm -rf /home/{{ ansible_user_id }}/go /home/{{ ansible_user_id }}/tested_repo /home/{{ ansible_user_id }}/metal3 /opt/metal3-dev-env /tmp/mariadb.csr  /tmp/ironic.csr 2>/dev/null
-      tags: cleanup
-
     - name: Remove local container registry
       ansible.builtin.command: docker rm -f registry
       tags: cleanup
 
     - name: Prune docker containers, images and volumes
-      ansible.builtin.command: docker {{ item }} prune --force
+      ansible.builtin.command: "{{ item }}"
       loop:
-        - container
-        - image
-        - volume
+        - docker container prune --force
+        # Note: Without --all it just removes images that are not tagged
+        - docker image prune --force --all
+        - docker volume prune --force
       tags: cleanup
 
     - name: Reset network
       script: reset_network.sh
+      tags: cleanup
+
+# ------------------------------------------------------------------------------
+# Done with cleanup
+# Prepare BML for running tests
+# ------------------------------------------------------------------------------
+
+    - name: Add config file for metal3-dev-env
+      copy:
+        src: /tmp/vars.sh
+        dest: "/home/{{ ansible_user_id }}/metal3-dev-env/config_{{ ansible_user_id }}.sh"
 
     - name: Install requirements for host
       shell:
