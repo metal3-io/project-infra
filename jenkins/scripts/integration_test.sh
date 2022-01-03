@@ -44,6 +44,7 @@ DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY:-4096}"
 VM_TIMELABEL="${VM_TIMELABEL:-$(date '+%Y%m%d%H%M%S')}"
 TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME:-ci-test-vm-${VM_TIMELABEL}}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
+TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 
 # Run feature tests, e2e tests, main, master and release* tests in the Frankfurt region
 if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
@@ -88,10 +89,10 @@ TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
 
 if [[ "$OS_REGION_NAME" != "Kna1" ]]
 then
-  # Fetch Free floating IP
-  # TODO: To avoid jobs taking the same floating IP, instead jobs should create / delete / cleanup
-  # their own floating IPs.
-  FLOATING_IP="$(openstack floating ip list --status DOWN -c "Floating IP Address" -f value | shuf -n 1 )"
+  # Create floating IP
+  FLOATING_IP="$(openstack floating ip create -f value -c name \
+    --tag "${TEST_EXECUTER_FIP_TAG}" \
+    "${CI_FLOATING_IP_NET}")"
 
   if [[ -z "$FLOATING_IP" ]]
   then
