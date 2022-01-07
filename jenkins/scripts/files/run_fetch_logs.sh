@@ -20,6 +20,11 @@ mkdir -p "${LOGS_DIR}"
 mkdir -p "${LOGS_DIR}/manifests"
 cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 
+if [[ "${TESTS_FOR}" == "e2e_tests"* ]]; then
+  mkdir -p "${LOGS_DIR}/e2e_artifacts"
+  cp -r /home/airshipci/tested_repo/_artifacts/. "${LOGS_DIR}/e2e_artifacts"
+fi
+
 function fetch_k8s_logs() {
 dir_name="k8s_${1}"
 kconfig="$2"
