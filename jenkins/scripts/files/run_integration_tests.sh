@@ -12,7 +12,6 @@ export CAPM3_VERSION
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
-export PROMETHEUS_MONITORING
 
 if [ "${REPO_NAME}" == "airship-dev-tools" ]
 then

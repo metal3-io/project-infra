@@ -48,12 +48,6 @@ do
     done
   done
 done
-
-# Dump Prometheus data if Prometheus pod exists
-prometheus_pod=$(kubectl --kubeconfig="${kconfig}" get pods -n monitoring -l "app=prometheus-server" -o=jsonpath="{.items[*]['metadata.name']}")
-if [ -n "${prometheus_pod}" ]; then
-  kubectl promdump meta -p "$POD_NAME" -n monitoring -c prometheus -d /prometheus
-fi
 }
 
 # Fetch k8s logs
@@ -83,10 +77,8 @@ sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/qemu"
 # Fetch atop and sysstat metrics
 mkdir -p "${LOGS_DIR}/metrics/atop"
 mkdir -p "${LOGS_DIR}/metrics/sysstat"
-mkdir -p "${LOGS_DIR}/metrics/prometheus"
 sudo sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
 sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
-sudo sh -c "cp -r /tmp/promdump-* ${LOGS_DIR}/metrics/prometheus/"
 sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
 
 mkdir -p "${LOGS_DIR}/cluster-api-config"
