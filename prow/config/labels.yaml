@@ -303,3 +303,35 @@ default:
       prowPlugin: needs-rebase
       isExternalPlugin: true
       addedBy: prow
+    - color: ff00ff
+      description: Indicates an issue lacks a `triage/foo` label and requires one.
+      name: needs-triage
+      target: issues
+      prowPlugin: require-matching-label
+      addedBy: prow
+    - color: 8fc951
+      description: Indicates an issue is ready to be actively worked on.
+      name: triage/accepted
+      target: issues
+      prowPlugin: label
+      addedBy: org members
+    - color: d455d0
+      description: Indicates an issue is a duplicate of other open issue.
+      name: triage/duplicate
+      target: issues
+      addedBy: anyone
+    - color: d455d0
+      description: Indicates an issue needs more information in order to work on it.
+      name: triage/needs-information
+      target: issues
+      addedBy: anyone
+    - color: d455d0
+      description: Indicates an issue can not be reproduced as described.
+      name: triage/not-reproducible
+      target: issues
+      addedBy: anyone
+    - color: d455d0
+      description: Indicates an issue that can not or will not be resolved.
+      name: triage/unresolved
+      target: issues
+      addedBy: anyone
