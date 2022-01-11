@@ -100,12 +100,22 @@ branch-protection:
             release-0.4:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
-        ironic-image:
-          required_status_checks:
-            contexts: ["test-v1b1-integration"]
+        ironic-image: 
+          branches:
+            main:
+              required_status_checks:
+                contexts: ["test-v1b1-integration"]
+            master:
+              required_status_checks:
+                contexts: ["test-v1b1-integration"]
         ironic-ipa-downloader:
-          required_status_checks:
-            contexts: ["test-v1b1-integration"]
+          branches:
+            main:
+              required_status_checks:
+                contexts: ["test-v1b1-integration"]
+            master:
+              required_status_checks:
+                contexts: ["test-v1b1-integration"]
         ip-address-manager:
           branches:
             main:
