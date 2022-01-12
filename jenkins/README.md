@@ -33,6 +33,21 @@ The job result will be posted as a comment.
 * **/test-v1a4-centos-integration** run integration tests for v1alpha4 on
    CentOS
 
+Usually, after the integration test part is completed, Jenkins executes another
+script to clean up the environment first and then deletes the VM. However, sometimes
+it may be desirable to keep the VM for debugging purposes. To avoid clean up
+and deletion operations, there are separate triggers phrases as below:
+
+* **/keep-test-v1b1-integration** run integration tests for v1beta1 on Ubuntu
+* **/keep-test-v1b1-centos-integration** run integration tests for v1beta1 on
+   CentOS
+* **/keep-test-v1a5-integration** run integration tests for v1alpha5 on Ubuntu
+* **/keep-test-v1a5-centos-integration** run integration tests for v1alpha5 on
+   CentOS
+
+Keep in mind that test VM created with these phrases will not be kept forever
+but deleted after 24 hours, to avoid garbage collection of VMs.
+
 ## Cloud Resources cleanup
 
 There is a Jenkins [main job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
