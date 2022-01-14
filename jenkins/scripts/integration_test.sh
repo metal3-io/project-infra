@@ -126,11 +126,13 @@ TESTS_FOR="${TESTS_FOR}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
 EOF
 
-if [[ -z "${CAPIRELEASE}" ]]
+# Only set these variables if they actually have values.
+# If the variable is unset or empty (""), do nothing.
+if [[ ! -z "${CAPIRELEASE:+x}" ]]
 then
   echo "CAPIRELEASE=${CAPIRELEASE}" | tee --append "${CI_DIR}/files/vars.sh"
 fi
-if [[ -z "${CAPM3RELEASE}" ]]
+if [[ ! -z "${CAPM3RELEASE:+x}" ]]
 then
   echo "CAPM3RELEASE=${CAPM3RELEASE}" | tee --append "${CI_DIR}/files/vars.sh"
 fi
