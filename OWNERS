@@ -2,7 +2,6 @@
 
 approvers:
  - russellb
- - maelk
  - fmuyassarov
  - kashifest
  - furkatgofurov7
@@ -10,3 +9,6 @@ approvers:
 reviewers:
  - macaptain
  - smoshiur1237
+
+emeritus_approvers:
+ - maelk
