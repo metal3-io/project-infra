@@ -18,14 +18,23 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 source "${CI_DIR}/utils.sh"
 
 function cleanup() {
+  # Fetch VMs which are 6+(21600 seconds) hours old
   VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
     startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
     split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
     | .ID ')
+
+  # Fetch VMs which are 24+(86400 seconds) hours old
+  DEBUGGING_VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
+  startswith("ci-test-keep-vm-")) | select((.Name | ltrimstr("ci-test-keep-vm-") |
+  split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 86400))
+  | .ID ')
   
+  FINAL_LIST=$(IFS=$'\n'; echo "${VM_LIST[*]}" "${DEBUGGING_VM_LIST[*]}")
+
   echo "Cleaning old leftover resources"
   
-  for VM_NAME in $VM_LIST
+  for VM_NAME in $FINAL_LIST
   do
     # Delete executer vm
     echo "Deleting executer VM ${VM_NAME}."
@@ -33,12 +42,21 @@ function cleanup() {
     echo "Executer VM ${VM_NAME} is deleted."
   done
   
+  # List ports which are 6+(21600 seconds) hours old
   PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
     startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
     rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
     mktime) < (now - 21600)) | .ID ')
+
+# List ports which are 24+(86400 seconds) hours old
+  DEBUGGING_VM_PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
+  startswith("ci-test-keep-vm-")) | select((.Name | ltrimstr("ci-test-keep-vm-") |
+  rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
+  mktime) < (now - 86400)) | .ID ')
   
-  for PORT_NAME in $PORT_LIST
+  FINAL_PORT_LIST=$(IFS=$'\n'; echo "${PORT_LIST[*]}" "${DEBUGGING_VM_PORT_LIST[*]}")
+
+  for PORT_NAME in $FINAL_PORT_LIST
   do
     # Delete executer vm port
     echo "Deleting executer VM port ${PORT_NAME}."
