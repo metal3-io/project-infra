@@ -27,6 +27,7 @@ data:
         - hold
         - label
         - lgtm
+        - transfer-issue
         - trigger
         - verify-owners
         - wip

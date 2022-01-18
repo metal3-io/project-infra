@@ -21,6 +21,7 @@ plugins:
     - retitle
     - shrug
     - size
+    - transfer-issue
     - trigger
     - verify-owners
     - wip
