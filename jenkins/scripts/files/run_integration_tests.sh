@@ -17,6 +17,7 @@ if [ "${REPO_NAME}" == "airship-dev-tools" ]
 then
   export IMAGE_NAME
   export IMAGE_LOCATION
+  export KUBERNETES_VERSION
 fi
 
 if [ "${CAPM3_VERSION}" == "v1alpha4" ]
