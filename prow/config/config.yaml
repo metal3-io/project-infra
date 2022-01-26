@@ -100,7 +100,7 @@ branch-protection:
             release-0.4:
               required_status_checks:
                 contexts: ["test-v1a4-integration"]
-        ironic-image: 
+        ironic-image:
           branches:
             main:
               required_status_checks:
