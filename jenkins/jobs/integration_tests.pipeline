@@ -69,6 +69,8 @@ pipeline {
     NUM_NODES="${NUM_NODES}"
     TESTS_FOR="${TESTS_FOR}"
     SKIP_DELETION="${SKIP_DELETION}"
+    UPGRADE_TEST="${UPGRADE_TEST}"
+
   }
   stages {
     stage('SCM') {
