@@ -31,6 +31,11 @@ then
   unset NUM_NODES
 fi
 
+if [ "${UPGRADE_TEST}" == "null" ]
+then
+  unset UPGRADE_TEST
+fi
+
 # Since we take care of the repo tested here (to merge the PR), do not update
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
 export FORCE_REPO_UPDATE=false
