@@ -121,6 +121,7 @@ DISTRIBUTION="${DISTRIBUTION}"
 NUM_NODES="${NUM_NODES}"
 TESTS_FOR="${TESTS_FOR}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
+UPGRADE_TEST="${UPGRADE_TEST}"
 EOF
 
 # Only set these variables if they actually have values.
