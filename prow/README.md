@@ -17,7 +17,7 @@ Metal3 Prow dashboard: https://prow.apps.test.metal3.io
 See the [Prow command help](https://prow.apps.test.metal3.io/command-help) for
 more information about who can run each prow command.
 
-## GCS bucket
+## GCS bucket.
 
 Google Cloud Storage (GCS) is required to store job artifacts. Follow the docs to set
 up GCS and create a bucket with enough permissions.
