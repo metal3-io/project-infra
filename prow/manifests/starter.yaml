@@ -32,6 +32,7 @@ data:
         - verify-owners
         - wip
         - yuks
+        - require-matching-label
 ---
 apiVersion: v1
 kind: Secret
