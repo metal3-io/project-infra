@@ -30,7 +30,7 @@ script {
   def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
   def rand = new Random()
   VM_KEY = (1..4).collect { ('a'..'z').join("")[ rand.nextInt( 26 ) ] }.join("")
-  
+
   if ("${SKIP_DELETION}" == "true") {
     VM_NAME = "ci-test-keep-vm-" + dateFormat.format(date) + "-" + VM_KEY
   } else {
@@ -64,7 +64,6 @@ pipeline {
     CAPIRELEASE = "${CAPIRELEASE}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
     CAPM3RELEASE = "${CAPM3RELEASE}"
-    IMAGE_OS = "${TARGET_NODE_OS}"
     DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES="${NUM_NODES}"
     TESTS_FOR="${TESTS_FOR}"
@@ -149,8 +148,8 @@ pipeline {
               echo "Skipping VM deletion"
             } else {
               sh "./jenkins/scripts/integration_delete.sh"
-            }     
-          }  
+            }
+          }
         }
       }
     }
