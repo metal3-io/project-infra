@@ -2,8 +2,8 @@
 
 Integration tests are running in the [Nordix](https://www.nordix.org)
 infrastructure. Nordix provides a
-[Jenkins](https://jenkins.nordix.org/view/Airship/) instance and cloud resources
-on [CityCloud](https://www.citycloud.com/) for the Airship project. We use those
+[Jenkins](https://jenkins.nordix.org/view/Metal3/) instance and cloud resources
+on [CityCloud](https://www.citycloud.com/) for the Metal3 project. We use those
 resources to run integration tests for Metal3.
 
 ## Admins whitelist
@@ -50,7 +50,7 @@ but deleted after 24 hours, to avoid garbage collection of VMs.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [main job](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_master_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
 deleted at the end of v1alphaX integration test.
@@ -68,7 +68,7 @@ whitelist if trusted.
 Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
-[job](https://jenkins.nordix.org/view/Airship/job/airship_metal3io_bmo_v1a4_integration_test_ubuntu/).
+[job](https://jenkins.nordix.org/view/Metal3/job/metal3_metal3io_bmo_v1a4_integration_test_ubuntu/).
 Please note that the logs will be removed 30 days after creation or after 100 subsequent job runs,
 whichever occurs first.
 
@@ -86,11 +86,11 @@ rather than writing/creating them directly in Jenkins UI. Your YAML formatted jo
 will create a Jenkins job, which in turn executes your specified jenkins pipeline.
 Check [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/definition.html) to
 familiarize yourself with the JJB syntax. Our job definitions are stored in [Nordix Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd)
-instance under `cicd/jjb/airship/` path. Please, note that [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
+instance under `cicd/jjb/metal3/` path. Please, note that [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
 gerrit repository includes job defitinions for other projects as well that share the same Jenkins environment.
 
-When you add/remove a new job definition in `cicd/jjb/airship/` path, you will be able to see that job
-added/removed in Jenkins UI under [airship window](https://jenkins.nordix.org/view/Airship/).
+When you add/remove a new job definition in `cicd/jjb/metal3/` path, you will be able to see that job
+added/removed in Jenkins UI under the [Metal3 view](https://jenkins.nordix.org/view/Metal3/).
 
 ![webhook](images/jenkins_ui.png)
 
@@ -154,10 +154,10 @@ the integration tests.
 every night which will include pre-executed script for installing metal3
 requirements. The base volume then will be cloned and attached to the VM which
 will be running integration tests. The volume building script for Ubuntu can be
-found [here](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_volume.sh).
+found [here](https://github.com/Nordix/metal3-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_volume.sh).
 * Pre-baked image is used to speed up the integrations tests which comes with
 pre-baked Kubernetes executables. The image building script for CentOS can be
-found [here](https://github.com/Nordix/airship-dev-tools/blob/master/ci/images/gen_metal3_centos_image.sh).
+found [here](https://github.com/Nordix/metal3-dev-tools/blob/master/ci/images/gen_metal3_centos_image.sh).
 
 ## Contact
 

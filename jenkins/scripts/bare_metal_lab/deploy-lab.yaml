@@ -57,7 +57,7 @@
       ansible.builtin.find:
         paths: /home/{{ ansible_user_id }}
         recurse: no
-        patterns: "logs-jenkins-airship*"
+        patterns: "logs-jenkins-*"
         file_type: any
       register: old_logs
       tags: cleanup
