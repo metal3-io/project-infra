@@ -14,7 +14,7 @@ export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 export UPGRADE_TEST
 
-if [ "${REPO_NAME}" == "airship-dev-tools" ]
+if [ "${REPO_NAME}" == "metal3-dev-tools" ]
 then
   export IMAGE_NAME
   export IMAGE_LOCATION
