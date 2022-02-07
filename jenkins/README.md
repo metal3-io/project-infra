@@ -92,7 +92,7 @@ gerrit repository includes job defitinions for other projects as well that share
 When you add/remove a new job definition in `cicd/jjb/metal3/` path, you will be able to see that job
 added/removed in Jenkins UI under the [Metal3 view](https://jenkins.nordix.org/view/Metal3/).
 
-![webhook](images/jenkins_ui.png)
+![webhook](images/jenkins_metal3_view.png)
 
 ### Job Declarative Pipeline
 
