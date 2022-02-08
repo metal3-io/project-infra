@@ -23,8 +23,10 @@ DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
 if [ "${DISTRIBUTION}" == "ubuntu" ]
 then
   IMAGE_NAME="${CI_METAL3_IMAGE}"
+  IMAGE_OS="Ubuntu"
 else
   IMAGE_NAME="${CI_METAL3_CENTOS_IMAGE}"
+  IMAGE_OS="Centos"
 fi
 
 REPO_ORG="${REPO_ORG:-metal3-io}"

@@ -19,6 +19,13 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 # shellcheck disable=SC1090
 source "${CI_DIR}/utils.sh"
 
+if [ "${DISTRIBUTION}" == "ubuntu" ]
+then
+  IMAGE_OS="Ubuntu"
+else
+  IMAGE_OS="Centos"
+fi
+
 REPO_ORG="${REPO_ORG:-metal3-io}"
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH:-master}"
