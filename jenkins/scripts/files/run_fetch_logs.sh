@@ -51,7 +51,7 @@ done
 }
 
 # Fetch k8s logs
-fetch_k8s_logs "management_cluster" "/home/airshipci/.kube/config"
+fetch_k8s_logs "management_cluster" "/home/metal3ci/.kube/config"
 
 # Fetch Ironic containers logs before pivoting to the target cluster
 CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/before_pivoting"
@@ -82,7 +82,7 @@ sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
 sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
 
 mkdir -p "${LOGS_DIR}/cluster-api-config"
-cp -r "/home/airshipci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
+cp -r "/home/metal3ci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
 if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
