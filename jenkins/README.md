@@ -147,17 +147,7 @@ Sometimes, your changes might not take effect and you need to flash out Jenkins 
 
 ### Job image
 
-We use a volume and pre-baked image (for Ubuntu and Centos, respectively) to run
-the integration tests.
-
-* There is a Jenkins job that builds the base Ubuntu volume
-every night which will include pre-executed script for installing metal3
-requirements. The base volume then will be cloned and attached to the VM which
-will be running integration tests. The volume building script for Ubuntu can be
-found [here](https://github.com/Nordix/metal3-dev-tools/blob/master/ci/images/gen_metal3_ubuntu_volume.sh).
-* Pre-baked image is used to speed up the integrations tests which comes with
-pre-baked Kubernetes executables. The image building script for CentOS can be
-found [here](https://github.com/Nordix/metal3-dev-tools/blob/master/ci/images/gen_metal3_centos_image.sh).
+We use raw images backed from Ceph in CityCloud to run all the jobs (nightly builds, on pull requests) in CI.
 
 ## Contact
 
