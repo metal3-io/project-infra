@@ -18,7 +18,7 @@ script {
 pipeline {
   agent { label 'airship-static-workers' }
   environment {
-    OS_USERNAME="airshipci"
+    OS_USERNAME="metal3ci"
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
     OS_USER_DOMAIN_NAME="CCP_Domain_37137"
     OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"

@@ -41,13 +41,13 @@ script {
 pipeline {
   agent { label 'airship-static-workers' }
   environment {
-    AIRSHIP_CI_USER="airshipci"
+    AIRSHIP_CI_USER="metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
     REPO_NAME = "${PROJECT_REPO_NAME}"
     UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
     REPO_BRANCH = "${ghprbTargetBranch}"
     UPDATED_BRANCH = "${ghprbActualCommit}"
-    OS_USERNAME="airshipci"
+    OS_USERNAME="metal3ci"
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
     OS_USER_DOMAIN_NAME="CCP_Domain_37137"
     OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
