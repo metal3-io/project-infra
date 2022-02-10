@@ -3,7 +3,7 @@
 set -eu
 
 # Description:
-# Runs in every single main job and in jobs triggered within the PR in metal3 repos. 
+# Runs in every single main job and in jobs triggered within the PR in metal3 repos.
 # Consumed by integration_tests.pipeline and cleans the integration test results by
 # running 'make clean' target (check run_clean.sh script) eventually.
 #   Requires:
@@ -15,7 +15,7 @@ set -eu
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
-DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
+IMAGE_OS="${IMAGE_OS:-ubuntu}"
 
 # shellcheck disable=SC1090
 source "${CI_DIR}/utils.sh"
@@ -60,4 +60,4 @@ ssh \
   -i "${AIRSHIP_CI_USER_KEY}" \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_clean.sh "${REPO_NAME}" "${DISTRIBUTION}"
+  /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}"

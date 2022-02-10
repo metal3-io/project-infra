@@ -5,10 +5,10 @@ set -u
 
 LOGS_TARBALL="${1:-container_logs.tgz}"
 LOGS_DIR="${2:-logs}"
-DISTRIBUTION="${3:-ubuntu}"
+IMAGE_OS="${3:-ubuntu}"
 TESTS_FOR="${4:-}"
 
-if [ "${DISTRIBUTION}" == "ubuntu" ]; then
+if [ "${IMAGE_OS}" == "ubuntu" ]; then
   #Must match with run_integration_tests.sh
   CONTAINER_RUNTIME="docker"
 else

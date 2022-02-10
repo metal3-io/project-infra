@@ -12,7 +12,7 @@ set -eu
 BARE_METAL_LAB="${BARE_METAL_LAB:-false}"
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
-DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
+IMAGE_OS="${IMAGE_OS:-ubuntu}"
 BUILD_TAG="${BUILD_TAG:-logs_integration_tests}"
 
 # shellcheck disable=SC1090
@@ -27,7 +27,7 @@ then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
-if [[ "${BARE_METAL_LAB}" != "true" ]] 
+if [[ "${BARE_METAL_LAB}" != "true" ]]
 then
   echo "Running in region: $OS_REGION_NAME"
 fi
@@ -65,7 +65,7 @@ ssh \
   "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_fetch_logs.sh "logs-${BUILD_TAG}.tgz" \
-  "logs-${BUILD_TAG}" "${DISTRIBUTION}" "${TESTS_FOR}"
+  "logs-${BUILD_TAG}" "${IMAGE_OS}" "${TESTS_FOR}"
 
 # fetch logs tarball
 scp \

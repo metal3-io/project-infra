@@ -19,14 +19,12 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 # shellcheck disable=SC1090
 source "${CI_DIR}/utils.sh"
 
-DISTRIBUTION="${DISTRIBUTION:-ubuntu}"
-if [ "${DISTRIBUTION}" == "ubuntu" ]
+IMAGE_OS="${IMAGE_OS:-ubuntu}"
+if [ "${IMAGE_OS}" == "ubuntu" ]
 then
   IMAGE_NAME="${CI_METAL3_IMAGE}"
-  IMAGE_OS="Ubuntu"
 else
   IMAGE_NAME="${CI_METAL3_CENTOS_IMAGE}"
-  IMAGE_OS="Centos"
 fi
 
 REPO_ORG="${REPO_ORG:-metal3-io}"
@@ -61,7 +59,7 @@ then
 else
     # user-data script for the 4C flavors in this region aren't correct for CentOS
     # so we run on a 8C machine to ensure the disk is properly resized
-    if [[ "$OS_REGION_NAME" == "Fra1" ]] && [[ "$DISTRIBUTION" != "ubuntu" ]]
+    if [[ "$OS_REGION_NAME" == "Fra1" ]] && [[ "$IMAGE_OS" != "ubuntu" ]]
     then
       TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-16GB-100GB}"
     fi
@@ -120,7 +118,6 @@ CAPI_VERSION="${CAPI_VERSION}"
 CAPM3_VERSION="${CAPM3_VERSION}"
 IMAGE_OS="${IMAGE_OS}"
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY}"
-DISTRIBUTION="${DISTRIBUTION}"
 NUM_NODES="${NUM_NODES}"
 TESTS_FOR="${TESTS_FOR}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
