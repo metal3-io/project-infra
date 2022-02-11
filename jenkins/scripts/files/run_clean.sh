@@ -3,9 +3,9 @@
 set -eux
 
 REPO_NAME="${1:-metal3-dev-env}"
-DISTRIBUTION="${2:-ubuntu}"
+IMAGE_OS="${2:-ubuntu}"
 
-if [ "${DISTRIBUTION}" == "ubuntu" ]; then
+if [ "${IMAGE_OS}" == "ubuntu" ]; then
   export CONTAINER_RUNTIME="docker"
   export EPHEMERAL_CLUSTER="kind"
 else

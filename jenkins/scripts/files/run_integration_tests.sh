@@ -59,7 +59,7 @@ fi
 cd "/home/${USER}"
 
 
-if [ "${DISTRIBUTION}" == "ubuntu" ]; then
+if [ "${IMAGE_OS}" == "ubuntu" ]; then
   #Must match with run_fetch_logs.sh
   export CONTAINER_RUNTIME="docker"
   export EPHEMERAL_CLUSTER="kind"
