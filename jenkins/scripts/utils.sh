@@ -3,7 +3,7 @@
 # Global defines for Airship CI infrastructure
 # ============================================
 
-CI_EXT_NET="airship-ci-ext-net"
+CI_EXT_NET="metal3-ci-ext-net"
 CI_EXT_SUBNET_CIDR="10.100.10.0/24"
 CI_FLOATING_IP_NET="ext-net"
 CI_METAL3_IMAGE="airship-ci-ubuntu-metal3-img"
