@@ -27,7 +27,7 @@ pipeline {
   }
   agent { label 'airship-static-workers' }
   environment {
-    AIRSHIP_CI_USER="airshipci"
+    AIRSHIP_CI_USER="metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
     REPO_NAME = "${PROJECT_REPO_NAME}"
     UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
