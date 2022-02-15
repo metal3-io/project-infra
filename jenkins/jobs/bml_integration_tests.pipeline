@@ -25,7 +25,7 @@ pipeline {
   options {
     disableConcurrentBuilds()
   }
-  agent { label 'airship-static-workers' }
+  agent { label 'metal3-static-workers' }
   environment {
     AIRSHIP_CI_USER="metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
