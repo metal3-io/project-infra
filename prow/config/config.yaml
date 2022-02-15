@@ -88,50 +88,50 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-centos-integration", "test-v1b1-integration"]
+                contexts: ["test-v1b1-centos-integration", "test-v1b1-ubuntu-integration"]
         cluster-api-provider-metal3:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-integration"]
+                contexts: ["test-v1b1-ubuntu-integration"]
             release-0.5:
               required_status_checks:
-                contexts: ["test-v1a5-integration"]
+                contexts: ["test-v1a5-ubuntu-integration"]
             release-0.4:
               required_status_checks:
-                contexts: ["test-v1a4-integration"]
+                contexts: ["test-v1a4-ubuntu-integration"]
         ironic-image:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-integration"]
+                contexts: ["test-v1b1-ubuntu-integration"]
         ironic-ipa-downloader:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-integration"]
+                contexts: ["test-v1b1-ubuntu-integration"]
         ip-address-manager:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-integration"]
+                contexts: ["test-v1b1-ubuntu-integration"]
             release-0.1:
               required_status_checks:
-                contexts: ["test-v1a5-integration"]
+                contexts: ["test-v1a5-ubuntu-integration"]
             release-0.0:
               required_status_checks:
-                contexts: ["test-v1a4-integration"]
+                contexts: ["test-v1a4-ubuntu-integration"]
         mariadb-image:
           required_status_checks:
-            contexts: ["test-v1b1-integration"]
+            contexts: ["test-v1b1-ubuntu-integration"]
         metal3-dev-env:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1a5-centos-integration", "test-v1b1-integration"]
+                contexts: ["test-v1a5-centos-integration", "test-v1b1-ubuntu-integration"]
             master:
               required_status_checks:
-                contexts: ["test-v1a5-centos-integration", "test-v1b1-integration"]
+                contexts: ["test-v1a5-centos-integration", "test-v1b1-ubuntu-integration"]
 
 
 deck:
