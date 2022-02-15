@@ -16,7 +16,7 @@ script {
 }
 
 pipeline {
-  agent { label 'airship-static-workers' }
+  agent { label 'metal3-static-workers' }
   environment {
     OS_USERNAME="metal3ci"
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
