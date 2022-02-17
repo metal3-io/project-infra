@@ -50,9 +50,9 @@ fi
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -i "${AIRSHIP_CI_USER_KEY}" \
+  -i "${METAL3_CI_USER_KEY}" \
   "${CI_DIR}/files/run_fetch_logs.sh" \
-  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 echo "Fetching logs"
 # Execute remote script
@@ -61,8 +61,8 @@ ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
-  -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_fetch_logs.sh "logs-${BUILD_TAG}.tgz" \
   "logs-${BUILD_TAG}" "${IMAGE_OS}" "${TESTS_FOR}"
@@ -71,6 +71,6 @@ ssh \
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:logs-${BUILD_TAG}.tgz" \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:logs-${BUILD_TAG}.tgz" \
   "./" > /dev/null
