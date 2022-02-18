@@ -14,8 +14,8 @@ CI_METAL3_CENTOS_IMAGE="airship-ci-centos-metal3-img"
 # Generates subnet name from Network name.
 #
 # Example:
-#   Input: "airship-network"
-#   Output: "airship-network-subnet"
+#   Input: "metal3-network"
+#   Output: "metal3-network-subnet"
 #
 get_subnet_name() {
   echo "${1:?}-subnet"

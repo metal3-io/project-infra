@@ -7,8 +7,8 @@ set -eu
 #   Requires:
 #     - jumphost (TEST_EXECUTER_IP) up and running and accessible
 #     - environment variables set:
-#       - AIRSHIP_CI_USER: Ci user for jumphost.
-#       - AIRSHIP_CI_USER_KEY: Path of the CI user private key for jumphost.
+#       - METAL3_CI_USER: Ci user for jumphost.
+#       - METAL3_CI_USER_KEY: Path of the CI user private key for jumphost.
 #       - GITHUB_TOKEN: Token for interatcion with Github API (e.g. get releases)
 # Usage:
 #  bml_integration_test.sh
@@ -55,12 +55,12 @@ cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -i "${AIRSHIP_CI_USER_KEY}" \
+  -i "${METAL3_CI_USER_KEY}" \
   -r \
   "${CI_DIR}/files/run_integration_tests.sh" \
   "${CI_DIR}/files/vars.sh" \
   "${CI_DIR}/bare_metal_lab/" \
-  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 echo "Setting up the lab"
 # Execute remote script
@@ -70,8 +70,8 @@ ssh \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
   -o ServerAliveCountMax=10 \
-  -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   -o SendEnv="BML_ILO_USERNAME" \
   -o SendEnv="BML_ILO_PASSWORD" \
   -o SendEnv="GITHUB_TOKEN" \
@@ -85,7 +85,7 @@ ssh \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
   -o ServerAliveCountMax=10 \
-  -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"

@@ -46,9 +46,9 @@ fi
 scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -i "${AIRSHIP_CI_USER_KEY}" \
+  -i "${METAL3_CI_USER_KEY}" \
   "${CI_DIR}/files/run_clean.sh" \
-  "${AIRSHIP_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 echo "Cleaning"
 # Execute remote cleaning script
@@ -57,7 +57,7 @@ ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
-  -i "${AIRSHIP_CI_USER_KEY}" \
-  "${AIRSHIP_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}"
