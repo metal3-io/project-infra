@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-set -eu
+set -eux
 
 # Description:
 #   Runs the integration tests for metal3-dev-env in an executer vm
