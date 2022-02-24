@@ -91,7 +91,7 @@ if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
 then
   export NODE_DRAIN_TIMEOUT="300s"
   make "${TESTS_FOR}"
-elif [[ "${TESTS_FOR}" == "feature_tests" || "${TESTS_FOR}" == "feature_tests_centos" ]]
+elif [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tests_centos" ]]
 then
   make feature_tests
 elif [[ "${TESTS_FOR}" == "e2e_tests" ]]
