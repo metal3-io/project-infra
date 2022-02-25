@@ -81,6 +81,16 @@ sudo sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
 sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
 sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
 
+# Fetch BML log if exists
+BML_LOG_LOCATION="/tmp/BMLlog"
+if [ -d "${BML_LOG_LOCATION}" ]; then
+  mkdir -p "${LOGS_DIR}/BML_serial_logs/"
+  cp -r "${BML_LOG_LOCATION}/". "${LOGS_DIR}/BML_serial_logs/"
+  for pid in $(ps aux | grep ssh | grep -v sshd | awk '{ print $2 }'); do
+    kill -9 "${pid}"
+  done
+fi
+
 mkdir -p "${LOGS_DIR}/cluster-api-config"
 cp -r "/home/metal3ci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
