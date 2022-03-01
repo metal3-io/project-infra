@@ -7,6 +7,13 @@
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
   tasks:
+    - name: set_fact
+      set_fact: 
+        node_ips: 
+          - "192.168.1.12"
+          - "192.168.1.15"
+        serial_log_location: "/tmp/BMLlog"
+
     - name: Check required env vars are set
       fail:
         msg: Ensure that BML_ILO_USERNAME, BML_ILO_PASSWORD and GITHUB_TOKEN environment variables are set
@@ -77,7 +84,26 @@
         - /opt/metal3-dev-env
         - /tmp/mariadb.csr
         - /tmp/ironic.csr
+        - "{{ serial_log_location }}"
       tags: cleanup
+
+    - name: Delete existing ssh connections to HPE CLI
+      shell: 
+        cmd: |
+         killall ssh 
+         exit 0
+         EOT
+
+    - name: Start to capture log from virtual serial port 
+      shell: 
+        cmd: |
+          mkdir -p "{{ serial_log_location }}"
+          nohup /bin/bash <<EOF 
+          ssh -o "KexAlgorithms diffie-hellman-group14-sha1" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item }}  'vsp' > "{{ serial_log_location }}/{{ item }}.txt" &
+          EOF
+          exit 0
+          EOT
+      with_items: "{{ node_ips }}"
 
     - name: Power off BMHs
       community.general.hpilo_boot:
@@ -85,9 +111,7 @@
         login: "{{ bml_ilo_username }}"
         password: "{{ bml_ilo_password }}"
         state: poweroff
-      loop:
-        - 192.168.1.12
-        - 192.168.1.13
+      with_items: "{{ node_ips }}"
       ignore_errors: true
       tags: clean
 
