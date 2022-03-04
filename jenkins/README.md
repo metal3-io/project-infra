@@ -117,9 +117,9 @@ When configuring GitHub webhooks:
 
 We use [metal3-jenkins](https://github.com/metal3-jenkins) GitHub bot account which reports
 job status on a pull request. The bot is a public member of Metal3 GitHub org. To use this bot
-with Jenkins ghprb, a GitHub personal access token was generated with the following scope checked:
+with Jenkins ghprb, a GitHub personal access token was generated with the following scopes checked:
 
-![status](images/status.png)
+![token-scopes](../prow/images/token-scopes.png)
 
 To use the token in Jenkins, `metal3-jenkins-github-token` secret is created in Jenkins credentials.
 See the usage [reference](https://github.com/metal3-io/project-infra/blob/12660dd59d368c86e471007d86ca781cf2539ec9/jenkins/jobs/integration_tests.pipeline#L3).
