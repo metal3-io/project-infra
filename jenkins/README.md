@@ -45,10 +45,10 @@ but deleted after 24 hours, to avoid garbage collection of VMs.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_master_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_main_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
-deleted at the end of v1alphaX integration test.
+deleted at the end of v1alphaX/v1betaX integration tests.
 
 ## "I'm waiting for a metal3-io member to verify that this patch is reasonable to test"
 
@@ -63,7 +63,7 @@ whitelist if trusted.
 Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
-[job](https://jenkins.nordix.org/view/Metal3/job/metal3_metal3io_bmo_v1a4_integration_test_ubuntu/).
+[job](https://jenkins.nordix.org/view/Metal3/job/metal3_bmo_v1b1_integration_test_ubuntu/).
 Please note that the logs will be removed 30 days after creation or after 100 subsequent job runs,
 whichever occurs first.
 
