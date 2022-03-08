@@ -89,7 +89,7 @@ vm_healthy() {
     echo "${cloud_init_status}"
     return 1
   else
-    echo "Cloud-init completed sucessfully!"
+    echo "Cloud-init completed successfully!"
     return 0
   fi
 }
