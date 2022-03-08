@@ -119,7 +119,7 @@
       git:
         repo: https://github.com/metal3-io/metal3-dev-env.git
         dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
-        version: master
+        version: main
       tags: git
 
     - name: Clean any existing setup

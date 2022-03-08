@@ -31,7 +31,7 @@ REPO_ORG="${REPO_ORG:-metal3-io}"
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
-UPDATED_BRANCH="${UPDATED_BRANCH:-master}"
+UPDATED_BRANCH="${UPDATED_BRANCH:-main}"
 CAPI_VERSION="${CAPI_VERSION:-v1beta1}"
 CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 NUM_NODES="${NUM_NODES:-2}"
@@ -43,9 +43,9 @@ TEST_EXECUTER_VM_NAME="${TEST_EXECUTER_VM_NAME}"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 
-# Run feature tests, e2e tests, main, master and release* tests in the Frankfurt region
+# Run feature tests, e2e tests, main and release* tests in the Frankfurt region
 if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
-   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "master" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
+   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
 then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"

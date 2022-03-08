@@ -87,7 +87,7 @@ export ANSIBLE_COLOR_CHANGED="green"
 export IPA_DOWNLOAD_ENABLED="false"
 
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
-METAL3BRANCH="${METAL3BRANCH:-master}"
+METAL3BRANCH="${METAL3BRANCH:-main}"
 
 # Container image registry value to override the default value in m3-dev-env
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
