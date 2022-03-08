@@ -68,6 +68,7 @@ EXT_PORT_ID="$(openstack port create -f json \
   "${TEST_EXECUTER_PORT_NAME}" | jq -r '.id')"
 
 # Create new executer vm
+echo "Creating server ${TEST_EXECUTER_VM_NAME}"
 openstack server create -f json \
   --image "${IMAGE_NAME}" \
   --flavor "${TEST_EXECUTER_FLAVOR}" \
@@ -115,6 +116,7 @@ for i in {1..6}; do
     echo "Server ${TEST_EXECUTER_VM_NAME} deleted."
 
     # Create new executer vm
+    echo "Recreating server ${TEST_EXECUTER_VM_NAME}"
     openstack server create -f json \
       --image "${IMAGE_NAME}" \
       --flavor "${TEST_EXECUTER_FLAVOR}" \
