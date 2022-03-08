@@ -71,11 +71,13 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
 1. Create a personal access token for the GitHub
    bot account. This should be done from [metal3-io-bot](https://github.com/metal3-io-bot)
    GitHub bot account. You can follow this [link](https://github.com/settings/tokens)
-   to create the token. When generating the token, make sure you to have the following scopes checked in.
+   to create the token. When generating the token, make sure you have only the following scopes checked in.
 
-   - `public_repo` and `repo:status`
-   - `repo scope` for private repos
+   - `repo` scope for full control of private repositories
    - `admin:org_hook` for a github org
+
+
+   ![token-scopes](images/token-scopes.png)
 
     Create a secret out of that token:
     ```shell

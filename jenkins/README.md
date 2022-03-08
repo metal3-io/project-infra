@@ -45,10 +45,10 @@ but deleted after 24 hours, to avoid garbage collection of VMs.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_master_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_main_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
-deleted at the end of v1alphaX integration test.
+deleted at the end of v1alphaX/v1betaX integration tests.
 
 ## "I'm waiting for a metal3-io member to verify that this patch is reasonable to test"
 
@@ -63,7 +63,7 @@ whitelist if trusted.
 Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
-[job](https://jenkins.nordix.org/view/Metal3/job/metal3_metal3io_bmo_v1a4_integration_test_ubuntu/).
+[job](https://jenkins.nordix.org/view/Metal3/job/metal3_bmo_v1b1_integration_test_ubuntu/).
 Please note that the logs will be removed 30 days after creation or after 100 subsequent job runs,
 whichever occurs first.
 
@@ -117,9 +117,9 @@ When configuring GitHub webhooks:
 
 We use [metal3-jenkins](https://github.com/metal3-jenkins) GitHub bot account which reports
 job status on a pull request. The bot is a public member of Metal3 GitHub org. To use this bot
-with Jenkins ghprb, a GitHub personal access token was generated with the following scope checked:
+with Jenkins ghprb, a GitHub personal access token was generated with the following scopes checked:
 
-![status](images/status.png)
+![token-scopes](../prow/images/token-scopes.png)
 
 To use the token in Jenkins, `metal3-jenkins-github-token` secret is created in Jenkins credentials.
 See the usage [reference](https://github.com/metal3-io/project-infra/blob/12660dd59d368c86e471007d86ca781cf2539ec9/jenkins/jobs/integration_tests.pipeline#L3).
