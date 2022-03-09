@@ -382,6 +382,20 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
+  - name: gosec
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gosec.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/securego/gosec:latest
+        imagePullPolicy: Always
   - name: gofmt
     branches:
     - release-0.5
