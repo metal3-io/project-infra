@@ -7,4 +7,4 @@ rules:
   trailing-spaces: enable
   key-duplicates: enable
   truthy:
-    allowed-values: ['true', 'false']
+    allowed-values: ['true', 'false', 'yes', 'no', 'on']
