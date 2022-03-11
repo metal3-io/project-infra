@@ -13,6 +13,7 @@ export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 export UPGRADE_TEST
+export EPHEMERAL_TEST
 
 if [ "${REPO_NAME}" == "metal3-dev-tools" ]
 then
@@ -34,6 +35,11 @@ fi
 if [ "${UPGRADE_TEST}" == "null" ]
 then
   unset UPGRADE_TEST
+fi
+
+if [ "${EPHEMERAL_TEST}" == "null" ]
+then
+  unset EPHEMERAL_TEST
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
