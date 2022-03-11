@@ -8,8 +8,8 @@
     EXTERNAL_VLAN_ID: 3
   tasks:
     - name: set_fact
-      set_fact: 
-        node_ips: 
+      set_fact:
+        node_ips:
           - "192.168.1.12"
           - "192.168.1.15"
         serial_log_location: "/tmp/BMLlog"
@@ -88,17 +88,17 @@
       tags: cleanup
 
     - name: Delete existing ssh connections to HPE CLI
-      shell: 
+      shell:
         cmd: |
-         killall ssh 
+         killall ssh
          exit 0
          EOT
 
-    - name: Start to capture log from virtual serial port 
-      shell: 
+    - name: Start to capture log from virtual serial port
+      shell:
         cmd: |
           mkdir -p "{{ serial_log_location }}"
-          nohup /bin/bash <<EOF 
+          nohup /bin/bash <<EOF
           ssh -o "KexAlgorithms diffie-hellman-group14-sha1" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item }}  'vsp' > "{{ serial_log_location }}/{{ item }}.txt" &
           EOF
           exit 0
