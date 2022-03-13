@@ -40,8 +40,11 @@ exclude_markdown_and_owners_files() {
 # otherwise check the updated branch to decide on whether skipping or running 
 # the integration tests.
 if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
+  echo "Main job is runnning, not skipping integration tests"
   return 1
 else
+  echo "Clone updated repo"
   gclonecd $UPDATED_REPO
+  echo "Run skipping the integration test custom script to find out git diff"
   exclude_markdown_and_owners_files
 fi
