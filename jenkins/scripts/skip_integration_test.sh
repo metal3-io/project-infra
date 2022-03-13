@@ -18,7 +18,7 @@ gclonecd () {
 # OWNERS file, return exit code (rc): 0 to skip integration tests, otherwise 
 # return 1 to run integration tests
 exclude_markdown_and_owners_files() {
-  for file in $(git diff "${UPDATED_BRANCH}" origin/"${REPO_BRANCH}" --name-only)
+  for file in $(git diff origin/"${REPO_BRANCH}"..."${UPDATED_BRANCH}" --name-only)
   do
     filename=$(basename -- "$file")
     extension="${filename##*.}"
