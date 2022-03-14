@@ -5,6 +5,7 @@ infrastructure. Nordix provides a
 [Jenkins](https://jenkins.nordix.org/view/Metal3/) instance and cloud resources
 on [CityCloud](https://www.citycloud.com/) for the Metal3 project. We use those
 resources to run integration tests for Metal3.
+Test.
 
 ## Admins whitelist
 
