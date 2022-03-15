@@ -18,7 +18,7 @@ gclonecd () {
 # OWNERS file, return exit code (rc): 0 to skip integration tests, otherwise 
 # return 1 to run integration tests
 exclude_markdown_and_owners_files() {
-  for file in $(git diff origin/"${REPO_BRANCH}"..."${UPDATED_BRANCH}" --name-only)
+  for file in $(git diff "${UPDATED_BRANCH}" origin/"${REPO_BRANCH}" --name-only)
   do
     filename=$(basename -- "$file")
     extension="${filename##*.}"
@@ -40,11 +40,8 @@ exclude_markdown_and_owners_files() {
 # otherwise check the updated branch to decide on whether skipping or running 
 # the integration tests.
 if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
-  echo "Main job is runnning, not skipping integration tests"
   return 1
 else
-  echo "Clone updated repo"
   gclonecd $UPDATED_REPO
-  echo "Run skipping the integration test custom script to find out git diff"
   exclude_markdown_and_owners_files
 fi
