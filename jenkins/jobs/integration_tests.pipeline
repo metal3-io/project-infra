@@ -101,20 +101,7 @@ pipeline {
           withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]) {
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
-                script {
-                  // script path
-                  SCRIPT_PATH = "./jenkins/scripts/skip_integration_test.sh"
-                  // invoke script, and save exit code in "rc"
-                  echo 'Running the skip integration test script...'
-                  rc = sh(script: "${SCRIPT_PATH}", returnStatus: true)
-                  // check exit code
-                  sh "echo \"exit code is : ${rc}\""
-                  if (rc != 0)  {
-                    sh "./jenkins/scripts/integration_test.sh"
-                  } else {
-                    echo "Skip running integration tests, only markdown or OWNERS file has been changed on a PR"
-                  }
-                }
+                sh "./jenkins/scripts/integration_test.sh"
               }
             }
           }
@@ -131,40 +118,10 @@ pipeline {
           }
           withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
             withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
-              script {
-                // script path
-                SCRIPT_PATH = "./jenkins/scripts/skip_integration_test.sh"
-                // invoke script, and save exit code in "rc"
-                echo 'Running the skip integration test script...'
-                rc = sh(script: "${SCRIPT_PATH}", returnStatus: true)
-                // check exit code
-                sh "echo \"exit code is : ${rc}\""
-                if (rc != 0)  {
-                  sh "./jenkins/scripts/fetch_logs.sh"
-                } else {
-                  echo "Skip fetching logs, no integration test has been run, since only markdown or OWNERS file has been changed on a PR"
-                }
-              }
+              sh "./jenkins/scripts/fetch_logs.sh"
             }
           }
-          withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-            withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
-              script {
-                // script path
-                SCRIPT_PATH = "./jenkins/scripts/skip_integration_test.sh"
-                // invoke script, and save exit code in "rc"
-                echo 'Running the skip integration test script...'
-                rc = sh(script: "${SCRIPT_PATH}", returnStatus: true)
-                // check exit code
-                sh "echo \"exit code is : ${rc}\""
-                if (rc != 0)  {
-                  archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-                } else {
-                  echo "Skip archiving artifacts, no integration test has been run, only markdown or OWNERS file has been changed on a PR"
-                }
-              }
-            }
-          }
+          archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
         }
       }
     }
@@ -177,18 +134,7 @@ pipeline {
             if ("${SKIP_DELETION}" == "true") {
               echo "Skipping environment clean up"
             } else {
-              // script path
-              SCRIPT_PATH = "./jenkins/scripts/skip_integration_test.sh"
-              // invoke script, and save exit code in "rc"
-              echo 'Running the skip integration test script...'
-              rc = sh(script: "${SCRIPT_PATH}", returnStatus: true)
-              // check exit code
-              sh "echo \"exit code is : ${rc}\""
-              if (rc != 0) {
-                sh "./jenkins/scripts/integration_test_clean.sh"
-              } else {
-                echo "Skip cleaning up an environment, no integration test has been run, only markdown or OWNERS file has been changed on a PR"
-              }
+              sh "./jenkins/scripts/integration_test_clean.sh"
             }
           }
         }
@@ -201,18 +147,7 @@ pipeline {
             if ("${SKIP_DELETION}" == "true") {
               echo "Skipping VM deletion"
             } else {
-              // script path
-              SCRIPT_PATH = "./jenkins/scripts/skip_integration_test.sh"
-              // invoke script, and save exit code in "rc"
-              echo 'Running the skip integration test script...'
-              rc = sh(script: "${SCRIPT_PATH}", returnStatus: true)
-              // check exit code
-              sh "echo \"exit code is : ${rc}\""
-              if (rc != 0) {
-                sh "./jenkins/scripts/integration_delete.sh"
-              } else {
-                echo "Skip deleting VM, no integration test has been run, only markdown or OWNERS file has been changed on a PR"
-              }
+              sh "./jenkins/scripts/integration_delete.sh"
             }
           }
         }
