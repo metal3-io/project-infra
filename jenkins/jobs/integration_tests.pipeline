@@ -69,6 +69,7 @@ pipeline {
     TESTS_FOR="${TESTS_FOR}"
     SKIP_DELETION="${SKIP_DELETION}"
     UPGRADE_TEST="${UPGRADE_TEST}"
+    EPHEMERAL_TEST="${EPHEMERAL_TEST}"
 
   }
   stages {
