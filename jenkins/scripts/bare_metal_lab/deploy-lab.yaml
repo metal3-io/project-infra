@@ -4,7 +4,7 @@
     bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
     github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
   environment:
-    EPHEMERAL_CLUSTER: "minikube"
+    EPHEMERAL_CLUSTER: "kind"
     EXTERNAL_VLAN_ID: 3
   tasks:
     - name: set_fact
