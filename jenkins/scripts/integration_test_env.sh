@@ -90,6 +90,5 @@ METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-main}"
 
 # Container image registry value to override the default value in m3-dev-env
-# TEMP: Commented out while waiting for nordics registry to come back up.
-# export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
-# export DOCKER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
+export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
+export DOCKER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
