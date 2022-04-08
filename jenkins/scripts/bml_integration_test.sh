@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-set -eu
+set -xeu
 
 # Description:
 #   Runs the integration tests for metal3-dev-env in the BML
@@ -24,6 +24,14 @@ REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH:-main}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-main}"
+if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
+  export BML_METAL3_DEV_ENV_REPO="${UPDATED_REPO}"
+  export BML_METAL3_DEV_ENV_BRANCH="${UPDATED_BRANCH}"
+else
+  export BML_METAL3_DEV_ENV_REPO="https://github.com/metal3-io/metal3-dev-env.git"
+  export BML_METAL3_DEV_ENV_BRANCH="main"
+fi
+
 CAPI_VERSION="${CAPI_VERSION:-v1beta1}"
 CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 NUM_NODES="${NUM_NODES:-2}"
@@ -77,6 +85,8 @@ ssh \
   -o SendEnv="BML_ILO_USERNAME" \
   -o SendEnv="BML_ILO_PASSWORD" \
   -o SendEnv="GITHUB_TOKEN" \
+  -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
+  -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
   ansible-playbook /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"

@@ -3,17 +3,16 @@
     bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
     bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
     github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+    metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
+    metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
+    node_ips:
+      - "192.168.1.12"
+      - "192.168.1.15"
+    serial_log_location: "/tmp/BMLlog"
   environment:
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
   tasks:
-    - name: set_fact
-      set_fact:
-        node_ips:
-          - "192.168.1.12"
-          - "192.168.1.15"
-        serial_log_location: "/tmp/BMLlog"
-
     - name: Check required env vars are set
       fail:
         msg: Ensure that BML_ILO_USERNAME, BML_ILO_PASSWORD and GITHUB_TOKEN environment variables are set
@@ -117,9 +116,9 @@
 
     - name: Clone the metal3-dev-env repo
       git:
-        repo: https://github.com/metal3-io/metal3-dev-env.git
+        repo: "{{ metal3_dev_env_repo }}"
         dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
-        version: main
+        version: "{{ metal3_dev_env_branch }}"
       tags: git
 
     - name: Clean any existing setup
