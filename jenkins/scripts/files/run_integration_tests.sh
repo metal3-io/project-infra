@@ -78,6 +78,8 @@ if [ "${REPO_NAME}" == "metal3-dev-env" ]
 then
   pushd tested_repo
 else
+  export METAL3REPO="https://github.com/Nordix/metal3-dev-env.git"
+  export METAL3BRANCH="update/centos-stream-9"
   git clone "${METAL3REPO}" metal3
   pushd metal3
   git checkout "${METAL3BRANCH}"
