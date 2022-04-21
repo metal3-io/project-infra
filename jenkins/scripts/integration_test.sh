@@ -108,39 +108,13 @@ then
   "$FLOATING_IP"
 fi
 
-for i in {1..6}; do
-  echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
-  # Wait for the host to come up
-  wait_for_ssh "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
-  if vm_healthy "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"; then
-    break
-  else
-    if [ ${i} -eq 5 ]; then
-      echo "Server is still unhealthy after retry. Giving up."
-      exit 1
-    fi
-    echo "Trying to create server again. Retry ${i}/5"
-    echo "Deleting unhealthy server ${TEST_EXECUTER_VM_NAME}..."
-    openstack server delete "${TEST_EXECUTER_VM_NAME}"
-    echo "Server ${TEST_EXECUTER_VM_NAME} deleted."
-
-    # Create new executer vm
-    echo "Recreating server ${TEST_EXECUTER_VM_NAME}"
-    openstack server create -f json \
-      --image "${IMAGE_NAME}" \
-      --flavor "${TEST_EXECUTER_FLAVOR}" \
-      --port "${EXT_PORT_ID}" \
-      "${TEST_EXECUTER_VM_NAME}" | jq -r '.id'
-
-    if [[ "$OS_REGION_NAME" != "Kna1" ]]
-    then
-      # Attach floating IP
-      openstack server add floating ip \
-        "${TEST_EXECUTER_VM_NAME}" \
-        "$FLOATING_IP"
-    fi
-  fi
-done
+echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
+# Wait for the host to come up
+wait_for_ssh "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
+if ! vm_healthy "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"; then
+  echo "Server is unhealthy. Giving up."
+  exit 1
+fi
 
 cat <<-EOF >> "${CI_DIR}/files/vars.sh"
 REPO_ORG="${REPO_ORG}"
