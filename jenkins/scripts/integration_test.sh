@@ -45,11 +45,20 @@ TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int
 TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 IRONIC_INSTALL_TYPE="${IRONIC_INSTALL_TYPE:-rpm}"
 IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE:-false}"
-IRONIC_LOCAL_IMAGE_BRANCH="${IRONIC_LOCAL_IMAGE_BRANCH:-}"
-IRONIC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE:-}"
+IRONIC_LOCAL_IMAGE_BRANCH=""
+IRONIC_LOCAL_IMAGE=""
 
-if [ "${IRONIC_INSTALL_TYPE}" == "source" ];then
+if [ "${IRONIC_INSTALL_TYPE}" == "source" ];
+then
     IRONIC_FROM_SOURCE="true"
+    if [ "${REPO_NAME}" == "ironic-image" ];
+    then
+        IRONIC_LOCAL_IMAGE="${ghprbAuthorRepoGitUrl}"
+        IRONIC_LOCAL_IMAGE_BRANCH="${ghprbActualCommit}"
+    else
+        IRONIC_LOCAL_IMAGE="https://github.com/metal3-io/ironic-image.git"
+        IRONIC_LOCAL_IMAGE_BRANCH="main"
+    fi
 fi
 
 # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
