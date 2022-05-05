@@ -72,16 +72,27 @@ if [ "${IMAGE_OS}" == "ubuntu" ]; then
 else
   export EPHEMERAL_CLUSTER="minikube"
 fi
-
+if [[ "${TESTS_FOR}" != "e2e_tests" ]]; then
 # If we are testing metal3-dev-env, it will already be cloned to tested_repo
-if [ "${REPO_NAME}" == "metal3-dev-env" ]
-then
-  pushd tested_repo
+  if [ "${REPO_NAME}" == "metal3-dev-env" ]
+  then
+    pushd tested_repo
+  else
+    git clone "${METAL3REPO}" metal3
+    pushd metal3
+    git checkout "${METAL3BRANCH}"
+  fi
 else
-  git clone "${METAL3REPO}" metal3
-  pushd metal3
-  git checkout "${METAL3BRANCH}"
+  if [ "${REPO_NAME}" == "cluster-api-provider-"* ]
+  then
+    pushd tested_repo
+  else
+    git clone "${CAPM3REPO}" metal3
+    pushd metal3
+    git checkout "${CAPM3BRANCH}"
+  fi
 fi
+
 
 if [[ ${BARE_METAL_LAB} == "true" ]]
 then
@@ -102,9 +113,7 @@ then
   make feature_tests
 elif [[ "${TESTS_FOR}" == "e2e_tests" ]]
 then
-  pushd "${CAPM3PATH}"
   make test-e2e
-  popd
 else
   make
   make test
