@@ -47,6 +47,7 @@ IRONIC_INSTALL_TYPE="${IRONIC_INSTALL_TYPE:-rpm}"
 IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE:-false}"
 IRONIC_LOCAL_IMAGE_BRANCH=""
 IRONIC_LOCAL_IMAGE=""
+GINKGO_FOCUS="${GINKGO_FOCUS:-''}"
 
 if [ "${IRONIC_INSTALL_TYPE}" == "source" ];
 then
@@ -125,7 +126,8 @@ if ! vm_healthy "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}
   exit 1
 fi
 
-cat <<-EOF >> "${CI_DIR}/files/vars.sh"
+TEMP_FILE_NAME=$(mktemp vars-XXXXXX.sh)
+cat <<-EOF >> "${CI_DIR}/files/${TEMP_FILE_NAME}"
 REPO_ORG="${REPO_ORG}"
 REPO_NAME="${REPO_NAME}"
 REPO_BRANCH="${REPO_BRANCH}"
@@ -143,21 +145,21 @@ EPHEMERAL_TEST="${EPHEMERAL_TEST}"
 IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE}"
 IRONIC_LOCAL_IMAGE_BRANCH="${IRONIC_LOCAL_IMAGE_BRANCH}"
 IRONIC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}"
+GINKGO_FOCUS="${GINKGO_FOCUS}"
 EOF
 
 # Only set these variables if they actually have values.
 # If the variable is unset or empty (""), do nothing.
 if [[ ! -z "${CAPIRELEASE:+x}" ]]
 then
-  echo "CAPIRELEASE=${CAPIRELEASE}" | tee --append "${CI_DIR}/files/vars.sh"
+  echo "CAPIRELEASE=${CAPIRELEASE}" | tee --append "${CI_DIR}/files/${TEMP_FILE_NAME}"
 fi
 if [[ ! -z "${CAPM3RELEASE:+x}" ]]
 then
-  echo "CAPM3RELEASE=${CAPM3RELEASE}" | tee --append "${CI_DIR}/files/vars.sh"
+  echo "CAPM3RELEASE=${CAPM3RELEASE}" | tee --append "${CI_DIR}/files/${TEMP_FILE_NAME}"
 fi
 
-
-cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
+cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/${TEMP_FILE_NAME}"
 
 # Send Remote script to Executer
 scp \
@@ -165,8 +167,17 @@ scp \
   -o UserKnownHostsFile=/dev/null \
   -i "${METAL3_CI_USER_KEY}" \
   "${CI_DIR}/files/run_integration_tests.sh" \
-  "${CI_DIR}/files/vars.sh" \
-  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp" > /dev/null
+
+scp \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${CI_DIR}/files/${TEMP_FILE_NAME}" \
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/vars.sh" > /dev/null
+
+# Clean temp vars.sh from the static worker
+rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 
 echo "Running the tests"
 # Execute remote script
