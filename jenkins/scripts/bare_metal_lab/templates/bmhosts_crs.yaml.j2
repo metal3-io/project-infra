@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: bml-ilo-login-secret-04
+  name: bml-ilo-login-secret-03
 type: Opaque
 data:
   username: "{{ bml_ilo_username | b64encode }}"
@@ -20,14 +20,14 @@ data:
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: eselda13u31s04.est.lan
+  name: eselda13u31s03.est.lan
 spec:
   online: true
-  bootMACAddress: 80:C1:6E:7A:E8:10
+  bootMACAddress: b4:b5:2f:6d:89:d8
   bootMode: legacy
   bmc:
-    address: ilo4://192.168.1.13
-    credentialsName: bml-ilo-login-secret-04
+    address: ilo4://192.168.1.12
+    credentialsName: bml-ilo-login-secret-03
     disableCertificateVerification: true
 ---
 apiVersion: metal3.io/v1alpha1

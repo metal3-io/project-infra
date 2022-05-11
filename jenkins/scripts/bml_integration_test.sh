@@ -29,7 +29,7 @@ if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
   export BML_METAL3_DEV_ENV_BRANCH="${UPDATED_BRANCH}"
 else
   export BML_METAL3_DEV_ENV_REPO="https://github.com/Nordix/metal3-dev-env.git"
-  export BML_METAL3_DEV_ENV_BRANCH="test-bml-centos"
+  export BML_METAL3_DEV_ENV_BRANCH="test-bml-furkat"
 fi
 
 CAPI_VERSION="${CAPI_VERSION:-v1beta1}"

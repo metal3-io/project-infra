@@ -88,7 +88,7 @@ export ANSIBLE_COLOR_CHANGED="green"
 export IPA_DOWNLOAD_ENABLED="false"
 
 METAL3REPO="${METAL3REPO:-https://github.com/Nordix/metal3-dev-env.git}"
-METAL3BRANCH="${METAL3BRANCH:-test-bml-centos}"
+METAL3BRANCH="${METAL3BRANCH:-test-bml-furkat}"
 CAPM3REPO="${CAPM3REPO:-https://github.com/metal3-io/cluster-api-provider-metal3}"
 CAPM3BRANCH="${CAPM3BRANCH:-main}"
 
