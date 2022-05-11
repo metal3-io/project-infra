@@ -38,6 +38,9 @@ then
   echo "Deleting executer floating IP ${TEST_EXECUTER_FIP_ID}."
   echo "${TEST_EXECUTER_FIP_ID}" | xargs openstack floating ip delete
   echo "Executer floating IP ${TEST_EXECUTER_FIP_ID} is deleted."
+
+  # Check and delete orphaned floating IPs
+  openstack floating ip list --status "DOWN" --column "ID" -f json | jq --raw-output '.[]."ID"' | xargs -0 openstack floating ip delete
 fi
 
 # Delete executer vm
