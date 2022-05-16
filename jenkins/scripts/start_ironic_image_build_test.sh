@@ -85,6 +85,7 @@ ssh \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
   -o ServerAliveCountMax=10 \
+  -o ClientAliveInterval 300 \
   -i "${METAL3_CI_USER_KEY}" \
   "${OS_USERNAME}"@"${TEST_EXECUTER_IP}" \
   PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin" \
@@ -99,6 +100,7 @@ ssh \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
   -o ServerAliveCountMax=10 \
+  -o ClientAliveInterval 300 \
   -i "${METAL3_CI_USER_KEY}" \
   "${OS_USERNAME}"@"${TEST_EXECUTER_IP}" \
   PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin" \
@@ -113,6 +115,7 @@ ssh \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
   -o ServerAliveCountMax=10 \
+  -o ClientAliveInterval 300 \
   -i "${METAL3_CI_USER_KEY}" \
   "${OS_USERNAME}"@"${TEST_EXECUTER_IP}" \
   PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin" \

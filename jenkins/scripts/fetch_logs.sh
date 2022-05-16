@@ -61,6 +61,7 @@ ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
+  -o ClientAliveInterval 300 \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
