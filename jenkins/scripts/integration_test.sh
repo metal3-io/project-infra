@@ -12,7 +12,7 @@ set -eu
 #       - METAL3_CI_USER_KEY: Path of the CI user private key for jumphost.
 # Usage:
 #  integration_test.sh
-#
+# 
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
