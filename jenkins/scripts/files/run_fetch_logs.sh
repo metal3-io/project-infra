@@ -22,7 +22,13 @@ cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 
 if [[ "${TESTS_FOR}" == "e2e_tests"* ]]; then
   mkdir -p "${LOGS_DIR}/e2e_artifacts"
-  cp -r /home/metal3ci/tested_repo/_artifacts/. "${LOGS_DIR}/e2e_artifacts"
+    # only if we triggered the e2e from the capm3 repo it will be cloned under tested_repo
+    # else it is under metal3
+    if [[ -d "/home/metal3ci/tested_repo/_artifacts" ]]; then
+      cp -r /home/metal3ci/tested_repo/_artifacts/ "${LOGS_DIR}/e2e_artifacts"
+    else
+      cp -r /home/metal3ci/metal3/_artifacts/ "${LOGS_DIR}/e2e_artifacts"
+    fi
 fi
 
 function fetch_k8s_logs() {

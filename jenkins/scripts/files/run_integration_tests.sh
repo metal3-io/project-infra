@@ -66,7 +66,7 @@ fi
 cd "/home/${USER}"
 
 
-if [ "${IMAGE_OS}" == "ubuntu" ]; then
+if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   #Must match with run_fetch_logs.sh
   export CONTAINER_RUNTIME="docker"
   export EPHEMERAL_CLUSTER="kind"
@@ -75,7 +75,7 @@ else
 fi
 if [[ "${TESTS_FOR}" != "e2e_tests" ]]; then
 # If we are testing metal3-dev-env, it will already be cloned to tested_repo
-  if [ "${REPO_NAME}" == "metal3-dev-env" ]
+  if [[ "${REPO_NAME}" == "metal3-dev-env" ]]
   then
     pushd tested_repo
   else
@@ -84,7 +84,7 @@ if [[ "${TESTS_FOR}" != "e2e_tests" ]]; then
     git checkout "${METAL3BRANCH}"
   fi
 else
-  if [ "${REPO_NAME}" == "cluster-api-provider-"* ]
+  if [[ "${REPO_NAME}" == "cluster-api-provider-"* ]]
   then
     pushd tested_repo
   else
