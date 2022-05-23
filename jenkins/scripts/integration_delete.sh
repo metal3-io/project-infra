@@ -24,8 +24,8 @@ TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floatin
 if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
    [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
 then
-  OS_REGION_NAME="Fra1"
-  OS_AUTH_URL="https://fra1.citycloud.com:5000"
+  OS_REGION_NAME="Kna1"
+  OS_AUTH_URL="https://kna1.citycloud.com:5000"
 fi
 echo "Running in region: $OS_REGION_NAME"
 
