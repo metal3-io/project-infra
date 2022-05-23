@@ -171,10 +171,13 @@ scp \
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
-ssh \
+ssh -vvv \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=10800 \
+  -o IPQoS=throughput \
+  -o ServerAliveInterval=60 \
+  -o ServerAliveCountMax=15 \
+  -o TCPKeepAlive=no \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
