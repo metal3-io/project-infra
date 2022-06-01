@@ -35,12 +35,13 @@ wait_for_ssh() {
   SERVER="${3:?}"
 
   echo "Waiting for SSH connection to Host[${SERVER}]"
-  until ssh -o ConnectTimeout=2 \
+  until ssh -o ConnectTimeout=10  \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     -i "${KEY}" \
     "${USER}"@"${SERVER}" echo "SSH to host is up" > /dev/null 2>&1
         do sleep 1
+        echo "waiting ${USER}@${SERVER}" 
   done
 
   echo "SSH connection to host[${SERVER}] is up."

@@ -74,7 +74,7 @@ echo "Running in region: $OS_REGION_NAME"
 if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* ]]
 then
     # Four node cluster
-    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-16C-32GB-300GB}"
 else
     # Two node cluster
     TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB-100GB}"
@@ -182,14 +182,18 @@ rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 echo "Config sshd"
 # Execute remote script
 # shellcheck disable=SC2029
-ssh \
+cat <<-EOF > "/tmp/sshd.conf"
+ClientAliveInterval 0
+ClientAliveCountMax 3
+TCPKeepAlive no
+EOF
+
+scp \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=15 \
-  -o ServerAliveCountMax=10 \
   -i "${METAL3_CI_USER_KEY}" \
-  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  echo "ClientAliveInterval 15" | sudo tee -a  /etc/ssh/ssh_config
+  "/tmp/sshd.conf" \
+  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 ssh \
   -o StrictHostKeyChecking=no \
@@ -198,7 +202,7 @@ ssh \
   -o ServerAliveCountMax=10 \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  echo "ClientAliveCountMax 9999" | sudo tee -a /etc/ssh/ssh_config
+  "sudo cp /tmp/sshd.conf /etc/ssh/sshd_config.d/"
 
 ssh \
   -o StrictHostKeyChecking=no \
@@ -207,26 +211,23 @@ ssh \
   -o ServerAliveCountMax=10 \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  echo "TCPKeepAlive no" | sudo tee -a /etc/ssh/ssh_config
+  "sudo systemctl restart sshd"
 
-ssh \
-  -G \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=15 \
-  -o ServerAliveCountMax=10 \
-  -i "${METAL3_CI_USER_KEY}" \
-  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-   sudo systemctl restart sshd
+echo "Waiting for the ssh to restart on ${TEST_EXECUTER_VM_NAME}"
+# Wait for the host to come up
+sleep 1m
+wait_for_ssh "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
+
+
 ssh \
-  -G \
+  -vvv \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=15 \
-  -o ServerAliveCountMax=10 \
+  -o ServerAliveInterval=0 \
+  -o ServerAliveCountMax=3 \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
