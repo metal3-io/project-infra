@@ -179,10 +179,50 @@ scp \
 # Clean temp vars.sh from the static worker
 rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 
+echo "Config sshd"
+# Execute remote script
+# shellcheck disable=SC2029
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  echo "ClientAliveInterval 15" | sudo tee -a  /etc/ssh/ssh_config
+
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  echo "ClientAliveCountMax 9999" | sudo tee -a /etc/ssh/ssh_config
+
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  echo "TCPKeepAlive no" | sudo tee -a /etc/ssh/ssh_config
+
+ssh \
+  -G \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+   sudo systemctl restart sshd
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
 ssh \
+  -G \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
   -o ServerAliveInterval=15 \
