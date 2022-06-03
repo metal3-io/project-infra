@@ -14,7 +14,7 @@ export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
 export UPGRADE_TEST
 export EPHEMERAL_TEST
-export GINKGO_FOCUS
+export GINKGO_FOCUS="ephemeral"
 
 if [ "${REPO_NAME}" == "metal3-dev-tools" ]
 then
