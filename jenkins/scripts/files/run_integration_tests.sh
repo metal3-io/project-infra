@@ -79,6 +79,8 @@ if [[ "${TESTS_FOR}" != "e2e_tests" ]]; then
   then
     pushd tested_repo
   else
+    export METAL3REPO="https://github.com/Nordix/metal3-dev-env.git"
+    export METAL3BRANCH="downgrade/ubuntu-centos"
     git clone "${METAL3REPO}" metal3
     pushd metal3
     git checkout "${METAL3BRANCH}"

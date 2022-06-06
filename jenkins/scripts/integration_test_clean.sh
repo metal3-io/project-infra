@@ -22,13 +22,13 @@ source "${CI_DIR}/utils.sh"
 
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
-# Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
-   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
-then
-  OS_REGION_NAME="Fra1"
-  OS_AUTH_URL="https://fra1.citycloud.com:5000"
-fi
+# # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
+# if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
+#    [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
+# then
+#   OS_REGION_NAME="Fra1"
+#   OS_AUTH_URL="https://fra1.citycloud.com:5000"
+# fi
 echo "Running in region: $OS_REGION_NAME"
 
 # Get the IP
