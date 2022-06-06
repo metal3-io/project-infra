@@ -22,9 +22,9 @@ source "${CI_DIR}/utils.sh"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
 if [ "${IMAGE_OS}" == "ubuntu" ]
 then
-  IMAGE_NAME="${CI_METAL3_IMAGE}"
+  IMAGE_NAME="lennart-test-ubuntu-metal3"
 else
-  IMAGE_NAME="${CI_METAL3_CENTOS_IMAGE}"
+  IMAGE_NAME="lennart-test-centos-metal3"
 fi
 
 REPO_ORG="${REPO_ORG:-metal3-io}"
