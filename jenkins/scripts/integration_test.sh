@@ -213,6 +213,48 @@ ssh \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   "sudo systemctl restart sshd"
 
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo modprobe -r kvm_intel"
+  ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo modprobe -r kvm"
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo modprobe kvm tdp_mmu=0"
+
+  ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo modprobe  kvm"
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=10 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo modprobe kvm_intel"
+
 echo "Waiting for the ssh to restart on ${TEST_EXECUTER_VM_NAME}"
 # Wait for the host to come up
 sleep 1m
