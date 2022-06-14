@@ -56,7 +56,7 @@ elif [ "${REPO_NAME}" == "ironic-ipa-downloader" ]
 then
   export IPA_DOWNLOADER_LOCAL_IMAGE="/home/${USER}/tested_repo"
 
-elif [[ "${REPO_NAME}" == "cluster-api-provider-"* ]]
+elif [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]]
 then
   export CAPM3REPO="${UPDATED_REPO}"
   export CAPM3BRANCH="${UPDATED_BRANCH}"
