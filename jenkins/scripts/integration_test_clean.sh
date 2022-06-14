@@ -60,4 +60,4 @@ ssh \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}"
+  /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}" "${TESTS_FOR}"
