@@ -6,8 +6,8 @@
     metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
     metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
     node_ips:
-      - "192.168.1.12"
-      - "192.168.1.15"
+      - "192.168.1.13"
+      - "192.168.1.14"
     serial_log_location: "/tmp/BMLlog"
   environment:
     EPHEMERAL_CLUSTER: "minikube"
