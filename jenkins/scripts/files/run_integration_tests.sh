@@ -79,11 +79,14 @@ if [[ ("${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env") ||
   # If we are testing ansible test from metal3-dev-env or e2e from capm3,
   # it will already be cloned to tested_repo
   pushd tested_repo
-elif [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]]; then
+elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
+  # only if the test is e2e clone capm3 and run the test from there
   git clone "${CAPM3REPO}" metal3
   pushd metal3
   git checkout "${CAPM3BRANCH}"
 else
+  # if not e2e test clone dev-env since all the other tests (integration, features) are
+  # triggered from there
   git clone "${METAL3REPO}" metal3
   pushd metal3
   git checkout "${METAL3BRANCH}"
