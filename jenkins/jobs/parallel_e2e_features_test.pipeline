@@ -234,6 +234,73 @@ pipeline {
             }
           }
         }
+
+        stage('Run e2e live iso test') {
+          options {
+            timeout(time: TIMEOUT, unit: 'SECONDS')
+          }
+          environment {
+            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-live-iso"
+            BUILD_TAG = "${env.BUILD_TAG}-live-iso"
+            GINKGO_FOCUS = "live-iso"
+
+          }
+          steps {
+
+            withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+              sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
+              string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
+            ]) {
+              ansiColor('xterm') {
+                sh "./jenkins/scripts/integration_test.sh"
+              }
+            }
+          }
+          post {
+            always {
+              script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
+                  echo "Failed due to timeout"
+                  currentBuild.result = 'FAILURE'
+                }
+              }
+              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
+              ]) {
+                sh "./jenkins/scripts/fetch_logs.sh"
+              }
+              archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+            }
+            success {
+              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
+              ]) {
+                script {
+                  if ("${SKIP_DELETION}" == "true") {
+                    echo "Skipping environment clean up"
+                  } else {
+                    sh "./jenkins/scripts/integration_test_clean.sh"
+                  }
+                }
+              }
+            }
+            cleanup {
+              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
+              ]) {
+                script {
+                  if ("${SKIP_DELETION}" == "true") {
+                    echo "Skipping VM deletion"
+                  } else {
+                    sh "./jenkins/scripts/integration_delete.sh"
+                  }
+                }
+              }
+            }
+          }
+        }
+
       }
     }
   }
