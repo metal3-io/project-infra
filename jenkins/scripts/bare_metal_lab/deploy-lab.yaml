@@ -3,6 +3,8 @@
     bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
     bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
     github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+    # If REPO_NAME == metal3-dev-env clone to tested_repo otherwise clone to metal3
+    metal3_dir : "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
     metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
     metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
     node_ips:
@@ -112,20 +114,20 @@
         state: poweroff
       with_items: "{{ node_ips }}"
       ignore_errors: true
-      tags: clean
+      tags: cleanup
 
     - name: Clone the metal3-dev-env repo
       git:
         repo: "{{ metal3_dev_env_repo }}"
-        dest: "/home/{{ ansible_user_id }}/metal3-dev-env"
+        dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
         version: "{{ metal3_dev_env_branch }}"
       tags: git
 
     - name: Clean any existing setup
       shell:
         cmd: "make clean"
-        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
-      tags: clean
+        chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
+      tags: cleanup
 
     - name: Remove local container registry
       ansible.builtin.command: docker rm -f registry
@@ -152,18 +154,18 @@
     - name: Add config file for metal3-dev-env
       copy:
         src: /tmp/vars.sh
-        dest: "/home/{{ ansible_user_id }}/metal3-dev-env/config_{{ ansible_user_id }}.sh"
+        dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/config_{{ ansible_user_id }}.sh"
 
     - name: Install requirements for host
       shell:
         cmd: "make install_requirements"
-        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+        chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
       tags: install_requirements
 
     - name: Configure host
       shell:
         cmd: "make configure_host"
-        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+        chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
       environment:
         NUM_NODES: 0
         NUM_OF_CONTROLPLANE_REPLICAS: 0
@@ -182,7 +184,7 @@
     - name: Launch management cluster
       shell:
         cmd: make launch_mgmt_cluster
-        chdir: "/home/{{ ansible_user_id }}/metal3-dev-env/"
+        chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
       tags: launch_mgmt_cluster
 
     - name: Add interface to provisioning bridge

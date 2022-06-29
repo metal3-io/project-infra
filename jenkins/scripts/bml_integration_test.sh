@@ -85,6 +85,7 @@ ssh \
   -o SendEnv="BML_ILO_USERNAME" \
   -o SendEnv="BML_ILO_PASSWORD" \
   -o SendEnv="GITHUB_TOKEN" \
+  -o SendEnv="REPO_NAME" \
   -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
   -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
   ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml

@@ -47,6 +47,36 @@ fi
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
 export FORCE_REPO_UPDATE=false
 
+if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
+  #Must match with run_fetch_logs.sh
+  export CONTAINER_RUNTIME="docker"
+  export EPHEMERAL_CLUSTER="kind"
+else
+  export EPHEMERAL_CLUSTER="minikube"
+fi
+
+if [[ ${BARE_METAL_LAB} == "true" ]]
+then
+  # In the bare metal lab, we have already cloned metal3-dev-env and we run integration tests
+  # so no need to clone other repos.
+  if [[ "${REPO_NAME}" == "metal3-dev-env" ]]
+  then
+    cd tested_repo
+  else
+    cd metal3
+  fi
+
+  # See bare metal lab infrastructure documentation:
+  # https://wiki.nordix.org/pages/viewpage.action?spaceKey=CPI&title=Bare+Metal+Lab
+  # In the bare metal lab, the external network has vlan id 3
+  export EXTERNAL_VLAN_ID="3"
+  # Pin node image to be used in BML to CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2
+  export IMAGE_NAME="CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2"
+  export IMAGE_LOCATION="https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.23.3"
+  make test
+  exit 0
+fi
+
 # Clone the source repository
 cd "/home/${USER}"
 git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
@@ -65,16 +95,8 @@ then
 fi
 cd "/home/${USER}"
 
-
-if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-  #Must match with run_fetch_logs.sh
-  export CONTAINER_RUNTIME="docker"
-  export EPHEMERAL_CLUSTER="kind"
-else
-  export EPHEMERAL_CLUSTER="minikube"
-fi
 if [[ ("${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env") ||
-      ("${TESTS_FOR}" == "e2e_tests" && "${REPO_NAME}" == "cluster-api-provider-metal3") 
+      ("${TESTS_FOR}" == "e2e_tests" && "${REPO_NAME}" == "cluster-api-provider-metal3")
   ]]; then
   # If we are testing ansible test from metal3-dev-env or e2e from capm3,
   # it will already be cloned to tested_repo
@@ -90,19 +112,6 @@ else
   git clone "${METAL3REPO}" metal3
   pushd metal3
   git checkout "${METAL3BRANCH}"
-fi
-
-if [[ ${BARE_METAL_LAB} == "true" ]]
-then
-  # See bare metal lab infrastructure documentation:
-  # https://wiki.nordix.org/pages/viewpage.action?spaceKey=CPI&title=Bare+Metal+Lab
-  # In the bare metal lab, the external network has vlan id 3
-  export EXTERNAL_VLAN_ID="3"
-  # Pin node image to be used in BML to CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2
-  export IMAGE_NAME="CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2"
-  export IMAGE_LOCATION="https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.23.3"
-  make test
-  exit 0
 fi
 
 if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
