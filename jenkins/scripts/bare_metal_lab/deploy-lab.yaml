@@ -42,7 +42,7 @@
     - name: Ensure that iLO credentials and github token can be passed over SSH
       lineinfile:
         path: "/etc/ssh/sshd_config"
-        line: "AcceptEnv LANG LC_* BML_* GITHUB_TOKEN"
+        line: "AcceptEnv LANG LC_* BML_* GITHUB_TOKEN REPO_NAME"
       become: true
       register: sshd_config
 
@@ -85,6 +85,7 @@
         - /opt/metal3-dev-env
         - /tmp/mariadb.csr
         - /tmp/ironic.csr
+        - /tmp/manifests
         - "{{ serial_log_location }}"
       tags: cleanup
 
