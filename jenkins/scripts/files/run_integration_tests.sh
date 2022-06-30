@@ -12,7 +12,6 @@ export CAPM3_VERSION
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
-export UPGRADE_TEST
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
 
@@ -31,11 +30,6 @@ fi
 if [ "${NUM_NODES}" == "null" ]
 then
   unset NUM_NODES
-fi
-
-if [ "${UPGRADE_TEST}" == "null" ]
-then
-  unset UPGRADE_TEST
 fi
 
 if [ "${EPHEMERAL_TEST}" == "null" ]
