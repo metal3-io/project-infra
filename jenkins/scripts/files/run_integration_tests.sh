@@ -32,6 +32,11 @@ then
   unset NUM_NODES
 fi
 
+if [ "${GINKGO_FOCUS}" == "null" ]
+then
+  unset GINKGO_FOCUS
+fi
+
 if [ "${EPHEMERAL_TEST}" == "null" ]
 then
   unset EPHEMERAL_TEST
