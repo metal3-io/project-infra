@@ -22,11 +22,6 @@ then
   export KUBERNETES_VERSION
 fi
 
-if [ "${CAPM3_VERSION}" == "v1alpha4" ]
-then
-  export KUBERNETES_VERSION="v1.21.2"
-fi
-
 if [ "${CAPM3_VERSION}" == "v1alpha5" ]
 then
   export KUBERNETES_VERSION="v1.23.5"

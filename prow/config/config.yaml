@@ -97,9 +97,6 @@ branch-protection:
             release-0.5:
               required_status_checks:
                 contexts: ["test-v1a5-ubuntu-integration"]
-            release-0.4:
-              required_status_checks:
-                contexts: ["test-v1a4-ubuntu-integration"]
         ironic-image:
           branches:
             main:
@@ -118,9 +115,6 @@ branch-protection:
             release-0.1:
               required_status_checks:
                 contexts: ["test-v1a5-ubuntu-integration"]
-            release-0.0:
-              required_status_checks:
-                contexts: ["test-v1a4-ubuntu-integration"]
         mariadb-image:
           required_status_checks:
             contexts: ["test-v1b1-ubuntu-integration"]
