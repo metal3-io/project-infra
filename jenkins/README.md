@@ -27,8 +27,6 @@ The job result will be posted as a comment.
 * **/test-v1b1-centos-integration** run integration tests for v1beta1 on CentOS
 * **/test-v1a5-ubuntu-integration** run integration tests for v1alpha5 on Ubuntu
 * **/test-v1a5-centos-integration** run integration tests for v1alpha5 on CentOS
-* **/test-v1a4-ubuntu-integration** run integration tests for v1alpha4 on Ubuntu
-* **/test-v1a4-centos-integration** run integration tests for v1alpha4 on CentOS
 
 Usually, after the integration test part is completed, Jenkins executes another
 script to clean up the environment first and then deletes the VM. However, sometimes
