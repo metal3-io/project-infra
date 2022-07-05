@@ -52,6 +52,14 @@ do
       > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
       2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
     done
+    INIT_CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.initContainers[].name')"
+    for CONTAINER in $INIT_CONTAINERS
+    do
+      mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}"
+      kubectl --kubeconfig="${kconfig}" logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
+      > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}/stdout.log"\
+      2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}/stderr.log"
+    done
   done
 done
 }
