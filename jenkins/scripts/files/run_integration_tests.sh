@@ -24,7 +24,7 @@ fi
 
 if [ "${CAPM3_VERSION}" == "v1alpha5" ]
 then
-  export KUBERNETES_VERSION="v1.23.5"
+  export KUBERNETES_VERSION="v1.23.8"
 fi
 
 if [ "${NUM_NODES}" == "null" ]
