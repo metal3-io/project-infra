@@ -88,41 +88,41 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-centos-integration", "test-v1b1-ubuntu-integration"]
+                contexts: ["test-centos-integration-main", "test-ubuntu-integration-main"]
         cluster-api-provider-metal3:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-main"]
             release-0.5:
               required_status_checks:
-                contexts: ["test-v1a5-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-release-0-5"]
         ironic-image:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-main"]
         ironic-ipa-downloader:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-main"]
         ip-address-manager:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1b1-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-main"]
             release-0.1:
               required_status_checks:
-                contexts: ["test-v1a5-ubuntu-integration"]
+                contexts: ["test-ubuntu-integration-release-0-5"]
         mariadb-image:
           required_status_checks:
-            contexts: ["test-v1b1-ubuntu-integration"]
+            contexts: ["test-ubuntu-integration-main"]
         metal3-dev-env:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-v1a5-centos-integration", "test-v1b1-ubuntu-integration"]
+                contexts: ["test-centos-integration-release-0-5", "test-ubuntu-integration-main"]
 
 
 deck:
