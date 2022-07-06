@@ -23,20 +23,20 @@ triggered on PR from metal3-dev-env, baremetal-operator, ironic-image, ip-addres
 and cluster-api-provider-metal3 repositories by commenting the commands below.
 The job result will be posted as a comment.
 
-* **/test-v1b1-ubuntu-integration** run integration tests for v1beta1 on Ubuntu
-* **/test-v1b1-centos-integration** run integration tests for v1beta1 on CentOS
-* **/test-v1a5-ubuntu-integration** run integration tests for v1alpha5 on Ubuntu
-* **/test-v1a5-centos-integration** run integration tests for v1alpha5 on CentOS
+* **/test-ubuntu-integration-main** run integration tests with CAPM3 API version v1beta1 and branch main on Ubuntu
+* **/test-centos-integration-main** run integration tests with CAPM3 API version v1beta1 and branch main on CentOS
+* **/test-ubuntu-integration-release-0-5** run integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
+* **/test-centos-integration-release-0-5** run integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on CentOS
 
 Usually, after the integration test part is completed, Jenkins executes another
 script to clean up the environment first and then deletes the VM. However, sometimes
 it may be desirable to keep the VM for debugging purposes. To avoid clean up
 and deletion operations, there are separate triggers phrases as below:
 
-* **/keep-test-v1b1-ubuntu-integration** run integration tests for v1beta1 on Ubuntu
-* **/keep-test-v1b1-centos-integration** run integration tests for v1beta1 on CentOS
-* **/keep-test-v1a5-ubuntu-integration** run integration tests for v1alpha5 on Ubuntu
-* **/keep-test-v1a5-centos-integration** run integration tests for v1alpha5 on CentOS
+* **/keep-test-ubuntu-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on Ubuntu
+* **/keep-centos-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on CentOS
+* **/keep-ubuntu-integration-release-0-5** run keep integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
+* **/keep-centos-integration-release-0-5** run keep integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on CentOS
 
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
@@ -61,7 +61,7 @@ whitelist if trusted.
 Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
-[job](https://jenkins.nordix.org/view/Metal3/job/metal3_bmo_v1b1_integration_test_ubuntu/).
+[job](https://jenkins.nordix.org/view/Metal3/job/metal3_bmo_main_integration_test_ubuntu/).
 Please note that the logs will be removed 30 days after creation or after 100 subsequent job runs,
 whichever occurs first.
 
