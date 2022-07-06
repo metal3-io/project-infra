@@ -119,10 +119,23 @@
 
     - name: Clone the metal3-dev-env repo
       git:
-        repo: "{{ metal3_dev_env_repo }}"
+        repo: "https://github.com/metal3-io/metal3-dev-env.git"
         dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
-        version: "{{ metal3_dev_env_branch }}"
+        version: "main"
       tags: git
+
+    - name: Merge branch for PR
+      command: "{{ item }}"
+      args:
+        chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
+      loop:
+        - git config user.email "test@test.test"
+        - git config user.name "Test"
+        - git remote add test {{ metal3_dev_env_repo }}
+        - git fetch test
+        - git merge {{ metal3_dev_env_branch }}"
+      when: (metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
+            (metal3_dev_env_branch != "main")
 
     - name: Clean any existing setup
       shell:
