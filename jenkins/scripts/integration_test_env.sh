@@ -15,7 +15,7 @@ then
   if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
     export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
     export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
-    export CAPM3_LOCAL_IMAGE_BRANCH="${CAPM3RELEASEBRANCH}"    
+    export CAPM3_LOCAL_IMAGE_BRANCH="${CAPM3RELEASEBRANCH}"
   fi
 
 elif [ "${REPO_NAME}" == "baremetal-operator" ]
