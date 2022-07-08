@@ -399,7 +399,6 @@ presubmits:
     branches:
     - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -433,7 +432,6 @@ presubmits:
     branches:
     - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -467,7 +465,6 @@ presubmits:
     branches:
     - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -529,7 +526,6 @@ presubmits:
     branches:
     - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -563,7 +559,6 @@ presubmits:
     branches:
     - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
