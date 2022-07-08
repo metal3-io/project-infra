@@ -9,6 +9,7 @@ source "${VARS_FILE}"
 
 export CAPI_VERSION
 export CAPM3_VERSION
+export CAPM3RELEASEBRANCH
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export NUM_NODES
