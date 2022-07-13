@@ -40,7 +40,14 @@ then
   echo "Executer floating IP ${TEST_EXECUTER_FIP_ID} is deleted."
 
   # Check and delete orphaned floating IPs
-  openstack floating ip list --status "DOWN" --column "ID" -f json | jq --raw-output '.[]."ID"' | xargs -0 openstack floating ip delete || true
+  echo "Checking if there are any existing orphaned floating IPs"
+  ORPHANED_FLOATING_IP_LIST="$(openstack floating ip list --status "DOWN" --column "ID" -f json | jq --raw-output '.[]."ID"')"
+  if [ -z "$ORPHANED_FLOATING_IP_LIST" ]; then
+    echo "Orphaned floating IPs are not found."
+  else
+    echo "Deleting all orphaned floating IP addresses."
+    for floating_ip in $ORPHANED_FLOATING_IP_LIST; do openstack floating ip delete $floating_ip; done
+  fi
 fi
 
 # Delete executer vm
