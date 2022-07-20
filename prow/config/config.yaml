@@ -97,6 +97,9 @@ branch-protection:
             release-0.5:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-0-5"]
+            release-1.1:
+              required_status_checks:
+                contexts: ["test-ubuntu-integration-release-1-1"]
         ironic-image:
           branches:
             main:
@@ -115,6 +118,9 @@ branch-protection:
             release-0.1:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-0-5"]
+            release-1.1:
+              required_status_checks:
+                contexts: ["test-ubuntu-integration-release-1-1"]
         mariadb-image:
           branches:
             main:
@@ -124,7 +130,7 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-centos-integration-main", "test-ubuntu-integration-main"]
+                contexts: ["test-centos-integration-release-1-1", "test-ubuntu-integration-main"]
 
 
 deck:
@@ -391,8 +397,8 @@ presubmits:
         imagePullPolicy: Always
   - name: gofmt
     branches:
+    - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -424,8 +430,8 @@ presubmits:
         imagePullPolicy: Always
   - name: golint
     branches:
+    - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -457,8 +463,8 @@ presubmits:
         imagePullPolicy: Always
   - name: govet
     branches:
+    - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -518,8 +524,8 @@ presubmits:
         imagePullPolicy: Always
   - name: generate
     branches:
+    - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -551,8 +557,8 @@ presubmits:
         imagePullPolicy: Always
   - name: unit
     branches:
+    - release-1.1
     - release-0.5
-    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
