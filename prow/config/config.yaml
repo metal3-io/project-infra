@@ -368,6 +368,7 @@ presubmits:
   - name: gofmt
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -397,7 +398,6 @@ presubmits:
         imagePullPolicy: Always
   - name: gofmt
     branches:
-    - release-1.1
     - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -415,6 +415,7 @@ presubmits:
   - name: golangci-lint
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -430,7 +431,6 @@ presubmits:
         imagePullPolicy: Always
   - name: golint
     branches:
-    - release-1.1
     - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -448,6 +448,7 @@ presubmits:
   - name: govet
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -463,7 +464,6 @@ presubmits:
         imagePullPolicy: Always
   - name: govet
     branches:
-    - release-1.1
     - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -509,6 +509,7 @@ presubmits:
   - name: generate
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -524,7 +525,6 @@ presubmits:
         imagePullPolicy: Always
   - name: generate
     branches:
-    - release-1.1
     - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -542,6 +542,7 @@ presubmits:
   - name: unit
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -557,7 +558,6 @@ presubmits:
         imagePullPolicy: Always
   - name: unit
     branches:
-    - release-1.1
     - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -668,6 +668,7 @@ presubmits:
   - name: gofmt
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -683,7 +684,6 @@ presubmits:
         imagePullPolicy: Always
   - name: gofmt
     branches:
-    - release-0.0
     - release-0.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -701,6 +701,7 @@ presubmits:
   - name: govet
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -716,7 +717,6 @@ presubmits:
         imagePullPolicy: Always
   - name: govet
     branches:
-    - release-0.0
     - release-0.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -762,6 +762,7 @@ presubmits:
   - name: unit
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -777,7 +778,6 @@ presubmits:
         imagePullPolicy: Always
   - name: unit
     branches:
-    - release-0.0
     - release-0.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
@@ -795,6 +795,7 @@ presubmits:
   - name: generate
     branches:
     - main
+    - release-1.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -810,7 +811,6 @@ presubmits:
         imagePullPolicy: Always
   - name: generate
     branches:
-    - release-0.0
     - release-0.1
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
