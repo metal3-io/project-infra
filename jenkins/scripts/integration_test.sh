@@ -111,7 +111,7 @@ then
     exit 1
   fi
   TEST_EXECUTER_IP="$FLOATING_IP"
-
+  echo "DEBUG: Floating IP has been created"
   # Attach floating IP
   openstack server add floating ip \
   "${TEST_EXECUTER_VM_NAME}" \
