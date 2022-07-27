@@ -82,7 +82,6 @@ then
   # https://wiki.nordix.org/pages/viewpage.action?spaceKey=CPI&title=Bare+Metal+Lab
   # In the bare metal lab, the external network has vlan id 3
   export EXTERNAL_VLAN_ID="3"
-  
   make test
   exit 0
 fi
