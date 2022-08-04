@@ -90,7 +90,7 @@ ssh \
   -o SendEnv="REPO_NAME" \
   -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
   -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
-  ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml
+  ANSIBLE_FORCE_COLOR=true ansible-playbook -vvv /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"
 # Execute remote script
