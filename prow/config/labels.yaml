@@ -296,6 +296,12 @@ default:
       target: both
       prowPlugin: lifecycle
       addedBy: anyone
+    - color: d3e2f0
+      description: Indicates that an issue or PR should not be auto-closed due to staleness.
+      name: lifecycle/frozen
+      target: both
+      prowPlugin: lifecycle
+      addedBy: anyone
     - color: e11d21
       description: Indicates that a PR cannot be merged because it has merge conflicts with HEAD.
       name: needs-rebase
