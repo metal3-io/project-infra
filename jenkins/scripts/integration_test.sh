@@ -148,6 +148,11 @@ IRONIC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}"
 GINKGO_FOCUS="${GINKGO_FOCUS}"
 EOF
 
+# Write variables from pipeline for metal3 dev tools integration tests
+if [[  -f "${CI_DIR}/files/devtoolsvars.sh" ]] && [[ "${REPO_NAME}" == "metal3-dev-tools" ]];then
+  cat "${CI_DIR}/files/devtoolsvars.sh" >> "${CI_DIR}/files/${TEMP_FILE_NAME}"
+fi
+
 # Only set these variables if they actually have values.
 # If the variable is unset or empty (""), do nothing.
 if [[ ! -z "${CAPIRELEASE:+x}" ]]
