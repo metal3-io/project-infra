@@ -9,7 +9,7 @@ This is taken care of in the `deploy-lab.yaml` playbook.
 
 ## Running the playbook
 
-* Fill in the BMH resource definition in templates/
+* Comment/uncomment the hosts you want to use in the `vars` section of `deploy-lab.yaml`
 * Set environment variables `BML_ILO_USERNAME` and `BML_ILO_PASSWORD` for the login to the bare metal hosts
 
 Then:

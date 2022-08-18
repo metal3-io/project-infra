@@ -7,10 +7,27 @@
     metal3_dir : "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
     metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
     metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
-    node_ips:
-      - "192.168.1.12"
-      - "192.168.1.15"
     serial_log_location: "/tmp/BMLlog"
+    bare_metal_hosts:
+      # - id: "02"
+      #   mac: b4:b5:2f:6d:59:b0
+      #   ip: "192.168.1.11"
+      - id: "03"
+        mac: b4:b5:2f:6d:89:d8
+        ip: "192.168.1.12"
+      # - id: "04"
+      #   mac: 80:c1:6e:7a:e8:10
+      #   ip: "192.168.1.13"
+      # - id: "05"
+      #   mac: 80:c1:6e:7a:5a:a8
+      #   ip: "192.168.1.14"
+      - id: "06"
+        mac: b4:b5:2f:6d:68:10
+        ip: "192.168.1.15"
+      # - id: "07"
+      #   mac: b4:b5:2f:6d:a9:d8
+      #   ip: "192.168.1.16"
+
   environment:
     EPHEMERAL_CLUSTER: "minikube"
     EXTERNAL_VLAN_ID: 3
@@ -101,19 +118,19 @@
         cmd: |
           mkdir -p "{{ serial_log_location }}"
           nohup /bin/bash <<EOF
-          ssh -o "KexAlgorithms diffie-hellman-group14-sha1" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item }}  'vsp' > "{{ serial_log_location }}/{{ item }}.txt" &
+          ssh -o "KexAlgorithms diffie-hellman-group14-sha1" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item.ip }}  'vsp' > "{{ serial_log_location }}/{{ item.ip }}.txt" &
           EOF
           exit 0
           EOT
-      with_items: "{{ node_ips }}"
+      with_items: "{{ bare_metal_hosts }}"
 
     - name: Power off BMHs
       community.general.hpilo_boot:
-        host: "{{ item }}"
+        host: "{{ item.ip }}"
         login: "{{ bml_ilo_username }}"
         password: "{{ bml_ilo_password }}"
         state: poweroff
-      with_items: "{{ node_ips }}"
+      with_items: "{{ bare_metal_hosts }}"
       ignore_errors: true
       tags: cleanup
 
@@ -133,7 +150,7 @@
         - git config user.name "Test"
         - git remote add test {{ metal3_dev_env_repo }}
         - git fetch test
-        - git merge {{ metal3_dev_env_branch }}"
+        - git merge test/{{ metal3_dev_env_branch }}
       when: (metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
             (metal3_dev_env_branch != "main")
 
