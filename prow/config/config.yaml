@@ -698,6 +698,23 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.16
         imagePullPolicy: Always
+  - name: golangci-lint
+    branches:
+    - main
+    - release-1.1
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/ensure-golangci-lint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
   - name: govet
     branches:
     - main
