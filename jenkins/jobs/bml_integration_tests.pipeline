@@ -78,16 +78,25 @@ pipeline {
           }
         }
       }
-      post {
-        always {
-          withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
-            withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
-              sh "./jenkins/scripts/fetch_logs.sh"
-            }
-          }
-          archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+    }
+  }
+  post {
+    always {
+      withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
+        withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
+          sh "./jenkins/scripts/fetch_logs.sh"
         }
       }
+        archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+    }
+    success {
+      withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
+        withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
+          withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]){
+            sh "./jenkins/scripts/bml_cleanup.sh"
+          }
+        }
+      }  
     }
   }
 }
