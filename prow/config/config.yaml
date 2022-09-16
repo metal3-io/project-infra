@@ -365,6 +365,23 @@ presubmits:
         imagePullPolicy: Always
 
   metal3-io/cluster-api-provider-metal3:
+  - name: gomod
+    branches:
+    - main
+    - release-1.1
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
   - name: gofmt
     branches:
     - main
@@ -651,6 +668,23 @@ presubmits:
         imagePullPolicy: Always
 
   metal3-io/ip-address-manager:
+  - name: gomod
+    branches:
+    - main
+    - release-1.1
+    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.17
+        imagePullPolicy: Always
   - name: gosec
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
