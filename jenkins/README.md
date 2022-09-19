@@ -51,7 +51,7 @@ but deleted after 24 hours, to avoid garbage collection of VMs.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_main_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_daily_main_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
 deleted at the end of v1alphaX/v1betaX integration tests.
@@ -81,11 +81,11 @@ repository contains the jobs pipeline.
 
 ### Jenkins Job Builder, a.k.a. job definition
 
-We use [Jenkins Job Builder](https://docs.openstack.org/infra/jenkins-job-builder/index.html) (JJB) to
+We use [Jenkins Job Builder](https://docs.openstack.org/infra/jenkins-job-builder/attic/index.html) (JJB) to
 write Jenkins job definitions in YAML format. It helps us to keep job definitions in source control
 rather than writing/creating them directly in Jenkins UI. Your YAML formatted job definition
 will create a Jenkins job, which in turn executes your specified jenkins pipeline.
-Check [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/definition.html) to
+Check [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/attic/definition.html) to
 familiarize yourself with the JJB syntax. Our job definitions are stored in [Nordix Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd)
 instance under `cicd/jjb/metal3/` path. Please, note that [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
 gerrit repository includes job defitinions for other projects as well that share the same Jenkins environment.
