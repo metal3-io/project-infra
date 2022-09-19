@@ -5,12 +5,15 @@ approvers:
  - furkatgofurov7
 
 reviewers:
- - macaptain
  - smoshiur1237
  - lentzi90
  - mboukhalfa
+ - Rozzii
 
 emeritus_approvers:
  - maelk
  - russellb
  - fmuyassarov
+
+emeritus_reviewers:
+ - macaptain
