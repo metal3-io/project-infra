@@ -25,6 +25,8 @@ The job result will be posted as a comment.
 
 * **/test-ubuntu-integration-main** run integration tests with CAPM3 API version v1beta1 and branch main on Ubuntu
 * **/test-centos-integration-main** run integration tests with CAPM3 API version v1beta1 and branch main on CentOS
+* **/test-ubuntu-integration-release-1-2** run integration tests with CAPM3 API version v1beta1 and branch release-1.2 on Ubuntu
+* **/test-centos-integration-release-1-2** run integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
 * **/test-ubuntu-integration-release-1-1** run integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
 * **/test-centos-integration-release-1-1** run integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
 * **/test-ubuntu-integration-release-0-5** run integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
@@ -37,6 +39,8 @@ and deletion operations, there are separate triggers phrases as below:
 
 * **/keep-test-ubuntu-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on Ubuntu
 * **/keep-centos-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on CentOS
+* **/keep-ubuntu-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on Ubuntu
+* **/keep-centos-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
 * **/keep-ubuntu-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
 * **/keep-centos-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
 * **/keep-ubuntu-integration-release-0-5** run keep integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
@@ -47,7 +51,7 @@ but deleted after 24 hours, to avoid garbage collection of VMs.
 
 ## Cloud Resources cleanup
 
-There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3/job/metal3_main_integration_tests_cleanup/)
+There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_daily_main_integration_tests_cleanup/)
 that cleans up all the leftover VMs from
 [CityCloud](https://www.citycloud.com/) every 6 hours which has failed to be
 deleted at the end of v1alphaX/v1betaX integration tests.
@@ -77,11 +81,11 @@ repository contains the jobs pipeline.
 
 ### Jenkins Job Builder, a.k.a. job definition
 
-We use [Jenkins Job Builder](https://docs.openstack.org/infra/jenkins-job-builder/index.html) (JJB) to
+We use [Jenkins Job Builder](https://docs.openstack.org/infra/jenkins-job-builder/attic/index.html) (JJB) to
 write Jenkins job definitions in YAML format. It helps us to keep job definitions in source control
 rather than writing/creating them directly in Jenkins UI. Your YAML formatted job definition
 will create a Jenkins job, which in turn executes your specified jenkins pipeline.
-Check [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/definition.html) to
+Check [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/attic/definition.html) to
 familiarize yourself with the JJB syntax. Our job definitions are stored in [Nordix Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd)
 instance under `cicd/jjb/metal3/` path. Please, note that [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
 gerrit repository includes job defitinions for other projects as well that share the same Jenkins environment.
