@@ -94,9 +94,6 @@ branch-protection:
             main:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-main"]
-            release-0.5:
-              required_status_checks:
-                contexts: ["test-ubuntu-integration-release-0-5"]
             release-1.1:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-1"]
@@ -118,9 +115,6 @@ branch-protection:
             main:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-main"]
-            release-0.1:
-              required_status_checks:
-                contexts: ["test-ubuntu-integration-release-0-5"]
             release-1.1:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-1"]
@@ -421,22 +415,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/securego/gosec:latest
         imagePullPolicy: Always
-  - name: gofmt
-    branches:
-    - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/gofmt.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
-        imagePullPolicy: Always
   - name: golangci-lint
     branches:
     - main
@@ -455,22 +433,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: golint
-    branches:
-    - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/golint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
-        imagePullPolicy: Always
   - name: govet
     branches:
     - main
@@ -488,22 +450,6 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/golang:1.17
-        imagePullPolicy: Always
-  - name: govet
-    branches:
-    - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/govet.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
@@ -551,22 +497,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: generate
-    branches:
-    - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/codegen.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
-        imagePullPolicy: Always
   - name: unit
     branches:
     - main
@@ -584,22 +514,6 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/golang:1.17
-        imagePullPolicy: Always
-  - name: unit
-    branches:
-    - release-0.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/unit.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -730,22 +644,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: gofmt
-    branches:
-    - release-0.1
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/gofmt.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
-        imagePullPolicy: Always
   - name: golangci-lint
     branches:
     - main
@@ -781,22 +679,6 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/golang:1.17
-        imagePullPolicy: Always
-  - name: govet
-    branches:
-    - release-0.1
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/govet.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
@@ -844,22 +726,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.17
         imagePullPolicy: Always
-  - name: unit
-    branches:
-    - release-0.1
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/unit.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
-        imagePullPolicy: Always
   - name: generate
     branches:
     - main
@@ -877,22 +743,6 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/golang:1.17
-        imagePullPolicy: Always
-  - name: generate
-    branches:
-    - release-0.1
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/codegen.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.16
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
