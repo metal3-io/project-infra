@@ -29,8 +29,6 @@ The job result will be posted as a comment.
 * **/test-centos-integration-release-1-2** run integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
 * **/test-ubuntu-integration-release-1-1** run integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
 * **/test-centos-integration-release-1-1** run integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
-* **/test-ubuntu-integration-release-0-5** run integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
-* **/test-centos-integration-release-0-5** run integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on CentOS
 
 Usually, after the integration test part is completed, Jenkins executes another
 script to clean up the environment first and then deletes the VM. However, sometimes
@@ -43,8 +41,6 @@ and deletion operations, there are separate triggers phrases as below:
 * **/keep-centos-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
 * **/keep-ubuntu-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
 * **/keep-centos-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
-* **/keep-ubuntu-integration-release-0-5** run keep integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on Ubuntu
-* **/keep-centos-integration-release-0-5** run keep integration tests with CAPM3 API version v1alpha5 and branch release-0.5 on CentOS
 
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
