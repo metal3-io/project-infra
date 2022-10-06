@@ -13,9 +13,8 @@ then
   # for CAPM3 to verify the process (not BMO due to the build time for BMO image)
 
   if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
-    export BAREMETAL_OPERATOR_LOCAL_IMAGE="https://github.com/metal3-io/baremetal-operator.git"
-    export CAPM3_LOCAL_IMAGE="https://github.com/metal3-io/cluster-api-provider-metal3.git"
-    export CAPM3_LOCAL_IMAGE_BRANCH="${CAPM3RELEASEBRANCH}"
+    export BUILD_BMO_LOCALLY="true"
+    export BUILD_CAPM3_LOCALLY="true"
     export BMOBRANCH="main"
   fi
 
@@ -24,7 +23,7 @@ then
   export BMOREPO="${UPDATED_REPO}"
   export BMOBRANCH="${UPDATED_BRANCH}"
   export BMOPATH="/home/${USER}/tested_repo"
-  export BAREMETAL_OPERATOR_LOCAL_IMAGE="${BMOPATH}"
+  export BUILD_BMO_LOCALLY="true"
   export IRONIC_KEEPALIVED_LOCAL_IMAGE="${BMOPATH}/resources/keepalived-docker"
 
 elif [ "${REPO_NAME}" == "ip-address-manager" ]
@@ -32,7 +31,7 @@ then
   export IPAMREPO="${UPDATED_REPO}"
   export IPAMBRANCH="${UPDATED_BRANCH}"
   export IPAMPATH="/home/${USER}/tested_repo"
-  export IPAM_LOCAL_IMAGE="${IPAMPATH}"
+  export BUILD_IPAM_LOCALLY="true"
 
 elif [ "${REPO_NAME}" == "ironic-image" ]
 then
@@ -54,11 +53,7 @@ then
   export CAPM3REPO="${UPDATED_REPO}"
   export CAPM3BRANCH="${UPDATED_BRANCH}"
   export CAPM3PATH="/home/${USER}/tested_repo"
-  export CAPM3_LOCAL_IMAGE="${CAPM3PATH}"
-
-elif [[ "${REPO_NAME}" == "project-infra" ]]
-then
-  export CAPM3_LOCAL_IMAGE_BRANCH="${CAPM3RELEASEBRANCH}"
+  export BUILD_CAPM3_LOCALLY="true"
 fi
 
 export GITHUB_TOKEN
