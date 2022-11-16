@@ -71,6 +71,7 @@ then
   # In the bare metal lab, the external network has vlan id 3
   export EXTERNAL_VLAN_ID="3"
   # Pin node image to be used in BML to CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2
+  export KUBERNETES_VERSION="v1.24.1"
   export IMAGE_NAME="CENTOS_8_NODE_IMAGE_K8S_v1.23.3.qcow2"
   export IMAGE_LOCATION="https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.23.3"
   make test
