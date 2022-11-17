@@ -1023,3 +1023,19 @@ presubmits:
           value: "TRUE"
         image: docker.io/garethr/kubeval:latest
         imagePullPolicy: Always
+
+  metal3-io/ironic-ipa-downloader:
+  - name: shellcheck
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+        - args:
+            - ./hack/shellcheck.sh
+          command:
+            - sh
+          env:
+            - name: IS_CONTAINER
+              value: "TRUE"
+          image: docker.io/koalaman/shellcheck-alpine:stable
+          imagePullPolicy: Always
