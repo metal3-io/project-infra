@@ -136,9 +136,9 @@
 
     - name: Clone the metal3-dev-env repo
       git:
-        repo: "https://github.com/metal3-io/metal3-dev-env.git"
+        repo: "https://github.com/Nordix/metal3-dev-env.git"
         dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
-        version: "main"
+        version: "increase-calico-timeout/sunnat"
       tags: git
 
     - name: Merge branch for PR
@@ -151,8 +151,8 @@
         - git remote add test {{ metal3_dev_env_repo }}
         - git fetch test
         - git merge test/{{ metal3_dev_env_branch }}
-      when: (metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
-            (metal3_dev_env_branch != "main")
+      when: (metal3_dev_env_repo != "https://github.com/Nordix/metal3-dev-env.git") or
+            (metal3_dev_env_branch != "increase-calico-timeout/sunnat")
 
     - name: Clean any existing setup
       shell:
