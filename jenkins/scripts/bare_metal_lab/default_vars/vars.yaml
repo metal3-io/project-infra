@@ -28,3 +28,7 @@ bare_metal_hosts:
 
 EPHEMERAL_CLUSTER: "minikube"
 EXTERNAL_VLAN_ID: 3
+# In order to run multiple instances (one per jump host), we list the known
+# hosts and tell DNSMasq to ignore all other.
+DHCP_HOSTS: "{{ bare_metal_hosts | map(attribute='mac') | join(';') }}"
+DHCP_IGNORE: "tag:!known"
