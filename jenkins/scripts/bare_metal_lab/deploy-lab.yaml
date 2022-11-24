@@ -199,8 +199,8 @@
         chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
       environment:
         NUM_NODES: 0
-        NUM_OF_CONTROLPLANE_REPLICAS: 0
-        NUM_OF_WORKER_REPLICAS: 0
+        CONTROL_PLANE_MACHINE_COUNT: 0
+        WORKER_MACHINE_COUNT: 0
 
       # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as
       # well as allowing TFTP traffic outside the host (random port)
