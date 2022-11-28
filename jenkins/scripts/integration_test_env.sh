@@ -18,7 +18,7 @@ then
     
     # BMOBRANCH should be main only if the periodic test is testing main branches
     # if not we dont define it here (dev-env decides it), and release periodic tests would be using latest BMO release
-    if [[ "${REPO_BRANCH}" == "main" ]]; then
+    if [[ "${CAPM3RELEASEBRANCH}" == "main" ]]; then
       export BMOBRANCH="main"
     fi
   fi
