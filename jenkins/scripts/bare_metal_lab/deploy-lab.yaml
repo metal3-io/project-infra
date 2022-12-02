@@ -150,7 +150,7 @@
         - git config user.name "Test"
         - git remote add test {{ metal3_dev_env_repo }}
         - git fetch test
-        - git merge test/{{ metal3_dev_env_branch }}
+        - git merge {{ metal3_dev_env_branch }}
       when: (metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
             (metal3_dev_env_branch != "main")
 
