@@ -6,7 +6,5 @@
   vars_files:
     - default_vars/vars.yaml
   tasks:
-  - name: Deploy Bare Metal Lab
-    block:
-      - include_tasks: tasks/cleanup-tasks.yaml
-      - include_tasks: tasks/deploy-tasks.yaml
+  - name: Cleanup Bare Metal Lab
+    include_tasks: tasks/cleanup-tasks.yaml
