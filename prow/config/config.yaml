@@ -13,7 +13,7 @@ plank:
   job_url_prefix_config:
     "*": https://prow.apps.test.metal3.io/view/
   report_templates:
-    '*': >-
+    "*": >-
         [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
         [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with
         index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
@@ -281,7 +281,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -533,7 +533,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -659,7 +659,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
 
   metal3-io/project-infra:
@@ -692,7 +692,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
 
   metal3-io/ip-address-manager:
@@ -858,7 +858,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -997,7 +997,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:latest
+        image: registry.hub.docker.com/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|(^Makefile))$'
