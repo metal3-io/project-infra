@@ -136,7 +136,7 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-centos-integration-release-1-2", "test-ubuntu-integration-main"]
+                contexts: ["test-centos-integration-release-1-3", "test-ubuntu-integration-main"]
 
 
 deck:
