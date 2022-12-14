@@ -295,7 +295,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+        image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
         imagePullPolicy: Always
   - name: unit
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -547,7 +547,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+        image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
         imagePullPolicy: Always
   - name: generate
     branches:
@@ -645,7 +645,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+        image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '\.md$'
@@ -872,7 +872,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+        image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
         imagePullPolicy: Always
   - name: unit
     branches:
@@ -1011,7 +1011,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+        image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
         imagePullPolicy: Always
   - name: unit
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -1055,5 +1055,5 @@ presubmits:
           env:
             - name: IS_CONTAINER
               value: "TRUE"
-          image: docker.io/koalaman/shellcheck-alpine:v0.8.0@sha256:f42fde76d2d14a645a848826e54a4d650150e151d9c81057c898da89a82c8a56
+          image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
           imagePullPolicy: Always
