@@ -374,7 +374,9 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/garethr/kubeval:latest
+              - name: KUBECONFORM_PATH
+                value: "/"
+            image: ghcr.io/yannh/kubeconform:v0.5.0-alpine@sha256:ae1583859c7c9683b2f044a9cc911d9427030cd48ec33eeff6c0f23396780da9
             imagePullPolicy: Always
 
   metal3-io/cluster-api-provider-metal3:
@@ -636,7 +638,9 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/garethr/kubeval:latest
+              - name: KUBECONFORM_PATH
+                value: "/"
+            image: ghcr.io/yannh/kubeconform:v0.5.0-alpine@sha256:ae1583859c7c9683b2f044a9cc911d9427030cd48ec33eeff6c0f23396780da9
             imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
@@ -960,7 +964,9 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/garethr/kubeval:latest
+              - name: KUBECONFORM_PATH
+                value: "/"
+            image: ghcr.io/yannh/kubeconform:v0.5.0-alpine@sha256:ae1583859c7c9683b2f044a9cc911d9427030cd48ec33eeff6c0f23396780da9
             imagePullPolicy: Always
 
   metal3-io/hardware-classification-controller:
@@ -1046,7 +1052,9 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/garethr/kubeval:latest
+              - name: KUBECONFORM_PATH
+                value: "/"
+            image: ghcr.io/yannh/kubeconform:v0.5.0-alpine@sha256:ae1583859c7c9683b2f044a9cc911d9427030cd48ec33eeff6c0f23396780da9
             imagePullPolicy: Always
 
   metal3-io/ironic-ipa-downloader:
