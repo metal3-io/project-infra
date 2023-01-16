@@ -3,30 +3,53 @@ owners:
   # /lgtm PRs.  This configuration setting tells it to use the OWNERS file only and
   # can be applied to a specific repo or entire github org.
   skip_collaborators:
-  - "metal3-io"
+    - "metal3-io"
 plugins:
+  Nordix:
+    plugins:
+      - approve
+      - assign
+      - cat
+      - dog
+      - heart
+      - help
+      - hold
+      - label
+      - lgtm
+      - lifecycle
+      - pony
+      - retitle
+      - shrug
+      - size
+      - transfer-issue
+      - trigger
+      - verify-owners
+      - wip
+      - yuks
+      - require-matching-label
+  Nordix/metal3-dev-tools:
   metal3-io:
     plugins:
-    - approve
-    - assign
-    - cat
-    - dog
-    - heart
-    - help
-    - hold
-    - label
-    - lgtm
-    - lifecycle
-    - pony
-    - retitle
-    - shrug
-    - size
-    - transfer-issue
-    - trigger
-    - verify-owners
-    - wip
-    - yuks
-    - require-matching-label
+      - approve
+      - assign
+      - cat
+      - dog
+      - heart
+      - help
+      - hold
+      - label
+      - lgtm
+      - lifecycle
+      - pony
+      - retitle
+      - shrug
+      - size
+      - transfer-issue
+      - trigger
+      - verify-owners
+      - wip
+      - yuks
+      - require-matching-label
   metal3-io/baremetal-operator:
   metal3-io/base-image:
   metal3-io/cluster-api-provider-metal3:
@@ -45,11 +68,12 @@ plugins:
   metal3-io/metal3-smart-exporter:
   metal3-io/project-infra:
     plugins:
-    - config-updater
+      - config-updater
 
 approve:
   - repos:
-    - metal3-io
+      - metal3-io
+      - Nordix
 
     # RequireSelfApproval requires PR authors to explicitly approve their PRs.
     # Otherwise the plugin assumes the author of the PR approves the changes in the PR.
@@ -59,19 +83,27 @@ approve:
     lgtm_acts_as_approve: false
 
 external_plugins:
+  Nordix:
+    - name: needs-rebase
+      # No endpoint specified implies "http://{{name}}".
+      events:
+        - pull_request
+        # Dispatching issue_comment events to the needs-rebase plugin is optional. If enabled, this may cost up to two token per comment on a PR. If `ghproxy`
+        # is in use, these two tokens are only needed if the PR or its mergeability changed.
+        - issue_comment
   metal3-io:
-  - name: needs-rebase
-    # No endpoint specified implies "http://{{name}}".
-    events:
-    - pull_request
-    # Dispatching issue_comment events to the needs-rebase plugin is optional. If enabled, this may cost up to two token per comment on a PR. If `ghproxy`
-    # is in use, these two tokens are only needed if the PR or its mergeability changed.
-    - issue_comment
-  - name: cherrypicker
-    events:
-    - issue_comment
-    - pull_request
-    endpoint: http://cherrypicker
+    - name: needs-rebase
+      # No endpoint specified implies "http://{{name}}".
+      events:
+        - pull_request
+        # Dispatching issue_comment events to the needs-rebase plugin is optional. If enabled, this may cost up to two token per comment on a PR. If `ghproxy`
+        # is in use, these two tokens are only needed if the PR or its mergeability changed.
+        - issue_comment
+    - name: cherrypicker
+      events:
+        - issue_comment
+        - pull_request
+      endpoint: http://cherrypicker
 config_updater:
   maps:
     # Update the config configmap whenever config.yaml changes
@@ -85,13 +117,13 @@ config_updater:
       name: label-config
 
 require_matching_label:
-# triage configuration
-- missing_label: needs-triage
-  org: metal3-io
-  issues: true
-  prs: false
-  regexp: ^triage/accepted$
-  missing_comment: |
-    This issue is currently awaiting triage.
-    If Metal3.io contributors determine this is a relevant issue, they will accept it by applying the `triage/accepted` label and provide further guidance.
-    The `triage/accepted` label can be added by org members by writing `/triage accepted` in a comment.
+  # triage configuration
+  - missing_label: needs-triage
+    org: metal3-io
+    issues: true
+    prs: false
+    regexp: ^triage/accepted$
+    missing_comment: |
+      This issue is currently awaiting triage.
+      If Metal3.io contributors determine this is a relevant issue, they will accept it by applying the `triage/accepted` label and provide further guidance.
+      The `triage/accepted` label can be added by org members by writing `/triage accepted` in a comment.
