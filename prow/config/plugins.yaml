@@ -5,7 +5,7 @@ owners:
   skip_collaborators:
     - "metal3-io"
 plugins:
-  Nordix:
+  Nordix/metal3-dev-tools:
     plugins:
       - approve
       - assign
@@ -27,7 +27,6 @@ plugins:
       - wip
       - yuks
       - require-matching-label
-  Nordix/metal3-dev-tools:
   metal3-io:
     plugins:
       - approve
@@ -73,7 +72,7 @@ plugins:
 approve:
   - repos:
       - metal3-io
-      - Nordix
+      - Nordix/metal3-dev-tools
 
     # RequireSelfApproval requires PR authors to explicitly approve their PRs.
     # Otherwise the plugin assumes the author of the PR approves the changes in the PR.
@@ -83,7 +82,7 @@ approve:
     lgtm_acts_as_approve: false
 
 external_plugins:
-  Nordix:
+  Nordix/metal3-dev-tools:
     - name: needs-rebase
       # No endpoint specified implies "http://{{name}}".
       events:
