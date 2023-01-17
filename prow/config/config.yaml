@@ -675,6 +675,22 @@ presubmits:
                 value: "/"
             image: ghcr.io/yannh/kubeconform:v0.5.0-alpine@sha256:ae1583859c7c9683b2f044a9cc911d9427030cd48ec33eeff6c0f23396780da9
             imagePullPolicy: Always
+    - name: build
+      branches:
+        - main
+      run_if_changed: '^api|^test|^Makefile$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/build.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.19
+            imagePullPolicy: Always
 
   metal3-io/metal3-dev-env:
     - name: shellcheck
