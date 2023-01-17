@@ -75,6 +75,24 @@ tide:
 #
 branch-protection:
   orgs:
+    Nordix:
+      # Require "always_run: true" jobs to pass before merging.
+      # To turn this off for a given job, set "optional: true"
+      # in the job definition.
+      protect: true
+      repos:
+        metal3-dev-tools:
+          # Use this to specify that a status coming from outside of prow is
+          # required.  We use this to require functional jobs running in
+          # jenkins are required, for example.
+          branches:
+            main:
+              required_status_checks:
+                contexts:
+                  [
+                    "test-integration-metal3-dev-tools-centos",
+                    "test-integration-metal3-dev-tools-ubuntu",
+                  ]
     metal3-io:
       # Require "always_run: true" jobs to pass before merging.
       # To turn this off for a given job, set "optional: true"
