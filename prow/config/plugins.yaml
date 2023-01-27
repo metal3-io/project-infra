@@ -28,7 +28,6 @@ plugins:
       - yuks
       - require-matching-label
   metal3-io/baremetal-operator:
-  metal3-io/base-image:
   metal3-io/cluster-api-provider-metal3:
   metal3-io/ip-address-manager:
   metal3-io/ironic-client:
@@ -36,13 +35,10 @@ plugins:
   metal3-io/ironic-image:
   metal3-io/ironic-agent-image:
   metal3-io/ironic-ipa-downloader:
-  metal3-io/ironic-prometheus-exporter:
   metal3-io/mariadb-image:
   metal3-io/metal3-dev-env:
   metal3-io/metal3-docs:
-  metal3-io/metal3-helm-chart:
   metal3-io/metal3-io.github.io:
-  metal3-io/metal3-smart-exporter:
   metal3-io/project-infra:
     plugins:
       - config-updater
