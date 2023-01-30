@@ -105,14 +105,18 @@ branch-protection:
               required_status_checks:
                 contexts:
                   [
-                    "test-centos-integration-main",
+                    "test-centos-integration-e2e-main",
                     "test-ubuntu-integration-main",
                   ]
         cluster-api-provider-metal3:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-ubuntu-integration-main"]
+                contexts:
+                  [
+                    "test-centos-integration-e2e-main",
+                    "test-ubuntu-integration-main",
+                  ]
             release-1.1:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-1"]
@@ -136,7 +140,11 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-ubuntu-integration-main"]
+                contexts:
+                  [
+                    "test-centos-integration-e2e-main",
+                    "test-ubuntu-integration-main",
+                  ]
             release-1.1:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-1"]
@@ -157,8 +165,8 @@ branch-protection:
               required_status_checks:
                 contexts:
                   [
+                    "test-ubuntu-integration-e2e-main",
                     "test-centos-integration-release-1-3",
-                    "test-ubuntu-integration-main",
                   ]
 
 deck:
