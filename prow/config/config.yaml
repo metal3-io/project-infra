@@ -32,8 +32,8 @@ plank:
 tide:
   merge_method:
     metal3-io: merge
-    Nordix/metal3-dev-tools: merge
-    Nordix/metal3-clusterapi-docs: merge
+    Nordix/metal3-dev-tools: rebase
+    Nordix/metal3-clusterapi-docs: rebase
   queries:
     - repos:
         - metal3-io/baremetal-operator
@@ -50,6 +50,8 @@ tide:
         - metal3-io/project-infra
         - metal3-io/static-ip-manager-image
         - metal3-io/ip-address-manager
+        - Nordix/metal3-dev-tools
+        - Nordix/metal3-clusterapi-docs
       labels:
         - lgtm
         - approved
