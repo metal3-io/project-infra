@@ -60,7 +60,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
       --clusterrole=cluster-admin --user="${USER}"
     ```
 
-1. Create hmac token for webhook validation and generate a secret out of it. Don't forget to add this token
+1. Create HMAC token for webhook validation and generate a secret out of it. Don't forget to add this token
    on GitHub webhook configuration.
 
     ```shell
@@ -175,7 +175,7 @@ Prow was set up by following these instructions: https://github.com/kubernetes/t
         secretName: metal3-io-tls
    ```
 
-## GitHub weebhook configuration
+## GitHub webhook configuration
 
 GitHub webhook needs to be configured with a payload URL pointing to the hook service. For that you need
 1. HMAC token generated earlier
@@ -184,3 +184,25 @@ GitHub webhook needs to be configured with a payload URL pointing to the hook se
 Add the URL and token as below. Select **"Send me everything"**, and for Content ype: **application/json**.
 
 ![webhook](images/webhook.png)
+
+## Enabling Metal3 prow for new org/repo
+
+Metal3 prow is currently working with two Github organizations(orgs): `metal3-io` and `Nordix`. For `Nordix` we have enabled prow only for two repositories, namely: metal3-dev-tools and metal3-clusterapi-docs. We don't foresee enabling Metal3 prow for any other Github org, however we might need to enable prow in other repositories in existing Github orgs for example. In any case we should follow the steps below to enable prow:
+
+1. Add/check `metal3-io-bot` user in the Github org with `admin` access. Check the image 
+
+![](images/metal3-io-bot.png)
+
+2. Enable prow webhook as described in [GitHub webhook configuration](#github-webhook-configuration) section. For `metal3-io` the webhook is enabled in org level. For the two repositories in `Nordix` org we have enabled them on individual repositories. Keep in mind that the HMAC token and hook URL are the same as described in [GitHub webhook configuration](#github-webhook-configuration). The webhook should look happy (green tick) as shown in the image below once you have configured it correctly and communication has been established between Github and prow hook. 
+
+![](images/green_webhook.png)
+
+3. Check the general settings and branch protection settings of Github repository and make sure the settings are correct. Take any existing repository which has prow enabled as example (i.e. `Nordix/metal3-dev-tools`).
+
+4. Add the `OWNERS` file in the repository. 
+
+5. Add the repository entry and related configurations in the files `prow/config/config.yaml` and `prow/config/plugins.yaml` in `metal3-io/project-infra` repository. An example PR is [here](https://github.com/metal3-io/project-infra/pull/473/). 
+
+6. One small tweak might still be needed. We have experienced the default `merge_method` of prow which is `merge` didn't work for Nordix repos. The other two options for `merge_method` are: `rebase` and `squash`. We have enabled `rebase` for Nordix repos but kept `merge` for metal3-io org. An example is shown in this [PR](https://github.com/metal3-io/project-infra/pull/476/).
+
+7. At this point you should see the prow tests you have configured as presubmits for the repository, running on open PRs and tide is enabled and waiting for appropriate labels. 
