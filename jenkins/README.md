@@ -16,7 +16,7 @@ publicly visible will get admin rights on the CI jobs. This means:
 * They can add authors to whitelist (by commenting **/ok-to-test** on the PR) so that
    the authors can start jobs on their PR themselves
 
-## Commands
+## Jenkins commands
 
 We have multiple jobs that run some integration tests. The jobs can be
 triggered on PR from metal3-dev-env, baremetal-operator, ironic-image, ip-address-manager
@@ -48,6 +48,15 @@ and deletion operations, there are separate triggers phrases as below:
 
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
+
+## Prow commands
+
+There are some plugins supported by prow and makes the life of the developer easier in certain cases:
+
+1. `cherry-pick` plugin can be used for cherrypicking PRs across branches by commenting:
+   * **/cherry-pick <release-x.y>** where <release-x.y> is any supported release branch, where the backport PR will be opened by the [cherry picker bot](https://github.com/metal3-cherrypick-bot).
+1. `transfer-issue` plugin can be used for transferring issues across repositories in the same GitHub organization by commenting:
+    * **/transfer-issue < target repo-name >** on the issue. One simple example could be transferring the issue from cluster-api-provider-metal3 to ip-address-manager repository. This can be archived by using: **/transfer-issue ip-address-manager**.
 
 ## Cloud Resources cleanup
 
