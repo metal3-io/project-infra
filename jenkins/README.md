@@ -38,13 +38,13 @@ it may be desirable to keep the VM for debugging purposes. To avoid clean up
 and deletion operations, there are separate triggers phrases as below:
 
 * **/keep-test-ubuntu-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on Ubuntu
-* **/keep-centos-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on CentOS
-* **/keep-ubuntu-integration-release-1-3** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.3 on Ubuntu
-* **/keep-centos-integration-release-1-3** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.3 on CentOS
-* **/keep-ubuntu-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on Ubuntu
-* **/keep-centos-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
-* **/keep-ubuntu-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
-* **/keep-centos-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
+* **/keep-test-centos-integration-main** run keep integration tests with CAPM3 API version v1beta1 and branch main on CentOS
+* **/keep-test-ubuntu-integration-release-1-3** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.3 on Ubuntu
+* **/keep-test-centos-integration-release-1-3** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.3 on CentOS
+* **/keep-test-ubuntu-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on Ubuntu
+* **/keep-test-centos-integration-release-1-2** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.2 on CentOS
+* **/keep-test-ubuntu-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on Ubuntu
+* **/keep-test-centos-integration-release-1-1** run keep integration tests with CAPM3 API version v1beta1 and branch release-1.1 on CentOS
 
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
