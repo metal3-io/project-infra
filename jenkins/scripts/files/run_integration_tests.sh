@@ -16,6 +16,7 @@ export NUM_NODES
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
+export SKIP_CLEANUP
 
 if [ "${REPO_NAME}" == "metal3-dev-tools" ]
 then
@@ -47,6 +48,11 @@ fi
 if [ "${EPHEMERAL_TEST}" == "null" ]
 then
   unset EPHEMERAL_TEST
+fi
+
+if [ "${SKIP_CLEANUP}" == "null" ]
+then
+  unset SKIP_CLEANUP
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update

@@ -33,6 +33,7 @@ script {
 
   if ("${SKIP_DELETION}" == "true") {
     VM_NAME = "ci-test-keep-vm-" + dateFormat.format(date) + "-" + VM_KEY
+    SKIP_CLEANUP = "true"
   } else {
     VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
   }
@@ -69,6 +70,7 @@ pipeline {
     NUM_NODES="${NUM_NODES}"
     TESTS_FOR="${TESTS_FOR}"
     SKIP_DELETION="${SKIP_DELETION}"
+    SKIP_CLEANUP="${SKIP_CLEANUP}"
     GINKGO_FOCUS="${GINKGO_FOCUS}"
     GINKGO_SKIP="${GINKGO_SKIP}"
     EPHEMERAL_TEST="${EPHEMERAL_TEST}"
