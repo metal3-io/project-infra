@@ -34,7 +34,8 @@ fi
 
 # Get the IP
 if [ "${BARE_METAL_LAB}" == true ]; then
-  TEST_EXECUTER_IP="129.192.80.20"
+  JUMPHOST_IP="129.192.80.20"
+  TEST_EXECUTER_IP="192.168.1.3"
 else
   TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
   | jq -r '.fixed_ips[0].ip_address')"
@@ -46,11 +47,28 @@ else
   fi
 fi
 
+if [ "${BARE_METAL_LAB}" == true ]; then
+  declare -a SSH_OPTIONS=(
+    -o StrictHostKeyChecking=no
+    -o UserKnownHostsFile=/dev/null
+    -o ServerAliveInterval=15 
+    -o ServerAliveCountMax=10
+    -i "${METAL3_CI_USER_KEY}"
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
+  )
+else
+  declare -a SSH_OPTIONS=(
+    -o StrictHostKeyChecking=no
+    -o UserKnownHostsFile=/dev/null
+    -o ServerAliveInterval=15 
+    -o ServerAliveCountMax=10
+    -i "${METAL3_CI_USER_KEY}"
+  )
+fi
+
 # Send Remote script to Executer
 scp \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -i "${METAL3_CI_USER_KEY}" \
+  "${SSH_OPTIONS[@]}" \
   "${CI_DIR}/files/run_fetch_logs.sh" \
   "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
@@ -58,10 +76,7 @@ echo "Fetching logs"
 # Execute remote script
 # shellcheck disable=SC2029
 ssh \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=15 \
-  -i "${METAL3_CI_USER_KEY}" \
+  "${SSH_OPTIONS[@]}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_fetch_logs.sh "logs-${BUILD_TAG}.tgz" \
@@ -69,8 +84,7 @@ ssh \
 
 # fetch logs tarball
 scp \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -i "${METAL3_CI_USER_KEY}" \
+  "${SSH_OPTIONS[@]}" \
   "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:logs-${BUILD_TAG}.tgz" \
   "./" > /dev/null
+
