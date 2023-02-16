@@ -804,6 +804,21 @@ presubmits:
     - name: gomod
       branches:
         - release-1.2
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/gomod.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.18
+            imagePullPolicy: Always
+    - name: gomod
+      branches:
         - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
