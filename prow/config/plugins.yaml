@@ -51,6 +51,7 @@ plugins:
       - wip
       - yuks
       - require-matching-label
+  metal3-io/.github:
   metal3-io/baremetal-operator:
   metal3-io/cluster-api-provider-metal3:
   metal3-io/ip-address-manager:

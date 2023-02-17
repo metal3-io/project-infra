@@ -36,6 +36,7 @@ tide:
     Nordix/metal3-clusterapi-docs: rebase
   queries:
     - repos:
+        - metal3-io/.github
         - metal3-io/baremetal-operator
         - metal3-io/cluster-api-provider-metal3
         - metal3-io/ironic-client
