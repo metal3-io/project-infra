@@ -3,7 +3,7 @@
     cmd: |
       mkdir -p "{{ serial_log_location }}"
       nohup /bin/bash <<EOF
-      ssh -o "KexAlgorithms diffie-hellman-group14-sha1" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item.ip }}  'vsp' > "{{ serial_log_location }}/{{ item.ip }}.txt" &
+      ssh -o "KexAlgorithms=diffie-hellman-group14-sha1" -o "HostKeyAlgorithms=+ssh-rsa" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@{{ item.ip }}  'vsp' > "{{ serial_log_location }}/{{ item.ip }}.txt" &
       EOF
       exit 0
       EOT
