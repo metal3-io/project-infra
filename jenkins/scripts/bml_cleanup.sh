@@ -29,4 +29,4 @@ ssh \
   -i "${METAL3_CI_USER_KEY}" \
   -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml --skip-tags "clone"
+  ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/cleanup-lab.yaml --skip-tags "clone"
