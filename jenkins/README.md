@@ -49,6 +49,10 @@ and deletion operations, there are separate triggers phrases as below:
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
 
+### E2E tests
+
+E2E tests are gradually replacing the previous Ansible tests for more details about e2e triggers please check: <https://github.com/metal3-io/cluster-api-provider-metal3#e2e-test>
+
 ## Prow commands
 
 There are some plugins supported by prow and makes the life of the developer easier in certain cases:
@@ -127,8 +131,8 @@ When configuring GitHub webhooks:
 
 1. check the following scopes for **Which events would you like to trigger this webhook?**;
 
-   - `Issue comments`
-   - `Pull requests`
+   * `Issue comments`
+   * `Pull requests`
 
 We use [metal3-jenkins](https://github.com/metal3-jenkins) GitHub bot account which reports
 job status on a pull request. The bot is a public member of Metal3 GitHub org. To use this bot
@@ -146,10 +150,10 @@ taking affect, you could try to clean up the ghprb cache in Jenkins.
 
 ### Some other secrets in Jenkins
 
-- `metal3-jenkins-github-username-token` - stores the username of the metal3-jenkins GitHub bot account.
+* `metal3-jenkins-github-username-token` - stores the username of the metal3-jenkins GitHub bot account.
    Used by Jenkins Job Builders.
 
-- `metal3-clusterctl-github-token` - stores a GitHub token for use in Metal3
+* `metal3-clusterctl-github-token` - stores a GitHub token for use in Metal3
    integration tests with no permissions. This is to avoid GitHub API limitations for unauthenticated
    users. Used by [pipeline](https://github.com/metal3-io/project-infra/blob/12660dd59d368c86e471007d86ca781cf2539ec9/jenkins/jobs/integration_tests.pipeline#L88).
 
