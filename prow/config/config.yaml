@@ -715,6 +715,7 @@ presubmits:
     - name: build
       branches:
         - main
+        - release-1.3
       run_if_changed: '^api|^test|^Makefile$'
       decorate: true
       spec:
