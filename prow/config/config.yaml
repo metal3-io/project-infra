@@ -157,11 +157,6 @@ branch-protection:
             release-1.3:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-3"]
-        mariadb-image:
-          branches:
-            main:
-              required_status_checks:
-                contexts: ["test-ubuntu-integration-main"]
         metal3-dev-env:
           branches:
             main:
