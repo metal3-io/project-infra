@@ -80,6 +80,9 @@ approve:
     # A /lgtm from a single approver should not allow a PR to merge.
     lgtm_acts_as_approve: false
 
+    # Approving review shall not act as /approve
+    review_acts_as_approve: false
+
 external_plugins:
   Nordix/metal3-dev-tools:
     - name: needs-rebase
