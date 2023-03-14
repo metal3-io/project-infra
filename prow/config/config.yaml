@@ -49,7 +49,6 @@ tide:
         - metal3-io/metal3-docs
         - metal3-io/metal3-io.github.io
         - metal3-io/project-infra
-        - metal3-io/static-ip-manager-image
         - metal3-io/ip-address-manager
         - Nordix/metal3-dev-tools
         - Nordix/metal3-clusterapi-docs
