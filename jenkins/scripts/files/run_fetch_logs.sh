@@ -20,6 +20,12 @@ mkdir -p "${LOGS_DIR}"
 mkdir -p "${LOGS_DIR}/manifests"
 cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 
+# Fetch target cluster logs which were collected before re-pivoting
+if [[ -d "/tmp/target_cluster_logs" ]]; then
+  mkdir -p "${LOGS_DIR}/k8s_target_cluster"
+  cp -r /tmp/target_cluster_logs/* "${LOGS_DIR}/k8s_target_cluster/"
+fi  
+
 if [[ "${TESTS_FOR}" == "e2e_tests"* ]]; then
   mkdir -p "${LOGS_DIR}/e2e_artifacts"
     # only if we triggered the e2e from the capm3 repo it will be cloned under tested_repo
@@ -35,16 +41,16 @@ function fetch_k8s_logs() {
 dir_name="k8s_${1}"
 kconfig="$2"
 
-NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o json | jq -r '.items[].metadata.name')"
+NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o json 2> /dev/null | jq -r '.items[].metadata.name' 2> /dev/null)"
 mkdir -p "${LOGS_DIR}/${dir_name}"
 for NAMESPACE in $NAMESPACES
 do
   mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}"
-  PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" -o json | jq -r '.items[].metadata.name')"
+  PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" -o json 2> /dev/null | jq -r '.items[].metadata.name' 2> /dev/null)"
   for POD in $PODS
   do
     mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}"
-    CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.containers[].name')"
+    CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o json 2> /dev/null | jq -r '.spec.containers[].name' 2> /dev/null)"
     for CONTAINER in $CONTAINERS
     do
       mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}"
