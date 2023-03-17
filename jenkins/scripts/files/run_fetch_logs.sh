@@ -114,13 +114,6 @@ fi
 mkdir -p "${LOGS_DIR}/cluster-api-config"
 cp -r "/home/metal3ci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
-if [[ "${TESTS_FOR}" == "feature_tests_upgrade"* ]]
-then
-  mkdir -p "${LOGS_DIR}/upgrade"
-  sudo sh -c "cp /tmp/\.*upgrade.result.txt ${LOGS_DIR}/upgrade/"
-  sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/upgrade"
-fi
-
 target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
 if [ -n "${target_config}" ]
 then
