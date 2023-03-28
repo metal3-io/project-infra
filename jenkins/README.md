@@ -62,6 +62,9 @@ There are some plugins supported by prow and makes the life of the developer eas
 1. `transfer-issue` plugin can be used for transferring issues across repositories in the same GitHub organization by commenting:
     * **/transfer-issue < target repo-name >** on the issue. One simple example could be transferring the issue from cluster-api-provider-metal3 to ip-address-manager repository. This can be archived by using: **/transfer-issue ip-address-manager**.
 
+**Note:** Please remember to manually create a corresponding branch in cherry-pick bot's forked repositories (CAPM3, IPAM) in case a new release branch (i.e. release-1.4) is created upstream.
+That is because when the bot is used to backport the patches to the new release branch, it has to track the new upstream branch to be able to open a PR against it in the future.
+
 ## Cloud Resources cleanup
 
 There is a Jenkins [main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_daily_main_integration_tests_cleanup/)
