@@ -69,16 +69,16 @@
 
 - name: Check if bmext interface has been added to bridge
   shell:
-    cmd: "brctl show baremetal | grep bmext"
+    cmd: "brctl show external | grep bmext"
   become: true
   failed_when: false
   changed_when: false
   register: brctl_grep_bmext
   tags: bmext
 
-- name: Add VLAN 3 interface to baremetal bridge
+- name: Add VLAN 3 interface to external bridge
   shell:
-    cmd: "brctl addif baremetal bmext"
+    cmd: "brctl addif external bmext"
   become: true
   when: brctl_grep_bmext.rc != 0
   tags: bmext
