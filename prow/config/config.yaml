@@ -776,6 +776,20 @@ presubmits:
             resources:
               requests:
                 memory: "500Mi"
+    - name: markdownlint
+      run_if_changed: '\.md$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/markdownlint.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            imagePullPolicy: Always
   metal3-io/metal3-docs:
     - name: markdownlint
       run_if_changed: '\.md$'
