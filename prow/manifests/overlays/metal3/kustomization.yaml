@@ -1,0 +1,68 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Namespace is already set directly on the resources in the base.
+# namespace: prow
+resources:
+- ../../base
+- ingress.yaml
+- external-plugins/cherrypicker_deployment.yaml
+- external-plugins/cherrypicker_service.yaml
+- external-plugins/needs-rebase_deployment.yaml
+- external-plugins/needs-rebase_service.yaml
+- external-plugins/labels_cronjob.yaml
+
+commonLabels:
+  app.kubernetes.io/instance: metal3
+  app.kubernetes.io/part-of: prow
+
+# For some of the configmaps and secrets we could use suffix hash,
+# but some will be used directly by prow, which cannot know about
+# the suffix. So we disable it.
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- files:
+  - plugins.yaml
+  name: plugins
+  namespace: prow
+- files:
+  - config.yaml
+  name: config
+  namespace: prow
+- files:
+  - labels.yaml
+  name: label-config
+  namespace: prow
+
+secretGenerator:
+- files:
+  - token=github-token
+  name: github-token
+  namespace: prow
+  type: Opaque
+- files:
+  - token=github-token
+  name: github-token
+  namespace: test-pods
+  type: Opaque
+- files:
+  - hmac=hmac-token
+  name: hmac-token
+  namespace: prow
+  type: Opaque
+- files:
+  - service-account.json
+  name: s3-credentials
+  namespace: prow
+  type: Opaque
+- files:
+  - service-account.json
+  name: s3-credentials
+  namespace: test-pods
+  type: Opaque
+- files:
+  - token=cherrypick-bot-github-token
+  name: cherrypick-bot-github-token
+  namespace: prow
+  type: Opaque
