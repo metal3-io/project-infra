@@ -41,16 +41,16 @@ function fetch_k8s_logs() {
 dir_name="k8s_${1}"
 kconfig="$2"
 
-NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o json 2> /dev/null | jq -r '.items[].metadata.name' 2> /dev/null)"
+NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
 mkdir -p "${LOGS_DIR}/${dir_name}"
 for NAMESPACE in $NAMESPACES
 do
   mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}"
-  PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" -o json 2> /dev/null | jq -r '.items[].metadata.name' 2> /dev/null)"
+  PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
   for POD in $PODS
   do
     mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}"
-    CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o json 2> /dev/null | jq -r '.spec.containers[].name' 2> /dev/null)"
+    CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o jsonpath='{.spec.containers[*].name}' 2> /dev/null)"
     for CONTAINER in $CONTAINERS
     do
       mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}"
@@ -58,7 +58,7 @@ do
       > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
       2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
     done
-    INIT_CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o json | jq -r '.spec.initContainers[].name')"
+    INIT_CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o jsonpath='{.spec.initContainers[*].name}' 2> /dev/null)"
     for CONTAINER in $INIT_CONTAINERS
     do
       mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}"
