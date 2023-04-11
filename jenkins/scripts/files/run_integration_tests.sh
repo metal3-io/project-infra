@@ -12,11 +12,13 @@ export CAPM3_VERSION
 export CAPM3RELEASEBRANCH
 export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
-export NUM_NODES
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
 export SKIP_CLEANUP
+# unsetting NUM_NODES when it is unbound
+# in BML tests it is not passed through vars file
+export NUM_NODES="${NUM_NODES:-}"
 
 if [ "${REPO_NAME}" == "metal3-dev-tools" ]
 then
