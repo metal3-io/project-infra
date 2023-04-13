@@ -16,9 +16,10 @@ else
 fi
 mkdir -p "${LOGS_DIR}"
 
-# Fetch cluster manifests
-mkdir -p "${LOGS_DIR}/manifests"
-cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
+# Fetch bootstrap cluster manifests before pivot
+MANIFEST_DIR="${LOGS_DIR}/manifests/bootstrap-before-pivot"
+mkdir -p "${MANIFEST_DIR}"
+cp -r /tmp/manifests/bootstrap/* "${MANIFEST_DIR}"
 
 # Fetch target cluster logs which were collected before re-pivoting
 if [[ -d "/tmp/target_cluster_logs" ]]; then
@@ -43,24 +44,20 @@ kconfig="$2"
 
 NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
 mkdir -p "${LOGS_DIR}/${dir_name}"
-for NAMESPACE in $NAMESPACES
-do
+for NAMESPACE in $NAMESPACES; do
   mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}"
   PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
-  for POD in $PODS
-  do
+  for POD in $PODS; do
     mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}"
     CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o jsonpath='{.spec.containers[*].name}' 2> /dev/null)"
-    for CONTAINER in $CONTAINERS
-    do
+    for CONTAINER in $CONTAINERS; do
       mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}"
       kubectl --kubeconfig="${kconfig}" logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
       > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stdout.log"\
       2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}/stderr.log"
     done
     INIT_CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "$NAMESPACE" "$POD" -o jsonpath='{.spec.initContainers[*].name}' 2> /dev/null)"
-    for CONTAINER in $INIT_CONTAINERS
-    do
+    for CONTAINER in $INIT_CONTAINERS; do
       mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}"
       kubectl --kubeconfig="${kconfig}" logs -n "$NAMESPACE" "$POD" "$CONTAINER" \
       > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/init/${CONTAINER}/stdout.log"\
@@ -70,6 +67,44 @@ do
 done
 }
 
+# Fetch manifest after Re-pivot
+MANIFEST_DIR="${LOGS_DIR}/manifests/bootstrap-after-repivot"
+mkdir -p "${MANIFEST_DIR}"
+
+manifests=(
+  bmh
+  hardwaredata
+  cluster
+  deployment
+  machine
+  machinedeployment
+  machinehealthchecks
+  machinesets
+  machinepools
+  m3cluster
+  m3machine
+  metal3machinetemplate
+  kubeadmconfig
+  kubeadmconfigtemplates
+  kubeadmcontrolplane
+  replicaset
+  ippool
+  ipclaim
+  ipaddress
+  m3data
+  m3dataclaim
+  m3datatemplate
+)
+
+NAMESPACES="$(kubectl get namespace -o jsonpath='{.items[*].metadata.name}')"
+for NAMESPACE in ${NAMESPACES}; do
+  for kind in "${manifests[@]}"; do
+    mkdir -p "${MANIFEST_DIR}/${kind}"
+    for name in $(kubectl get -n "${NAMESPACE}" -o name "${kind}" || true); do
+      kubectl get -n "${NAMESPACE}" -o yaml "${name}" | tee "${MANIFEST_DIR}/${kind}/$(basename "${name}").yaml" || true
+    done
+  done
+done
 # Fetch k8s logs
 fetch_k8s_logs "management_cluster" "/home/metal3ci/.kube/config"
 
@@ -82,8 +117,7 @@ cp -r /tmp/"${CONTAINER_RUNTIME}"/* "${CONTAINER_LOGS_DIR}"
 CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/after_pivoting"
 mkdir -p "${CONTAINER_LOGS_DIR}"
 LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
-for LOCAL_CONTAINER in $LOCAL_CONTAINERS
-do
+for LOCAL_CONTAINER in $LOCAL_CONTAINERS; do
   mkdir -p "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}"
   # shellcheck disable=SC2024
   sudo "${CONTAINER_RUNTIME}" logs "$LOCAL_CONTAINER" > "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stdout.log" \
