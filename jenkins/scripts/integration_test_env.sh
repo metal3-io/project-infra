@@ -15,12 +15,6 @@ then
     export BUILD_BMO_LOCALLY="true"
     export BUILD_CAPM3_LOCALLY="true"
     export BUILD_IPAM_LOCALLY="true"
-    
-    # BMOBRANCH should be main only if the periodic test is testing main branches
-    # if not we dont define it here (dev-env decides it), and release periodic tests would be using latest BMO release
-    if [[ "${CAPM3RELEASEBRANCH}" == "main" ]]; then
-      export BMOBRANCH="main"
-    fi
   fi
 
 elif [ "${REPO_NAME}" == "baremetal-operator" ]
