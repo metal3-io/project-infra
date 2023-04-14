@@ -113,13 +113,13 @@ external_plugins:
 config_updater:
   maps:
     # Update the config configmap whenever config.yaml changes
-    prow/config/config.yaml:
+    prow/manifests/overlays/metal3/config.yaml:
       name: config
     # Update the plugins configmap whenever plugins.yaml changes
-    prow/config/plugins.yaml:
+    prow/manifests/overlays/metal3/plugins.yaml:
       name: plugins
     # Update the label-config configmap whenever labels.yaml changes
-    prow/config/labels.yaml:
+    prow/manifests/overlays/metal3/labels.yaml:
       name: label-config
 
 require_matching_label:

@@ -769,9 +769,9 @@ presubmits:
             args:
               - "/checkconfig"
               - "--config-path"
-              - "prow/config/config.yaml"
+              - "prow/manifests/overlays/metal3/config.yaml"
               - "--plugin-config"
-              - "prow/config/plugins.yaml"
+              - "prow/manifests/overlays/metal3/plugins.yaml"
               - "--strict"
             resources:
               requests:
