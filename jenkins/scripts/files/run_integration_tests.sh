@@ -19,42 +19,40 @@ export SKIP_CLEANUP
 # unsetting NUM_NODES when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
+export UPGRADE_FROM_RELEASE
 
-if [ "${REPO_NAME}" == "metal3-dev-tools" ]
-then
+if [ "${REPO_NAME}" == "metal3-dev-tools" ]; then
   export IMAGE_NAME
   export IMAGE_LOCATION
   export KUBERNETES_VERSION
 fi
 
-if [ "${CAPM3_VERSION}" == "v1alpha5" ]
-then
+if [ "${CAPM3_VERSION}" == "v1alpha5" ]; then
   export KUBERNETES_VERSION="v1.23.8"
 fi
 
-if [ "${NUM_NODES}" == "null" ]
-then
+if [ "${NUM_NODES}" == "null" ]; then
   unset NUM_NODES
 fi
 
-if [ "${GINKGO_FOCUS}" == "null" ]
-then
+if [ "${GINKGO_FOCUS}" == "null" ]; then
   unset GINKGO_FOCUS
 fi
 
-if [ "${GINKGO_SKIP}" == "null" ]
-then
+if [ "${GINKGO_SKIP}" == "null" ]; then
   unset GINKGO_SKIP
 fi
 
-if [ "${EPHEMERAL_TEST}" == "null" ]
-then
+if [ "${EPHEMERAL_TEST}" == "null" ]; then
   unset EPHEMERAL_TEST
 fi
 
-if [ "${SKIP_CLEANUP}" == "null" ]
-then
+if [ "${SKIP_CLEANUP}" == "null" ]; then
   unset SKIP_CLEANUP
+fi
+
+if [ "${UPGRADE_FROM_RELEASE}" == "null" ]; then
+  unset UPGRADE_FROM_RELEASE
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
@@ -69,12 +67,10 @@ else
   export EPHEMERAL_CLUSTER="minikube"
 fi
 
-if [[ ${BARE_METAL_LAB} == "true" ]]
-then
+if [[ ${BARE_METAL_LAB} == "true" ]]; then
   # In the bare metal lab, we have already cloned metal3-dev-env and we run integration tests
   # so no need to clone other repos.
-  if [[ "${REPO_NAME}" == "metal3-dev-env" ]]
-  then
+  if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
     cd tested_repo
   else
     cd metal3
@@ -84,7 +80,7 @@ then
   # https://wiki.nordix.org/pages/viewpage.action?spaceKey=CPI&title=Bare+Metal+Lab
   # In the bare metal lab, the external network has vlan id 3
   export EXTERNAL_VLAN_ID="3"
-  
+
   make test
   exit 0
 fi
@@ -95,9 +91,8 @@ git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
 cd tested_repo
 git checkout "${REPO_BRANCH}"
 # If the target and source repos and branches are identical, don't try to merge
-if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] || \
-  [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]
-then
+if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
+  [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]; then
   git config user.email "test@test.test"
   git config user.name "Test"
   git remote add test "${UPDATED_REPO}"
@@ -108,8 +103,8 @@ fi
 cd "/home/${USER}"
 
 if [[ ("${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env") ||
-      ("${TESTS_FOR}" == "e2e_tests" && "${REPO_NAME}" == "cluster-api-provider-metal3")
-  ]]; then
+  ("${TESTS_FOR}" == "e2e_tests" && "${REPO_NAME}" == "cluster-api-provider-metal3") ]] \
+  ; then
   # If we are testing ansible test from metal3-dev-env or e2e from capm3,
   # it will already be cloned to tested_repo
   pushd tested_repo
@@ -126,11 +121,9 @@ else
   git checkout "${METAL3BRANCH}"
 fi
 
-if [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tests_centos" ]]
-then
+if [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tests_centos" ]]; then
   make feature_tests
-elif [[ "${TESTS_FOR}" == "e2e_tests" ]]
-then
+elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
   make test-e2e
 else
   make
