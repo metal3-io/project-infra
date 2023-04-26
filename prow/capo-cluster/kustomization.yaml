@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cluster.yaml
+- kubeadmconfigtemplate.yaml
+- kubeadmcontrolplane.yaml
+- machinedeployment.yaml
+- openstackcluster.yaml
+- openstackmachinetemplates.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+- files:
+  - clouds.yaml
+  name: prow-cloud-config
+  type: Opaque
+
+# Add label for moving the prow-cloud-config secret with clusterctl move.
+patches:
+- patch: |-
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: prow-cloud-config
+      labels:
+        clusterctl.cluster.x-k8s.io/move: "true"

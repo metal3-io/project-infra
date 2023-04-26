@@ -4,206 +4,390 @@ Metal3 Prow dashboard: <https://prow.apps.test.metal3.io>
 
 ## Access Controls
 
-* To merge, patches must have `/approve` and `/lgtm`, which apply the
-  `approved` and `lgtm` labels
-* The use of `/approve` and `/lgtm` is controlled by the `OWNERS` file in each
+- To merge, patches must have `/approve` and `/lgtm`, which apply the
+  `approved` and `lgtm` labels. For repositories in the Nordix organization,
+  two approving reviews are also needed to avoid accidental merges when an
+  approver puts `lgtm` and approves (which adds `approved`) in one review.
+- The use of `/approve` and `/lgtm` is controlled by the `OWNERS` file in each
   repository. See the [OWNERS spec](https://go.k8s.io/owners) for more details
   about how to manage access to all or part of a repo with this file.
-* Tests will run automatically for PRs authored by **public** members of the
-  `metal3-io` github organization.  Members of the github org can run
-  `/ok-to-test` for PRs authored by those not in the github org.
+- Tests will run automatically for PRs authored by **public** members of the
+  `metal3-io` GitHub organization.  Members of the GitHub org can run
+  `/ok-to-test` for PRs authored by those not in the GitHub org.
 
 See the [Prow command help](https://prow.apps.test.metal3.io/command-help) for
 more information about who can run each prow command.
 
-## GCS bucket
+## About the Metal3 Prow instance
 
-Google Cloud Storage (GCS) is required to store job artifacts. Follow the docs
-to set up GCS and create a bucket with enough permissions.
+Prow is deployed in a Kubernetes cluster in Cleura.
+The cluster is created using the Cluster API provider for OpenStack (CAPO), using
+the configuration in `capo-cluster`.
+You will need access to (or be able to create) the following credentials in order
+to deploy or manage the Kubernetes cluster and the Prow instance:
 
-1. Create a [bucket](https://cloud.google.com/storage/docs/creating-buckets)
-1. Create a
-   [service account](https://cloud.google.com/iam/docs/creating-managing-service-accounts)
-1. On the created bucket, grant `storage.objects.create` access for the service
-   account and `storage.objectViewer` permission to `allUser`.
+1. OpenStack credentials, used by CAPO to manage the OpenStack resources.
+1. S3 credentials (can be created using the OpenStack API).
+1. A HMAC token for webhook validation.
+1. A GitHub token for accessing GitHub.
+1. A separate GitHub token for the cherry-pick bot.
 
-## Setup
+In addition to this, we rely on a GitHub bot account ([metal3-io-bot](https://github.com/metal3-io-bot),
+owner of the GitHub token) and a separate GitHub bot [metal3-cherrypick-bot](https://github.com/metal3-cherrypick-bot),
+for cherry picking pull requests.
+A webhook must be configured in GitHub to send events to Prow and a DNS record
+must be configured so that <https://prow.apps.test.metal3.io>
+points to the IP where Prow can be accessed.
 
-Prow was set up by following these instructions:
-<https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md>
+The DNS records are managed by CNCF for us.
+Any changes to them can be done through the [service desk](https://cncfservicedesk.atlassian.net/servicedesk/customer/portals).
+All project maintainers have (or can request) access.
+See [their FAQ](https://github.com/cncf/servicedesk#how-do-i-file-a-ticket-with-the-service-desk)
+for more details.
 
-1. Create DNS record(s) to point to your cluster.
-1. Prow components are running on `default` namespace, while `test-pods`
-   namespace is used by pods running the actual CI jobs.
-1. [ghProxy](https://github.com/kubernetes/test-infra/tree/master/ghproxy) is a
-   reverse proxy, and is meant to reduce API token usage. We need persistent
-   volume for ghProxy, and for that purpose we rely on `hostPath` type of
-   `PersistentVolume` in our cluster due to the limitation in the underlying
-   infrastructure. Ideally, you should use a dynamic storage provisioner.
+### Requirements
 
-   Create a /mnt/prow directory to store the persistent volume data:
+You will need the following CLI tools in order to deploy and/or manage Prow:
+
+- [clusterctl](https://cluster-api.sigs.k8s.io/user/quick-start.html#install-clusterctl)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- [kind](https://kind.sigs.k8s.io/)
+- [openstack](https://docs.openstack.org/newton/user-guide/common/cli-install-openstack-command-line-clients.html),
+  can be installed directly from Ubuntu repositories.
+- [s3cmd](https://s3tools.org/s3cmd), can be installed directly from Ubuntu repositories.
+
+### Folders and components
+
+There are three folders with kustomizations (`capo-cluster`, `infra` and `manifests`).
+The `capo-cluster` folder contains everything needed for creating the Kubernetes
+cluster itself.
+In `infra`, you will find the necessary parts for integrating with the
+"infrastructure", i.e. the external cloud-provider for OpenStack, a ClusterIssuer
+for getting Let's Encrypt certificates, a LoadBalancer Service for ingress and a
+StorageClass for Cinder volumes.
+
+The deployment manifests for Prow (`manifests`) are based on the
+[getting started guide](https://docs.prow.k8s.io/docs/getting-started-deploy/)
+and the
+[starter-s3.yaml](https://github.com/kubernetes/test-infra/blob/master/config/prow/cluster/starter/starter-s3.yaml)
+manifests.
+They have been separated out into multiple files and tied together using kustomizations.
+This makes it easy to keep secrets outside of git while still allowing for simple
+one-liners for applying all of it.
+
+The getting started guide is (as of writing) focused on setting up Prow using a
+GitHub app, but Prow actually supports [many authentication methods](https://github.com/kubernetes/test-infra/blob/441b5000ef79491d08bd5f393de8f69650b85355/prow/flagutil/github.go#L137).
+We use API tokens created from GitHub bot accounts.
+
+We use [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) as ingress controller.
+It is fronted by a LoadBalancer Service, i.e. a loadbalancer in Cleura.
+The Service is configured to grab the correct IP automatically and to avoid
+deleting it even if the Service is deleted.
+See [infra/service.yaml](infra/service.yaml).
+For securing it with TLS we rely on [cert-manager](https://cert-manager.io/) and
+the Let's Encrypt HTTP01 challenge, as seen in [infra/cluster-issuer-http.yaml](infra/cluster-issuer-http.yaml).
+
+## Building node images
+
+The Kubernetes cluster where Prow runs needs pre-built images for the Nodes.
+We use [image-builder](https://github.com/kubernetes-sigs/image-builder) for this.
+
+Here is how to build a node image directly in Cleura.
+See the [image-builder book](https://image-builder.sigs.k8s.io/capi/providers/openstack-remote.html)
+for more details.
+Start by creating a JSON file with relevant parameters for the image.
+Here is an example:
+
+```json
+{
+   "source_image": "d6b012ee-c6d3-4672-9399-b87d025ddb14",
+   "networks": "bda060e0-07a2-4ba2-8fe0-dba7626db240",
+   "flavor": "4C-4GB-20GB",
+   "floating_ip_network": "ext-net",
+   "ssh_username": "ubuntu",
+   "volume_type": "",
+   "kubernetes_deb_version": "1.26.3-00",
+   "kubernetes_rpm_version": "1.26.3-0",
+   "kubernetes_semver": "v1.26.3",
+   "kubernetes_series": "v1.26"
+}
+```
+
+Then build the image like this:
+
+```bash
+cd images/capi
+PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
+```
+
+## Create credentials
+
+1. Create application credentials for use by the OpenStack cloud provider.
+
+   ```bash
+   # Note! If the user that created the credentials is removed,
+   # so is the application credentials!
+   openstack application credential create prow-capo-cloud-controller
+   ```
+
+   The output of this command should give you an application credential ID and secret.
+   Store them in a safe place.
+   In the rest of this document they will be referred to as `${APP_CRED_ID}` and
+   `${APP_CRED_SECRET}`.
+
+1. Set up S3 object storage.
+
+   ```bash
+   openstack --os-interface public ec2 credentials create
+   ```
+
+   Store the access key and secret key in a safe place.
+   They will be needed also for deploying prow.
+   They will be referred to as `${S3_ACCESS_KEY}` and `${S3_SECRET_KEY}`.
+
+1. Generate HMAC token.
 
    ```shell
-   sudo mkdir /mnt/prow
+   openssl rand -hex 20
    ```
 
-   Create the PersistentVolume:
+   It will be referred to as `${HMAC_TOKEN}`.
 
-   ```shell
-   kubectl apply -f persistent_volume.yaml
-   ```
+## GitHub configuration
 
-1. Grant a user `cluster-admin` role in all namespaces to create cluster
-   resources.
+1. Create bot accounts.
+   The bot accounts are normal accounts on GitHub.
+   Both of them have Gmail accounts connected to the GitHub accounts.
 
-   ```shell
-   $ kubectl create clusterrolebinding cluster-admin-binding-"${USER}" \
-      --clusterrole=cluster-admin --user="${USER}"
-   ```
+1. Create a personal access token for the GitHub bot account.
+   This should be done from the [metal3-io-bot](https://github.com/metal3-io-bot)
+   GitHub bot account.
+   You can follow this [link](https://github.com/settings/tokens) to create the
+   token. When generating the token, make sure you have only the following scopes
+   checked in.
 
-1. Create HMAC token for webhook validation and generate a secret out of it.
-   Don't forget to add this token on GitHub webhook configuration.
+   - `repo` scope for full control of all repositories
+   - `workflow`
+   - `admin:org_hook` for a GitHub org
 
-   ```shell
-   openssl rand -hex 20 > /path/hmac-token
-   kubectl create secret generic hmac-token --from-file=hmac=/path/hmac-token
-   ```
+   The token will be referred to as `${GITHUB_TOKEN}`.
 
-1. Create a personal access token for the GitHub bot account. This should be
-   done from [metal3-io-bot](https://github.com/metal3-io-bot) GitHub bot
-   account. You can follow this [link](https://github.com/settings/tokens)
-   to create the token. When generating the token, make sure you have only the
-   following scopes checked in.
+1. Create a personal access token for the cherry-picker bot.
+   This should be done from the [metal3-cherrypick-bot](https://github.com/metal3-cherrypick-bot)
+   GitHub bot account.
+   You can follow this [link](https://github.com/settings/tokens) to create the
+   token. When generating the token, make sure you have only the following scopes
+   checked in.
 
-   * `repo` scope for full control of private repositories
-   * `admin:org_hook` for a github org
+   - `repo`
+   - `workflow`
+   - `admin:org/read:org` (not all of admin:org, just the sub-item read:org)
 
-   ![token-scopes](images/token-scopes.png)
+   The token will be referred to as `${CHERRYPICK_TOKEN}`.
 
-   Create a secret out of that token:
-
-   ```shell
-   kubectl create secret generic github-token \
-       --from-file=token=/path/github-token
-   ```
-
-1. Create a secret with the GCS credentials
-
-   ```shell
-   kubectl create secret generic gcs-credentials \
-       --from-file=service-account.json=service-account.json
-   ```
-
-1. While applying prow manifests, we are going to create an Ingress object to
-   redirect traffic to the deck and hook services. We are installing
-   [NGINX Ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/)
-   with helm, but you can install your preferred one.
-
-   ```shell
-   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-   helm install ingress-nginx/ingress-nginx \
-       --set controller.hostNetwork=true,controller.service.type=""\
-   ,controller.kind=DaemonSet --generate-name
-   helm repo update
-   ```
-
-1. Apply Prow manifests
-
-   ```shell
-   kubectl apply -f manifests/*
-   ```
-
-   This will create a couple of Deployments, Services, ServiceAccounts, Roles,
-   RoleBindings and Ingress resources.
-
-## Secure Ingress with Cert-Manager and Let's Encrypt
-
-1. Install [cert-manager](https://github.com/jetstack/cert-manager)
-
-   ```shell
-   $ helm repo add jetstack https://charts.jetstack.io
-   $ helm repo update
-   $ helm install \
-   cert-manager jetstack/cert-manager \
-      --namespace cert-manager \
-      --create-namespace \
-      --version v1.3.1 \
-      --set installCRDs=true
-   ```
-
-   Verify that you have the following pods running
-
-   ```shell
-   $ kubectl get pods --namespace cert-manager
-
-   NAME                                       READY   STATUS    RESTARTS   AGE
-   cert-manager-5c6866597-zw7kh               1/1     Running   0          2m
-   cert-manager-cainjector-577f6d9fd7-tr77l   1/1     Running   0          2m
-   cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
-   ```
-
-1. Create a secret containing your Cloudflare API token.
-
-   ```shell
-   kubectl create secret generic cloudflare-api-token-secret \
-       --from-literal "apikey=<API_KEY>" --namespace=cert-manager
-   ```
-
-   metal3.io domain DNS configurations are managed via Cloudflare. We use
-   [DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
-   in our [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/)
-   to prove that we own metal3.io domain. As such, we need to provide Cloudflare
-   API key so that validation of the domain with DNS-01 challange passes.
-   Cloudflare API key is stored as K8S secret, and the only thing you need to
-   do is add the name of the secret in cluster-issuer solvers configuration.
-
-   ```shell
-   apiKeySecretRef:
-      name: cloudflare-api-token # name of the secret
-      key: apikey
-   ```
-
-1. Create a ClusterIssuer that contacts
-   [Let’s Encrypt](https://letsencrypt.org/) in order to issue certificates.
-
-   ```shell
-   kubectl apply -f ssl/cluster_issuer.yaml
-   ```
-
-1. Update the Ingress to include tls
-
-   You need to annotate the Ingress with
-   `cert-manager.io/cluster-issuer: letsencrypt-prod` to trigger certificats to
-   be automatically created. See the list of available annotations
-   [here](https://cert-manager.io/docs/usage/ingress/#supported-annotations)
-
-   ```shell
-   kubectl annotate ingress prow cert-manager.io/cluster-issuer=letsencrypt-prod
-   ```
-
-   Edit the ingress to add the following under the spec:
-
-   ```yaml
-   spec:
-      tls:
-      - hosts:
-         - prow.apps.test.metal3.io
-         secretName: metal3-io-tls
-   ```
-
-## GitHub webhook configuration
-
-GitHub webhook needs to be configured with a payload URL pointing to the hook
-service. For that you need
-
-1. HMAC token generated earlier
-1. <https://PROW_URL/hook>, in our case it is
-   <https://prow.apps.test.metal3.io/hook>
-
+1. Create a GitHub webhook for <https://prow.apps.test.metal3.io/hook> using the
+   HMAC token generated earlier.
    Add the URL and token as below. Select **"Send me everything"**, and for
    Content type: **application/json**.
 
    ![webhook configuration](images/webhook.png)
+
+## Generate secret files
+
+Files with credentials and other sensitive information are not stored in this repository.
+You will need to add them manually before you can apply any manifests and build
+the kustomizations.
+CAPO needs access to the OpenStack API and so does the external cloud-provider.
+Prow needs a GitHub token for accessing GitHub, a HMAC token for validating webhook
+requests, and S3 credentials for storing logs and similar.
+
+If you are deploying from scratch or rotating credentials, please make sure to
+save them in a secure place after creating them.
+If there is an existing instance, you most likely just have to take the credentials
+from the secure place and generate the files below from them.
+
+Please set the following environment variables with the relevant credentials.
+Then you will be able to just copy and paste the snippets below.
+
+- `APP_CRED_ID`
+- `APP_CRED_SECRET`
+- `S3_ACCESS_KEY`
+- `S3_SECRET_KEY`
+- `HMAC_TOKEN`
+- `GITHUB_TOKEN`
+- `CHERRYPICK_TOKEN`
+
+Now you are ready to create the files.
+
+1. Create `clouds.yaml` secret used by the CAPO controllers to manage the infrastructure.
+
+   ```bash
+   cat > capo-cluster/clouds.yaml <<EOF
+   clouds:
+     prow:
+       auth:
+         auth_url: https://kna1.citycloud.com:5000/v3/
+         auth_type: v3applicationcredential
+         application_credential_id: ${APP_CRED_ID}
+         application_credential_secret: ${APP_CRED_SECRET}
+         domain_name: CCP_Domain_37137
+         project_name: Default Project 37137
+       region_name: Kna1
+       verify: false
+   EOF
+   ```
+
+1. Create `cloud.conf` secret for the cloud provider integration.
+
+   ```bash
+   cat > cluster-resources/cloud.conf <<EOF
+   [Global]
+   auth-url=https://kna1.citycloud.com:5000/v3/
+   application-credential-id=${APP_CRED_ID}
+   application-credential-secret=${APP_CRED_SECRET}
+   region=Kna1
+   domain-name=CCP_Domain_37137
+   EOF
+   ```
+
+1. Get the kubeconfig and save it as `capo-cluster/kubeconfig.yaml`.
+
+1. Create S3 credentials secret.
+
+   ```bash
+   # Create service-account.json
+   cat > manifests/overlays/metal3/service-account.json <<EOF
+   {
+      "region": "Kna1",
+      "access_key": "${S3_ACCESS_KEY}",
+      "endpoint": "s3-kna1.citycloud.com:8080",
+      "insecure": false,
+      "s3_force_path_style": true,
+      "secret_key": "${S3_SECRET_KEY}"
+   }
+   EOF
+   ```
+
+1. Create configuration file for `s3cmd`.
+   This is used for creating the buckets.
+   The command will create the file `.s3cfg`.
+
+   ```bash
+   s3cmd --config .s3cfg --configure
+   # Provide Access key and Secret key from the openstack credentials created above.
+   # Leave Default Region as US.
+   # Set S3 Endpoint to s3-kna1.citycloud.com:8080
+   # Set DNS-style bucket+hostname:port template to the same s3-kna1.citycloud.com:8080
+   # Default values for the rest. And save settings.
+   ```
+
+1. Save the HMAC token as `manifests/overlays/metal3/hmac-token`.
+
+   ```bash
+   echo "${HMAC_TOKEN}" > manifests/overlays/metal3/hmac-token
+   ```
+
+1. Save the metal3-io-bot token as `manifests/overlays/metal3/github-token`.
+
+   ```bash
+   echo "${GITHUB_TOKEN}" > manifests/overlays/metal3/github-token
+   ```
+
+1. Save the metal3-cherrypick-bot token as `manifests/overlays/metal3/cherrypick-bot-github-token`.
+
+   ```bash
+   echo "${CHERRYPICK_TOKEN}" > manifests/overlays/metal3/cherrypick-bot-github-token
+   ```
+
+## Access existing instance
+
+For accessing an existing instance, you can simply get the relevant credentials
+and files from the password manager and put them in the correct places (see the
+section for generating secret files).
+Check the IP of the bastion in cleura and set it in the environment variable `BASTION_FLOATING_IP`.
+After this you just need to set up a proxy for accessing the API through the bastion:
+
+```bash
+   ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
+```
+
+In another terminal you should now be able to use `kubectl` to access the cluster.
+
+## Deploying Prow from scratch
+
+When deploying completely from scratch, you will need to first create the necessary
+GitHub bot accounts and webhook configuration.
+In addition, you need to create the credentials, generate secret files from them,
+and build node images (see sections above).
+
+1. Create a bootstrap cluster (kind).
+
+   ```bash
+   kind create cluster
+   clusterctl init --infrastructure=openstack:v0.7.1
+   ```
+
+1. Create cluster.
+
+   ```bash
+   kubectl apply -k capo-cluster
+   ```
+
+1. Get kubeconfig and set up proxy for accessing API through the bastion.
+
+   ```bash
+   BASTION_FLOATING_IP="$(kubectl get openstackcluster prow -o jsonpath="{.status.bastion.floatingIP}")"
+   clusterctl get kubeconfig prow > kubeconfig.yaml
+   export KUBECONFIG=kubeconfig.yaml
+   kubectl config set clusters.prow.proxy-url socks5://localhost:6443
+   # In a separate terminal, set up proxy forwarding
+   ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
+   ```
+
+1. Install cloud-provider and CNI.
+   See the [CAPO book](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md),
+   the [CSI Cinder plugin docs](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/cinder-csi-plugin/using-cinder-csi-plugin.md)
+   and the
+   [external-cloud-provider docs](https://cluster-api-openstack.sigs.k8s.io/topics/external-cloud-provider.html)
+   for more information.
+
+   ```bash
+   kubectl apply -k cluster-resources
+   ```
+
+1. Make cluster self-hosted
+
+   ```bash
+   unset KUBECONFIG
+   clusterctl init --kubeconfig=kubeconfig.yaml --infrastructure=openstack:v0.7.1
+   clusterctl move --to-kubeconfig=kubeconfig.yaml
+   export KUBECONFIG=kubeconfig.yaml
+   ```
+
+1. Add ingress-controller, ClusterIssuer and StorageClass
+
+   ```bash
+   kubectl apply -k infra
+   ```
+
+1. Set up S3 object storage buckets
+
+   ```bash
+   s3cmd --config .s3cfg mb s3://prow-logs
+   s3cmd --config .s3cfg mb s3://tide
+   ```
+
+1. Deploy Prow
+
+   ```bash
+    # Create the CRDs. These are applied separately and using server side apply
+    # since they are so huge that the "last applied" annotation that would be
+    # added with a normal apply, becomes larger than the allowed limit.
+    kubectl apply --server-side=true -f https://github.com/kubernetes/test-infra/raw/master/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
+
+    # Deploy all prow components
+    kubectl apply -k manifests/overlays/metal3
+    ```
 
 ## Enabling Metal3 prow for new org/repo
 
@@ -220,11 +404,11 @@ In any case we should follow the steps below to enable prow:
    ![metal3-io bot access rights](images/metal3-io-bot.png)
 
 1. Enable prow webhook as described in
-   [GitHub webhook configuration](#github-webhook-configuration) section. For
+   [GitHub configuration](#github-configuration) section. For
    `metal3-io` the webhook is enabled in org level. For the two repositories in
    `Nordix` org we have enabled them on individual repositories. Keep in mind
    that the HMAC token and hook URL are the same as described in
-   [GitHub webhook configuration](#github-webhook-configuration). The webhook
+   [GitHub configuration](#github-configuration). The webhook
    should look happy (green tick) as shown in the image below once you have
    configured it correctly and communication has been established between
    Github and prow hook.

@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: letsencrypt-http-prod
   # ClusterIssuers are non-namespaced resources
 spec:
   acme:
@@ -12,12 +12,9 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       # Name of a secret used to store the ACME account private key
-      name: letsencrypt-prod
+      name: letsencrypt-http-prod
     solvers:
-    - dns01:
-        cloudflare:
-          email: russell@russellbryant.net
-          apiKeySecretRef:
-            name: cloudflare-api-token-secret
-            key: apikey
+    - http01:
+        ingress:
+          class: nginx
       selector: {}

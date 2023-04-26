@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: label-sync
+  namespace: prow
 spec:
-  schedule: "0 0 * * *"  # Run once a day
+  schedule: "0 0 * * *" # Run once a day
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -27,20 +27,20 @@ spec:
       template:
         spec:
           containers:
-            - name: label-sync
-              image: gcr.io/k8s-prow/label_sync:v20211111-bce61c7c4a
-              args:
-              - --config=/etc/config/labels.yaml
-              - --confirm=true
-              - --orgs=metal3-io
-              - --token=/etc/github/token
-              volumeMounts:
-              - name: github-token
-                mountPath: /etc/github
-                readOnly: true
-              - name: config
-                mountPath: /etc/config
-                readOnly: true
+          - name: label-sync
+            image: gcr.io/k8s-prow/label_sync:v20211111-bce61c7c4a
+            args:
+            - --config=/etc/config/labels.yaml
+            - --confirm=true
+            - --orgs=metal3-io
+            - --token=/etc/github/token
+            volumeMounts:
+            - name: github-token
+              mountPath: /etc/github
+              readOnly: true
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
           restartPolicy: Never
           volumes:
           - name: github-token
