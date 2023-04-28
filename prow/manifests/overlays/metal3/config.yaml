@@ -130,7 +130,7 @@ branch-protection:
                 contexts: ["test-ubuntu-integration-release-1-3"]
             release-1.4:
               required_status_checks:
-                contexts: ["test-ubuntu-integration-release-1-4"]
+                contexts: ["test-ubuntu-e2e-integration-release-1-4"]
         ironic-image:
           branches:
             main:
@@ -161,7 +161,7 @@ branch-protection:
                 contexts: ["test-ubuntu-integration-release-1-3"]
             release-1.4:
               required_status_checks:
-                contexts: ["test-ubuntu-integration-release-1-4"]
+                contexts: ["test-ubuntu-e2e-integration-release-1-4"]
         mariadb-image:
           branches:
             main:
