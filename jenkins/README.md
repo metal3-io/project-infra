@@ -27,6 +27,10 @@ the commands below. The job result will be posted as a comment.
   v1beta1 and branch main on Ubuntu
 * **/test-centos-integration-main** run integration tests with CAPM3 API version
   v1beta1 and branch main on CentOS
+* **/test-ubuntu-integration-release-1-4** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.4 on Ubuntu
+* **/test-centos-integration-release-1-4** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.4 on CentOS
 * **/test-ubuntu-integration-release-1-3** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.3 on Ubuntu
 * **/test-centos-integration-release-1-3** run integration tests with CAPM3 API
@@ -49,6 +53,10 @@ clean up and deletion operations, there are separate triggers phrases as below:
   API version v1beta1 and branch main on Ubuntu
 * **/keep-test-centos-integration-main** run keep integration tests with CAPM3
   API version v1beta1 and branch main on CentOS
+* **/keep-test-ubuntu-integration-release-1-4** run keep integration tests with
+  CAPM3 API version v1beta1 and branch release-1.4 on Ubuntu
+* **/keep-test-centos-integration-release-1-4** run keep integration tests with
+  CAPM3 API version v1beta1 and branch release-1.4 on CentOS
 * **/keep-test-ubuntu-integration-release-1-3** run keep integration tests with
   CAPM3 API version v1beta1 and branch release-1.3 on Ubuntu
 * **/keep-test-centos-integration-release-1-3** run keep integration tests with
