@@ -52,7 +52,7 @@ pipeline {
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
     OS_USER_DOMAIN_NAME="CCP_Domain_37137"
     OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
-    OS_REGION_NAME="Kna1"
+    OS_REGION_NAME="${OS_REGION_NAME}"
     OS_PROJECT_NAME="Default Project 37137"
     OS_TENANT_NAME="Default Project 37137"
     OS_AUTH_VERSION=3

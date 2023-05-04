@@ -18,8 +18,7 @@ TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floatin
 
 echo "Running in region: $OS_REGION_NAME"
 
-if [[ "$OS_REGION_NAME" != "Kna1" ]]
-then
+if [[ "$OS_REGION_NAME" != "${OS_REGION}" ]]; then
   # Find executer floating ip
   TEST_EXECUTER_FIP_ID="$(openstack floating ip list --tags "${TEST_EXECUTER_FIP_TAG}" -f value -c ID)"
 

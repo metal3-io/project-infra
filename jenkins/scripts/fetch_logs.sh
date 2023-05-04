@@ -21,10 +21,9 @@ source "${CI_DIR}/utils.sh"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
 # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
-   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
-then
-  OS_REGION_NAME="Fra1"
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] ||
+  [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]; then
+  OS_REGION_NAME="${OS_REGION}"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
 if [[ "${BARE_METAL_LAB}" != "true" ]]
@@ -37,10 +36,9 @@ if [ "${BARE_METAL_LAB}" == true ]; then
   JUMPHOST_IP="129.192.80.20"
   TEST_EXECUTER_IP="192.168.1.3"
 else
-  TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" \
-  | jq -r '.fixed_ips[0].ip_address')"
-  if [[ "$OS_REGION_NAME" != "Kna1" ]]
-  then
+  TEST_EXECUTER_IP="$(openstack port show -f json "${TEST_EXECUTER_PORT_NAME}" |
+    jq -r '.fixed_ips[0].ip_address')"
+  if [[ "$OS_REGION_NAME" != "${OS_REGION}" ]]; then
     FLOATING_IP="$(openstack floating ip list --fixed-ip-address "${TEST_EXECUTER_IP}" \
       -c "Floating IP Address" -f value)"
     TEST_EXECUTER_IP="${FLOATING_IP}"
@@ -51,7 +49,7 @@ if [ "${BARE_METAL_LAB}" == true ]; then
   declare -a SSH_OPTIONS=(
     -o StrictHostKeyChecking=no
     -o UserKnownHostsFile=/dev/null
-    -o ServerAliveInterval=15 
+    -o ServerAliveInterval=15
     -o ServerAliveCountMax=10
     -i "${METAL3_CI_USER_KEY}"
     -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
@@ -60,7 +58,7 @@ else
   declare -a SSH_OPTIONS=(
     -o StrictHostKeyChecking=no
     -o UserKnownHostsFile=/dev/null
-    -o ServerAliveInterval=15 
+    -o ServerAliveInterval=15
     -o ServerAliveCountMax=10
     -i "${METAL3_CI_USER_KEY}"
   )
@@ -86,5 +84,4 @@ ssh \
 scp \
   "${SSH_OPTIONS[@]}" \
   "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:logs-${BUILD_TAG}.tgz" \
-  "./" > /dev/null
-
+  "./" >/dev/null
