@@ -1,0 +1,8 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: not-important
+  namespace: ingress-nginx
+spec:
+  # Make sure that the job is deleted after it finishes so we don't get issues next time we apply.
+  ttlSecondsAfterFinished: 600
