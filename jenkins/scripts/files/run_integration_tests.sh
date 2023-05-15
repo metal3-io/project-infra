@@ -15,7 +15,7 @@ export DEFAULT_HOSTS_MEMORY
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
-export SKIP_CLEANUP
+export KEEP_TEST_ENV
 # unsetting NUM_NODES when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
@@ -47,8 +47,8 @@ if [ "${EPHEMERAL_TEST}" == "null" ]; then
   unset EPHEMERAL_TEST
 fi
 
-if [ "${SKIP_CLEANUP}" == "null" ]; then
-  unset SKIP_CLEANUP
+if [ "${KEEP_TEST_ENV}" == "null" ]; then
+  unset KEEP_TEST_ENV
 fi
 
 if [ "${UPGRADE_FROM_RELEASE}" == "null" ]; then

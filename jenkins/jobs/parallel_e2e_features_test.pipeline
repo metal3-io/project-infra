@@ -6,7 +6,7 @@ ci_git_credential_id = "metal3-jenkins-github-token"
 def CLEAN_TIMEOUT = 600
 // 3 hours
 def TIMEOUT = 10800
-SKIP_DELETION = (env.SKIP_DELETION)
+KEEP_TEST_ENV = (env.KEEP_TEST_ENV)
 
 script {
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
@@ -27,9 +27,8 @@ script {
       'z').join("")[rand.nextInt(26)]
   }.join("")
 
-  if ("${SKIP_DELETION}" == "true") {
+  if ("${KEEP_TEST_ENV}" == "true") {
     VM_NAME = "ci-test-keep-vm-" + dateFormat.format(date) + "-" + VM_KEY
-    SKIP_CLEANUP = "true"
   } else {
     VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
   }
@@ -67,8 +66,7 @@ pipeline {
     DEFAULT_HOSTS_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES = "${NUM_NODES}"
     TESTS_FOR = "${TESTS_FOR}"
-    SKIP_DELETION = "${SKIP_DELETION}"
-    SKIP_CLEANUP = "${SKIP_CLEANUP}"
+    KEEP_TEST_ENV = "${KEEP_TEST_ENV}"
     GINKGO_FOCUS = "${GINKGO_FOCUS}"
     GINKGO_SKIP="${GINKGO_SKIP}"
     EPHEMERAL_TEST = "${EPHEMERAL_TEST}"
@@ -149,7 +147,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
                     sh "./jenkins/scripts/integration_test_clean.sh"
@@ -162,7 +160,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
                     sh "./jenkins/scripts/integration_delete.sh"
@@ -215,7 +213,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
                     sh "./jenkins/scripts/integration_test_clean.sh"
@@ -228,7 +226,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
                     sh "./jenkins/scripts/integration_delete.sh"
@@ -281,7 +279,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
                     sh "./jenkins/scripts/integration_test_clean.sh"
@@ -294,7 +292,7 @@ pipeline {
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
                 script {
-                  if ("${SKIP_DELETION}" == "true") {
+                  if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
                     sh "./jenkins/scripts/integration_delete.sh"
