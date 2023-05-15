@@ -126,6 +126,6 @@ if [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tes
 elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
   make test-e2e
 else
-  make
+  make ci_run
   make test
 fi
