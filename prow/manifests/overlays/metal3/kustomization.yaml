@@ -10,6 +10,7 @@ resources:
 - external-plugins/needs-rebase_deployment.yaml
 - external-plugins/needs-rebase_service.yaml
 - external-plugins/labels_cronjob.yaml
+- pdb.yaml
 
 commonLabels:
   app.kubernetes.io/instance: metal3

@@ -1,0 +1,21 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hook
+  namespace: prow
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: hook
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: deck
+  namespace: prow
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: deck
