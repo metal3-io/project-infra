@@ -21,8 +21,9 @@ source "${CI_DIR}/utils.sh"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 
 # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${UPDATED_BRANCH}" == "main" ]] ||
-  [[ "${UPDATED_BRANCH}" == "release"* ]]; then
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
+   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
+then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
@@ -50,7 +51,7 @@ if [ "${BARE_METAL_LAB}" == true ]; then
   declare -a SSH_OPTIONS=(
     -o StrictHostKeyChecking=no
     -o UserKnownHostsFile=/dev/null
-    -o ServerAliveInterval=15
+    -o ServerAliveInterval=15 
     -o ServerAliveCountMax=10
     -i "${METAL3_CI_USER_KEY}"
     -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
@@ -59,7 +60,7 @@ else
   declare -a SSH_OPTIONS=(
     -o StrictHostKeyChecking=no
     -o UserKnownHostsFile=/dev/null
-    -o ServerAliveInterval=15
+    -o ServerAliveInterval=15 
     -o ServerAliveCountMax=10
     -i "${METAL3_CI_USER_KEY}"
   )

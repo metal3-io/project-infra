@@ -21,8 +21,9 @@ TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int
 TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 
 # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] ||
-  [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]; then
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] || \
+   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]
+then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
