@@ -60,7 +60,7 @@ if [ "${IRONIC_INSTALL_TYPE}" == "source" ]; then
 fi
 
 # Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] ||
+if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] ||
   [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]; then
   OS_REGION_NAME="Fra1"
   OS_AUTH_URL="https://fra1.citycloud.com:5000"
