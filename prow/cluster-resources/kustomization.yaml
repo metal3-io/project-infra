@@ -18,4 +18,5 @@ secretGenerator:
 - files:
   - cloud.conf
   name: cloud-config
+  namespace: kube-system
   type: Opaque
