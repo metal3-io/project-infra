@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 set -xeu
 
@@ -16,7 +16,7 @@ set -xeu
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source "${CI_DIR}/utils.sh"
 
 REPO_ORG="${REPO_ORG:-metal3-io}"
@@ -24,12 +24,13 @@ REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH:-main}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-main}"
+
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
-  export BML_METAL3_DEV_ENV_REPO="${UPDATED_REPO}"
-  export BML_METAL3_DEV_ENV_BRANCH="${UPDATED_BRANCH}"
+    export BML_METAL3_DEV_ENV_REPO="${UPDATED_REPO}"
+    export BML_METAL3_DEV_ENV_BRANCH="${UPDATED_BRANCH}"
 else
-  export BML_METAL3_DEV_ENV_REPO="https://github.com/metal3-io/metal3-dev-env.git"
-  export BML_METAL3_DEV_ENV_BRANCH="main"
+    export BML_METAL3_DEV_ENV_REPO="https://github.com/metal3-io/metal3-dev-env.git"
+    export BML_METAL3_DEV_ENV_BRANCH="main"
 fi
 
 CAPI_VERSION="${CAPI_VERSION:-v1beta1}"
@@ -45,7 +46,7 @@ UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE:-}"
 JUMPHOST_IP="129.192.80.20"
 TEST_EXECUTER_IP="192.168.1.3"
 
-cat <<-EOF >"${CI_DIR}/files/vars.sh"
+cat <<- EOF > "${CI_DIR}/files/vars.sh"
 REPO_ORG="${REPO_ORG}"
 REPO_NAME="${REPO_NAME}"
 REPO_BRANCH="${REPO_BRANCH}"
@@ -64,45 +65,45 @@ BARE_METAL_LAB="${BARE_METAL_LAB}"
 UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE}"
 EOF
 
-cat "${CI_DIR}/integration_test_env.sh" >>"${CI_DIR}/files/vars.sh"
+cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
 
 declare -a SSH_OPTIONS=(
-  -o StrictHostKeyChecking=no
-  -o UserKnownHostsFile=/dev/null
-  -o ServerAliveInterval=15
-  -o ServerAliveCountMax=10
-  -i "${METAL3_CI_USER_KEY}"
-  -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
+    -o StrictHostKeyChecking=no
+    -o UserKnownHostsFile=/dev/null
+    -o ServerAliveInterval=15
+    -o ServerAliveCountMax=10
+    -i "${METAL3_CI_USER_KEY}"
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
 )
 
 # Send Remote script to Executer
 scp \
-  "${SSH_OPTIONS[@]}" \
-  -r \
-  "${CI_DIR}/files/run_integration_tests.sh" \
-  "${CI_DIR}/files/vars.sh" \
-  "${CI_DIR}/bare_metal_lab/" \
-  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" >/dev/null
+    "${SSH_OPTIONS[@]}" \
+    -r \
+    "${CI_DIR}/files/run_integration_tests.sh" \
+    "${CI_DIR}/files/vars.sh" \
+    "${CI_DIR}/bare_metal_lab/" \
+    "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
 
 echo "Setting up the lab"
 # Execute remote script
 # shellcheck disable=SC2029
 ssh \
-  -o SendEnv="BML_ILO_USERNAME" \
-  -o SendEnv="BML_ILO_PASSWORD" \
-  -o SendEnv="GITHUB_TOKEN" \
-  -o SendEnv="REPO_NAME" \
-  -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
-  -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
-  "${SSH_OPTIONS[@]}" \
-  ${METAL3_CI_USER}@${TEST_EXECUTER_IP} \
-  ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml
+    -o SendEnv="BML_ILO_USERNAME" \
+    -o SendEnv="BML_ILO_PASSWORD" \
+    -o SendEnv="GITHUB_TOKEN" \
+    -o SendEnv="REPO_NAME" \
+    -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
+    -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
+    "${SSH_OPTIONS[@]}" \
+    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+    ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
 ssh \
-  "${SSH_OPTIONS[@]}" \
-  ${METAL3_CI_USER}@${TEST_EXECUTER_IP} \
-  PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+    "${SSH_OPTIONS[@]}" \
+    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+    PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
+    /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"

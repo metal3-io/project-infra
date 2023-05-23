@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eu
 
@@ -27,47 +27,49 @@ IRONIC_INSTALL_MODE="${IRONIC_INSTALL_MODE:-INSTALL_FROM_RPM}"
 IRONIC_IMAGE_DIR="/home/${OS_USERNAME}/tested_repo"
 CLONING_ISSUE="Non empty ${IRONIC_IMAGE_DIR} or cloning error, proceeding to check the directory."
 
-function prepare_work_env {
-# Clone the source repository
-git clone "${DESTINATION_REPO}" "${IRONIC_IMAGE_DIR}" || echo "${CLONING_ISSUE}"
-cd "${IRONIC_IMAGE_DIR}"
-git checkout "${DESTINATION_BRANCH}"
-# If the target and source repos and branches are identical, don't try to merge
-if [[ "${SOURCE_REPO}" != *"${DESTINATION_REPO}"* ]] || \
-  [[ "${SOURCE_BRANCH}" != "${DESTINATION_BRANCH}" ]]
-then
-  git config user.email "test@test.test"
-  git config user.name "Test"
-  git remote add test "${SOURCE_REPO}"
-  git fetch test
-  # Merging the source branch to the destintation branch
-  git merge "${SOURCE_BRANCH}" || exit
-fi
+prepare_work_env()
+{
+    # Clone the source repository
+    git clone "${DESTINATION_REPO}" "${IRONIC_IMAGE_DIR}" || echo "${CLONING_ISSUE}"
+    cd "${IRONIC_IMAGE_DIR}"
+    git checkout "${DESTINATION_BRANCH}"
+    # If the target and source repos and branches are identical, don't try to merge
+    if [[ "${SOURCE_REPO}" != *"${DESTINATION_REPO}"* ]] ||
+        [[ "${SOURCE_BRANCH}" != "${DESTINATION_BRANCH}" ]]; then
+        git config user.email "test@test.test"
+        git config user.name "Test"
+        git remote add test "${SOURCE_REPO}"
+        git fetch test
+        # Merging the source branch to the destintation branch
+        git merge "${SOURCE_BRANCH}" || exit
+    fi
 }
 
-function install_from_rpm {
+install_from_rpm()
+{
     docker build -t "${IMAGE_REGISTRY}/${CONTAINER_IMAGE_REPO}:${TAG}" .
 }
 
-function install_from_source {
+install_from_source()
+{
     docker build -t "${IMAGE_REGISTRY}/${CONTAINER_IMAGE_REPO}:${TAG}" --build-arg INSTALL_TYPE=source .
 }
-
 
 # This script relies on upstream https://github.com/metal3-io/ironic-image/blob/main/patch-image.sh
 # to build Ironic container image based on a gerrit refspec of a patch.
 # Required parameter is REFSPEC, which is gerrit refspec of the patch
 # Example: refs/changes/74/804074/1
-function install_from_rpm_patch {
+install_from_rpm_patch()
+{
     # Create a patchlist
     echo "ironic image will be patched with the following patchfile:"
     echo "${PATCHFILE_CONTENT}"
-    cat <<EOF > "${PATCH_FILE}"
+    cat << EOF > "${PATCH_FILE}"
 ${PATCHFILE_CONTENT}
 EOF
 
     echo "ironic-image patchfile content"
-    cat "$PATCH_FILE"
+    cat "${PATCH_FILE}"
 
     docker build -t "${IMAGE_REGISTRY}/${CONTAINER_IMAGE_REPO}:${TAG}" --build-arg PATCH_LIST="${PATCH_FILE}" .
 }
@@ -81,30 +83,28 @@ EOF
 # according to the inronic-image PR in question.
 # Example: user have in both project-infra and in ironic-image and the user would like to test both
 # together before any of them would be merged.
-if [[ "${DESTINATION_REPO}" != "https://github.com/metal3-io/ironic-image.git" ]];then
+if [[ "${DESTINATION_REPO}" != "https://github.com/metal3-io/ironic-image.git" ]]; then
     DESTINATION_REPO="https://github.com/metal3-io/ironic-image.git"
     DESTINATION_BRANCH="main"
     SOURCE_REPO="${DESTINATION_REPO}"
     SOURCE_BRANCH="${DESTINATION_BRANCH}"
 fi
 
-case "$IRONIC_INSTALL_MODE" in
+case "${IRONIC_INSTALL_MODE}" in
 
-  'INSTALL_FROM_SOURCE')
-    prepare_work_env
-    install_from_source
-  ;;
-  'INSTALL_FROM_RPM')
-    prepare_work_env
-    install_from_rpm
-  ;;
-  'INSTALL_FROM_RPM_PATCH')
-    prepare_work_env
-    install_from_rpm_patch
-  ;;
-  *)
-   exit 1
-  ;;
+    'INSTALL_FROM_SOURCE')
+        prepare_work_env
+        install_from_source
+        ;;
+    'INSTALL_FROM_RPM')
+        prepare_work_env
+        install_from_rpm
+        ;;
+    'INSTALL_FROM_RPM_PATCH')
+        prepare_work_env
+        install_from_rpm_patch
+        ;;
+    *)
+        exit 1
+        ;;
 esac
-
-
