@@ -119,9 +119,6 @@ branch-protection:
                     "test-centos-e2e-integration-main",
                     "test-ubuntu-integration-main",
                   ]
-            release-1.1:
-              required_status_checks:
-                contexts: ["test-ubuntu-integration-release-1-1"]
             release-1.2:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-2"]
@@ -150,9 +147,6 @@ branch-protection:
                     "test-centos-e2e-integration-main",
                     "test-ubuntu-integration-main",
                   ]
-            release-1.1:
-              required_status_checks:
-                contexts: ["test-ubuntu-integration-release-1-1"]
             release-1.2:
               required_status_checks:
                 contexts: ["test-ubuntu-integration-release-1-2"]
@@ -476,7 +470,6 @@ presubmits:
     - name: gomod
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -511,7 +504,6 @@ presubmits:
     - name: gofmt
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -560,7 +552,6 @@ presubmits:
     - name: golangci-lint
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -595,7 +586,6 @@ presubmits:
     - name: govet
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -658,7 +648,6 @@ presubmits:
     - name: generate
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -693,7 +682,6 @@ presubmits:
     - name: unit
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -869,22 +857,6 @@ presubmits:
                 value: "TRUE"
             image: docker.io/golang:1.18
             imagePullPolicy: Always
-    - name: gomod
-      branches:
-        - release-1.1
-      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
-      decorate: true
-      spec:
-        containers:
-          - args:
-              - ./hack/gomod.sh
-            command:
-              - sh
-            env:
-              - name: IS_CONTAINER
-                value: "TRUE"
-            image: docker.io/golang:1.17
-            imagePullPolicy: Always
     - name: gosec
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
@@ -920,7 +892,6 @@ presubmits:
     - name: gofmt
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -955,7 +926,6 @@ presubmits:
     - name: golangci-lint
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -990,7 +960,6 @@ presubmits:
     - name: govet
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1052,7 +1021,6 @@ presubmits:
     - name: unit
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1087,7 +1055,6 @@ presubmits:
     - name: generate
       branches:
         - release-1.2
-        - release-1.1
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
