@@ -436,3 +436,135 @@ In any case we should follow the steps below to enable prow:
 1. At this point you should see the prow tests you have configured as presubmits
    for the repository, running on open PRs and tide is enabled and waiting for
    appropriate labels.
+
+## Ops
+
+This section is about recurring operations for keeping Prow and all of the
+related components up to date and healthy.
+
+A general advice about how to apply changes: it is a good idea to check what
+ changes would be made when applying by using `kubectl diff`.
+It works with kustomizations just like the `kubectl apply` command:
+
+```bash
+kubectl diff -k <path-to-kustomization>
+# Example
+kubectl diff -k capo-cluster
+```
+
+Even when you think the change is straight forward it is well worth it to check first.
+Maybe you don't have the latest changes locally?
+Or perhaps someone did some changes in the cluster without committing them in
+the manifests.
+A simple `kubectl diff` will save you from surprises many times.
+
+### Upgrading Kubernetes and node images
+
+When it is time to upgrade to a new Kubernetes version (or just update the node
+image), you will first need to build a new node image (see section above).
+After this you need to create new OpenStackMachineTemplates for the image and
+switch the KubeadmControlPlane and MachineDeployment to these new templates.
+If the Kubernetes version has changed you also need to update the Kubernetes
+version in the KubeadmControlPlane and MachineDeployment.
+The relevant files are
+[kubeadmcontrolplane.yaml](capo-cluster/kubeadmcontrolplane.yaml),
+[machinedeployment.yaml](capo-cluster/machinedeployment.yaml) and
+[openstackmachinetemplate.yaml](capo-cluster/openstackmachinetemplates.yaml).
+Apply the changes and then create a PR with the changes.
+
+```bash
+# Check that the changes are as you expect
+kubectl diff -k capo-cluster
+# Apply
+kubectl apply -k capo-cluster
+```
+
+**Note:** This operation may disrupt running prow jobs when the Node where they
+run is deleted.
+The jobs are not automatically restarted.
+Therefore it is best to do upgrades at times when no jobs are running.
+
+Verify that the new Machines and Nodes successfully join the cluster and are healthy.
+
+```bash
+kubectl get machines
+kubectl get nodes
+```
+
+If everything looks good, consider deleting older OpenStackMachineTemplates,
+but keep the last used templates in case a rollback is needed.
+Remember to also delete the images in Cleura when they are no longer needed.
+
+### Updating the Bastion
+
+The bastion host just runs a normal Ubuntu image.
+When it needs to be updated, just upload the new image to Cleura.
+The tricky part is then to replace the bastion host.
+This is a sensitive operation since it could lock us out of the cluster if we
+are not careful.
+We can work around it by, for example, temporarily allowing direct access to
+the Kubernetes API from your own public IP.
+The same procedure (but without changing the image) can also be used when
+rebooting or doing other operations that could potentially cause issues.
+
+Find your public IP:
+
+```bash
+curl ifconfig.me
+```
+
+Now edit the [openstackcluster.yaml](capo-cluster/openstackcluster.yaml) to add
+the IP to the allowed CIDRs:
+
+```yaml
+...
+spec:
+  apiServerLoadBalancer:
+    enabled: true
+    allowedCidrs:
+    - 10.6.0.0/24
+    - <your-ip-here>/32
+```
+
+Apply the changes and try accessing the API directly to make sure it is working:
+
+```bash
+kubectl diff -k capo-cluster
+kubectl apply -k capo-cluster
+# Stop the port forward and then try to access it directly
+kubectl config unset clusters.prow.proxy-url
+kubectl cluster-info
+```
+
+We are now ready to update the bastion image (or do other disruptive operations,
+like rebooting).
+This is done by disabling the bastion, then change the image and finally enable
+it again.
+Edit the `openstackcluster.yaml` again so that `spec.bastion.enabled` is set to
+`false` and apply the changes.
+Next, edit the `spec.bastion.image` to the new image and set
+`spec.bastion.enabled` back to `true`, then apply again.
+
+Once the new bastion is up, we must ensure that we can access the API through it.
+Add the proxy URL back and start the port-forward in a separate terminal:
+
+```bash
+# In a separate terminal, set up proxy forwarding
+BASTION_FLOATING_IP="$(kubectl get openstackcluster prow -o jsonpath="{.status.bastion.floatingIP}")"
+ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
+# Then add back the proxy-url and check that it is working
+kubectl config set clusters.prow.proxy-url socks5://localhost:6443
+kubectl cluster-info
+```
+
+Finally, remove your public IP from the allowed CIDRs and apply again.
+
+If the worst would happen and we lock ourselves out, it is possible to
+[modify the OpenStack resources](https://cluster-api-openstack.sigs.k8s.io/clusteropenstack/configuration.html#restrict-access-to-the-api-server)
+directly to fix it:
+
+```bash
+openstack loadbalancer listener unset --allowed-cidrs <listener ID>
+```
+
+Remember to delete old images when they are no longer needed.
