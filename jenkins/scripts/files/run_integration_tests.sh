@@ -20,6 +20,8 @@ export KEEP_TEST_ENV
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
 export UPGRADE_FROM_RELEASE
+export KUBERNETES_VERSION_UPGRADE_FROM
+export KUBERNETES_VERSION_UPGRADE_TO
 
 if [[ "${REPO_NAME}" == "metal3-dev-tools" ]]; then
     export IMAGE_NAME
@@ -29,6 +31,11 @@ fi
 
 if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
+fi
+
+if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
+    export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
+    export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
 fi
 
 if [[ "${NUM_NODES}" == "null" ]]; then
@@ -49,6 +56,14 @@ fi
 
 if [[ "${UPGRADE_FROM_RELEASE}" == "null" ]]; then
     unset UPGRADE_FROM_RELEASE
+fi
+
+if [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then
+    unset KUBERNETES_VERSION_UPGRADE_FROM
+fi
+
+if [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
+    unset KUBERNETES_VERSION_UPGRADE_TO
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
