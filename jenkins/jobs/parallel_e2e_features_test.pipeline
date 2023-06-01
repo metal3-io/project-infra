@@ -111,7 +111,7 @@ pipeline {
           environment {
             TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-pivoting-based"
             BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
-            GINKGO_FOCUS = "ephemeral"
+            GINKGO_FOCUS = "pivoting"
           }
 
           steps {
@@ -236,14 +236,15 @@ pipeline {
           }
         }
 
-        stage('Run e2e live iso test') {
+        stage('Run e2e features excluding pivoting-based and remediation tests') {
           options {
             timeout(time: TIMEOUT, unit: 'SECONDS')
           }
           environment {
-            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-live-iso"
-            BUILD_TAG = "${env.BUILD_TAG}-live-iso"
-            GINKGO_FOCUS = "live-iso"
+            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-other-features"
+            BUILD_TAG = "${env.BUILD_TAG}-other-features"
+            GINKGO_FOCUS = "features"
+            GINKGO_SKIP = "pivoting remediation"
 
           }
           steps {
