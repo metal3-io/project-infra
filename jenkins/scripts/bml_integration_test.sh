@@ -38,6 +38,7 @@ CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 CAPM3RELEASEBRANCH="${CAPM3RELEASEBRANCH:-main}"
 TESTS_FOR="${TESTS_FOR:-integration_test}"
 GINKGO_FOCUS="${GINKGO_FOCUS:-}"
+GINKGO_SKIP="${GINKGO_SKIP:-}"
 KEEP_TEST_ENV="${KEEP_TEST_ENV:-}"
 EPHEMERAL_TEST="${EPHEMERAL_TEST:-false}"
 BARE_METAL_LAB=true
@@ -48,7 +49,7 @@ KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 JUMPHOST_IP="129.192.80.20"
 TEST_EXECUTER_IP="192.168.1.3"
 
-cat <<- EOF > "${CI_DIR}/files/vars.sh"
+cat <<-EOF >"${CI_DIR}/files/vars.sh"
 REPO_ORG="${REPO_ORG}"
 REPO_NAME="${REPO_NAME}"
 REPO_BRANCH="${REPO_BRANCH}"
@@ -61,6 +62,7 @@ IMAGE_OS="${IMAGE_OS}"
 DEFAULT_HOSTS_MEMORY="${DEFAULT_HOSTS_MEMORY}"
 TESTS_FOR="${TESTS_FOR}"
 GINKGO_FOCUS="${GINKGO_FOCUS}"
+GINKGO_SKIP="${GINKGO_SKIP}"
 KEEP_TEST_ENV="${KEEP_TEST_ENV}"
 EPHEMERAL_TEST="${EPHEMERAL_TEST}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
@@ -69,7 +71,7 @@ KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
 EOF
 
-cat "${CI_DIR}/integration_test_env.sh" >> "${CI_DIR}/files/vars.sh"
+cat "${CI_DIR}/integration_test_env.sh" >>"${CI_DIR}/files/vars.sh"
 
 declare -a SSH_OPTIONS=(
     -o StrictHostKeyChecking=no
@@ -87,7 +89,7 @@ scp \
     "${CI_DIR}/files/run_integration_tests.sh" \
     "${CI_DIR}/files/vars.sh" \
     "${CI_DIR}/bare_metal_lab/" \
-    "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+    "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" >/dev/null
 
 echo "Setting up the lab"
 # Execute remote script

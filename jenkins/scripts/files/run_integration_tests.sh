@@ -15,6 +15,7 @@ export IMAGE_OS
 export DEFAULT_HOSTS_MEMORY
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
+export GINKGO_SKIP
 export KEEP_TEST_ENV
 # unsetting NUM_NODES when it is unbound
 # in BML tests it is not passed through vars file
@@ -44,6 +45,10 @@ fi
 
 if [[ "${GINKGO_FOCUS}" == "null" ]]; then
     unset GINKGO_FOCUS
+fi
+
+if [[ "${GINKGO_SKIP}" == "null" ]]; then
+    unset GINKGO_SKIP
 fi
 
 if [[ "${EPHEMERAL_TEST}" == "null" ]]; then
