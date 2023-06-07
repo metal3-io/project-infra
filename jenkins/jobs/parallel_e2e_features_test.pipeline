@@ -6,6 +6,9 @@ ci_git_credential_id = "metal3-jenkins-github-token"
 def CLEAN_TIMEOUT = 600
 // 3 hours
 def TIMEOUT = 10800
+// 5 hours
+def NODE_REUSE_TIMEOUT = 18000
+
 KEEP_TEST_ENV = (env.KEEP_TEST_ENV)
 
 script {
@@ -107,7 +110,7 @@ pipeline {
       parallel {
         stage('Run e2e pivoting based features') {
           options {
-            timeout(time: TIMEOUT, unit: 'SECONDS')
+            timeout(time: NODE_REUSE_TIMEOUT, unit: 'SECONDS')
           }
           environment {
             TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-pivoting-based"
@@ -129,7 +132,7 @@ pipeline {
             always {
               script {
                 CURRENT_END_TIME = System.currentTimeMillis()
-                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
+                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - NODE_REUSE_TIMEOUT) > 0) {
                   echo "Failed due to timeout"
                   currentBuild.result = 'FAILURE'
                 }
