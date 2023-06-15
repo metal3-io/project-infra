@@ -562,3 +562,58 @@ openstack loadbalancer listener unset --allowed-cidrs <listener ID>
 ```
 
 Remember to delete old images when they are no longer needed.
+
+### Recovering from failed Nodes
+
+If a Node fails for some reason, e.g. it is overwhelmed by workload that uses up
+all the CPU resources, then it can be hard to get back to a working state.
+Generally, the procedure is to delete the Machine corresponding to the failed
+Node.
+
+```bash
+kubectl delete machine <name-of-machine>
+```
+
+However, this process will not progress if the Node is unresponsive. The reason
+for this is that it is impossible to drain it since it doesn't respond.
+
+It is possible to tell Cluster API to proceed if the drain doesn't succeed
+within some time limit, but this is risky if there is workload that cannot
+tolerate multiple replicas or similar. It could still be running on the Node
+even though the kubelet is failing to report its status. Fortunately we can
+inspect the Node and see what is going on and even shut it down using the
+OpenStack API if needed.
+
+Once you are relatively sure that it is safe to remove it, edit the Machine to
+add `nodeDrainTimeout` and `nodeVolumeDetachTimeout`. Example:
+
+```yaml
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Machine
+metadata:
+  name: machine-name
+  namespace: default
+spec:
+  nodeDrainTimeout: 10m
+  nodeVolumeDetachTimeout: 15m
+```
+
+After this, the Machine and Node will be deleted. A new Machine and Node will be
+created automatically to replace them.
+
+### Temporary scale out
+
+Until we have autoscaling of the cluster, we may need to manually scale the
+cluster as the workload changes. For example, if many jobs are triggered within
+a short period of time, it can be necessary to add more workers to avoid running
+out of resources or jobs taking too long time.
+
+Scaling the MachineDeployment is as easy as this:
+
+```bash
+kubectl scale md prow-md-0 --replicas=3
+```
+
+Here `prow-md-0` is the name of the MachineDeployment and `3` is the desired
+number of replicas. To check the status of the MachineDeployment use
+`kubectl get md`.
