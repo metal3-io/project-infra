@@ -15,16 +15,22 @@ spec:
       nodeRegistration:
         kubeletExtraArgs:
           cloud-provider: external
+          provider-id: "openstack:///'{{ instance_id }}'"
+          kube-reserved: cpu=200m,memory=100Mi
+          system-reserved: cpu=100m,memory=100Mi
         name: '{{ local_hostname }}'
     joinConfiguration:
       nodeRegistration:
         kubeletExtraArgs:
           cloud-provider: external
+          provider-id: "openstack:///'{{ instance_id }}'"
+          kube-reserved: cpu=200m,memory=100Mi
+          system-reserved: cpu=100m,memory=100Mi
         name: '{{ local_hostname }}'
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
       kind: OpenStackMachineTemplate
-      name: prow-control-plane-v1-26-5
+      name: prow-control-plane-v1-26-6
   replicas: 1
-  version: v1.26.5
+  version: v1.26.6

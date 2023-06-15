@@ -11,6 +11,7 @@ resources:
 - external-plugins/needs-rebase_service.yaml
 - external-plugins/labels_cronjob.yaml
 - pdb.yaml
+- limitrange.yaml
 
 commonLabels:
   app.kubernetes.io/instance: metal3
