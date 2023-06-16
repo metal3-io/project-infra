@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: sinker
+spec:
+  template:
+    spec:
+      containers:
+      - name: sinker
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi

@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: tide
+spec:
+  template:
+    spec:
+      containers:
+      - name: tide
+        resources:
+          requests:
+            cpu: 100m
+            memory: 120Mi

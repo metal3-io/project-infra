@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: needs-rebase
+spec:
+  template:
+    spec:
+      containers:
+      - name: needs-rebase
+        resources:
+          requests:
+            cpu: 50m
+            memory: 20Mi
