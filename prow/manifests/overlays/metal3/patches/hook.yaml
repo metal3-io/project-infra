@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: hook
+spec:
+  template:
+    spec:
+      containers:
+      - name: hook
+        resources:
+          requests:
+            cpu: 120m
+            memory: 40Mi

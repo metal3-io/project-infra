@@ -95,3 +95,17 @@ images:
   newTag: v20230329-c93d79fb7d
 - name: gcr.io/k8s-prow/needs-rebase
   newTag: v20230329-c93d79fb7d
+
+patches:
+- path: patches/crier.yaml
+- path: patches/deck.yaml
+- path: patches/ghproxy.yaml
+- path: patches/hook.yaml
+- path: patches/horologium.yaml
+- path: patches/prow-controller-manager.yaml
+- path: patches/sinker.yaml
+- path: patches/statusreconciler.yaml
+- path: patches/tide.yaml
+# External plugins
+- path: patches/cherrypicker.yaml
+- path: patches/needs-rebase.yaml

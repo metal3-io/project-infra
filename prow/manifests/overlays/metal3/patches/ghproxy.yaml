@@ -1,0 +1,15 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: ghproxy
+spec:
+  template:
+    spec:
+      containers:
+      - name: ghproxy
+        resources:
+          requests:
+            cpu: 120m
+            memory: 20Mi
