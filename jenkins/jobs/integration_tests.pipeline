@@ -4,8 +4,8 @@ ci_git_credential_id = "metal3-jenkins-github-token"
 
 // 10 minutes
 def CLEAN_TIMEOUT = 600
-// 1 hour 30 minutes
-def TIMEOUT = 5400
+// 2 hours
+def TIMEOUT = 7200
 KEEP_TEST_ENV=(env.KEEP_TEST_ENV)
 
 if (env.TESTS_FOR) {
