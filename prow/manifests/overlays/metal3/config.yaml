@@ -321,7 +321,7 @@ presubmits:
             imagePullPolicy: Always
   metal3-io/baremetal-operator:
     - name: gofmt
-      run_if_changed: '\.go$'
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
         containers:
@@ -435,7 +435,7 @@ presubmits:
             image: docker.io/golang:1.19
             imagePullPolicy: Always
     - name: golint
-      run_if_changed: '\.go$'
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
         containers:
