@@ -2,6 +2,8 @@ import java.text.SimpleDateFormat
 
 ci_git_credential_id = "metal3-jenkins-github-token"
 
+// 3 hours
+def TIMEOUT = 10800
 
 script {
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
@@ -74,6 +76,9 @@ pipeline {
       }
     }
     stage('Run integration test') {
+      options {
+        timeout(time: TIMEOUT, unit: 'SECONDS')
+      }
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]) {
           withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
@@ -87,6 +92,13 @@ pipeline {
   }
   post {
     always {
+      script {
+        CURRENT_END_TIME = System.currentTimeMillis()
+        if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+          echo "Failed due to timeout"
+          currentBuild.result = 'FAILURE'
+        }
+      }
       withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
         withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
           sh "./jenkins/scripts/fetch_logs.sh"
