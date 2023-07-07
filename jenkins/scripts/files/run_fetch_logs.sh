@@ -70,13 +70,15 @@ fetch_k8s_logs()
 # Fetch k8s logs
 fetch_k8s_logs "management_cluster" "/home/metal3ci/.kube/config"
 
-# Fetch Ironic containers logs before pivoting to the target cluster
-CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/before_pivoting"
-mkdir -p "${CONTAINER_LOGS_DIR}"
-cp -r /tmp/"${CONTAINER_RUNTIME}"/* "${CONTAINER_LOGS_DIR}"
+# Fetch Ironic containers logs before pivoting to the target cluster, if they exist
+if [ -d /tmp/"${CONTAINER_RUNTIME}" ] && [ "$(ls /tmp/"${CONTAINER_RUNTIME}"/)" ]; then
+    CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/before_pivoting"
+    mkdir -p "${CONTAINER_LOGS_DIR}"
+    cp -r /tmp/"${CONTAINER_RUNTIME}"/* "${CONTAINER_LOGS_DIR}"
+fi
 
 # Fetch Ironic containers logs after pivoting back to the source cluster
-CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/after_pivoting"
+CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/final_logs"
 mkdir -p "${CONTAINER_LOGS_DIR}"
 LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
 for LOCAL_CONTAINER in ${LOCAL_CONTAINERS}; do
