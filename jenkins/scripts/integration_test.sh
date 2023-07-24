@@ -68,7 +68,7 @@ if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"*
 fi
 echo "Running in region: ${OS_REGION_NAME}"
 
-if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* && "${GINKGO_FOCUS}" != "integration" ]]; then
+if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* && ( "${GINKGO_FOCUS}" != "integration" && "${GINKGO_FOCUS}" != "basic" ) ]]; then
   # Four node cluster
   TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
 else
