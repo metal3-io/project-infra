@@ -73,7 +73,11 @@ if [[ "${TESTS_FOR}" == "feature_tests"* || "${TESTS_FOR}" == "e2e_tests"* && ( 
   TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
 else
   # Two node cluster
-  TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB-100GB}"
+  if [[ "${IMAGE_OS}" == "centos" ]]; then
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-16GB-100GB}"
+  else
+    TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-4C-16GB-100GB}"
+  fi
 fi
 
 # Creating new port, needed to immediately get the ip
