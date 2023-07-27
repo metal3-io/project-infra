@@ -126,9 +126,9 @@ if [[ ("${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env") ||
     pushd tested_repo
 elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     # only if the test is e2e clone capm3 and run the test from there
-    git clone "${CAPM3REPO}" metal3
+    git clone "https://github.com/Nordix/cluster-api-provider-metal3" metal3
     pushd metal3
-    git checkout "${CAPM3BRANCH}"
+    git switch "test"
 else
     # if not e2e test clone dev-env since all the other tests (integration, features) are
     # triggered from there
