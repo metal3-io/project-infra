@@ -141,6 +141,9 @@ if [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tes
     make feature_tests
 elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     make test-e2e
+elif [[ "${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env" ]]; then
+    make 
+    make test
 else
     make ci_run
     make test
