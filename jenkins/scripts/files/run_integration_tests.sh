@@ -130,16 +130,14 @@ elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     pushd metal3
     git checkout "${CAPM3BRANCH}"
 else
-    # if not e2e test clone dev-env since all the other tests (integration, features) are
+    # if not e2e test clone dev-env since ansible integration tests are
     # triggered from there
     git clone "${METAL3REPO}" metal3
     pushd metal3
     git checkout "${METAL3BRANCH}"
 fi
 
-if [[ "${TESTS_FOR}" == "feature_tests_ubuntu" || "${TESTS_FOR}" == "feature_tests_centos" ]]; then
-    make feature_tests
-elif [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
+if [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     make test-e2e
 elif [[ "${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env" ]]; then
     make 
