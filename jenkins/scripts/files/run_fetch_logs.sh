@@ -49,6 +49,9 @@ fetch_k8s_logs()
         PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
         for POD in ${PODS}; do
             mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}"
+            kubectl --kubeconfig="${kconfig}" describe pods -n "${NAMESPACE}" "${POD}" \
+                    > "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/stdout_describe.log" \
+                    2> "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/stderr_describe.log"
             CONTAINERS="$(kubectl --kubeconfig="${kconfig}" get pods -n "${NAMESPACE}" "${POD}" -o jsonpath='{.spec.containers[*].name}' 2> /dev/null)"
             for CONTAINER in ${CONTAINERS}; do
                 mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${POD}/${CONTAINER}"
@@ -75,6 +78,13 @@ if [ -d /tmp/"${CONTAINER_RUNTIME}" ] && [ "$(ls /tmp/"${CONTAINER_RUNTIME}"/)" 
     CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/before_pivoting"
     mkdir -p "${CONTAINER_LOGS_DIR}"
     cp -r /tmp/"${CONTAINER_RUNTIME}"/* "${CONTAINER_LOGS_DIR}"
+fi
+
+# Fetch k8s logs form target cluster
+target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
+if [[ -n "${target_config}" ]]; then
+    #fetch target cluster k8s logs
+    fetch_k8s_logs "target_cluster" "${target_config}"
 fi
 
 # Fetch Ironic containers logs after pivoting back to the source cluster
@@ -112,11 +122,5 @@ fi
 
 mkdir -p "${LOGS_DIR}/cluster-api-config"
 cp -r "/home/metal3ci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
-
-target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
-if [[ -n "${target_config}" ]]; then
-    #fetch target cluster k8s logs
-    fetch_k8s_logs "target_cluster" "${target_config}"
-fi
 
 tar -cvzf "${LOGS_TARBALL}" "${LOGS_DIR}"/*
