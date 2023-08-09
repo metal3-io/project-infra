@@ -19,10 +19,10 @@ source "${CI_DIR}/utils.sh"
 
 cleanup()
 {
-    # Fetch VMs which are 6+(21600 seconds) hours old
+    # Fetch VMs which are 4.5+(16200 seconds) hours old
     VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
     startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
-    split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
+    split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 16200))
     | .ID ')
 
     # Fetch VMs which are 24+(86400 seconds) hours old
@@ -45,11 +45,11 @@ cleanup()
         echo "Executer VM ${VM_NAME} is deleted."
     done
 
-    # List ports which are 6+(21600 seconds) hours old
+    # List ports which are 4.5+ (16200 seconds) hours old
     PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
     startswith("ci-test-vm-")) | select((.Name | ltrimstr("ci-test-vm-") |
     rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
-    mktime) < (now - 21600)) | .ID ')
+    mktime) < (now - 16200)) | .ID ')
 
     # List ports which are 24+(86400 seconds) hours old
     DEBUGGING_VM_PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
