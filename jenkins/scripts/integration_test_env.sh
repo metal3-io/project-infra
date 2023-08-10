@@ -57,10 +57,6 @@ export ANSIBLE_FORCE_COLOR=true
 # Make 'changed' tasks the same color as 'succeeded' tasks in Jenkins output
 export ANSIBLE_COLOR_CHANGED="green"
 
-# Use the IPA which is already downloaded in the image, instead of downloading
-# from upstream.
-export IPA_DOWNLOAD_ENABLED="false"
-
 METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
 METAL3BRANCH="${METAL3BRANCH:-main}"
 CAPM3REPO="${CAPM3REPO:-https://github.com/metal3-io/cluster-api-provider-metal3}"
