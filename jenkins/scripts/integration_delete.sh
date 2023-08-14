@@ -20,15 +20,21 @@ source "${CI_DIR}/utils.sh"
 TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int-port}"
 TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 
-# Run feature tests, e2e tests, main and release* tests in the Frankfurt region
-if [[ "${TESTS_FOR}" == "feature_tests"* ]] || [[ "${TESTS_FOR}" == "e2e_tests"* ]] ||
-        [[ "${UPDATED_BRANCH}" == "main" ]] || [[ "${UPDATED_BRANCH}" == "release"* ]]; then
+# Run:
+#   - e2e features, clusterctl-upgrade tests in the Frankfurt region
+#   - ansible, e2e, basic integration, k8s-upgrade tests in Karlskrona region
+#   - keep tests in dev2 project Karlskrona region
+if [[ "${KEEP_TEST_ENV}" == "true" ]]; then
+    export OS_PROJECT_NAME="dev2"
+    export OS_TENANT_NAME="dev2"  
+elif [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
+        [[ "${GINKGO_FOCUS}" == "features" ]] || [[ "${GINKGO_FOCUS}" == "clusterctl-upgrade" ]]; then
     export OS_REGION_NAME="Fra1"
     export OS_AUTH_URL="https://fra1.citycloud.com:5000"
 fi
 echo "Running in region: ${OS_REGION_NAME}"
 
-if [[ "${OS_REGION_NAME}" != "Kna1" ]]; then
+if [[ "${OS_REGION_NAME}" == "Fra1" ]] || [[ "${OS_PROJECT_NAME}" == "dev2" ]]; then
     # Find executer floating ip
     TEST_EXECUTER_FIP_ID="$(openstack floating ip list --tags "${TEST_EXECUTER_FIP_TAG}" -f value -c ID)"
 

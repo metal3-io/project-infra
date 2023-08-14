@@ -81,3 +81,10 @@ export OS_REGION_NAME="Fra1"
 export OS_AUTH_URL="https://fra1.citycloud.com:5000"
 echo "Running in region: ${OS_REGION_NAME}"
 cleanup
+
+# Run in dev2  project Karlskrona 
+export OS_PROJECT_NAME="dev2"
+export OS_TENANT_NAME="dev2"
+export OS_REGION_NAME="Kna1"
+export OS_AUTH_URL="https://kna1.citycloud.com:5000"
+cleanup
