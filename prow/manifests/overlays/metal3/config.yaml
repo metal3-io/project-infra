@@ -332,7 +332,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/golang:1.19
+            image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: gosec
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -360,7 +360,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/golang:1.19
+            image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: markdownlint
       run_if_changed: '\.md$'
@@ -410,7 +410,7 @@ presubmits:
                 value: "http://localhost:6385/v1/"
               - name: IRONIC_INSPECTOR_ENDPOINT
                 value: "http://localhost:5050/v1/"
-            image: docker.io/golang:1.19
+            image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: generate
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -432,7 +432,7 @@ presubmits:
                 value: "http://localhost:6385/v1/"
               - name: IRONIC_INSPECTOR_ENDPOINT
                 value: "http://localhost:5050/v1/"
-            image: docker.io/golang:1.19
+            image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: golint
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -446,7 +446,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/golang:1.19
+            image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: manifestlint
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
