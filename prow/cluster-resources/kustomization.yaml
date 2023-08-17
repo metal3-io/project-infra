@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- https://raw.githubusercontent.com/projectcalico/calico/v3.24.1/manifests/calico.yaml
+- https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.26.2/manifests/controller-manager/cloud-controller-manager-roles.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.26.2/manifests/controller-manager/cloud-controller-manager-role-bindings.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.26.2/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml
