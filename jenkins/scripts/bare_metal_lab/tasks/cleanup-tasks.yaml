@@ -64,6 +64,7 @@
     - /tmp/mariadb.csr
     - /tmp/ironic.csr
     - /tmp/manifests
+    - /tmp/target_cluster_logs
     - "{{ serial_log_location }}"
 
 - name: Delete folder containing metal3-dev-env
