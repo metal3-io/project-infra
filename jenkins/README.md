@@ -27,6 +27,10 @@ the commands below. The job result will be posted as a comment.
   v1beta1 and branch main on Ubuntu
 * **/test-centos-integration-main** run integration tests with CAPM3 API version
   v1beta1 and branch main on CentOS
+* **/test-ubuntu-integration-release-1-5** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.5 on Ubuntu
+* **/test-centos-integration-release-1-5** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.5 on CentOS
 * **/test-ubuntu-integration-release-1-4** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.4 on Ubuntu
 * **/test-centos-integration-release-1-4** run integration tests with CAPM3 API
@@ -35,10 +39,6 @@ the commands below. The job result will be posted as a comment.
   version v1beta1 and branch release-1.3 on Ubuntu
 * **/test-centos-integration-release-1-3** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.3 on CentOS
-* **/test-ubuntu-integration-release-1-2** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.2 on Ubuntu
-* **/test-centos-integration-release-1-2** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.2 on CentOS
 
 Usually, after the integration test part is completed, Jenkins executes another
 script to clean up the environment first and then deletes the VM. However,
@@ -49,6 +49,10 @@ clean up and deletion operations, there are separate triggers phrases as below:
   API version v1beta1 and branch main on Ubuntu
 * **/keep-test-centos-integration-main** run keep integration tests with CAPM3
   API version v1beta1 and branch main on CentOS
+* **/keep-test-ubuntu-integration-release-1-5** run keep integration tests with
+  CAPM3 API version v1beta1 and branch release-1.5 on Ubuntu
+* **/keep-test-centos-integration-release-1-5** run keep integration tests with
+  CAPM3 API version v1beta1 and branch release-1.5 on CentOS
 * **/keep-test-ubuntu-integration-release-1-4** run keep integration tests with
   CAPM3 API version v1beta1 and branch release-1.4 on Ubuntu
 * **/keep-test-centos-integration-release-1-4** run keep integration tests with
@@ -57,10 +61,6 @@ clean up and deletion operations, there are separate triggers phrases as below:
   CAPM3 API version v1beta1 and branch release-1.3 on Ubuntu
 * **/keep-test-centos-integration-release-1-3** run keep integration tests with
   CAPM3 API version v1beta1 and branch release-1.3 on CentOS
-* **/keep-test-ubuntu-integration-release-1-2** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.2 on Ubuntu
-* **/keep-test-centos-integration-release-1-2** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.2 on CentOS
 
 Keep in mind that test VM created with these phrases will not be kept forever
 but deleted after 24 hours, to avoid garbage collection of VMs.
@@ -90,7 +90,7 @@ easier in certain cases:
 
 **Note:** Please remember to manually create a corresponding branch in
 cherry-pick bot's forked repositories (CAPM3, IPAM) in case a new release branch
-(i.e. release-1.4) is created upstream. That is because when the bot is used to
+(i.e. release-1.5) is created upstream. That is because when the bot is used to
 backport the patches to the new release branch, it has to track the new upstream
 branch to be able to open a PR against it in the future.
 
