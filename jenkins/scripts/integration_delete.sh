@@ -12,6 +12,11 @@ set -eu
 #  integration_delete.sh
 #
 
+# set KEEP_TEST_ENV to false if it is not set
+KEEP_TEST_ENV="${KEEP_TEST_ENV:-false}"
+# set GINKGO_FOCUS to empty value if it is not set
+GINKGO_FOCUS="${GINKGO_FOCUS:-}"
+
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
 # shellcheck disable=SC1091
