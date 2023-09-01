@@ -10,6 +10,7 @@ set -eu
 #  integration_delete.sh
 #
 BARE_METAL_LAB="${BARE_METAL_LAB:-false}"
+KEEP_TEST_ENV="${KEEP_TEST_ENV:-false}"
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
