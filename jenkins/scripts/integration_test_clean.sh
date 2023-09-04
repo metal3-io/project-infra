@@ -16,6 +16,8 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
+KEEP_TEST_ENV="${KEEP_TEST_ENV:-false}"
+GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/utils.sh"
