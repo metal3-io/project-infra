@@ -7,6 +7,7 @@ def CLEAN_TIMEOUT = 600
 // 2 hours
 def TIMEOUT = 7200
 KEEP_TEST_ENV=(env.KEEP_TEST_ENV)
+KUBECTL_SHA256=(env.KUBECTL_SHA256)
 
 if (env.TESTS_FOR) {
   if ( (env.TESTS_FOR).startsWith('e2e_tests') && !(env.GINKGO_FOCUS).equals('integration') && !(env.GINKGO_FOCUS).equals('basic')) {
@@ -78,6 +79,7 @@ pipeline {
     UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE}"
     KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
     KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
+    KUBECTL_SHA256="${KUBECTL_SHA256}"
   }
   stages {
     stage('SCM') {

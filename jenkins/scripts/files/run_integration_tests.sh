@@ -28,14 +28,17 @@ if [[ "${REPO_NAME}" == "metal3-dev-tools" ]]; then
     export IMAGE_NAME
     export IMAGE_LOCATION
     export KUBERNETES_VERSION
+    export KUBECTL_SHA256
 fi
 
 if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
+    export KUBECTL_SHA256="${KUBECTL_SHA256:-4685bfcf732260f72fce58379e812e091557ef1dfc1bc8084226c7891dd6028f}"
 fi
 
 if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
     export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
+    export KUBECTL_SHA256="${KUBECTL_SHA256}"
     export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
 fi
 
@@ -69,6 +72,10 @@ fi
 
 if [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_TO
+fi
+
+if [[ "${KUBECTL_SHA256}" == "null" ]]; then
+    unset KUBECTL_SHA256
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
@@ -140,7 +147,7 @@ fi
 if [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     make test-e2e
 elif [[ "${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env" ]]; then
-    make 
+    make
     make test
 else
     make ci_run
