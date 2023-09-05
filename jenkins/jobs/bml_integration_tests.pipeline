@@ -5,6 +5,8 @@ ci_git_credential_id = "metal3-jenkins-github-token"
 // 3 hours
 def TIMEOUT = 10800
 
+KUBECTL_SHA256=(env.KUBECTL_SHA256)
+
 script {
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
     echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
@@ -53,6 +55,7 @@ pipeline {
     UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE}"
     KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
     KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_}"
+    KUBECTL_SHA256="${KUBECTL_SHA256}"
   }
   stages {
     stage('SCM') {
@@ -113,7 +116,7 @@ pipeline {
             sh "./jenkins/scripts/bml_cleanup.sh"
           }
         }
-      }  
+      }
     }
   }
 }
