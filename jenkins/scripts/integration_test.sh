@@ -75,8 +75,12 @@ elif [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediati
 fi
 echo "Running in region: ${OS_REGION_NAME}"
 
-if [[ "${TESTS_FOR}" == "e2e_tests"* && ( "${GINKGO_FOCUS}" != "integration" && "${GINKGO_FOCUS}" != "basic" ) ]]; then
+if [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
+  [[ "${GINKGO_FOCUS}" == "features" ]] || [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
   # Four node cluster
+  TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-24GB-300GB}"
+elif [[ "${GINKGO_FOCUS}" == "clusterctl-upgrade" ]]; then
+  # Five node cluster
   TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-8C-32GB-300GB}"
 else
   # Two node cluster
