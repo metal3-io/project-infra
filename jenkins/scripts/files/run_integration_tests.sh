@@ -17,9 +17,10 @@ export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
 export KEEP_TEST_ENV
-# unsetting NUM_NODES when it is unbound
+# unsetting NUM_NODES and KUBECTL_SHA256 when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
+export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 export UPGRADE_FROM_RELEASE
 export KUBERNETES_VERSION_UPGRADE_FROM
 export KUBERNETES_VERSION_UPGRADE_TO
