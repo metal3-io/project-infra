@@ -1010,8 +1010,10 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - command:
-              - make test
+          - args:
+              - test
+            command:
+              - make
             image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: gofmt
