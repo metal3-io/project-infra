@@ -1,0 +1,53 @@
+import java.text.SimpleDateFormat
+
+// 1 hour
+def TIMEOUT = 3600
+
+// Set defaults for non-PR jobs
+def branch = env.ghprbActualCommit ?: "main"
+def repoUrl = env.ghprbAuthorRepoGitUrl ?: "https://github.com/metal3-io/baremetal-operator.git"
+
+pipeline {
+  agent { label "metal3-workers" }
+  stages {
+    stage("Checkout source code") {
+      steps {
+        checkout scmGit(
+            branches: [[name: branch]],
+            userRemoteConfigs: [[url: repoUrl, credentialsId: "metal3-jenkins-github-token"]],
+            extensions: [[$class: "WipeWorkspace"],
+            [$class: "CleanCheckout"],
+            [$class: "CleanBeforeCheckout"]],
+            submoduleCfg: [],)
+        script {
+          CURRENT_START_TIME = System.currentTimeMillis()
+        }
+      }
+    }
+    stage("Run Baremetal Operator e2e tests") {
+      options {
+        timeout(time: TIMEOUT, unit: "SECONDS")
+        ansiColor("xterm")
+      }
+      steps {
+        withCredentials([string(credentialsId: "metal3-clusterctl-github-token", variable: "GITHUB_TOKEN")]) {
+          sh "./hack/ci-e2e.sh"
+        }
+      }
+      post {
+        always {
+          script {
+            CURRENT_END_TIME = System.currentTimeMillis()
+            if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+                echo "Failed due to timeout"
+                currentBuild.result = "FAILURE"
+            }
+          }
+          archiveArtifacts "artifacts.tar.gz"
+          /* Clean up */
+          sh "make clean-e2e"
+        }
+      }
+    }
+  }
+}
