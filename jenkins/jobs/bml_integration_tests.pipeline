@@ -44,6 +44,7 @@ pipeline {
     CAPI_VERSION = "${CAPI_VERSION}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
+    BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES="${NUM_NODES}"
     GINKGO_FOCUS="${GINKGO_FOCUS}"
