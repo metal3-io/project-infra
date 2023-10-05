@@ -201,8 +201,8 @@ echo "Running the tests"
 ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=15 \
-  -o ServerAliveCountMax=10 \
+  -o ServerAliveInterval=60 \
+  -o ServerAliveCountMax=20 \
   -i "${METAL3_CI_USER_KEY}" \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
