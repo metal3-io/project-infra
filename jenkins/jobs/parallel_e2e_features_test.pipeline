@@ -66,6 +66,7 @@ pipeline {
     CAPM3_VERSION = "${CAPM3_VERSION}"
     CAPM3RELEASE = "${CAPM3RELEASE}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
+    BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES = "${NUM_NODES}"
     TESTS_FOR = "${TESTS_FOR}"
