@@ -217,7 +217,7 @@ periodics:
     decorate: true
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20210916-3c87dfedd5
+        - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
           command:
             - /app/robots/commenter/app.binary
           args:
@@ -250,7 +250,7 @@ periodics:
     decorate: true
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20210916-3c87dfedd5
+        - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
           command:
             - /app/robots/commenter/app.binary
           args:
@@ -896,7 +896,7 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - image: gcr.io/k8s-prow/checkconfig:v20210916-7657ce97bf
+          - image: gcr.io/k8s-prow/checkconfig:v20231011-33fbc60185
             args:
               - "/checkconfig"
               - "--config-path"
