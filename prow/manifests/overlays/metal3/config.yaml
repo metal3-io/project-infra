@@ -219,7 +219,7 @@ periodics:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
           command:
-            - /app/robots/commenter/app.binary
+            - commenter
           args:
             - |-
               --query=org:metal3-io
@@ -252,7 +252,7 @@ periodics:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
           command:
-            - /app/robots/commenter/app.binary
+            - commenter
           args:
             - |-
               --query=org:metal3-io
@@ -897,8 +897,9 @@ presubmits:
       spec:
         containers:
           - image: gcr.io/k8s-prow/checkconfig:v20231011-33fbc60185
+            command:
+              - checkconfig
             args:
-              - "/checkconfig"
               - "--config-path"
               - "prow/manifests/overlays/metal3/config.yaml"
               - "--plugin-config"
