@@ -101,16 +101,16 @@ image. Here is an example:
 
 ```json
 {
-  "source_image": "d6b012ee-c6d3-4672-9399-b87d025ddb14",
-  "networks": "bda060e0-07a2-4ba2-8fe0-dba7626db240",
-  "flavor": "4C-4GB-20GB",
+  "source_image": "e18066c2-fb21-44d5-8e81-c653b70608b9",
+  "networks": "375af7fe-a2c1-4c26-a57d-6d33175a6650",
+  "flavor": "4C-4GB-100GB",
   "floating_ip_network": "ext-net",
   "ssh_username": "ubuntu",
   "volume_type": "",
-  "kubernetes_deb_version": "1.26.3-00",
-  "kubernetes_rpm_version": "1.26.3-0",
-  "kubernetes_semver": "v1.26.3",
-  "kubernetes_series": "v1.26"
+  "kubernetes_deb_version": "1.27.7-1.1",
+  "kubernetes_rpm_version": "1.27.7-1",
+  "kubernetes_semver": "v1.27.7",
+  "kubernetes_series": "v1.27"
 }
 ```
 
