@@ -1,0 +1,4 @@
+# See https://github.com/kubernetes/ingress-nginx/issues/10572
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --enable-annotation-validation=true
