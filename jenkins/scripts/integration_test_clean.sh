@@ -21,6 +21,7 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
 REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
+SSH_JUMP_HOST="${SSH_JUMP_HOST:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/utils.sh"
@@ -51,6 +52,29 @@ if [[ "${OS_REGION_NAME}" == "Fra1" ]] || [[ "${OS_PROJECT_NAME}" == "dev2" ]]; 
     TEST_EXECUTER_IP="${FLOATING_IP}"
 fi
 
+if [[ -n "${SSH_JUMP_HOST}" ]]; then
+# Send Remote script to Executer
+scp \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -i "${METAL3_CI_USER_KEY}" \
+    -J "${METAL3_CI_USER}"@"${SSH_JUMP_HOST}" \
+    "${CI_DIR}/files/run_clean.sh" \
+    "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" > /dev/null
+
+echo "Cleaning"
+# Execute remote cleaning script
+# shellcheck disable=SC2029
+ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o ServerAliveInterval=15 \
+    -i "${METAL3_CI_USER_KEY}" \
+    -J "${METAL3_CI_USER}"@"${SSH_JUMP_HOST}" \
+    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+    PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
+    /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}" "${TESTS_FOR}"
+else
 # Send Remote script to Executer
 scp \
     -o StrictHostKeyChecking=no \
@@ -70,3 +94,4 @@ ssh \
     "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
     PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
     /tmp/run_clean.sh "${REPO_NAME}" "${IMAGE_OS}" "${TESTS_FOR}"
+fi

@@ -52,6 +52,7 @@ UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE:-}"
 KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 KUBECTL_SHA256="${KUBECTL_SHA256:-}"
+SSH_JUMP_HOST="${SSH_JUMP_HOST:-}"
 
 if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
   IRONIC_FROM_SOURCE="true"
@@ -126,8 +127,8 @@ fi
 
 echo "Waiting for the host ${TEST_EXECUTER_VM_NAME} to come up"
 # Wait for the host to come up
-wait_for_ssh "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"
-if ! vm_healthy "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}"; then
+wait_for_ssh "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}" "${SSH_JUMP_HOST}"
+if ! vm_healthy "${METAL3_CI_USER}" "${METAL3_CI_USER_KEY}" "${TEST_EXECUTER_IP}" "${SSH_JUMP_HOST}"; then
   echo "Server is unhealthy. Giving up."
   exit 1
 fi
@@ -179,33 +180,64 @@ fi
 
 cat "${CI_DIR}/integration_test_env.sh" >>"${CI_DIR}/files/${TEMP_FILE_NAME}"
 
-# Send Remote script to Executer
-scp \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -i "${METAL3_CI_USER_KEY}" \
-  "${CI_DIR}/files/run_integration_tests.sh" \
-  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp" >/dev/null
-
-scp \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -i "${METAL3_CI_USER_KEY}" \
-  "${CI_DIR}/files/${TEMP_FILE_NAME}" \
-  "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/vars.sh" >/dev/null
-
+if [[ -n "${SSH_JUMP_HOST}" ]]; then
+    # Send Remote script to Executer
+    scp \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -i "${METAL3_CI_USER_KEY}" \
+      -J "${METAL3_CI_USER}@${SSH_JUMP_HOST}" \
+      "${CI_DIR}/files/run_integration_tests.sh" \
+      "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp" >/dev/null
+    scp \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -i "${METAL3_CI_USER_KEY}" \
+      -J "${METAL3_CI_USER}@${SSH_JUMP_HOST}" \
+      "${CI_DIR}/files/${TEMP_FILE_NAME}" \
+      "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/vars.sh" >/dev/null
+else
+    # Send Remote script to Executer
+    scp \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -i "${METAL3_CI_USER_KEY}" \
+      "${CI_DIR}/files/run_integration_tests.sh" \
+      "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp" >/dev/null
+    scp \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -i "${METAL3_CI_USER_KEY}" \
+      "${CI_DIR}/files/${TEMP_FILE_NAME}" \
+      "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/vars.sh" >/dev/null
+fi
 # Clean temp vars.sh from the static worker
 rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
-ssh \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=60 \
-  -o ServerAliveCountMax=20 \
-  -i "${METAL3_CI_USER_KEY}" \
-  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-  PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-  /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+if [[ -n "${SSH_JUMP_HOST}" ]]; then
+  # shellcheck disable=SC2029
+  ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o ServerAliveInterval=60 \
+    -o ServerAliveCountMax=20 \
+    -i "${METAL3_CI_USER_KEY}" \
+    -J "${METAL3_CI_USER}"@"${SSH_JUMP_HOST}" \
+    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+    PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
+    /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+else
+  # shellcheck disable=SC2029
+  ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o ServerAliveInterval=60 \
+    -o ServerAliveCountMax=20 \
+    -i "${METAL3_CI_USER_KEY}" \
+    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+    PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
+    /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+fi

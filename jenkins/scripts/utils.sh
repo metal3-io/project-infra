@@ -25,7 +25,7 @@ get_subnet_name()
 # Waits for SSH connection to come up for a server
 #
 # Usage:
-#   wait_for_ssh <ssh_user> <ssh_key_path> <server>
+#   wait_for_ssh <ssh_user> <ssh_key_path> <server> <ssh_jump_host>
 #
 wait_for_ssh()
 {
@@ -34,16 +34,27 @@ wait_for_ssh()
     USER="${1:?}"
     KEY="${2:?}"
     SERVER="${3:?}"
+    JUMP_HOST="${4:-}"
 
     echo "Waiting for SSH connection to Host[${SERVER}]"
-    until ssh -o ConnectTimeout=2 \
-        -o StrictHostKeyChecking=no \
-        -o UserKnownHostsFile=/dev/null \
-        -i "${KEY}" \
-        "${USER}"@"${SERVER}" echo "SSH to host is up" > /dev/null 2>&1; do
-        sleep 1
-    done
-
+    if [[ -n "${JUMP_HOST}" ]]; then
+        until ssh -o ConnectTimeout=2 \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -i "${KEY}" \
+            -J "${USER}"@"${JUMP_HOST}" \
+            "${USER}"@"${SERVER}" echo "SSH to host is up" > /dev/null 2>&1; do
+            sleep 1
+        done
+    else
+        until ssh -o ConnectTimeout=2 \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -i "${KEY}" \
+            "${USER}"@"${SERVER}" echo "SSH to host is up" > /dev/null 2>&1; do
+            sleep 1
+        done
+    fi
     echo "SSH connection to host[${SERVER}] is up."
 }
 
@@ -51,7 +62,7 @@ wait_for_ssh()
 # Check that cloud-init completed successfully.
 #
 # Usage:
-#   vm_healthy <ssh_user> <ssh_key_path> <server>
+#   vm_healthy <ssh_user> <ssh_key_path> <server> <ssh_jump_host>
 vm_healthy()
 {
     local USER KEY SERVER
@@ -59,10 +70,17 @@ vm_healthy()
     USER="${1:?}"
     KEY="${2:?}"
     SERVER="${3:?}"
+    SSH_JUMP_HOST="${4:-}"
 
-    cloud_init_status=$(ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
-        -o UserKnownHostsFile=/dev/null -i "${KEY}" \
-        "${USER}"@"${SERVER}" cloud-init status --long --wait)
+    if [[ -n "${SSH_JUMP_HOST}" ]]; then
+        cloud_init_status=$(ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null -i "${KEY}" -J "${SSH_JUMP_HOST}@${SERVER}" \
+            "${USER}"@"${SERVER}" cloud-init status --long --wait)
+    else
+        cloud_init_status=$(ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null -i "${KEY}" \
+            "${USER}"@"${SERVER}" cloud-init status --long --wait)
+    fi
     if echo "${cloud_init_status}" | grep "error"; then
         echo "There was a cloud-init error:"
         echo "${cloud_init_status}"

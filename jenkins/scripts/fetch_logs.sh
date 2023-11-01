@@ -17,6 +17,7 @@ GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
 BUILD_TAG="${BUILD_TAG:-logs_integration_tests}"
+SSH_JUMP_HOST="${SSH_JUMP_HOST:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/utils.sh"
@@ -62,6 +63,15 @@ if [[ "${BARE_METAL_LAB}" == true ]]; then
         -o ServerAliveCountMax=10
         -i "${METAL3_CI_USER_KEY}"
         -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
+    )
+elif [[ -n "${SSH_JUMP_HOST}" ]]; then
+    declare -a SSH_OPTIONS=(
+        -o StrictHostKeyChecking=no
+        -o UserKnownHostsFile=/dev/null
+        -o ServerAliveInterval=15
+        -o ServerAliveCountMax=10
+        -i "${METAL3_CI_USER_KEY}"
+        -J "${METAL3_CI_USER}@${SSH_JUMP_HOST}"
     )
 else
     declare -a SSH_OPTIONS=(
