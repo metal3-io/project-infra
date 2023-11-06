@@ -9,7 +9,7 @@ TEST_EXECUTER_PORT_NAME="${TEST_EXECUTER_PORT_NAME:-${TEST_EXECUTER_VM_NAME}-int
 TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floating-ip}"
 TEST_EXECUTER_FLAVOR="${TEST_EXECUTER_FLAVOR:-2C-4GB-50GB}"
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
-CI_EXT_NET="metal3-ci-ext-net"
+CI_EXT_NET="metal3-ci-net"
 IMAGE_NAME="metal3-ci-ubuntu-metal3-img"
 export IMAGE_OS="ubuntu"
 

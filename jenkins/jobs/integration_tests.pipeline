@@ -40,7 +40,7 @@ script {
 }
 
 pipeline {
-  agent { label 'metal3-static-workers' }
+  agent { label 'metal3-static-ci' }
   environment {
     METAL3_CI_USER="metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
