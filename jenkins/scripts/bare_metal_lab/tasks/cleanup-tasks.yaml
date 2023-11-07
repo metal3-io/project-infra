@@ -131,6 +131,7 @@
     # Note: Without --all it just removes images that are not tagged
     - docker image prune --force --all
     - docker volume prune --force
+    - docker system prune --force --all
 
 - name: Reset network
   script: reset_network.sh
