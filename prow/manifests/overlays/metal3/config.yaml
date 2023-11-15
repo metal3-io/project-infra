@@ -51,6 +51,7 @@ tide:
     metal3-io: merge
     Nordix/metal3-dev-tools: rebase
     Nordix/metal3-clusterapi-docs: rebase
+    Nordix/sles-ironic-python-agent-builder: rebase
   queries:
     - repos:
         - metal3-io/.github
@@ -70,6 +71,7 @@ tide:
         - metal3-io/utility-images
         - Nordix/metal3-dev-tools
         - Nordix/metal3-clusterapi-docs
+        - Nordix/sles-ironic-python-agent-builder
       labels:
         - lgtm
         - approved
@@ -110,6 +112,14 @@ branch-protection:
                     "test-integration-metal3-dev-tools-centos",
                     "test-integration-metal3-dev-tools-ubuntu",
                   ]
+        sles-ironic-python-agent-builder:
+          branches:
+            main:
+              required_status_checks:
+                contexts: []
+            sles-15-sp4:
+              required_status_checks:
+                contexts: []
     metal3-io:
       # Require "always_run: true" jobs to pass before merging.
       # To turn this off for a given job, set "optional: true"
@@ -319,6 +329,35 @@ presubmits:
               - name: IS_CONTAINER
                 value: "TRUE"
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
+            imagePullPolicy: Always
+  Nordix/sles-ironic-python-agent-builder:
+    - name: shellcheck
+      run_if_changed: '((\.sh)|^Makefile)$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/shellcheck.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
+            imagePullPolicy: Always
+    - name: markdownlint
+      run_if_changed: '\.md$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/markdownlint.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
             imagePullPolicy: Always
   metal3-io/baremetal-operator:
     - name: gofmt
