@@ -200,6 +200,7 @@ rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
+tmux
 ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
@@ -209,3 +210,4 @@ ssh \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+exit
