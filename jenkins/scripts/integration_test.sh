@@ -200,7 +200,18 @@ rm -f "${CI_DIR}/files/${TEMP_FILE_NAME}"
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
-tmux
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ServerAliveInterval=60 \
+  -o ServerAliveCountMax=20 \
+  -i "${METAL3_CI_USER_KEY}" \
+  "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
+  "sudo apt-get install -y mosh; sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8"
+sudo apt-get install -y mosh
+echo "trying mosh"
+mosh --ssh="ssh  -i ${METAL3_CI_USER_KEY}" --no-init "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" -- sh -c "ls"
+
 ssh \
   -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null \
@@ -210,4 +221,4 @@ ssh \
   "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
   PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
   /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
-exit
+
