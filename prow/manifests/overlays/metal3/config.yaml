@@ -302,7 +302,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -346,7 +346,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -403,7 +403,7 @@ presubmits:
             image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -721,7 +721,7 @@ presubmits:
             image: docker.io/golang:1.17
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -915,7 +915,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -948,7 +948,7 @@ presubmits:
               requests:
                 memory: "500Mi"
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -978,7 +978,7 @@ presubmits:
 
   metal3-io/metal3-docs:
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1208,7 +1208,7 @@ presubmits:
             image: docker.io/golang:1.17
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1366,7 +1366,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1396,7 +1396,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1426,7 +1426,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1456,7 +1456,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
@@ -1486,7 +1486,7 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: markdownlint
-      run_if_changed: '\.md$'
+      run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
         containers:
