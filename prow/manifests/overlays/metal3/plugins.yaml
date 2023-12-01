@@ -57,6 +57,7 @@ plugins:
   metal3-io/.github:
   metal3-io/baremetal-operator:
   metal3-io/cluster-api-provider-metal3:
+  metal3-io/community:
   metal3-io/ip-address-manager:
   metal3-io/ironic-client:
   metal3-io/ironic-hardware-inventory-recorder-image:
