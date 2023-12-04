@@ -314,7 +314,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
   Nordix/metal3-dev-tools:
     - name: shellcheck
@@ -358,7 +358,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
   metal3-io/baremetal-operator:
     - name: gofmt
@@ -415,7 +415,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
     - name: shellcheck
       run_if_changed: '((\.sh)|^Makefile)$'
@@ -669,7 +669,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
     - name: shellcheck
       run_if_changed: '((\.sh)|^Makefile)$'
@@ -861,7 +861,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/project-infra:
@@ -894,7 +894,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
     - name: shellcheck
       run_if_changed: '((\.sh)|^Makefile)$'
@@ -924,7 +924,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/ip-address-manager:
@@ -1090,7 +1090,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
     - name: shellcheck
       run_if_changed: '((\.sh)|^Makefile)$'
@@ -1216,7 +1216,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/ironic-image:
@@ -1246,7 +1246,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/mariadb-image:
@@ -1276,7 +1276,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/ironic-hardware-inventory-recorder-image:
@@ -1306,7 +1306,7 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
 
   metal3-io/utility-images:
@@ -1336,5 +1336,5 @@ presubmits:
             env:
               - name: IS_CONTAINER
                 value: "TRUE"
-            image: docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2
+            image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
