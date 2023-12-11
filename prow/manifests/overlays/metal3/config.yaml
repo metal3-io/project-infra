@@ -161,7 +161,18 @@ branch-protection:
           branches:
             main:
               required_status_checks:
-                contexts: ["test-ubuntu-integration-main"]
+                contexts:
+                  [
+                    "test-ubuntu-integration-main",
+                    "test-centos-integration-main",
+                  ]
+            release-23.1:
+              required_status_checks:
+                contexts:
+                  [
+                    "test-ubuntu-integration-main",
+                    "test-centos-integration-main",
+                  ]
         ironic-ipa-downloader:
           branches:
             main:
