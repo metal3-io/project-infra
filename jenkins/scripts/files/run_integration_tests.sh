@@ -148,10 +148,20 @@ fi
 
 if [[ "${TESTS_FOR}" == "e2e_tests" ]]; then
     make test-e2e
+# to preserve exports we unpack the make + make test into script calls
 elif [[ "${TESTS_FOR}" != "e2e_tests" && "${REPO_NAME}" == "metal3-dev-env" ]]; then
-    make
-    make test
+    # make
+    # make test
+    ./01_prepare_host.sh
+    ./02_configure_host.sh
+    ./03_launch_mgmt_cluster.sh
+    ./04_verify.sh
+    ./tests/test.sh
 else
-    make ci_run
-    make test
+    # make ci_run
+    # make test
+    ./02_configure_host.sh
+    ./03_launch_mgmt_cluster.sh
+    ./04_verify.sh
+    ./tests/test.sh
 fi
