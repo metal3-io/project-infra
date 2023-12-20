@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: jenkins-operator
+spec:
+  template:
+    spec:
+      containers:
+      - name: jenkins-operator
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi

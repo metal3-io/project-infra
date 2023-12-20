@@ -7,3 +7,4 @@ service-account.json
 github-token
 cherrypick-bot-github-token
 hmac-token
+jenkins-token
