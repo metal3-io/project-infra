@@ -10,6 +10,7 @@ resources:
 - external-plugins/needs-rebase_deployment.yaml
 - external-plugins/needs-rebase_service.yaml
 - external-plugins/labels_cronjob.yaml
+- external-plugins/jenkins-operator.yaml
 - pdb.yaml
 - limitrange.yaml
 
@@ -68,6 +69,11 @@ secretGenerator:
   name: cherrypick-bot-github-token
   namespace: prow
   type: Opaque
+- files:
+  - token=jenkins-token
+  name: jenkins-token
+  namespace: prow
+  type: Opaque
 
 images:
 - name: gcr.io/k8s-prow/crier
@@ -95,6 +101,8 @@ images:
   newTag: v20231011-33fbc60185
 - name: gcr.io/k8s-prow/needs-rebase
   newTag: v20231011-33fbc60185
+- name: gcr.io/k8s-prow/jenkins-operator
+  newTag: v20231011-33fbc60185
 
 patches:
 - path: patches/crier.yaml
@@ -109,3 +117,4 @@ patches:
 # External plugins
 - path: patches/cherrypicker.yaml
 - path: patches/needs-rebase.yaml
+- path: patches/jenkins-operator.yaml

@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-operator
+  namespace: prow
+spec:
+  selector:
+    app: jenkins-operator
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: jenkins-operator
+  labels:
+    app: jenkins-operator
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: jenkins-operator
+  template:
+    metadata:
+      labels:
+        app: jenkins-operator
+    spec:
+      serviceAccountName: jenkins-operator
+      containers:
+      - name: jenkins-operator
+        image: gcr.io/k8s-prow/jenkins-operator:v20231011-33fbc60185
+        args:
+        - --config-path=/etc/config/config.yaml
+        - --jenkins-url=https://jenkins.nordix.org
+        - --jenkins-user=metal3.bot@gmail.com
+        - --jenkins-token-file=/etc/jenkins/token
+        - --github-token-path=/etc/github/token
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --dry-run=false
+        ports:
+        # Used for serving logs so that they can be displayed by deck
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: github-token
+          mountPath: /etc/github
+          readOnly: true
+        - name: jenkins-token
+          mountPath: /etc/jenkins
+          readOnly: true
+        - name: config
+          mountPath: /etc/config
+          readOnly: true
+      volumes:
+      - name: github-token
+        secret:
+          secretName: github-token
+      - name: jenkins-token
+        secret:
+          secretName: jenkins-token
+      - name: config
+        configMap:
+          name: config
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: prow
+  name: jenkins-operator
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: jenkins-operator
+rules:
+- apiGroups:
+  - "prow.k8s.io"
+  resources:
+  - prowjobs
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  resourceNames:
+  - jenkins-operator-leader-lock
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  - jenkins-operator-leader-lock
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - events
+  verbs:
+  - create
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: jenkins-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins-operator
+subjects:
+- kind: ServiceAccount
+  name: jenkins-operator

@@ -31,6 +31,8 @@ instance:
 1. A HMAC token for webhook validation.
 1. A GitHub token for accessing GitHub.
 1. A separate GitHub token for the cherry-pick bot.
+1. A token and username for accessing Jenkins, when triggering Jenkins jobs from
+   Prow.
 
 In addition to this, we rely on a GitHub bot account
 ([metal3-io-bot](https://github.com/metal3-io-bot), owner of the GitHub token)
@@ -153,6 +155,10 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
 
    It will be referred to as `${HMAC_TOKEN}`.
 
+1. Create a Jenkins token by logging in to Jenkins using the
+   metal3.bot@gmail.com account and adding an API token in the "Configure" tab
+   for the user. It will be referred to as `${JENKINS_TOKEN}`.
+
 ## GitHub configuration
 
 1. Create bot accounts. The bot accounts are normal accounts on GitHub. Both of
@@ -213,6 +219,7 @@ Then you will be able to just copy and paste the snippets below.
 - `HMAC_TOKEN`
 - `GITHUB_TOKEN`
 - `CHERRYPICK_TOKEN`
+- `JENKINS_TOKEN`
 
 Now you are ready to create the files.
 
@@ -295,6 +302,12 @@ Now you are ready to create the files.
 
    ```bash
    echo "${CHERRYPICK_TOKEN}" > manifests/overlays/metal3/cherrypick-bot-github-token
+   ```
+
+1. Save the Jenkins token as `manifests/overlays/metal3/jenkins-token`.
+
+   ```bash
+   echo "${JENKINS_TOKEN}" > manifests/overlays/metal3/jenkins-token
    ```
 
 ## Access existing instance

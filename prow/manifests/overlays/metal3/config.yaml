@@ -232,6 +232,20 @@ deck:
           name: podinfo
         required_files:
           - podinfo.json
+  external_agent_logs:
+  - agent: jenkins
+    url_template: 'http://jenkins-operator/job/{{.Spec.Job}}/{{.Status.BuildID}}/consoleText'
+
+
+jenkins_operators:
+- max_concurrency: 150
+  max_goroutines: 20
+  job_url_template: https://jenkins.nordix.org/view/Metal3/job/{{.Spec.Job}}/{{.Status.JenkinsBuildId}}/
+  report_templates:
+    "*": >-
+      [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
+      [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with
+      index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
 
 periodics:
   - name: periodic-stale
