@@ -43,7 +43,7 @@ pipeline {
                 currentBuild.result = "FAILURE"
             }
           }
-          archiveArtifacts "artifacts.tar.gz"
+          archiveArtifacts "artifacts*.tar.gz"
           /* Clean up */
           sh "make clean-e2e"
         }
