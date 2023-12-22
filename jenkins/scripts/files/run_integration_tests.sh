@@ -18,6 +18,10 @@ export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
 export KEEP_TEST_ENV
+export IRONIC_FROM_SOURCE
+export BUILD_IRONIC_IMAGE_LOCALLY
+export IRONIC_USE_MARIADB
+export BUILD_MARIADB_IMAGE_LOCALLY
 # unsetting NUM_NODES and KUBECTL_SHA256 when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
