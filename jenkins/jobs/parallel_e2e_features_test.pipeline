@@ -125,7 +125,9 @@ pipeline {
               string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
             ]) {
               ansiColor('xterm') {
-                sh "./jenkins/scripts/integration_test.sh"
+                timestamps {
+                  sh "./jenkins/scripts/integration_test.sh"
+                }
               }
             }
           }
@@ -141,8 +143,9 @@ pipeline {
               withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
-                sh "./jenkins/scripts/fetch_logs.sh"
-
+                timestamps {
+                  sh "./jenkins/scripts/fetch_logs.sh"
+                }
               }
               archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
             }
@@ -154,7 +157,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
-                    sh "./jenkins/scripts/integration_test_clean.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_test_clean.sh"
+                    }
                   }
                 }
               }
@@ -167,7 +172,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
-                    sh "./jenkins/scripts/integration_delete.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_delete.sh"
+                    }
                   }
                 }
               }
@@ -192,7 +199,9 @@ pipeline {
               string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
             ]) {
               ansiColor('xterm') {
-                sh "./jenkins/scripts/integration_test.sh"
+                timestamps {
+                  sh "./jenkins/scripts/integration_test.sh"
+                }
               }
             }
           }
@@ -208,7 +217,9 @@ pipeline {
               withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
-                sh "./jenkins/scripts/fetch_logs.sh"
+                timestamps {
+                  sh "./jenkins/scripts/fetch_logs.sh"
+                }
               }
               archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
             }
@@ -220,7 +231,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
-                    sh "./jenkins/scripts/integration_test_clean.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_test_clean.sh"
+                    }
                   }
                 }
               }
@@ -233,7 +246,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
-                    sh "./jenkins/scripts/integration_delete.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_delete.sh"
+                    }
                   }
                 }
               }
@@ -259,7 +274,9 @@ pipeline {
               string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
             ]) {
               ansiColor('xterm') {
-                sh "./jenkins/scripts/integration_test.sh"
+                timestamps {
+                  sh "./jenkins/scripts/integration_test.sh"
+                }
               }
             }
           }
@@ -275,7 +292,9 @@ pipeline {
               withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
                 sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
               ]) {
-                sh "./jenkins/scripts/fetch_logs.sh"
+                timestamps {
+                  sh "./jenkins/scripts/fetch_logs.sh"
+                }
               }
               archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
             }
@@ -287,7 +306,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping environment clean up"
                   } else {
-                    sh "./jenkins/scripts/integration_test_clean.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_test_clean.sh"
+                    }
                   }
                 }
               }
@@ -300,7 +321,9 @@ pipeline {
                   if ("${KEEP_TEST_ENV}" == "true") {
                     echo "Skipping VM deletion"
                   } else {
-                    sh "./jenkins/scripts/integration_delete.sh"
+                    timestamps {
+                      sh "./jenkins/scripts/integration_delete.sh"
+                    }
                   }
                 }
               }
