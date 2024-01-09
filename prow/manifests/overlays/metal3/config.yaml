@@ -138,7 +138,11 @@ branch-protection:
                   [
                     "test-centos-e2e-integration-main",
                     "test-ubuntu-integration-main",
+                    "metal3-bmo-e2e-test",
                   ]
+            release-0.5:
+              required_status_checks:
+                contexts: ["metal3-bmo-e2e-test"]
         cluster-api-provider-metal3:
           branches:
             main:
