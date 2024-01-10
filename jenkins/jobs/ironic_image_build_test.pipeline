@@ -56,7 +56,9 @@ pipeline {
             script {
               CURRENT_START_TIME = System.currentTimeMillis()
             }
-            sh "./jenkins/scripts/start_ironic_image_build_test.sh"
+            timestamps {
+              sh "./jenkins/scripts/start_ironic_image_build_test.sh"
+            }
          }
        }
     }
@@ -75,7 +77,9 @@ pipeline {
       withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
         sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
           script {
-              sh "./jenkins/scripts/ironic_image_build_test_delete.sh"
+              timestamps {
+                sh "./jenkins/scripts/ironic_image_build_test_delete.sh"
+              }
           }
         }
     }

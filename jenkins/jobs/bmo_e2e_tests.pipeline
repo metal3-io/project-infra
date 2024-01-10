@@ -44,7 +44,9 @@ pipeline {
             }
             steps {
               withCredentials([string(credentialsId: "metal3-clusterctl-github-token", variable: "GITHUB_TOKEN")]) {
-                sh "./hack/ci-e2e.sh"
+                timestamps {
+                  sh "./hack/ci-e2e.sh"
+                }
               }
             }
             post {
@@ -57,8 +59,10 @@ pipeline {
                   }
                 }
                 archiveArtifacts "artifacts*.tar.gz"
-                /* Clean up */
-                sh "make clean-e2e"
+                timestamps {
+                  /* Clean up */
+                  sh "make clean-e2e"
+                }
               }
             }
           }
