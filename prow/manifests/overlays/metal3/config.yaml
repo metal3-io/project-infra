@@ -540,6 +540,16 @@ presubmits:
                 value: "/"
             image: ghcr.io/yannh/kubeconform:v0.6.2-alpine@sha256:49b5f6b320d30c1b8b72a7abdf02740ac9dc36a3ba23b934d1c02f7b37e6e740
             imagePullPolicy: Always
+    - name: metal3-bmo-e2e-test-pull
+      # E2e tests do not exist before release-0.5
+      branches:
+        - main
+        - release-0.5
+      agent: jenkins
+      # Don't run unless triggered to avoid wasting resources
+      always_run: false
+      # Until we have checked that it works, keep it optional
+      optional: true
 
   metal3-io/cluster-api-provider-metal3:
     - name: gomod

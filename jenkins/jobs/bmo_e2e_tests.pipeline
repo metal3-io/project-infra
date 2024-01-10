@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat
 def TIMEOUT = 3600
 
 // Set defaults for non-PR jobs
-def branch = env.ghprbActualCommit ?: "main"
-def repoUrl = env.ghprbAuthorRepoGitUrl ?: "https://github.com/metal3-io/baremetal-operator.git"
+def pullSha = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
+def repoUrl = "https://github.com/metal3-io/baremetal-operator.git"
+// Fetch the main branch and the pullSha, nothing else
+def refspec = '+refs/heads/main:refs/remotes/origin/main ' + pullSha
 
 pipeline {
   agent none
@@ -26,11 +28,12 @@ pipeline {
           stage("Checkout source code") {
             steps {
               checkout scmGit(
-                  branches: [[name: branch]],
-                  userRemoteConfigs: [[url: repoUrl, credentialsId: "metal3-jenkins-github-token"]],
+                  branches: [[name: pullSha]],
+                  userRemoteConfigs: [[url: repoUrl, credentialsId: "metal3-jenkins-github-token", refspec: refspec]],
                   extensions: [[$class: "WipeWorkspace"],
                   [$class: "CleanCheckout"],
-                  [$class: "CleanBeforeCheckout"]],
+                  [$class: "CleanBeforeCheckout"],
+                  cloneOption(honorRefspec: true)],
                   submoduleCfg: [],)
               script {
                 CURRENT_START_TIME = System.currentTimeMillis()
