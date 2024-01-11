@@ -30,17 +30,11 @@ script {
       'z').join("")[rand.nextInt(26)]
   }.join("")
 
-  if ("${KEEP_TEST_ENV}" == "true") {
-    VM_NAME = "ci-test-keep-vm-" + dateFormat.format(date) + "-" + VM_KEY
-  } else {
-    VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
-  }
+  agent_label="metal3ci-large-${IMAGE_OS}"
 }
 
 pipeline {
-  agent {
-    label 'metal3-static-workers'
-  }
+  agent none
   environment {
     METAL3_CI_USER = "metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
@@ -48,85 +42,123 @@ pipeline {
     UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
     REPO_BRANCH = "${ghprbTargetBranch}"
     UPDATED_BRANCH = "${ghprbActualCommit}"
-    OS_USERNAME = "metal3ci"
-    OS_AUTH_URL = "https://kna1.citycloud.com:5000"
-    OS_USER_DOMAIN_NAME = "CCP_Domain_37137"
-    OS_PROJECT_DOMAIN_NAME = "CCP_Domain_37137"
-    OS_REGION_NAME = "Kna1"
-    OS_PROJECT_NAME = "Default Project 37137"
-    OS_TENANT_NAME = "Default Project 37137"
-    OS_AUTH_VERSION = 3
-    OS_IDENTITY_API_VERSION = 3
-    TEST_EXECUTER_VM_NAME = "${VM_NAME}"
     BUILD_TAG = "${env.BUILD_TAG}"
     PR_ID = "${ghprbPullId}"
     IMAGE_OS = "${IMAGE_OS}"
     CAPI_VERSION = "${CAPI_VERSION}"
-    CAPIRELEASE = "${CAPIRELEASE}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
-    CAPM3RELEASE = "${CAPM3RELEASE}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
     BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
-    NUM_NODES = "${NUM_NODES}"
+    NUM_NODES = 4
     TESTS_FOR = "${TESTS_FOR}"
-    KEEP_TEST_ENV = "${KEEP_TEST_ENV}"
+    KEEP_TEST_ENV = false
     GINKGO_FOCUS = "${GINKGO_FOCUS}"
-    GINKGO_SKIP= "${GINKGO_SKIP}"
-    EPHEMERAL_TEST = "${EPHEMERAL_TEST}"
-    IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
   }
-  stages {
-    stage('SCM') {
-      options {
-        timeout(time: 5, unit: 'MINUTES')
-      }
-      steps {
-        /* Checkout CI Repo */
-        checkout([$class: 'GitSCM',
-          branches: [
-            [name: ci_git_branch]
-          ],
-          doGenerateSubmoduleConfigurations: false,
-          extensions: [
-            [$class: 'WipeWorkspace'],
-            [$class: 'CleanCheckout'],
-            [$class: 'CleanBeforeCheckout']
-          ],
-          submoduleCfg: [],
-          userRemoteConfigs: [
-            [credentialsId: ci_git_credential_id,
-              url: ci_git_url
-            ]
-          ]
-        ])
-        script {
-          CURRENT_START_TIME = System.currentTimeMillis()
-        }
-      }
-    }
 
+  stages {
     stage('e2e features test Stage') {
       failFast true
       parallel {
         stage('Run e2e pivoting based features') {
+          agent { label agent_label }
+          options{
+            timeout(time: NODE_REUSE_TIMEOUT, unit: 'SECONDS')
+          }
+          environment {
+              BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
+              GINKGO_FOCUS = "pivoting"
+          }
+          steps {
+            script {
+                CURRENT_START_TIME = System.currentTimeMillis()
+            }
+            /* Checkout CI Repo */
+            checkout([$class: 'GitSCM',
+            branches: [
+                [name: ci_git_branch]
+            ],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                [$class: 'WipeWorkspace'],
+                [$class: 'CleanCheckout'],
+                [$class: 'CleanBeforeCheckout']
+            ],
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                [credentialsId: ci_git_credential_id,
+                url: ci_git_url
+                ]
+            ]
+            ])
+
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+              ansiColor('xterm') {
+                timestamps {
+                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
+                }  
+              }
+            }
+          }
+          post {
+            always {
+              script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - NODE_REUSE_TIMEOUT) > 0) {
+                    echo "Failed due to timeout"
+                    currentBuild.result = 'FAILURE'
+                }
+                timestamps {
+                  sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
+                  archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                }
+              }
+            }
+            cleanup {
+              script {
+                timestamps {
+                  sh "./jenkins/scripts/dynamic_worker_workflow/run_clean.sh"
+                }
+              }
+            }
+          }
+        }
+        stage('Run e2e remediation based features') {
+          agent { label agent_label }
           options {
             timeout(time: NODE_REUSE_TIMEOUT, unit: 'SECONDS')
           }
           environment {
-            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-pivoting-based"
-            BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
-            GINKGO_FOCUS = "pivoting"
+            BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
+            GINKGO_FOCUS = "remediation"
           }
-
           steps {
-            withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-              sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
-              string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
-            ]) {
+            script {
+                CURRENT_START_TIME = System.currentTimeMillis()
+            }
+            /* Checkout CI Repo */
+            checkout([$class: 'GitSCM',
+            branches: [
+                [name: ci_git_branch]
+            ],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                [$class: 'WipeWorkspace'],
+                [$class: 'CleanCheckout'],
+                [$class: 'CleanBeforeCheckout']
+            ],
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                [credentialsId: ci_git_credential_id,
+                url: ci_git_url
+                ]
+            ]
+            ])
+            
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
-                  sh "./jenkins/scripts/integration_test.sh"
+                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
                 }
               }
             }
@@ -136,120 +168,19 @@ pipeline {
               script {
                 CURRENT_END_TIME = System.currentTimeMillis()
                 if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - NODE_REUSE_TIMEOUT) > 0) {
-                  echo "Failed due to timeout"
-                  currentBuild.result = 'FAILURE'
+                    echo "Failed due to timeout"
+                    currentBuild.result = 'FAILURE'
                 }
-              }
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
                 timestamps {
-                  sh "./jenkins/scripts/fetch_logs.sh"
-                }
-              }
-              archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-            }
-            success {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping environment clean up"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_test_clean.sh"
-                    }
-                  }
+                  sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
+                  archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
                 }
               }
             }
             cleanup {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping VM deletion"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_delete.sh"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        stage('Run e2e remediation based features') {
-          options {
-            timeout(time: TIMEOUT, unit: 'SECONDS')
-          }
-          environment {
-            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-remediation"
-            BUILD_TAG = "${env.BUILD_TAG}-remediation"
-            GINKGO_FOCUS = "remediation"
-
-          }
-          steps {
-
-            withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-              sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
-              string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
-            ]) {
-              ansiColor('xterm') {
-                timestamps {
-                  sh "./jenkins/scripts/integration_test.sh"
-                }
-              }
-            }
-          }
-          post {
-            always {
               script {
-                CURRENT_END_TIME = System.currentTimeMillis()
-                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
-                  echo "Failed due to timeout"
-                  currentBuild.result = 'FAILURE'
-                }
-              }
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
                 timestamps {
-                  sh "./jenkins/scripts/fetch_logs.sh"
-                }
-              }
-              archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-            }
-            success {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping environment clean up"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_test_clean.sh"
-                    }
-                  }
-                }
-              }
-            }
-            cleanup {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping VM deletion"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_delete.sh"
-                    }
-                  }
+                  sh "./jenkins/scripts/dynamic_worker_workflow/run_clean.sh"
                 }
               }
             }
@@ -257,26 +188,43 @@ pipeline {
         }
 
         stage('Run e2e features excluding pivoting-based and remediation tests') {
+          agent { label agent_label }
           options {
             timeout(time: TIMEOUT, unit: 'SECONDS')
           }
           environment {
-            TEST_EXECUTER_VM_NAME = "${TEST_EXECUTER_VM_NAME}-other-features"
             BUILD_TAG = "${env.BUILD_TAG}-other-features"
             GINKGO_FOCUS = "features"
             GINKGO_SKIP = "pivoting remediation"
-
           }
           steps {
-
-            withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-              sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
-              string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')
-            ]) {
+            script {
+                CURRENT_START_TIME = System.currentTimeMillis()
+            }
+            /* Checkout CI Repo */
+            checkout([$class: 'GitSCM',
+            branches: [
+                [name: ci_git_branch]
+            ],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                [$class: 'WipeWorkspace'],
+                [$class: 'CleanCheckout'],
+                [$class: 'CleanBeforeCheckout']
+            ],
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                [credentialsId: ci_git_credential_id,
+                url: ci_git_url
+                ]
+            ]
+            ])
+            
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
-                  sh "./jenkins/scripts/integration_test.sh"
-                }
+                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
+                }  
               }
             }
           }
@@ -285,53 +233,25 @@ pipeline {
               script {
                 CURRENT_END_TIME = System.currentTimeMillis()
                 if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
-                  echo "Failed due to timeout"
-                  currentBuild.result = 'FAILURE'
+                    echo "Failed due to timeout"
+                    currentBuild.result = 'FAILURE'
                 }
-              }
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
                 timestamps {
-                  sh "./jenkins/scripts/fetch_logs.sh"
-                }
-              }
-              archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-            }
-            success {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping environment clean up"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_test_clean.sh"
-                    }
-                  }
+                  sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
+                  archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
                 }
               }
             }
             cleanup {
-              withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')
-              ]) {
-                script {
-                  if ("${KEEP_TEST_ENV}" == "true") {
-                    echo "Skipping VM deletion"
-                  } else {
-                    timestamps {
-                      sh "./jenkins/scripts/integration_delete.sh"
-                    }
-                  }
+              script {
+                timestamps {
+                  sh "./jenkins/scripts/dynamic_worker_workflow/run_clean.sh"
                 }
               }
             }
           }
         }
-
-      }
+      }   
     }
   }
 }
