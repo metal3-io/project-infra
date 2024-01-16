@@ -8,6 +8,9 @@ def branch = env.ghprbActualCommit ?: "main"
 def repoUrl = env.ghprbAuthorRepoGitUrl ?: "https://github.com/metal3-io/baremetal-operator.git"
 
 pipeline {
+  environment {
+    GINKGO_FOCUS="${GINKGO_FOCUS}"
+  }
   agent none
   stages {
     stage("Run Baremetal Operator e2e tests") {
