@@ -138,11 +138,7 @@ branch-protection:
                   [
                     "test-centos-e2e-integration-main",
                     "test-ubuntu-integration-main",
-                    "metal3-bmo-e2e-test",
                   ]
-            release-0.5:
-              required_status_checks:
-                contexts: ["metal3-bmo-e2e-test"]
         cluster-api-provider-metal3:
           branches:
             main:
@@ -245,11 +241,6 @@ jenkins_operators:
 - max_concurrency: 150
   max_goroutines: 20
   job_url_template: 'https://jenkins.nordix.org/view/Metal3/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/'
-  report_templates:
-    "*": >-
-      [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
-      [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with
-      index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
 
 periodics:
   - name: periodic-stale
@@ -542,7 +533,15 @@ presubmits:
       agent: jenkins
       # Don't run unless triggered to avoid wasting resources
       always_run: false
-      # Until we have checked that it works, keep it optional
+      optional: false
+    - name: metal3-bmo-e2e-test-optional-pull
+      # E2e tests do not exist before release-0.5
+      branches:
+        - main
+        - release-0.5
+      agent: jenkins
+      # Don't run unless triggered to avoid wasting resources
+      always_run: false
       optional: true
 
   metal3-io/cluster-api-provider-metal3:
