@@ -1,19 +1,20 @@
 #!/bin/sh
+# markdownlint-cli2 has config file(s) named .markdownlint-cli2.yaml in the repo
 
 set -eux
 
 IS_CONTAINER="${IS_CONTAINER:-false}"
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-podman}"
 
+# all md files, but ignore .github
 if [ "${IS_CONTAINER}" != "false" ]; then
-    TOP_DIR="${1:-.}"
-    find "${TOP_DIR}" -type d \( -path ./vendor -o -path ./.github \) -prune -o -name '*.md' -exec mdl --style all --warnings {} \+
+    markdownlint-cli2 "**/*.md" "#.github"
 else
     "${CONTAINER_RUNTIME}" run --rm \
         --env IS_CONTAINER=TRUE \
         --volume "${PWD}:/workdir:ro,z" \
         --entrypoint sh \
         --workdir /workdir \
-        docker.io/pipelinecomponents/markdownlint:0.12.0@sha256:0b8f9fcf0410257b2f3548f67ffe25934cfc9877a618b9f85afcf345a25804a2 \
+        docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c \
         /workdir/hack/markdownlint.sh "$@"
 fi

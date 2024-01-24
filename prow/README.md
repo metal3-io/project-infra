@@ -156,8 +156,9 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
    It will be referred to as `${HMAC_TOKEN}`.
 
 1. Create a Jenkins token by logging in to Jenkins using the
-   metal3.bot@gmail.com account and adding an API token in the "Configure" tab
-   for the user. It will be referred to as `${JENKINS_TOKEN}`.
+   [metal3.bot@gmail.com](mailto:metal3.bot@gmail.com) account and adding an API
+   token in the "Configure" tab for the user. It will be referred to as
+   `${JENKINS_TOKEN}`.
 
 ## GitHub configuration
 
