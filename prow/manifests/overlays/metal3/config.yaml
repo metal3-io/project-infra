@@ -1526,3 +1526,17 @@ presubmits:
                 value: "TRUE"
             image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
             imagePullPolicy: Always
+    - name: spellcheck
+      run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/spellcheck.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: ghcr.io/streetsidesoftware/cspell:8.3.2@sha256:2a6ab337b2f1a89e910653b46fdf219e3e4ec9662fc8d561b956c1fe14db9fac
+            imagePullPolicy: Always
