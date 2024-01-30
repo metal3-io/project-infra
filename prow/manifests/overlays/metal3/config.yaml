@@ -393,6 +393,26 @@ presubmits:
             imagePullPolicy: Always
   metal3-io/baremetal-operator:
     - name: gofmt
+      branches:
+        - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/gofmt.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: gofmt
+      branches:
+        - release-0.5
+        - release-0.4
+        - release-0.3
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -421,6 +441,26 @@ presubmits:
             image: docker.io/securego/gosec:2.18.2@sha256:2f9daee1739765788945b79de7f46229f33fda5ed35127393d8a1e459f3a7577
             imagePullPolicy: Always
     - name: gomod
+      branches:
+        - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/gomod.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: gomod
+      branches:
+        - release-0.5
+        - release-0.4
+        - release-0.3
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -483,6 +523,34 @@ presubmits:
             image: docker.io/koalaman/shellcheck-alpine:v0.9.0@sha256:e19ed93c22423970d56568e171b4512c9244fc75dd9114045016b4a0073ac4b7
             imagePullPolicy: Always
     - name: unit
+      branches:
+        - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/unit.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+              - name: DEPLOY_KERNEL_URL
+                value: "http://172.22.0.1/images/ironic-python-agent.kernel"
+              - name: DEPLOY_RAMDISK_URL
+                value: "http://172.22.0.1/images/ironic-python-agent.initramfs"
+              - name: IRONIC_ENDPOINT
+                value: "http://localhost:6385/v1/"
+              - name: IRONIC_INSPECTOR_ENDPOINT
+                value: "http://localhost:5050/v1/"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: unit
+      branches:
+        - release-0.5
+        - release-0.4
+        - release-0.3
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -505,6 +573,34 @@ presubmits:
             image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: generate
+      branches:
+        - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/generate.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+              - name: DEPLOY_KERNEL_URL
+                value: "http://172.22.0.1/images/ironic-python-agent.kernel"
+              - name: DEPLOY_RAMDISK_URL
+                value: "http://172.22.0.1/images/ironic-python-agent.initramfs"
+              - name: IRONIC_ENDPOINT
+                value: "http://localhost:6385/v1/"
+              - name: IRONIC_INSPECTOR_ENDPOINT
+                value: "http://localhost:5050/v1/"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: generate
+      branches:
+        - release-0.5
+        - release-0.4
+        - release-0.3
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -527,6 +623,26 @@ presubmits:
             image: docker.io/golang:1.20
             imagePullPolicy: Always
     - name: golint
+      branches:
+        - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/golint.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: golint
+      branches:
+        - release-0.5
+        - release-0.4
+        - release-0.3
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
