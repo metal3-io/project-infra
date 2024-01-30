@@ -14,9 +14,7 @@ plank:
     "*": https://prow.apps.test.metal3.io/view/
   report_templates:
     "*": >-
-      [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
-      [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with
-      index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
+      [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}). [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
   default_decoration_configs:
     "*":
       gcs_configuration:
@@ -233,14 +231,13 @@ deck:
         required_files:
           - podinfo.json
   external_agent_logs:
-  - agent: jenkins
-    url_template: 'http://jenkins-operator/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/consoleText'
-
+    - agent: jenkins
+      url_template: "http://jenkins-operator/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/consoleText"
 
 jenkins_operators:
-- max_concurrency: 150
-  max_goroutines: 20
-  job_url_template: 'https://jenkins.nordix.org/view/Metal3/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/'
+  - max_concurrency: 150
+    max_goroutines: 20
+    job_url_template: "https://jenkins.nordix.org/view/Metal3/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/"
 
 periodics:
   - name: periodic-stale
@@ -582,6 +579,21 @@ presubmits:
     - name: gomod
       branches:
         - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/gomod.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: gomod
+      branches:
         - release-1.5
         - release-1.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -616,6 +628,21 @@ presubmits:
     - name: gofmt
       branches:
         - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/gofmt.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: gofmt
+      branches:
         - release-1.5
         - release-1.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -666,9 +693,21 @@ presubmits:
     - name: test
       branches:
         - main
+      run_if_changed: "^(Makefile|hack/.*)$"
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - test
+            command:
+              - make
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: test
+      branches:
         - release-1.5
         - release-1.6
-      run_if_changed: '^(Makefile|hack/.*)$'
+      run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
       spec:
         containers:
@@ -697,6 +736,21 @@ presubmits:
     - name: govet
       branches:
         - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/govet.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: govet
+      branches:
         - release-1.5
         - release-1.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -779,6 +833,21 @@ presubmits:
     - name: generate
       branches:
         - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/codegen.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: generate
+      branches:
         - release-1.5
         - release-1.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -813,6 +882,21 @@ presubmits:
     - name: unit
       branches:
         - main
+      skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/unit.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: unit
+      branches:
         - release-1.5
         - release-1.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -863,9 +947,24 @@ presubmits:
     - name: build
       branches:
         - main
+      run_if_changed: "^api|^test|^Makefile$"
+      decorate: true
+      spec:
+        containers:
+          - args:
+              - ./hack/build.sh
+            command:
+              - sh
+            env:
+              - name: IS_CONTAINER
+                value: "TRUE"
+            image: docker.io/golang:1.21
+            imagePullPolicy: Always
+    - name: build
+      branches:
         - release-1.5
         - release-1.6
-      run_if_changed: '^api|^test|^Makefile$'
+      run_if_changed: "^api|^test|^Makefile$"
       decorate: true
       spec:
         containers:
@@ -1102,7 +1201,7 @@ presubmits:
         - main
         - release-1.5
         - release-1.6
-      run_if_changed: '^(Makefile|hack/.*)$'
+      run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
       spec:
         containers:
