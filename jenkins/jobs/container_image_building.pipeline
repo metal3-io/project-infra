@@ -1,0 +1,36 @@
+ci_git_url = "https://github.com/Nordix/metal3-dev-tools.git"
+ci_git_credential_id = "nordix-metal3-ci-github-prod-token"
+ci_git_branch = "main"
+image_registry = "quay.io"
+image_registry_organization = "metal3-io"
+
+pipeline {
+    agent { label 'metal3-workers' }
+    options { ansiColor('xterm') }
+    environment {
+        CONTAINER_IMAGE_HUB = "${image_registry}"
+        CONTAINER_IMAGE_HUB_ORG = "${image_registry_organization}"
+        BUILD_CONTAINER_IMAGE_NAME = "${BUILD_CONTAINER_IMAGE_NAME}"
+        BUILD_CONTAINER_IMAGE_REPO = "${BUILD_CONTAINER_IMAGE_REPO}"
+        BUILD_CONTAINER_IMAGE_GIT_REFERENCE = "${BUILD_CONTAINER_IMAGE_GIT_REFERENCE}"
+        BUILD_CONTAINER_IMAGE_DOCKERFILE_LOCATION = "${BUILD_CONTAINER_IMAGE_DOCKERFILE_LOCATION}"
+    }
+    stages {
+        stage('Build and push docker image'){
+            options {
+              timeout(time: 30, unit: 'MINUTES')
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'metal3ci-quay-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')])  {
+                    sh "docker login '${image_registry}' -u $DOCKER_USER -p $DOCKER_PASSWORD"
+                }
+                sh "./jenkins/scripts/build-container-image.sh"
+            }
+        }
+    }
+    post {
+      cleanup {
+          sh "docker logout '${image_registry}'"
+      }
+    }
+}
