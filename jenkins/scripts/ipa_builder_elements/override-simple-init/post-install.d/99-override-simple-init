@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eu
+if [ "${DIB_DEBUG_TRACE:-1}" -gt 0 ]; then
+    set -x
+fi
+
+SCRIPTDIR=$(dirname "$0")
+
+SEDSTRING="s/Environment=/Environment=\"GLEAN_CONFIG_DRIVE_LABEL=${DIB_SIMPLE_INIT_CONFIG_DRIVE_LABEL}\"/"
+
+sed -e "${SEDSTRING}" "${SCRIPTDIR}/glean-early-override-template.service" > "/etc/systemd/system/glean-early.service"
+
