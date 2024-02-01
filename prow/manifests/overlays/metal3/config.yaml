@@ -135,7 +135,6 @@ branch-protection:
                 contexts:
                   [
                     "test-centos-e2e-integration-main",
-                    "test-ubuntu-integration-main",
                   ]
         cluster-api-provider-metal3:
           branches:
