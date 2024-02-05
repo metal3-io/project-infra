@@ -301,6 +301,37 @@ periodics:
         - name: token
           secret:
             secretName: github-token
+  - name: autobump-prow-images
+    interval: 1d
+    cluster: prow
+    decorate: true
+    extra_refs:
+    - org: metal3-io
+      repo: project-infra
+      base_ref: main
+    spec:
+      containers:
+      - image: gcr.io/k8s-prow/generic-autobumper:v20240205-8f023a0da6
+        command:
+        - generic-autobumper
+        args:
+        - --config=/etc/config/config.yaml
+        - --labels-override=skip-review
+        - --skip-if-no-oncall
+        volumeMounts:
+        - name: github-token
+          mountPath: /etc/github
+          readOnly: true
+        - name: config
+          mountPath: /etc/config
+          readOnly: true
+      volumes:
+      - name: github-token
+        secret:
+          secretName: github-token
+      - name: config
+        configMap:
+          name: generic-autobumper-config
 
 presubmits:
   Nordix/metal3-clusterapi-docs:

@@ -11,6 +11,7 @@ resources:
 - external-plugins/needs-rebase_service.yaml
 - external-plugins/labels_cronjob.yaml
 - external-plugins/jenkins-operator.yaml
+- external-plugins/generic-autobumper-deployment.yaml
 - pdb.yaml
 - limitrange.yaml
 
@@ -36,6 +37,10 @@ configMapGenerator:
 - files:
   - labels.yaml
   name: label-config
+  namespace: prow
+- files:
+  - config.yaml=external-plugins/generic-autobumper-config.yaml
+  name: generic-autobumper-config
   namespace: prow
 
 secretGenerator:
