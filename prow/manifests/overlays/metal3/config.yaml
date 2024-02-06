@@ -170,6 +170,13 @@ branch-protection:
                     "test-ubuntu-integration-main",
                     "test-centos-integration-main",
                   ]
+            release-24.0:
+              required_status_checks:
+                contexts:
+                  [
+                    "test-ubuntu-integration-main",
+                    "test-centos-integration-main",
+                  ]
         ironic-ipa-downloader:
           branches:
             main:
@@ -1503,6 +1510,7 @@ presubmits:
     - name: markdownlint
       branches:
         - main
+        - release-24.0
       run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
