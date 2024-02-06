@@ -302,7 +302,7 @@ periodics:
           secret:
             secretName: github-token
   - name: autobump-prow-images
-    interval: 1d
+    interval: 24h
     cluster: prow
     decorate: true
     extra_refs:
