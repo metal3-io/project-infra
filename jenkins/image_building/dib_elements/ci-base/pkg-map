@@ -1,0 +1,43 @@
+{
+    "release": {
+      "ubuntu": {
+        "22.04": {
+          "ntp": "chrony"
+        }
+      }
+    },
+    "family": {
+        "redhat": {
+          "bash-completion":"bash-completion",
+          "curl": "curl",
+          "dnsmasq":"dnsmasq",
+          "git": "git",
+          "libguestfs-tools":"libguestfs-tools",
+          "make": "make",
+          "openjdk-11-jre": "java-11-openjdk",
+          "ovmf":"edk2-ovmf",
+          "python3": "python3",
+          "python3-pip":"python3-pip",
+          "qemu-kvm":"qemu-kvm",
+          "tree": "tree",
+          "vim": "vim-enhanced",
+          "wget": "wget"
+        },
+        "debian":{
+          "bash-completion":"bash-completion",
+          "curl": "curl",
+          "dnsmasq":"dnsmasq",
+          "git": "git",
+          "libguestfs-tools":"libguestfs-tools",
+          "make": "make",
+          "openjdk-11-jre": "openjdk-11-jre",
+          "ovmf":"ovmf",
+          "python3": "python3",
+          "python3-pip":"python3-pip",
+          "qemu-kvm":"qemu-kvm",
+          "tree": "tree",
+          "vim": "vim",
+          "wget": "wget"
+        }
+    }
+}

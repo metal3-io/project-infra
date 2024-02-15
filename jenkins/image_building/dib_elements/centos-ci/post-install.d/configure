@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Configure network (set nameservers and disable peer DNS).
+set -eux
+
+sudo sed -i "0,/.*PermitRootLogin.*/s//PermitRootLogin yes/" /etc/ssh/sshd_config
+
+# SETUP MONITORING
+## Install atop and sysstat
+sudo dnf install sysstat atop --enablerepo=epel -y 
+
+## Collect all metrics every minute
+sudo sed -i 's/^LOGINTERVAL=600.*/LOGINTERVAL=60/' /etc/sysconfig/atop
+sudo mkdir -v /etc/systemd/system/sysstat-collect.timer.d/
+sudo bash -c "sed -e 's|every 10 minutes|every 1 minute|g' -e '/^OnCalendar=/ s|/10$|/1|' /usr/lib/systemd/system/sysstat-collect.timer > /etc/systemd/system/sysstat-collect.timer.d/override.conf"
+sudo sed -i 's|^SADC_OPTIONS=.*|SADC_OPTIONS=" -S XALL"|' /etc/sysconfig/sysstat
+
+## Reduce metrics retention to 3 days
+sudo sed -i 's/^LOGGENERATIONS=.*/LOGGENERATIONS=3/' /etc/sysconfig/atop
+sudo sed -i 's|^HISTORY=.*|HISTORY=3|' /etc/sysconfig/sysstat
+
+## Standardize sysstat log directory
+sudo mkdir -p /var/log/sysstat
+sudo sed -i 's|^SA_DIR=.*|SA_DIR="/var/log/sysstat"|' /etc/sysconfig/sysstat
+
+## Enable services
+sudo systemctl enable atop.service crond.service sysstat.service
+
+# Change default to shell to bash
+sudo usermod --shell /bin/bash metal3ci
