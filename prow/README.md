@@ -109,10 +109,10 @@ image. Here is an example:
   "floating_ip_network": "ext-net",
   "ssh_username": "ubuntu",
   "volume_type": "",
-  "kubernetes_deb_version": "1.27.7-1.1",
-  "kubernetes_rpm_version": "1.27.7-1",
-  "kubernetes_semver": "v1.27.7",
-  "kubernetes_series": "v1.27"
+  "kubernetes_deb_version": "1.28.7-1.1",
+  "kubernetes_rpm_version": "1.28.7-150500.1.1",
+  "kubernetes_semver": "v1.28.7",
+  "kubernetes_series": "v1.28"
 }
 ```
 
