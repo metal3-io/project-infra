@@ -321,7 +321,7 @@ periodics:
         command:
         - generic-autobumper
         args:
-        - --config="prow/manifests/overlays/metal3/generic-autobumper-config.yaml"
+        - --config=prow/manifests/overlays/metal3/generic-autobumper-config.yaml
         - --signoff=true
         volumeMounts:
         - name: github-token
