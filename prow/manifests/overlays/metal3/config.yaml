@@ -22,10 +22,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20231011-33fbc60185
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20231011-33fbc60185
-        initupload: gcr.io/k8s-prow/initupload:v20231011-33fbc60185
-        sidecar: gcr.io/k8s-prow/sidecar:v20231011-33fbc60185
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20240223-d4f3b08643
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20240223-d4f3b08643
+        initupload: gcr.io/k8s-prow/initupload:v20240223-d4f3b08643
+        sidecar: gcr.io/k8s-prow/sidecar:v20240223-d4f3b08643
       resources:
         clonerefs:
           requests:
@@ -251,7 +251,7 @@ periodics:
     decorate: true
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
+        - image: gcr.io/k8s-prow/commenter:v20240223-d4f3b08643
           command:
             - commenter
           args:
@@ -284,7 +284,7 @@ periodics:
     decorate: true
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20231011-33fbc60185
+        - image: gcr.io/k8s-prow/commenter:v20240223-d4f3b08643
           command:
             - commenter
           args:
@@ -317,7 +317,7 @@ periodics:
       base_ref: main
     spec:
       containers:
-      - image: gcr.io/k8s-prow/generic-autobumper:v20240205-8f023a0da6
+      - image: gcr.io/k8s-prow/generic-autobumper:v20240223-d4f3b08643
         command:
         - generic-autobumper
         args:
@@ -1205,7 +1205,7 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - image: gcr.io/k8s-prow/checkconfig:v20231011-33fbc60185
+          - image: gcr.io/k8s-prow/checkconfig:v20240223-d4f3b08643
             command:
               - checkconfig
             args:
