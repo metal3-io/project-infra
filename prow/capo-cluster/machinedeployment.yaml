@@ -4,7 +4,7 @@ metadata:
   name: prow-md-0
 spec:
   clusterName: prow
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels: null
   template:
@@ -19,5 +19,5 @@ spec:
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
         kind: OpenStackMachineTemplate
-        name: prow-md-0-v1-27-7
-      version: v1.27.7
+        name: prow-md-0-v1-28-7
+      version: v1.28.7

@@ -1,7 +1,7 @@
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-control-plane-v1-26-6
+  name: prow-control-plane-v1-28-7
 spec:
   template:
     spec:
@@ -10,13 +10,13 @@ spec:
       identityRef:
         kind: Secret
         name: prow-cloud-config
-      image: ubuntu-2204-kube-v1.26.6
+      image: ubuntu-2204-kube-v1.28.7
       sshKeyName: metal3ci-key
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-md-0-v1-26-6
+  name: prow-md-0-v1-28-7
 spec:
   template:
     spec:
@@ -25,7 +25,7 @@ spec:
       identityRef:
         kind: Secret
         name: prow-cloud-config
-      image: ubuntu-2204-kube-v1.26.6
+      image: ubuntu-2204-kube-v1.28.7
       sshKeyName: metal3ci-key
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
