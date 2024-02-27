@@ -1,0 +1,15 @@
+bash-completion:
+curl:
+dnsmasq:
+git:
+jq:
+libguestfs-tools:
+make:
+openjdk-11-jre:
+ovmf:
+python3:
+python3-pip:
+qemu-kvm:
+tree:
+vim:
+wget:

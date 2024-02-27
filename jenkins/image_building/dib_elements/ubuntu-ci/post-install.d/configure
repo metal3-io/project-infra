@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+# Configure network (set nameservers and disable peer DNS).
+set -eux
+
+cat <<EOF | sudo tee /etc/netplan/90-nameservers.yaml
+network:
+  version: 2
+  ethernets:
+    ens3:
+      dhcp4-overrides:
+        use-dns: no
+      nameservers:
+        addresses: [1.1.1.1, 1.0.0.1]
+
+EOF
+# Apply the changes
+sudo netplan apply
+
+#Disable the automatic updates
+cat << EOF | sudo tee /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Unattended-Upgrade "0";
+EOF
+
+# Set apt retry limit to higher than default
+# robust to make the data retrival more reliable
+sudo sh -c 'echo "Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries'
+
+sudo systemctl disable apt-daily-upgrade.timer
+sudo systemctl disable apt-daily.timer
+sudo systemctl stop apt-daily-upgrade.timer
+sudo systemctl stop apt-daily.timer
+
+# SECURITY HARDENINGS
+# Declares ssh values to set in /etc/ssh/sshd_config
+
+declare -A SSH_VALUES=(
+  [PermitRootLogin]=yes
+  [IgnoreRhosts]=yes
+  [HostbasedAuthentication]=no
+  [PermitEmptyPasswords]=no
+  [X11Forwarding]=no
+  [MaxAuthTries]=5
+  [Ciphers]="aes128-ctr,aes192-ctr,aes256-ctr"
+  [ClientAliveInterval]=0
+  [ClientAliveCountMax]=0
+  [UsePAM]=yes
+  [Protocol]=2
+)
+
+# Parameters to secure networking /etc/sysctl.conf
+declare -A NETWORK_PARAMETERS=(
+  [net.ipv4.ip_forward]=0
+  [net.ipv4.conf.all.send_redirects]=0
+  [net.ipv4.conf.default.send_redirects]=0
+  [net.ipv4.conf.all.accept_redirects]=0
+  [net.ipv4.conf.default.accept_redirects]=0
+  [net.ipv4.icmp_ignore_bogus_error_responses]=1
+  [fs.suid_dumpable]=0
+  [kernel.exec-shield]=1
+  [kernel.randomize_va_space]=2
+)
+
+set_value() {
+  local parameter_name="$1"
+  local parameter_value="$2"
+  local file="$3"
+  local separator="$4"
+  local value="${parameter_name}${separator}${parameter_value}"
+
+  if sudo grep -q "${parameter_name}" "${file}"; then
+    sudo sed -i "0,/.*${parameter_name}.*/s//${value}/" "${file}"
+  else
+    echo "${value}" | sudo tee -a "${file}" > /dev/null
+  fi
+}
+
+# Loop through SSH_VALUES
+for i in "${!SSH_VALUES[@]}"; do
+    name="${i}"
+    value="${SSH_VALUES[$i]}"
+    set_value "${name}" "${value}" /etc/ssh/sshd_config " "
+done
+
+# Set the permissions on the sshd_config file so that only root users can change its contents
+sudo chown root:root /etc/ssh/sshd_config
+sudo chmod 600 /etc/ssh/sshd_config
+
+# Loop through networking table
+for i in "${!NETWORK_PARAMETERS[@]}"; do
+  name="${i}"
+  value="${NETWORK_PARAMETERS[$i]}"
+  set_value "${name}" "${value}" /etc/sysctl.conf "="
+done
+
+# Remove legacy services
+sudo apt-get --purge remove telnet -y
+sudo apt-get autoremove -y
+
+# We do not use passwords on the machines
+
+# Disable the system accounts for non-root users
+
+# shellcheck disable=SC2013
+for user in $(awk -F: '($3 < 500) {print $1 }' /etc/passwd); do
+  if [[ "${user}" != "root" ]]; then
+    sudo /usr/sbin/usermod -L "${user}"
+if [[ "${user}" != "sync" ]] && [[ "${user}" != "shutdown" ]] && [[ "${user}" != "halt" ]]; then
+      sudo /usr/sbin/usermod -s /sbin/nologin "${user}"
+    fi
+  fi
+done
+
+# Set User/Group Owner and Permission on “/etc/anacrontab”, “/etc/crontab” and “/etc/cron
+sudo chown root:root /etc/crontab /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly /etc/cron.d
+sudo chmod og-rwx /etc/crontab /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly /etc/cron.d
+
+# Set the right and permissions on root crontab
+sudo chown root:root /var/spool/cron/crontabs
+sudo chmod og-rwx /var/spool/cron/crontabs
+
+# Set User/Group Owner and Permission on “passwd” and “group”  files
+sudo chmod 644 /etc/passwd /etc/group
+sudo chown root:root /etc/passwd /etc/group
+
+
+#Set User/Group Owner and Permission on the “shadow” and “gshadow” files
+sudo chmod 600 /etc/shadow /etc/gshadow
+sudo chown root:root /etc/shadow /etc/gshadow
+
+# Restrict Core Dumps
+echo '* hard core 0' | sudo tee -a /etc/security/limits.conf > /dev/null
+
+# MONiTORING. Collect monitoring data with atop and sar
+# https://aws.amazon.com/premiumsupport/knowledge-center/ec2-linux-configure-monitoring-tools/
+
+## Install monitoring tools
+sudo apt-get install atop sysstat -y
+
+## Collect all metrics every minute
+sudo sed -i 's/^LOGINTERVAL=600.*/LOGINTERVAL=60/' /usr/share/atop/atop.daily
+sudo sed -i -e 's|5-55/10|*/1|' -e 's|every 10 minutes|every 1 minute|' -e 's|debian-sa1|debian-sa1 -S XALL|g' /etc/cron.d/sysstat
+sudo bash -c "echo 'SA1_OPTIONS=\"-S XALL\"' >> /etc/default/sysstat"
+
+## Reduce metrics retention to 3 days
+sudo sed -i 's/^LOGGENERATIONS=.*/LOGGENERATIONS=3/' /usr/share/atop/atop.daily
+sudo sed -i 's/^HISTORY=.*/HISTORY=3/' /etc/default/sysstat
+
+## Enable services
+sudo sed -i 's|ENABLED="false"|ENABLED="true"|' /etc/default/sysstat
+sudo systemctl enable atop.service cron.service sysstat.service
+
+# Change default to shell to bash
+sudo usermod --shell /bin/bash metal3ci
