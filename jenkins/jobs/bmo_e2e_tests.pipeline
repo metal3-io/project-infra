@@ -5,9 +5,10 @@ def TIMEOUT = 3600
 
 // Set defaults for non-PR jobs
 def pullSha = (env.PULL_PULL_SHA) ?: "main"
+def pullBase = (env.PULL_BASE_REF) ?: "main"
 def repoUrl = "https://github.com/metal3-io/baremetal-operator.git"
-// Fetch the main branch and the pullSha, nothing else
-def refspec = '+refs/heads/main:refs/remotes/origin/main ' + pullSha
+// Fetch the base branch and the pullSha, nothing else
+def refspec = '+refs/heads/' + pullBase + ':refs/remotes/origin/' + pullBase + ' ' + pullSha
 
 pipeline {
   environment {
@@ -36,6 +37,7 @@ pipeline {
                   extensions: [[$class: "WipeWorkspace"],
                   [$class: "CleanCheckout"],
                   [$class: "CleanBeforeCheckout"],
+                  [$class: "PreBuildMerge", options: [mergeTarget: pullBase]],
                   cloneOption(honorRefspec: true)],
                   submoduleCfg: [],)
               script {
