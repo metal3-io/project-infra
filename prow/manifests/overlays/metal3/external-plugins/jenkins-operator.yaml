@@ -36,7 +36,7 @@ spec:
       serviceAccountName: jenkins-operator
       containers:
       - name: jenkins-operator
-        image: gcr.io/k8s-prow/jenkins-operator:v20240223-d4f3b08643
+        image: gcr.io/k8s-prow/jenkins-operator:v20240228-d64ece9e05
         args:
         - --config-path=/etc/config/config.yaml
         - --jenkins-url=https://jenkins.nordix.org
