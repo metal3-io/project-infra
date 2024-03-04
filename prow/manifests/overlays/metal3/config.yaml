@@ -1139,8 +1139,18 @@ presubmits:
                 value: "TRUE"
             image: docker.io/golang:1.19
             imagePullPolicy: Always
-    # name: {job_prefix}_{proj}_{capm3_target_branch}_e2e_basic_test_{image_os}
+    # name: {job_prefix}-{proj}-{capm3_target_branch}-e2e-basic-test-{image_os}
     - name: metal3-capm3-main-e2e-basic-test-centos
+      branches:
+        - main
+        - release-1.6
+      agent: jenkins
+      # Don't run unless triggered to avoid wasting resources
+      always_run: false
+      # Until we have checked that it works, keep it optional
+      optional: true
+    # name: {job_prefix}-{proj}-{capm3_target_branch}-e2e-basic-test-{image_os}
+    - name: metal3-project_infra-main-e2e-basic-test-centos
       branches:
         - main
         - release-1.6
