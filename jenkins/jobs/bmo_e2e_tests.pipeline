@@ -38,6 +38,7 @@ pipeline {
                   [$class: "CleanCheckout"],
                   [$class: "CleanBeforeCheckout"],
                   [$class: "PreBuildMerge", options: [mergeTarget: pullBase, mergeRemote: "origin"]],
+                  [$class: "UserIdentity", name: "Test", email: "test@test.test"]
                   cloneOption(honorRefspec: true)],
                   submoduleCfg: [],)
               script {
