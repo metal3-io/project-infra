@@ -11,12 +11,12 @@ KUBECTL_SHA256=(env.KUBECTL_SHA256)
 
 script {
   UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+  ci_git_url = "https://github.com/Nordix/metal3-project-infra.git"
 
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
+    ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "fetch-changes-from-pr-id/mboukhalfa"
   } else {
-    ci_git_branch = "main"
+    ci_git_branch = "fetch-changes-from-pr-id/mboukhalfa"
   }
   echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
