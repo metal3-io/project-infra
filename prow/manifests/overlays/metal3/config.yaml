@@ -309,7 +309,8 @@ periodics:
           secret:
             secretName: github-token
   - name: autobump-prow-images
-    cron: 0 0 * * 0
+    # At 00:00 on 1st every month
+    cron: 0 0 1 * *
     decorate: true
     extra_refs:
     - org: metal3-io
