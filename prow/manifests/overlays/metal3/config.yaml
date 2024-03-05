@@ -134,7 +134,21 @@ branch-protection:
               required_status_checks:
                 contexts:
                   [
-                    "test-centos-e2e-integration-main",
+                    "test-centos-e2e-integration-main"
+                  ]
+            release-0.5:
+              required_status_checks:
+                contexts:
+                  [
+                    "test-centos-e2e-integration-release-1-6",
+                    "test-ubuntu-integration-release-1-6"
+                  ]
+            release-0.4:
+              required_status_checks:
+                contexts:
+                  [
+                    "test-centos-e2e-integration-release-1-5",
+                    "test-ubuntu-integration-release-1-5"
                   ]
         cluster-api-provider-metal3:
           branches:
@@ -143,7 +157,7 @@ branch-protection:
                 contexts:
                   [
                     "test-centos-e2e-integration-main",
-                    "test-ubuntu-integration-main",
+                    "test-ubuntu-integration-main"
                   ]
             release-1.4:
               required_status_checks:
