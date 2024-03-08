@@ -60,11 +60,15 @@ vm_healthy()
     KEY="${2:?}"
     SERVER="${3:?}"
 
-    if ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
+    cloud_init_status=$(ssh -o ConnectTimeout=2 -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null -i "${KEY}" \
-        "${USER}"@"${SERVER}" cloud-init status --long --wait; then
-        return 0
-    else
+        "${USER}"@"${SERVER}" cloud-init status --long --wait)
+    if echo "${cloud_init_status}" | grep "error"; then
+        echo "There was a cloud-init error:"
+        echo "${cloud_init_status}"
         return 1
+    else
+        echo "Cloud-init completed successfully!"
+        return 0
     fi
 }
