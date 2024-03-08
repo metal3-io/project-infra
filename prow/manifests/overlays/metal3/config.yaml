@@ -739,7 +739,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-centos-e2e-basic-test-release-1.6
+    - name: metal3-centos-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -747,7 +747,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-ubuntu-e2e-basic-test-release-1.6
+    - name: metal3-ubuntu-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1177,7 +1177,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-centos-e2e-basic-test-release-1.6
+    - name: metal3-centos-e2e-basic-test-release-1-6
       branches:
         - release-1.6
       agent: jenkins
@@ -1189,7 +1189,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-ubuntu-e2e-basic-test-release-1.6
+    - name: metal3-ubuntu-e2e-basic-test-release-1-6
       branches:
         - release-1.6
       agent: jenkins
@@ -1259,7 +1259,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-centos-e2e-basic-test-release-1.6
+    - name: metal3-centos-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1267,7 +1267,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-ubuntu-e2e-basic-test-release-1.6
+    - name: metal3-ubuntu-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1323,7 +1323,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-centos-e2e-basic-test-release-1.6
+    - name: metal3-centos-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1331,7 +1331,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-ubuntu-e2e-basic-test-release-1.6
+    - name: metal3-ubuntu-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1750,7 +1750,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-centos-e2e-basic-test-release-1.6
+    - name: metal3-centos-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
@@ -1758,7 +1758,7 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-ubuntu-e2e-basic-test-release-1.6
+    - name: metal3-ubuntu-e2e-basic-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
