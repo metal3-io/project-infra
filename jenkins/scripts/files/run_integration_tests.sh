@@ -122,6 +122,8 @@ if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
     git config user.name "Test"
     git remote add test "${UPDATED_REPO}"
     git fetch test
+    # if triggered from prow we cannot get the ghprbAuthorRepoGitUrl then we pull the PR
+    git fetch origin "pull/${PR_ID:-0}/head:${UPDATED_BRANCH}-branch" || true
     # Merging the PR with the target branch
     git merge "${UPDATED_BRANCH}" || exit
 fi

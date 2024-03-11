@@ -11,10 +11,11 @@ KUBECTL_SHA256=(env.KUBECTL_SHA256)
 
 script {
   UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+  echo "Test triggered from ${UPDATED_REPO}" 
+  ci_git_url = "https://github.com/metal3-io/metal3-project-infra.git"
 
-  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
+  if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
+    ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
   } else {
     ci_git_branch = "main"
   }
@@ -37,8 +38,8 @@ pipeline {
   environment {
     METAL3_CI_USER="metal3ci"
     // Defined in the job project 
-    REPO_ORG = "${PROJECT_REPO_ORG}"
-    REPO_NAME = "${PROJECT_REPO_NAME}"
+    REPO_ORG = "${env.REPO_OWNER}"
+    REPO_NAME = "${env.REPO_NAME}"
     // Defined in prow env vars 
     // https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
     REPO_BRANCH = "${env.PULL_BASE_REF}"
