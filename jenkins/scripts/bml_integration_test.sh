@@ -47,7 +47,6 @@ UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE:-}"
 KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 
-JUMPHOST_IP="129.192.80.20"
 TEST_EXECUTER_IP="192.168.1.3"
 
 cat <<-EOF >"${CI_DIR}/files/vars.sh"
@@ -81,13 +80,10 @@ declare -a SSH_OPTIONS=(
     -o ServerAliveInterval=15
     -o ServerAliveCountMax=10
     -i "${METAL3_CI_USER_KEY}"
-    -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${METAL3_CI_USER_KEY} -W %h:%p ${METAL3_CI_USER}@${JUMPHOST_IP}"
 )
 
 # Send Remote script to Executer
-scp \
-    "${SSH_OPTIONS[@]}" \
-    -r \
+scp -r \
     "${CI_DIR}/files/run_integration_tests.sh" \
     "${CI_DIR}/files/vars.sh" \
     "${CI_DIR}/bare_metal_lab/" \

@@ -29,7 +29,7 @@ pipeline {
   options {
     disableConcurrentBuilds()
   }
-  agent { label 'metal3-static-workers' }
+  agent { label 'metal3ci-bml-jenkins-worker' }
   environment {
     METAL3_CI_USER="metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
