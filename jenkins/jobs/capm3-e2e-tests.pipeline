@@ -1,0 +1,107 @@
+import java.text.SimpleDateFormat
+import java.security.SecureRandom
+
+ci_git_credential_id = "metal3-jenkins-github-token"
+
+// 3 hours
+int TIMEOUT = 10800
+
+script {
+    if ("${PROJECT_REPO_ORG}" == 'metal3-io' && "${PROJECT_REPO_NAME}" == 'project-infra') {
+        echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
+        ci_git_branch = "${ghprbActualCommit}"
+        ci_git_url = "${ghprbAuthorRepoGitUrl}"
+  } else {
+        echo "Checkout ${ghprbAuthorRepoGitUrl} main"
+        ci_git_branch = 'main'
+        ci_git_url = 'https://github.com/metal3-io/project-infra.git'
+        }
+
+    int rand = new SecureRandom()
+    VM_KEY = (1..4).collect {
+        ('a'..
+      'z').join('')[rand.nextInt(26)]
+  }.join('')
+
+    agent_label = "metal3ci-large-${IMAGE_OS}"
+}
+
+pipeline {
+    agent none
+    environment {
+        METAL3_CI_USER = 'metal3ci'
+        REPO_ORG = "${PROJECT_REPO_ORG}"
+        REPO_NAME = "${PROJECT_REPO_NAME}"
+        UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
+        REPO_BRANCH = "${ghprbTargetBranch}"
+        UPDATED_BRANCH = "${ghprbActualCommit}"
+        BUILD_TAG = "${env.BUILD_TAG}"
+        IMAGE_OS = "${IMAGE_OS}"
+        CAPM3RELEASEBRANCH = "${capm3_release_branch}"
+        BMORELEASEBRANCH = "${bmo_release_branch}"
+        TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
+        TESTS_FOR = "${TESTS_FOR}"
+        GINKGO_FOCUS = "${GINKGO_FOCUS}"
+        GINKGO_SKIP = "${GINKGO_SKIP}"
+    }
+
+    stages {
+        stage('Clusterctl upgrade test') {
+            agent { label agent_label }
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                script {
+                    CURRENT_START_TIME = System.currentTimeMillis()
+                }
+                /* Checkout CI Repo */
+                checkout([
+                  $class: 'GitSCM',
+                  branches: [
+                    [name: ci_git_branch]
+                    ],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [
+                      [$class: 'WipeWorkspace'],
+                      [$class: 'CleanCheckout'],
+                      [$class: 'CleanBeforeCheckout']
+                      ],
+                  submoduleCfg: [],
+                  userRemoteConfigs: [
+                      [credentialsId: ci_git_credential_id,url: ci_git_url]
+                      ]
+                  ])
+                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    ansiColor('xterm') {
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/feature_tests.sh'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        CURRENT_END_TIME = System.currentTimeMillis()
+                        if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
+                            echo 'Failed due to timeout'
+                            currentBuild.result = 'FAILURE'
+                        }
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
+                            archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                        }
+                    }
+                }
+                cleanup {
+                    script {
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/run_clean.sh'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
