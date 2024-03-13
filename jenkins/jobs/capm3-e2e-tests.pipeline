@@ -1,7 +1,5 @@
-import java.text.SimpleDateFormat
-import java.security.SecureRandom
 
-ci_git_credential_id = "metal3-jenkins-github-token"
+ci_git_credential_id = 'metal3-jenkins-github-token'
 
 // 3 hours
 int TIMEOUT = 10800
@@ -17,7 +15,7 @@ script {
         ci_git_url = 'https://github.com/metal3-io/project-infra.git'
         }
 
-    int rand = new SecureRandom()
+    int rand = new Random()
     VM_KEY = (1..4).collect {
         ('a'..
       'z').join('')[rand.nextInt(26)]
