@@ -14,13 +14,6 @@ script {
         ci_git_branch = 'main'
         ci_git_url = 'https://github.com/metal3-io/project-infra.git'
         }
-
-    int rand = new Random()
-    VM_KEY = (1..4).collect {
-        ('a'..
-      'z').join('')[rand.nextInt(26)]
-  }.join('')
-
     agent_label = "metal3ci-large-${IMAGE_OS}"
 }
 
