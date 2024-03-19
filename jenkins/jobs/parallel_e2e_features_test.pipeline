@@ -12,15 +12,19 @@ def NODE_REUSE_TIMEOUT = 18000
 KEEP_TEST_ENV = (env.KEEP_TEST_ENV)
 
 script {
+  PROJECT_REPO_ORG = (env.REPO_OWNER) ?: (env.PROJECT_REPO_ORG)
+  PROJECT_REPO_NAME = (env.REPO_NAME) ?: (env.PROJECT_REPO_NAME)
+  UPDATED_REPO = "https://github.com/${PROJECT_REPO_ORG}/${PROJECT_REPO_NAME}.git"
+  echo "Test triggered from ${UPDATED_REPO}"
+
   if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
-    echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
-    ci_git_branch = "${ghprbActualCommit}"
-    ci_git_url = "${ghprbAuthorRepoGitUrl}"
+    ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
+    ci_git_url = (env.ghprbAuthorRepoGitUrl) ?: "https://github.com/metal3-io/project-infra.git"
   } else {
-    echo "Checkout ${ghprbAuthorRepoGitUrl} main"
     ci_git_branch = "main"
     ci_git_url = "https://github.com/metal3-io/project-infra.git"
   }
+  echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
   def date = new Date()
   def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
@@ -31,6 +35,13 @@ script {
   }.join("")
 
   agent_label="metal3ci-large-${IMAGE_OS}"
+
+  UPDATED_BRANCH = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit)
+  REPO_BRANCH = (env.PULL_BASE_REF) ?: (env.ghprbTargetBranch)
+  if (!env.REPO_OWNER) {
+    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
+  }
+
 }
 
 pipeline {
@@ -39,11 +50,11 @@ pipeline {
     METAL3_CI_USER = "metal3ci"
     REPO_ORG = "${PROJECT_REPO_ORG}"
     REPO_NAME = "${PROJECT_REPO_NAME}"
-    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
-    REPO_BRANCH = "${ghprbTargetBranch}"
-    UPDATED_BRANCH = "${ghprbActualCommit}"
+    UPDATED_REPO = "${UPDATED_REPO}"
+    REPO_BRANCH = "${REPO_BRANCH}"
+    UPDATED_BRANCH = "${UPDATED_BRANCH}"
     BUILD_TAG = "${env.BUILD_TAG}"
-    PR_ID = "${ghprbPullId}"
+    PR_ID = "${env.PULL_NUMBER}"
     IMAGE_OS = "${IMAGE_OS}"
     CAPI_VERSION = "${CAPI_VERSION}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
