@@ -6,12 +6,13 @@ set -eux
 cat <<EOF | sudo tee /etc/netplan/90-nameservers.yaml
 network:
   version: 2
+  renderer: networkd
   ethernets:
     ens3:
       dhcp4-overrides:
-        use-dns: no
+        use-dns: yes
       nameservers:
-        addresses: [1.1.1.1, 1.0.0.1]
+        addresses: [1.1.1.1, 8.8.8.8]
 
 EOF
 # Apply the changes
