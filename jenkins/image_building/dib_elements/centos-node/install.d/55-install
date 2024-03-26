@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -eux
+
+export KUBERNETES_VERSION=${KUBERNETES_VERSION:-"v1.29.3"}
+export KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
+export KUBERNETES_BINARIES_VERSION="${KUBERNETES_BINARIES_VERSION:-${KUBERNETES_VERSION}}"
+export CRIO_BINARIES_VERSION="${CRIO_BINARIES_VERSION:-${CRIO_VERSION}}"
+export CRICTL_BINARIES_VERSION="${CRICTL_BINARIES_VERSION:-${CRICTL_VERSION}}"
+
+sudo cat <<EOF | sudo tee /etc/modules-load.d/crio.conf
+overlay
+br_netfilter
+EOF
+
+# Set up required sysctl params, these persist across reboots.
+sudo cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sudo yum install -y container-selinux
+sudo yum install -y kubelet-"${KUBERNETES_BINARIES_VERSION//v}" kubeadm-"${KUBERNETES_BINARIES_VERSION//v}" kubectl-"${KUBERNETES_BINARIES_VERSION//v}" cri-o-"${CRIO_BINARIES_VERSION//v}" cri-tools-"${CRICTL_BINARIES_VERSION//v}"

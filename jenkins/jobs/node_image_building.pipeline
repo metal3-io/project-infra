@@ -7,18 +7,12 @@ pipeline {
   options { ansiColor('xterm') }
   environment {
     IMAGE_OS = "${IMAGE_OS}"
-    IMAGE_TYPE="ci"
+    IMAGE_TYPE="node"
     METAL3_CI_USER="metal3ci"
-    OS_AUTH_URL="https://kna1.citycloud.com:5000"
-    OS_USER_DOMAIN_NAME="CCP_Domain_37137"
-    OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
-    OS_REGION_NAME="Kna1"
-    OS_PROJECT_NAME="Default Project 37137"
-    OS_TENANT_NAME="Default Project 37137"
-    OS_AUTH_VERSION=3
-    OS_IDENTITY_API_VERSION=3
+    RT_URL="https://artifactory.nordix.org/artifactory"
     KUBERNETES_VERSION = "${KUBERNETES_VERSION}"
     KIND_NODE_IMAGE_VERSION = "${KIND_NODE_IMAGE_VERSION}"
+    CRIO_VERSION="${CRIO_VERSION}"
   }
   stages {
     stage('SCM') {
@@ -41,7 +35,7 @@ pipeline {
         }
       }
     }
-    stage('Build Ubuntu CI image') {
+    stage('Build Ubuntu Node image') {
       options {
         timeout(time: 40, unit: 'MINUTES')
       }
@@ -49,17 +43,17 @@ pipeline {
         IMAGE_OS = "ubuntu"
       }
       steps {
-        echo 'Building Ubuntu CI image'
+        echo 'Building Ubuntu Node image'
         withCredentials([
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
-          catchError([stageResult: 'FAILURE', message: "Failed to build Ubuntu CI image"]) {
+          catchError([stageResult: 'FAILURE', message: "Failed to build Ubuntu node image"]) {
             sh "./jenkins/image_building/build-image.sh"
           }
         }
       }
     }
-    stage('Building Centos CI image'){
+    stage('Building Centos node image'){
       options {
         timeout(time: 40, unit: 'MINUTES')
       }
@@ -67,11 +61,11 @@ pipeline {
         IMAGE_OS = "centos"
       }
       steps {
-        echo 'Building Centos CI image'
+        echo 'Building Centos node image'
         withCredentials([
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
-          catchError([stageResult: 'FAILURE', message: "Failed to build Centos CI image"]) {
+          catchError([stageResult: 'FAILURE', message: "Failed to build Centos node image"]) {
             sh "./jenkins/image_building/build-image.sh"
           }
         }

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eux
+
+export USERDATA_HOSTNAME=${HOSTNAME:-"metal3node-test"}
+
+sudo sed -i "/^127.0.0.1/c\127.0.0.1 ${USERDATA_HOSTNAME}" /etc/hosts
+sudo sed -i "s/MACAddressPolicy=persistent/MACAddressPolicy=none/g" /usr/lib/systemd/network/99-default.link
+
+for container in $(env | grep "CALICO_*" | cut -f2 -d'='); do
+  sudo crictl pull "${container}"
+done
+
+sudo usermod --shell /bin/bash metal3ci
