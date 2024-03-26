@@ -1,0 +1,11 @@
+conntrack-tools:
+device-mapper-persistent-data:
+ebtables:
+gcc:
+keepalived:
+kernel-devel:
+kernel-headers:
+lvm2:
+python3:
+socat:
+linux-firmware:

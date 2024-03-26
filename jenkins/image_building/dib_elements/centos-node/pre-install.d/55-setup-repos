@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -eux
+
+KUBERNETES_VERSION=${KUBERNETES_VERSION:-"v1.29.0"}
+KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
+FILESYSTEM_TYPE="${FILESYSTEM_TYPE:-$FILESYSTEM_TYPE_DEFAULT}"
+OS=CentOS_9_Stream
+ROOT_PASSWORD="${ROOT_PASSWORD:-$ROOT_PASSWORD_DEFAULT}"
+VERSION=v1.29
+
+sudo sed -i 's/enforcing/disabled/g' /etc/selinux/config /etc/selinux/config
+
+# migrate to the Kubernetes community-owned repositories
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo
+curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo
+
+sudo cp /tmp/in_target.d/retrieve.configuration.files.sh /usr/local/bin/retrieve.configuration.files.sh
+sudo chmod +x /usr/local/bin/retrieve.configuration.files.sh
