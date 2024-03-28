@@ -61,6 +61,7 @@ tide:
         - metal3-io/ironic-image
         - metal3-io/ironic-agent-image
         - metal3-io/ironic-ipa-downloader
+        - metal3-io/ironic-standalone-operator
         - metal3-io/mariadb-image
         - metal3-io/metal3-dev-env
         - metal3-io/metal3-docs
@@ -196,6 +197,11 @@ branch-protection:
             main:
               required_status_checks:
                 contexts: ["test-centos-integration-main"]
+        ironic-standalone-operator:
+          branches:
+            main:
+              required_status_checks:
+                contexts: []
         ip-address-manager:
           branches:
             main:
@@ -435,6 +441,37 @@ presubmits:
                 value: "TRUE"
             image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
             imagePullPolicy: Always
+  metal3-io/ironic-standalone-operator:
+   - name: gomod
+     branches:
+       - main
+     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+     decorate: true
+     spec:
+       containers:
+         - args:
+             - ./hack/gomod.sh
+           command:
+             - sh
+           env:
+             - name: IS_CONTAINER
+               value: "TRUE"
+           image: docker.io/golang:1.21
+           imagePullPolicy: Always
+   - name: markdownlint
+     run_if_changed: '(\.md|markdownlint\.sh)$'
+     decorate: true
+     spec:
+       containers:
+         - args:
+             - ./hack/markdownlint.sh
+           command:
+             - sh
+           env:
+             - name: IS_CONTAINER
+               value: "TRUE"
+           image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+           imagePullPolicy: Always
   metal3-io/baremetal-operator:
     - name: gofmt
       branches:
