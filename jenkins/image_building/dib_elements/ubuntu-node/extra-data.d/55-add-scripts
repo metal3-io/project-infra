@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cp node-image-cloud-init/retrieve.configuration.files.sh "${TMP_HOOKS_PATH}"/retrieve.configuration.files.sh

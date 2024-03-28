@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eux
+
+export KUBERNETES_VERSION=${KUBERNETES_VERSION:-"v1.29"}
+export CRICTL_VERSION=${CRICTL_VERSION:-"v1.29"}
+export CRIO_VERSION=${CRIO_VERSION:-"v1.29"}
+
+for container in $(env | grep "CALICO_*" | cut -f2 -d'='); do
+  sudo crictl pull "${container}"
+done
+
+sudo usermod --shell /bin/bash metal3ci
