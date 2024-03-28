@@ -1,0 +1,18 @@
+[Unit]
+Description=Early glean execution
+Before=network-pre.target
+Wants=network-pre.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/glean/lib64/python3.9/site-packages/glean/init/glean-early.sh --debug
+RemainAfterExit=true
+
+StandardOutput=journal+console
+Environment=
+
+[Install]
+WantedBy=multi-user.target
+

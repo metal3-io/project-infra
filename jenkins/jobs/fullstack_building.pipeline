@@ -1,0 +1,94 @@
+import java.text.SimpleDateFormat
+
+// 2 hours
+def TIMEOUT = 7200
+
+script {
+  def date = new Date()
+  def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
+  def rand = new Random()
+  VM_KEY = (1..4).collect { ('a'..'z').join("")[ rand.nextInt( 26 ) ] }.join("")
+  VM_NAME = "ci-builder-vm-" + dateFormat.format(date) + "-" + VM_KEY
+}
+
+pipeline {
+  agent { label 'metal3-static-workers' }
+  environment {
+    METAL3_CI_USER="metal3ci"
+    VM_KEY = "${VM_KEY}"
+    VM_NAME = "${VM_NAME}"
+    RT_URL="https://artifactory.nordix.org/artifactory"
+    OS_AUTH_URL="https://kna1.citycloud.com:5000"
+    OS_USER_DOMAIN_NAME="CCP_Domain_37137"
+    OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
+    OS_REGION_NAME="Kna1"
+    OS_PROJECT_NAME="Default Project 37137"
+    OS_TENANT_NAME="Default Project 37137"
+    OS_AUTH_VERSION=3
+    OS_IDENTITY_API_VERSION=3
+    DOCKER_CMD_ENV="--env METAL3_CI_USER \
+      --env METAL3_CI_USER_KEY=/data/id_ed25519_metal3ci \
+      --env VM_KEY \
+      --env RT_URL \
+      --env RT_TOKEN \
+      --env RT_USER \
+      --env OS_AUTH_URL \
+      --env OS_USER_DOMAIN_NAME \
+      --env OS_PROJECT_DOMAIN_NAME \
+      --env OS_REGION_NAME \
+      --env OS_PROJECT_NAME \
+      --env OS_TENANT_NAME \
+      --env OS_AUTH_VERSION \
+      --env OS_IDENTITY_API_VERSION \
+      --env OS_USERNAME \
+      --env OS_PASSWORD "
+    CURRENT_DIR = sh (
+                      script: 'readlink -f "."',
+                      returnStdout: true
+                     ).trim()
+
+  }
+  stages {
+    stage('Building and testing full Metal3 stack'){
+      options {
+        timeout(time: TIMEOUT, unit: 'SECONDS')
+      }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+          withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]) {
+            withCredentials([usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')]) {
+              withCredentials([usernamePassword(credentialsId: 'metal3ci_harbor', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')])  {
+                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                  /* Fullstack building script */
+                  script {
+                    CURRENT_START_TIME = System.currentTimeMillis()
+                  }
+                  sh "./jenkins/scripts/start_centos_fullstack_build.sh"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  post{
+    always{
+      script {
+        CURRENT_END_TIME = System.currentTimeMillis()
+        if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+          echo "Failed due to timeout"
+          currentBuild.result = 'FAILURE'
+        }
+      }
+      withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]) {
+          /* Delete fullstack builder vm */
+          sh "./jenkins/scripts/fetch_logs.sh"
+          sh "./jenkins/scripts/integration_delete.sh"
+        }
+      }
+      archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+    }
+  }
+}
