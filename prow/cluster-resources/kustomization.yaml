@@ -10,6 +10,8 @@ resources:
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.28.0/manifests/cinder-csi-plugin/cinder-csi-nodeplugin-rbac.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.28.0/manifests/cinder-csi-plugin/cinder-csi-nodeplugin.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.28.0/manifests/cinder-csi-plugin/csi-cinder-driver.yaml
+- autoscaler.yaml
+- coredns-pdb.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

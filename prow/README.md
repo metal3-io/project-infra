@@ -63,12 +63,16 @@ You will need the following CLI tools in order to deploy and/or manage Prow:
 
 ### Folders and components
 
-There are three folders with kustomizations (`capo-cluster`, `infra` and
-`manifests`). The `capo-cluster` folder contains everything needed for creating
-the Kubernetes cluster itself. In `infra`, you will find the necessary parts for
-integrating with the "infrastructure", i.e. the external cloud-provider for
-OpenStack, a ClusterIssuer for getting Let's Encrypt certificates, a
-LoadBalancer Service for ingress and a StorageClass for Cinder volumes.
+There are four folders with kustomizations (`capo-cluster`, `cluster-resources`,
+`infra` `manifests`). The `capo-cluster` folder contains everything needed for
+creating the Kubernetes cluster itself. In `cluster-resources`, you will find
+things the cluster needs to integrate with the cloud, i.e. the external
+cloud-provider for OpenStack and CSI plugin for Cinder. It also has the CNI
+(Calico), since that is needed to get a healthy cluster and the cluster
+autoscaler. The `infra` folder contains "optional" add-ons and configuration
+e.g. an ingress controller, a ClusterIssuer for getting Let's Encrypt
+certificates and a LoadBalancer Service for ingress and a StorageClass for
+Cinder volumes.
 
 The deployment manifests for Prow (`manifests`) are based on the
 [getting started guide](https://docs.prow.k8s.io/docs/getting-started-deploy/)
@@ -615,14 +619,34 @@ spec:
 After this, the Machine and Node will be deleted. A new Machine and Node will be
 created automatically to replace them.
 
-### Temporary scale out
+### Autoscaling with Cluster API
 
-Until we have autoscaling of the cluster, we may need to manually scale the
-cluster as the workload changes. For example, if many jobs are triggered within
-a short period of time, it can be necessary to add more workers to avoid running
-out of resources or jobs taking too long time.
+We run the
+[cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
+for automatically scaling the MachineDeployment that the tests run on. This
+means that you should NOT scale the MachineDeployment manually.
 
-Scaling the MachineDeployment is as easy as this:
+The autoscaler is configured through annotations on the MachineDeployment. These
+annotations set limits for how many replicas there should be. For example:
+
+```yaml
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: prow-md-0
+  annotations:
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "1"
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "5"
+```
+
+For more details on how the autoscaler works with Cluster API, check [these
+docs](https://cluster-api.sigs.k8s.io/tasks/automated-machine-management/autoscaling).
+
+If there is any issue with the autoscaler, remove the annotations. This will
+stop it from making changes so that the MachineDeployment can be manually scaled
+instead.
+
+Scaling the MachineDeployment manually is then as easy as this:
 
 ```bash
 kubectl scale md prow-md-0 --replicas=3
