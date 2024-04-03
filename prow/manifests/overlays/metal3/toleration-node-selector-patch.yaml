@@ -1,0 +1,19 @@
+- op: add
+  path: /spec/template/spec/tolerations
+  value: []
+- op: add
+  path: /spec/template/spec/tolerations/-
+  value:
+    key: node-role.kubernetes.io/infra
+    operator: Exists
+    effect: NoSchedule
+- op: add
+  path: /spec/template/spec/nodeSelector
+  value: {}
+# We add the node selector for node-role.kubernetes.io/infra=""
+# The key has to be included in the path or it would overwrite any existing nodeSelectors.
+# We have to write the "/" as "~1" since it is the separator in the path field.
+# See https://datatracker.ietf.org/doc/html/rfc6901#section-3
+- op: add
+  path: /spec/template/spec/nodeSelector/node-role.kubernetes.io~1infra
+  value: ""

@@ -89,3 +89,7 @@ patches:
 - path: patches/cherrypicker.yaml
 - path: patches/needs-rebase.yaml
 - path: patches/jenkins-operator.yaml
+# Run on infra nodes
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment

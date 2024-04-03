@@ -22,3 +22,22 @@ secretGenerator:
   name: cloud-config
   namespace: kube-system
   type: Opaque
+
+patches:
+# CSI Cinder does not set any toleration or nodeSelector so we have to first create
+# the array/map before we can add values to them...
+- patch: |-
+    - op: add
+      path: /spec/template/spec/tolerations
+      value: []
+    - op: add
+      path: /spec/template/spec/nodeSelector
+      value: {}
+  target:
+    kind: Deployment
+    name: csi-cinder-controllerplugin
+# Add toleration and node selector to run on infra nodes
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: csi-cinder-controllerplugin|calico-kube-controllers
