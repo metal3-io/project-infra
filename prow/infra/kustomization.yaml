@@ -21,3 +21,7 @@ patches:
     kind: Deployment
     namespace: ingress-nginx
     name: ingress-nginx-controller
+# Run on infra nodes
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment|Job

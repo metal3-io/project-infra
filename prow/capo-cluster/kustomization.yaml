@@ -7,6 +7,8 @@ resources:
 - machinedeployment.yaml
 - openstackcluster.yaml
 - openstackmachinetemplates.yaml
+- infra-kct.yaml
+- infra-md.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
