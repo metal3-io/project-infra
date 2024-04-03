@@ -11,7 +11,7 @@ script {
     echo "Test triggered from ${UPDATED_REPO}"
 
     if ("${PROJECT_REPO_ORG}" == 'metal3-io' && "${PROJECT_REPO_NAME}" == 'project-infra') {
-        ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main
+        ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
         ci_git_url = (env.ghprbAuthorRepoGitUrl) ?: "https://github.com/metal3-io/project-infra.git"
     } else {
         ci_git_branch = 'main'
