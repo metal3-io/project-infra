@@ -2,9 +2,13 @@ apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
   name: prow-md-0
+  annotations:
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "1"
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "5"
 spec:
   clusterName: prow
-  replicas: 3
+  # Replicas are handled by the autoscaler, don't touch this!
+  # replicas: 3
   selector:
     matchLabels: null
   template:

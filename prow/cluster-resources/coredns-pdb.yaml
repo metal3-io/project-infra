@@ -1,0 +1,13 @@
+# The cluster autoscaler will not remove nodes with pods
+# in the kube-system namespace, unless they have a PDB that
+# allows it.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: coredns
+  namespace: kube-system
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      k8s-app: kube-dns
