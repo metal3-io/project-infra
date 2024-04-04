@@ -19,14 +19,43 @@ pipeline {
     stage("Run Baremetal Operator e2e tests") {
       matrix {
         agent { label "metal3-workers" }
+        // Skip redfish on PRs, test all for periodic jobs
+        when {
+          anyOf {
+            expression { env.SUSHY_TOOLS_PROTOCOL != "redfish" }
+            triggeredBy 'TimerTrigger'
+          }
+        }
         axes {
           axis {
             name 'BMO_E2E_EMULATOR'
             values 'vbmc', 'sushy-tools'
           }
+          axis {
+            name 'SUSHY_TOOLS_PROTOCOL'
+            values 'redfish', 'redfish-virtualmedia'
+          }
+        }
+        excludes {
+          // What we want to test here is VBMC with IPMI, sushy-tools with redfish and redfish-virtualmedia.
+          // It is not possible to completely skip one of the axes though so we just exclude one VBMC combination.
+          // Otherwise we would end up running two VBMC tests. Both of them would use IPMI since the SUSHY_TOOLS
+          // parameter doesn't have anything to do with it.
+          // TODO(lentzi90): Change the logic in BMO so we can use BMC_PROTOCOL instead of BMO_E2E_EMULATOR.
+          exclude {
+            axis {
+              name 'BMO_E2E_EMULATOR'
+              values 'vbmc'
+            }
+            axis {
+              name 'SUSHY_TOOLS_PROTOCOL'
+              values 'redfish'
+            }
+          }
         }
         environment {
           BMO_E2E_EMULATOR = "${BMO_E2E_EMULATOR}"
+          SUSHY_TOOLS_PROTOCOL = "${SUSHY_TOOLS_PROTOCOL}"
         }
         stages {
           stage("Checkout source code") {
