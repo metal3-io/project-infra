@@ -12,6 +12,9 @@ script {
 
     if ("${PROJECT_REPO_ORG}" == 'metal3-io' && "${PROJECT_REPO_NAME}" == 'project-infra') {
         ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
+        ci_git_base = (env.PULL_BASE_REF) ?: "main"
+        // Fetch the base branch and the ci_git_branch when running on project-infra PR
+        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
         ci_git_url = (env.ghprbAuthorRepoGitUrl) ?: "https://github.com/metal3-io/project-infra.git"
     } else {
         ci_git_branch = 'main'
@@ -69,7 +72,7 @@ pipeline {
                       ],
                   submoduleCfg: [],
                   userRemoteConfigs: [
-                      [credentialsId: ci_git_credential_id,url: ci_git_url]
+                      [credentialsId: ci_git_credential_id,url: ci_git_url, refspec: refspec]
                       ]
                   ])
                 withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
