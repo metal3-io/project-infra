@@ -16,6 +16,9 @@ script {
 
   if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
     ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
+    ci_git_base = (env.PULL_BASE_REF) ?: "main"
+    // Fetch the base branch and the ci_git_branch when running on project-infra PR
+    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
     ci_git_branch = "main"
   }
@@ -94,7 +97,7 @@ pipeline {
                  [$class: 'CleanBeforeCheckout']],
                  submoduleCfg: [],
                  userRemoteConfigs: [[credentialsId: ci_git_credential_id,
-                 url: ci_git_url]]])
+                 url: ci_git_url, refspec: refspec]]])
         script {
           CURRENT_START_TIME = System.currentTimeMillis()
         }
