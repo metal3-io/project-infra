@@ -19,6 +19,7 @@ script {
     } else {
         ci_git_branch = 'main'
         ci_git_url = 'https://github.com/metal3-io/project-infra.git'
+        refspec = '+refs/heads/*:refs/remotes/origin/*'
     }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
     agent_label = "metal3ci-large-${IMAGE_OS}"

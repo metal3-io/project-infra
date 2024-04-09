@@ -21,6 +21,7 @@ script {
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
     ci_git_branch = "main"
+    refspec = '+refs/heads/*:refs/remotes/origin/*'
   }
   echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
