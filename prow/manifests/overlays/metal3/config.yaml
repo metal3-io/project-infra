@@ -996,25 +996,25 @@ presubmits:
       always_run: false
       optional: true
     # name: {job_prefix}-keep-e2e-clusterctl-upgrade-{upgrade_from_release}
-    - name: metal3-keep-clusterctl-upgrade-test-main
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-main
       branches:
         - main
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-6
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-6
       branches:
         - release-0.5
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-5
       branches:
         - release-0.4
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-4
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-4
       branches:
         - release-0.3
       agent: jenkins
@@ -1626,19 +1626,19 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-6
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-6
       branches:
         - release-1.6
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-5
       branches:
         - release-1.5
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-4
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-4
       branches:
         - release-1.4
       agent: jenkins
@@ -1934,27 +1934,27 @@ presubmits:
       always_run: false
       optional: true
     # name: {job_prefix}-keep-e2e-clusterctl-upgrade-{capm3_target_branch}
-    - name: metal3-keep-clusterctl-upgrade-test-main
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-main
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-6
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-5
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-4
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-4
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-3
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-3
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-0-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-0-5
       agent: jenkins
       always_run: false
       optional: true
@@ -2211,27 +2211,27 @@ presubmits:
       always_run: false
       optional: true
     # name: {job_prefix}-keep-e2e-clusterctl-upgrade-{capm3_target_branch}
-    - name: metal3-keep-clusterctl-upgrade-test-main
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-main
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-6
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-5
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-4
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-4
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-3
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-3
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-0-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-0-5
       agent: jenkins
       always_run: false
       optional: true
@@ -2739,27 +2739,27 @@ presubmits:
       always_run: false
       optional: true
     # name: {job_prefix}-keep-e2e-clusterctl-upgrade-{capm3_target_branch}
-    - name: metal3-keep-clusterctl-upgrade-test-main
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-main
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-6
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-6
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-5
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-4
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-4
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-1-3
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-1-3
       agent: jenkins
       always_run: false
       optional: true
-    - name: metal3-keep-clusterctl-upgrade-test-release-0-5
+    - name: metal3-keep-e2e-clusterctl-upgrade-test-release-0-5
       agent: jenkins
       always_run: false
       optional: true
