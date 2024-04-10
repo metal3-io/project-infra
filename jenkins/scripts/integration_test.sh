@@ -54,13 +54,10 @@ KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 
-if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
+# Build ironic locally when running tests on ironic-image repo  
+if [[ "${REPO_NAME}" == "ironic-image" ]]; then
   IRONIC_FROM_SOURCE="true"
-  if [[ "${REPO_NAME}" == "ironic-image" ]]; then
-    IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
-  else
-    BUILD_IRONIC_IMAGE_LOCALLY="true"
-  fi
+  IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
 fi
 
 # Run:
