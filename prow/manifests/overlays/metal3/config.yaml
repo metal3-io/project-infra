@@ -2921,7 +2921,39 @@ presubmits:
                 value: "TRUE"
             image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
             imagePullPolicy: Always
-
+    # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
+    - name: metal3-centos-e2e-integration-test-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-centos-e2e-integration-test-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-centos-e2e-integration-test-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-centos-e2e-integration-test-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-ubuntu-e2e-integration-test-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-ubuntu-e2e-integration-test-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-ubuntu-e2e-integration-test-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: metal3-ubuntu-e2e-integration-test-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
   metal3-io/mariadb-image:
     - name: shellcheck
       run_if_changed: '((\.sh)|^Makefile)$'
