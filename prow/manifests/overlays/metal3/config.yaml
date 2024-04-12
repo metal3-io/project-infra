@@ -169,36 +169,6 @@ branch-protection:
             release-1.6:
               required_status_checks:
                 contexts: ["test-ubuntu-e2e-integration-release-1-6"]
-        ironic-image:
-          branches:
-            main:
-              required_status_checks:
-                contexts:
-                  [
-                    "test-ubuntu-integration-main",
-                    "test-centos-integration-main",
-                  ]
-            release-23.1:
-              required_status_checks:
-                contexts:
-                  [
-                    "test-ubuntu-integration-main",
-                    "test-centos-integration-main",
-                  ]
-            release-24.0:
-              required_status_checks:
-                contexts:
-                  [
-                    "test-ubuntu-integration-main",
-                    "test-centos-integration-main",
-                  ]
-            release-24.1:
-              required_status_checks:
-                contexts:
-                  [
-                    "test-ubuntu-integration-main",
-                    "test-centos-integration-main",
-                  ]
         ironic-ipa-downloader:
           branches:
             main:
@@ -2923,34 +2893,52 @@ presubmits:
             imagePullPolicy: Always
     # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
     - name: metal3-centos-e2e-integration-test-main
+      branches:
+        - main
+        - release-24.1
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-6
+      branches:
+        - release-24.0
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-5
+      branches:
+        - release-23.1
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-4
+      branches:
+        - release-23.1
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-ubuntu-e2e-integration-test-main
+      branches:
+        - main
+        - release-24.1
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-6
+      branches:
+        - release-24.0
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-5
+      branches:
+        - release-23.1
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-4
+      branches:
+        - release-23.1
       agent: jenkins
       always_run: false
       optional: true
