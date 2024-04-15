@@ -1,8 +1,8 @@
 
 ci_git_credential_id = 'metal3-jenkins-github-token'
 
-// 3 hours
-int TIMEOUT = 10800
+// 3,5 hours
+int TIMEOUT = 12600
 
 script {
     PROJECT_REPO_ORG = (env.REPO_OWNER) ?: (env.PROJECT_REPO_ORG)
