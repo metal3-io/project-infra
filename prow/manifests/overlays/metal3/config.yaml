@@ -737,7 +737,7 @@ presubmits:
         - main
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-6
       branches:
         - release-0.5
@@ -1337,7 +1337,7 @@ presubmits:
         - main
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-6
       branches:
         - release-1.6
@@ -1709,7 +1709,7 @@ presubmits:
     - name: metal3-centos-e2e-integration-test-release-1-6
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-5
       agent: jenkins
       always_run: false
@@ -1982,7 +1982,7 @@ presubmits:
     - name: metal3-centos-e2e-integration-test-main
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-centos-e2e-integration-test-release-1-6
       agent: jenkins
       always_run: false
@@ -2526,43 +2526,43 @@ presubmits:
         - release-1.6
       agent: jenkins
       always_run: false
-      optional: false
+      optional: true
     - name: metal3-centos-e2e-integration-test-release-1-5
       branches:
         - release-1.5
       agent: jenkins
       always_run: false
-      optional: false
+      optional: true
     - name: metal3-centos-e2e-integration-test-release-1-4
       branches:
         - release-1.4
       agent: jenkins
       always_run: false
-      optional: false
+      optional: true
     - name: metal3-ubuntu-e2e-integration-test-main
       branches:
         - main
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-6
       branches:
         - release-1.6
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-5
       branches:
         - release-1.5
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-4
       branches:
         - release-1.4
       agent: jenkins
       always_run: false
-      optional: true
+      optional: false
     # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_branch}
     - name: metal3-centos-e2e-feature-test-main
       branches:
