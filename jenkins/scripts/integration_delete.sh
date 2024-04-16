@@ -12,8 +12,6 @@ set -eu
 #  integration_delete.sh
 #
 
-# set KEEP_TEST_ENV to false if it is not set
-KEEP_TEST_ENV="${KEEP_TEST_ENV:-false}"
 # set GINKGO_FOCUS to empty value if it is not set
 GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 
@@ -29,10 +27,7 @@ TEST_EXECUTER_FIP_TAG="${TEST_EXECUTER_FIP_TAG:-${TEST_EXECUTER_VM_NAME}-floatin
 #   - e2e features, clusterctl-upgrade tests in the Frankfurt region
 #   - ansible, e2e, basic integration, k8s-upgrade tests in Karlskrona region
 #   - keep tests in dev2 project Karlskrona region
-if [[ "${KEEP_TEST_ENV}" == "true" ]]; then
-    export OS_PROJECT_NAME="dev2"
-    export OS_TENANT_NAME="dev2"  
-elif [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
+if [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
         [[ "${GINKGO_FOCUS}" == "features" ]] || [[ "${GINKGO_FOCUS}" == "clusterctl-upgrade" ]]; then
     export OS_REGION_NAME="Fra1"
     export OS_AUTH_URL="https://fra1.citycloud.com:5000"
