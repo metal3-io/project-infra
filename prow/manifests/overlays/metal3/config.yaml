@@ -267,6 +267,40 @@ periodics:
       - name: github-token
         secret:
           secretName: github-token
+  # Every hour at 54 minutes past the hour
+  - cron: "54 * * * *"
+    name: ci-branchprotector
+    labels:
+      app: branchprotector
+    decorate: true
+    decoration_config:
+      timeout: 4h
+    extra_refs:
+      - org: metal3-io
+        repo: project-infra
+        base_ref: main
+    annotations:
+      testgrid-create-test-group: "false"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - image: gcr.io/k8s-prow/branchprotector:v20240405-c76de01869
+          command:
+            - branchprotector
+          args:
+            - --config=prow/manifests/overlays/metal3/config.yaml
+            # - --job-config-path=prow/manifests/overlays/metal3/
+            - --confirm
+            - --github-endpoint=http://ghproxy.default.svc.cluster.local
+            - --github-endpoint=https://api.github.com
+          volumeMounts:
+            - name: github-token
+              mountPath: /etc/github
+              readOnly: true
+      volumes:
+      - name: github-token
+        secret:
+          secretName: github-token
 
 presubmits:
   Nordix/metal3-clusterapi-docs:
