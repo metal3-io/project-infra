@@ -8,16 +8,17 @@ def CLEAN_TIMEOUT = 600
 def TIMEOUT = 7200
 
 script {
+  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
+  echo "Test triggered from ${UPDATED_REPO}" 
+  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+
   if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
-    echo "Checkout https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git branch ${env.PULL_PULL_SHA}"
     ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
-    ci_git_url = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
     ci_git_base = (env.PULL_BASE_REF) ?: "main"
     // Fetch the base branch and the ci_git_branch when running on project-infra PR
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
     ci_git_branch = "main"
-    ci_git_url = "https://github.com/metal3-io/project-infra.git"
     refspec = '+refs/heads/*:refs/remotes/origin/*'
   }
   agent_label="metal3ci-medium-${IMAGE_OS}"
