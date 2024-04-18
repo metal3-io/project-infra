@@ -1001,6 +1001,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    # name: dev-env-integration-test-{image_os}-{capm3_target_branch}
+    - name: dev-env-integration-test-centos-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
   metal3-io/cluster-api-provider-metal3:
     - name: gomod
       branches:
@@ -1625,6 +1658,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    # name: dev-env-integration-test-{image_os}-{capm3_target_branch}
+    - name: dev-env-integration-test-centos-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
   metal3-io/community:
     - name: markdownlint
       run_if_changed: '(\.md|markdownlint\.sh)$'
@@ -1915,6 +1981,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    # name: dev-env-integration-test-{image_os}-{capm3_target_branch}
+    - name: dev-env-integration-test-centos-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
   metal3-io/project-infra:
     - name: check-prow-config
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -2189,6 +2288,39 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-keep-e2e-1-26-1-27-upgrade-test-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    # name: dev-env-integration-test-{image_os}-{capm3_target_branch}
+    - name: dev-env-integration-test-centos-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-4
       agent: jenkins
       always_run: false
       optional: true
@@ -2805,6 +2937,39 @@ presubmits:
     - name: metal3-keep-e2e-1-26-1-27-upgrade-test-release-1-4
       branches:
         - release-1.4
+      agent: jenkins
+      always_run: false
+      optional: true
+    # name: dev-env-integration-test-{image_os}-{capm3_target_branch}
+    - name: dev-env-integration-test-centos-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-main
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-4
       agent: jenkins
       always_run: false
       optional: true
