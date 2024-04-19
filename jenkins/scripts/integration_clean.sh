@@ -25,15 +25,9 @@ cleanup()
     split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 21600))
     | .ID ')
 
-    # Fetch VMs which are 24+(86400 seconds) hours old
-    DEBUGGING_VM_LIST=$(openstack server list -f json | jq -r '.[] | select(.Name |
-        startswith("ci-test-keep-vm-")) | select((.Name | ltrimstr("ci-test-keep-vm-") |
-        split("-") | .[0] | strptime("%Y%m%d%H%M%S") | mktime) < (now - 86400))
-        | .ID ')
-
     FINAL_LIST=$(
         IFS=$'\n'
-        echo "${VM_LIST[*]}" "${DEBUGGING_VM_LIST[*]}"
+        echo "${VM_LIST[*]}"
     )
 
     echo "Cleaning old leftover resources"
@@ -51,15 +45,9 @@ cleanup()
     rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
     mktime) < (now - 21600)) | .ID ')
 
-    # List ports which are 24+(86400 seconds) hours old
-    DEBUGGING_VM_PORT_LIST=$(openstack port list -f json | jq -r '.[] | select(.Name |
-        startswith("ci-test-keep-vm-")) | select((.Name | ltrimstr("ci-test-keep-vm-") |
-        rtrimstr("-int-port") | split("-") | .[0] | strptime("%Y%m%d%H%M%S") |
-        mktime) < (now - 86400)) | .ID ')
-
     FINAL_PORT_LIST=$(
         IFS=$'\n'
-        echo "${PORT_LIST[*]}" "${DEBUGGING_VM_PORT_LIST[*]}"
+        echo "${PORT_LIST[*]}"
     )
 
     for PORT_NAME in ${FINAL_PORT_LIST}; do

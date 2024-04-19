@@ -17,7 +17,6 @@ export TARGET_NODE_MEMORY
 export EPHEMERAL_TEST
 export GINKGO_FOCUS
 export GINKGO_SKIP
-export KEEP_TEST_ENV
 # unsetting NUM_NODES and KUBECTL_SHA256 when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
@@ -58,10 +57,6 @@ fi
 
 if [[ "${EPHEMERAL_TEST}" == "null" ]]; then
     unset EPHEMERAL_TEST
-fi
-
-if [[ "${KEEP_TEST_ENV}" == "null" ]]; then
-    unset KEEP_TEST_ENV
 fi
 
 if [[ "${UPGRADE_FROM_RELEASE}" == "null" ]]; then

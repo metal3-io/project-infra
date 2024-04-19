@@ -24,7 +24,6 @@ export TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY:-4096}"
 export GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 export GINKGO_SKIP="${GINKGO_SKIP:-}"
 export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
-export KEEP_TEST_ENV="${KEEP_TEST_ENV:-false}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/integration_test_env.sh"

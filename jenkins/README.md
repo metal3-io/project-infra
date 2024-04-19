@@ -40,31 +40,6 @@ the commands below. The job result will be posted as a comment.
 * **/test-centos-integration-release-1-4** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.4 on CentOS
 
-Usually, after the integration test part is completed, Jenkins executes another
-script to clean up the environment first and then deletes the VM. However,
-sometimes it may be desirable to keep the VM for debugging purposes. To avoid
-clean up and deletion operations, there are separate triggers phrases as below:
-
-* **/keep-test-ubuntu-integration-main** run keep integration tests with CAPM3
-  API version v1beta1 and branch main on Ubuntu
-* **/keep-test-centos-integration-main** run keep integration tests with CAPM3
-  API version v1beta1 and branch main on CentOS
-* **/keep-test-ubuntu-integration-release-1-6** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.6 on Ubuntu
-* **/keep-test-centos-integration-release-1-6** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.6 on CentOS
-* **/keep-test-ubuntu-integration-release-1-5** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.5 on Ubuntu
-* **/keep-test-centos-integration-release-1-5** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.5 on CentOS
-* **/keep-test-ubuntu-integration-release-1-4** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.4 on Ubuntu
-* **/keep-test-centos-integration-release-1-4** run keep integration tests with
-  CAPM3 API version v1beta1 and branch release-1.4 on CentOS
-
-Keep in mind that test VM created with these phrases will not be kept forever
-but deleted after 24 hours, to avoid garbage collection of VMs.
-
 ### E2E tests
 
 E2E tests are gradually replacing the previous Ansible tests for more details

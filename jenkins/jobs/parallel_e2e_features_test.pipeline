@@ -9,8 +9,6 @@ def TIMEOUT = 10800
 // 5 hours
 def NODE_REUSE_TIMEOUT = 18000
 
-KEEP_TEST_ENV = (env.KEEP_TEST_ENV)
-
 script {
   PROJECT_REPO_ORG = (env.REPO_OWNER) ?: (env.PROJECT_REPO_ORG)
   PROJECT_REPO_NAME = (env.REPO_NAME) ?: (env.PROJECT_REPO_NAME)
@@ -67,7 +65,6 @@ pipeline {
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES = 4
     TESTS_FOR = "${TESTS_FOR}"
-    KEEP_TEST_ENV = false
     GINKGO_FOCUS = "${GINKGO_FOCUS}"
   }
 

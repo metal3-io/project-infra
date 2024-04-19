@@ -48,7 +48,6 @@ IRONIC_LOCAL_IMAGE=""
 BUILD_IRONIC_IMAGE_LOCALLY=""
 GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 GINKGO_SKIP="${GINKGO_SKIP:-}"
-KEEP_TEST_ENV="${KEEP_TEST_ENV:-}"
 UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE:-}"
 KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
@@ -66,11 +65,7 @@ fi
 # Run:
 #   - e2e features, clusterctl-upgrade tests in the Frankfurt region
 #   - ansible, e2e, basic integration, k8s-upgrade tests in Karlskrona region
-#   - keep tests in dev2 project Karlskrona region
-if [[ "${KEEP_TEST_ENV}" == "true" ]]; then
-    export OS_PROJECT_NAME="dev2"
-    export OS_TENANT_NAME="dev2"
-elif [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
+if [[ "${GINKGO_FOCUS}" == "pivoting" ]] || [[ "${GINKGO_FOCUS}" == "remediation" ]] ||
         [[ "${GINKGO_FOCUS}" == "features" ]] || [[ "${GINKGO_FOCUS}" == "clusterctl-upgrade" ]]; then
     export OS_REGION_NAME="Fra1"
     export OS_AUTH_URL="https://fra1.citycloud.com:5000"
@@ -159,7 +154,6 @@ IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
 BUILD_MARIADB_IMAGE_LOCALLY="${BUILD_MARIADB_IMAGE_LOCALLY:-false}"
 GINKGO_FOCUS="${GINKGO_FOCUS}"
 GINKGO_SKIP="${GINKGO_SKIP}"
-KEEP_TEST_ENV="${KEEP_TEST_ENV}"
 UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE}"
 KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
 KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
