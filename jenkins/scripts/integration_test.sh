@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
+set -o pipefail
 
 # Description:
 #   Runs the integration tests for metal3-dev-env in an executer vm
