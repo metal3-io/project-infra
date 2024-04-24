@@ -715,7 +715,7 @@ presubmits:
     - main
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-7
     branches:
     - release-0.6
@@ -727,7 +727,7 @@ presubmits:
     - release-0.5
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-5
     branches:
     - release-0.4
@@ -739,7 +739,7 @@ presubmits:
     - main
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
     branches:
     - release-0.6
