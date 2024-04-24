@@ -416,6 +416,7 @@ presubmits:
     - name: gomod
       branches:
         - main
+        - release-0.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -450,6 +451,7 @@ presubmits:
     - name: markdownlint
       branches:
         - main
+        - release-0.6
       run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
@@ -498,6 +500,7 @@ presubmits:
     - name: unit
       branches:
         - main
+        - release-0.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -548,6 +551,7 @@ presubmits:
     - name: generate
       branches:
         - main
+        - release-0.6
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -616,6 +620,7 @@ presubmits:
     - name: test
       branches:
         - main
+        - release-0.6
       run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
       spec:
@@ -628,7 +633,6 @@ presubmits:
             imagePullPolicy: Always
     - name: test
       branches:
-        - release-0.6
         - release-0.5
       run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
@@ -909,15 +913,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    - name: dev-env-integration-test-centos-release-1-7
+      branches:
+        - release-0.6
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      branches:
+        - release-0.5
+      agent: jenkins
+      always_run: false
+      optional: true
     - name: dev-env-integration-test-centos-release-1-5
+      branches:
+        - release-0.4
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-7
+      branches:
+        - release-0.6
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-6
+      branches:
+        - release-0.5
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-5
+      branches:
+        - release-0.4
       agent: jenkins
       always_run: false
       optional: true
@@ -925,6 +953,7 @@ presubmits:
     - name: gomod
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -940,7 +969,6 @@ presubmits:
             imagePullPolicy: Always
     - name: gomod
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -960,6 +988,7 @@ presubmits:
     - name: test
       branches:
         - main
+        - release-1.7
       run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
       spec:
@@ -972,7 +1001,6 @@ presubmits:
             imagePullPolicy: Always
     - name: test
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       run_if_changed: "^(Makefile|hack/.*)$"
@@ -988,6 +1016,7 @@ presubmits:
     - name: markdownlint
       branches:
         - main
+        - release-1.7
       run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
@@ -1003,7 +1032,6 @@ presubmits:
             imagePullPolicy: Always
     - name: markdownlint
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       run_if_changed: '(\.md|markdownlint\.sh)$'
@@ -1036,6 +1064,7 @@ presubmits:
     - name: generate
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1051,7 +1080,6 @@ presubmits:
             imagePullPolicy: Always
     - name: generate
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -1070,6 +1098,7 @@ presubmits:
     - name: unit
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1085,7 +1114,6 @@ presubmits:
             imagePullPolicy: Always
     - name: unit
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -1120,6 +1148,7 @@ presubmits:
     - name: build
       branches:
         - main
+        - release-1.7
       run_if_changed: "^api|^test|^Makefile$"
       decorate: true
       spec:
@@ -1135,7 +1164,6 @@ presubmits:
             imagePullPolicy: Always
     - name: build
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       run_if_changed: "^api|^test|^Makefile$"
@@ -1384,15 +1412,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    - name: dev-env-integration-test-centos-release-1-7
+      branches:
+        - release-1.7
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      branches:
+        - release-1.6
+      agent: jenkins
+      always_run: false
+      optional: true
     - name: dev-env-integration-test-centos-release-1-5
+      branches:
+        - release-1.5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-6
+      branches:
+        - release-1.6
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-5
+      branches:
+        - release-1.5
       agent: jenkins
       always_run: false
       optional: true
@@ -1871,6 +1923,7 @@ presubmits:
     - name: gomod
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1886,7 +1939,6 @@ presubmits:
             imagePullPolicy: Always
     - name: gomod
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -1906,6 +1958,7 @@ presubmits:
     - name: test
       branches:
         - main
+        - release-1.7
       run_if_changed: "^(Makefile|hack/.*)$"
       decorate: true
       spec:
@@ -1918,7 +1971,6 @@ presubmits:
             imagePullPolicy: Always
     - name: test
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       run_if_changed: "^(Makefile|hack/.*)$"
@@ -1934,6 +1986,7 @@ presubmits:
     - name: markdownlint
       branches:
         - main
+        - release-1.7
       run_if_changed: '(\.md|markdownlint\.sh)$'
       decorate: true
       spec:
@@ -1950,7 +2003,6 @@ presubmits:
     - name: markdownlint
       run_if_changed: '(\.md|markdownlint\.sh)$'
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       decorate: true
@@ -1982,6 +2034,7 @@ presubmits:
     - name: unit
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -1996,7 +2049,6 @@ presubmits:
             image: docker.io/golang:1.21
     - name: unit
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -2014,6 +2066,7 @@ presubmits:
     - name: generate
       branches:
         - main
+        - release-1.7
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
       decorate: true
       spec:
@@ -2029,7 +2082,6 @@ presubmits:
             imagePullPolicy: Always
     - name: generate
       branches:
-        - release-1.7
         - release-1.6
         - release-1.5
       skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -2069,6 +2121,8 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-centos-e2e-basic-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2085,6 +2139,8 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-ubuntu-e2e-basic-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2102,6 +2158,8 @@ presubmits:
       always_run: false
       optional: false
     - name: metal3-centos-e2e-integration-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2118,10 +2176,14 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-ubuntu-e2e-integration-test-main
+      branches:
+        - main
       agent: jenkins
       always_run: false
       optional: false
     - name: metal3-ubuntu-e2e-integration-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: false
@@ -2139,10 +2201,14 @@ presubmits:
       optional: false
     # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_branch}
     - name: metal3-centos-e2e-feature-test-main
+      branches:
+        - main
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-centos-e2e-feature-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2159,10 +2225,14 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-ubuntu-e2e-feature-test-main
+      branches:
+        - main
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-ubuntu-e2e-feature-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2180,10 +2250,14 @@ presubmits:
       optional: true
     # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
     - name: metal3-e2e-clusterctl-upgrade-test-main
+      branches:
+        - main
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2219,14 +2293,20 @@ presubmits:
       always_run: false
       optional: true
     - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
     - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
@@ -2266,15 +2346,39 @@ presubmits:
       agent: jenkins
       always_run: false
       optional: true
+    - name: dev-env-integration-test-centos-release-1-7
+      branches:
+        - release-1.7
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-centos-release-1-6
+      branches:
+        - release-1.6
+      agent: jenkins
+      always_run: false
+      optional: true
     - name: dev-env-integration-test-centos-release-1-5
+      branches:
+        - release-1.5
+      agent: jenkins
+      always_run: false
+      optional: true
+    - name: dev-env-integration-test-ubuntu-release-1-7
+      branches:
+        - release-1.7
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-6
+      branches:
+        - release-1.6
       agent: jenkins
       always_run: false
       optional: true
     - name: dev-env-integration-test-ubuntu-release-1-5
+      branches:
+        - release-1.5
       agent: jenkins
       always_run: false
       optional: true
