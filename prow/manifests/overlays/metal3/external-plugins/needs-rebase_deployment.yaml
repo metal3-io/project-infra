@@ -41,8 +41,8 @@ spec:
         - --github-token-path=/etc/github/token
         - --update-period=6h
         ports:
-          - name: http
-            containerPort: 8888
+        - name: http
+          containerPort: 8888
         volumeMounts:
         - name: hmac
           mountPath: /etc/webhook
