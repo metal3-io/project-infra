@@ -108,30 +108,11 @@ branch-protection:
             main:
               required_status_checks:
                 contexts: ["test-integration-metal3-dev-tools-centos", "test-integration-metal3-dev-tools-ubuntu"]
-        sles-ironic-python-agent-builder:
-          branches:
-            main:
-              required_status_checks:
-                contexts: []
-            sles-15-sp4:
-              required_status_checks:
-                contexts: []
     metal3-io:
       # Require "always_run: true" jobs to pass before merging.
       # To turn this off for a given job, set "optional: true"
       # in the job definition.
       protect: true
-      repos:
-        ironic-standalone-operator:
-          branches:
-            main:
-              required_status_checks:
-                contexts: []
-        metal3-dev-env:
-          branches:
-            main:
-              required_status_checks:
-                contexts: ["test-centos-integration-release-1-6", "test-centos-integration-release-1-7"]
 
 deck:
   spyglass:
@@ -721,7 +702,7 @@ presubmits:
     - release-0.6
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-centos-e2e-integration-test-release-1-6
     branches:
     - release-0.5
@@ -941,6 +922,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+
   metal3-io/cluster-api-provider-metal3:
   - name: gomod
     branches:
@@ -1220,19 +1202,19 @@ presubmits:
     - release-1.7
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-centos-e2e-integration-test-release-1-6
     branches:
     - release-1.6
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-centos-e2e-integration-test-release-1-5
     branches:
     - release-1.5
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
@@ -1250,13 +1232,13 @@ presubmits:
     - release-1.6
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-5
     branches:
     - release-1.5
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_branch}
   - name: metal3-centos-e2e-feature-test-main
     branches:
@@ -1440,6 +1422,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+
   metal3-io/community:
   - name: markdownlint
     run_if_changed: '(\.md|markdownlint\.sh)$'
@@ -1532,11 +1515,11 @@ presubmits:
   - name: metal3-centos-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-centos-e2e-integration-test-release-1-6
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-5
     agent: jenkins
     always_run: false
@@ -1544,11 +1527,11 @@ presubmits:
   - name: metal3-ubuntu-e2e-integration-test-main
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-6
     agent: jenkins
     always_run: false
@@ -1660,6 +1643,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+
   metal3-io/project-infra:
   - name: check-prow-config
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
@@ -1735,7 +1719,7 @@ presubmits:
   - name: metal3-centos-e2e-integration-test-main
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
@@ -1751,11 +1735,11 @@ presubmits:
   - name: metal3-ubuntu-e2e-integration-test-main
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-6
     agent: jenkins
     always_run: false
@@ -1867,6 +1851,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+
   metal3-io/metal3-docs:
   - name: markdownlint
     run_if_changed: '(\.md|markdownlint\.sh)$'
@@ -2374,6 +2359,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+
   metal3-io/ironic-ipa-downloader:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -2405,7 +2391,6 @@ presubmits:
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
-    branches:
     agent: jenkins
     always_run: false
     optional: false
@@ -2527,7 +2512,7 @@ presubmits:
     optional: false
   - name: metal3-centos-e2e-integration-test-release-1-7
     branches:
-    - release-24.0
+    - release-24.1
     agent: jenkins
     always_run: false
     optional: false
@@ -2552,7 +2537,7 @@ presubmits:
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
     branches:
-    - release-24.0
+    - release-24.1
     agent: jenkins
     always_run: false
     optional: false
@@ -2568,6 +2553,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: false
+
   metal3-io/mariadb-image:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -2582,6 +2568,20 @@ presubmits:
         - name: IS_CONTAINER
           value: "TRUE"
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
+  - name: markdownlint
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
@@ -2617,20 +2617,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: markdownlint
-    run_if_changed: '(\.md|markdownlint\.sh)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/markdownlint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
-        imagePullPolicy: Always
 
   metal3-io/ironic-hardware-inventory-recorder-image:
   - name: shellcheck
