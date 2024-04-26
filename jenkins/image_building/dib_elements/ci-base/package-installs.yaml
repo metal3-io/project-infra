@@ -1,9 +1,11 @@
 bash-completion:
+build-essential:
 curl:
 dnsmasq:
 git:
 jq:
 libguestfs-tools:
+libvirt-daemon-system:
 make:
 openjdk-11-jre:
 ovmf:
@@ -12,4 +14,5 @@ python3-pip:
 qemu-kvm:
 tree:
 vim:
+virt-manager:
 wget:

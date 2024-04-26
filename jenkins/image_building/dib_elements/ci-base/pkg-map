@@ -9,10 +9,12 @@
     "family": {
         "redhat": {
           "bash-completion":"bash-completion",
+          "build-essential":"",
           "curl": "curl",
           "dnsmasq":"dnsmasq",
           "git": "git",
           "libguestfs-tools":"libguestfs-tools",
+          "libvirt-daemon-system":"",
           "make": "make",
           "openjdk-11-jre": "java-11-openjdk",
           "ovmf":"edk2-ovmf",
@@ -21,14 +23,17 @@
           "qemu-kvm":"qemu-kvm",
           "tree": "tree",
           "vim": "vim-enhanced",
+          "virt-manager": "virt-manager",
           "wget": "wget"
         },
         "debian":{
           "bash-completion":"bash-completion",
+          "build-essential":"build-essential",
           "curl": "curl",
           "dnsmasq":"dnsmasq",
           "git": "git",
           "libguestfs-tools":"libguestfs-tools",
+          "libvirt-daemon-system":"libvirt-daemon-system",
           "make": "make",
           "openjdk-11-jre": "openjdk-11-jre",
           "ovmf":"ovmf",
@@ -37,6 +42,7 @@
           "qemu-kvm":"qemu-kvm",
           "tree": "tree",
           "vim": "vim",
+          "virt-manager": "virt-manager",
           "wget": "wget"
         }
     }
