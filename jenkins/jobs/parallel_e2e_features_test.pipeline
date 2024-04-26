@@ -78,30 +78,30 @@ pipeline {
             timeout(time: NODE_REUSE_TIMEOUT, unit: 'SECONDS')
           }
           environment {
-              BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
-              GINKGO_FOCUS = "pivoting"
+            BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
+            GINKGO_FOCUS = "pivoting"
           }
           steps {
             script {
-                CURRENT_START_TIME = System.currentTimeMillis()
+              CURRENT_START_TIME = System.currentTimeMillis()
             }
             /* Checkout CI Repo */
             checkout([$class: 'GitSCM',
             branches: [
-                [name: ci_git_branch]
+              [name: ci_git_branch]
             ],
             doGenerateSubmoduleConfigurations: false,
             extensions: [
-                [$class: 'WipeWorkspace'],
-                [$class: 'CleanCheckout'],
-                [$class: 'CleanBeforeCheckout']
+              [$class: 'WipeWorkspace'],
+              [$class: 'CleanCheckout'],
+              [$class: 'CleanBeforeCheckout']
             ],
             submoduleCfg: [],
             userRemoteConfigs: [
-                [credentialsId: ci_git_credential_id,
-                url: ci_git_url,
-                refspec: refspec
-                ]
+              [credentialsId: ci_git_credential_id,
+              url: ci_git_url,
+              refspec: refspec
+              ]
             ]
             ])
 
@@ -118,8 +118,8 @@ pipeline {
               script {
                 CURRENT_END_TIME = System.currentTimeMillis()
                 if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - NODE_REUSE_TIMEOUT) > 0) {
-                    echo "Failed due to timeout"
-                    currentBuild.result = 'FAILURE'
+                  echo "Failed due to timeout"
+                  currentBuild.result = 'FAILURE'
                 }
                 timestamps {
                   sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
@@ -147,24 +147,24 @@ pipeline {
           }
           steps {
             script {
-                CURRENT_START_TIME = System.currentTimeMillis()
+              CURRENT_START_TIME = System.currentTimeMillis()
             }
             /* Checkout CI Repo */
             checkout([$class: 'GitSCM',
             branches: [
-                [name: ci_git_branch]
+              [name: ci_git_branch]
             ],
             doGenerateSubmoduleConfigurations: false,
             extensions: [
-                [$class: 'WipeWorkspace'],
-                [$class: 'CleanCheckout'],
-                [$class: 'CleanBeforeCheckout']
+              [$class: 'WipeWorkspace'],
+              [$class: 'CleanCheckout'],
+              [$class: 'CleanBeforeCheckout']
             ],
             submoduleCfg: [],
             userRemoteConfigs: [
-                [credentialsId: ci_git_credential_id,
-                url: ci_git_url
-                ]
+              [credentialsId: ci_git_credential_id,
+              url: ci_git_url
+              ]
             ]
             ])
             
@@ -212,24 +212,24 @@ pipeline {
           }
           steps {
             script {
-                CURRENT_START_TIME = System.currentTimeMillis()
+              CURRENT_START_TIME = System.currentTimeMillis()
             }
             /* Checkout CI Repo */
             checkout([$class: 'GitSCM',
             branches: [
-                [name: ci_git_branch]
+              [name: ci_git_branch]
             ],
             doGenerateSubmoduleConfigurations: false,
             extensions: [
-                [$class: 'WipeWorkspace'],
-                [$class: 'CleanCheckout'],
-                [$class: 'CleanBeforeCheckout']
+              [$class: 'WipeWorkspace'],
+              [$class: 'CleanCheckout'],
+              [$class: 'CleanBeforeCheckout']
             ],
             submoduleCfg: [],
             userRemoteConfigs: [
-                [credentialsId: ci_git_credential_id,
-                url: ci_git_url
-                ]
+              [credentialsId: ci_git_credential_id,
+              url: ci_git_url
+              ]
             ]
             ])
             
@@ -246,8 +246,8 @@ pipeline {
               script {
                 CURRENT_END_TIME = System.currentTimeMillis()
                 if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
-                    echo "Failed due to timeout"
-                    currentBuild.result = 'FAILURE'
+                  echo "Failed due to timeout"
+                  currentBuild.result = 'FAILURE'
                 }
                 timestamps {
                   sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
