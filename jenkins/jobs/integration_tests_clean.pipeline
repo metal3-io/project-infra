@@ -50,7 +50,6 @@ pipeline {
                  submoduleCfg: [],
                  userRemoteConfigs: [[credentialsId: ci_git_credential_id,
                  url: ci_git_url,  refspec: refspec]]])
-
       }
     }
     stage('Clean old integration test vms') {
