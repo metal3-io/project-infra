@@ -341,7 +341,8 @@ images (see sections above).
 
    ```bash
    kind create cluster
-   clusterctl init --infrastructure=openstack:v0.7.1
+   clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
+      --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
    ```
 
 1. Create cluster.
@@ -377,7 +378,8 @@ images (see sections above).
 
    ```bash
    unset KUBECONFIG
-   clusterctl init --kubeconfig=kubeconfig.yaml --infrastructure=openstack:v0.7.1
+   clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
+      --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
    clusterctl move --to-kubeconfig=kubeconfig.yaml
    export KUBECONFIG=kubeconfig.yaml
    ```
