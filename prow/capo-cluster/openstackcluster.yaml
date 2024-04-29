@@ -1,24 +1,47 @@
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackCluster
 metadata:
   name: prow
 spec:
   apiServerLoadBalancer:
     enabled: true
-    allowedCidrs:
+    allowedCIDRs:
     - 10.6.0.0/24
-  cloudName: prow
-  dnsNameservers:
-  - 8.8.8.8
-  externalNetworkId: fba95253-5543-4078-b793-e2de58c31378
+  externalNetwork:
+    id: fba95253-5543-4078-b793-e2de58c31378
   identityRef:
-    kind: Secret
+    cloudName: prow
     name: prow-cloud-config
-  managedSecurityGroups: true
-  nodeCidr: 10.6.0.0/24
+  managedSecurityGroups:
+    allNodesSecurityGroupRules:
+    - description: Calico - BGP
+      direction: ingress
+      etherType: IPv4
+      name: BGP (calico)
+      portRangeMax: 179
+      portRangeMin: 179
+      protocol: tcp
+      remoteManagedGroups:
+      - controlplane
+      - worker
+    - description: Calico IP-in-IP
+      direction: ingress
+      etherType: IPv4
+      name: IP-in-IP (calico)
+      protocol: "4"
+      remoteManagedGroups:
+      - controlplane
+      - worker
+    allowAllInClusterTraffic: false
+  managedSubnets:
+  - cidr: 10.6.0.0/24
+    dnsNameservers:
+    - 8.8.8.8
   bastion:
     enabled: true
-    instance:
+    spec:
       flavor: 1C-2GB-50GB
-      image: "Ubuntu 22.04.1 Jammy Jellyfish 230124"
+      image:
+        filter:
+          name: "Ubuntu 22.04.1 Jammy Jellyfish 230124"
       sshKeyName: metal3ci-key

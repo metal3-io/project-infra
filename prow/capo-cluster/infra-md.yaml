@@ -21,7 +21,7 @@ spec:
       clusterName: prow
       failureDomain: nova
       infrastructureRef:
-        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: OpenStackMachineTemplate
         name: prow-worker-v1-29-4
       version: v1.29.4
