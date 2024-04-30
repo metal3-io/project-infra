@@ -2,9 +2,7 @@
 
 set -eux
 
-export KUBERNETES_VERSION=${KUBERNETES_VERSION:-"v1.29.3"}
 export KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
-export CRIO_VERSION=${CRIO_VERSION:-"v1.29.2"}
 export CRIO_MINOR_VERSION=${CRIO_VERSION%.*}
 
 sudo sed -i 's/enforcing/disabled/g' /etc/selinux/config /etc/selinux/config
