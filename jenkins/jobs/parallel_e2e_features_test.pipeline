@@ -108,7 +108,7 @@ pipeline {
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
-                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
+                  sh "./jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh"
                 }  
               }
             }
@@ -171,7 +171,7 @@ pipeline {
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
-                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
+                  sh "./jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh"
                 }
               }
             }
@@ -236,7 +236,7 @@ pipeline {
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
-                  sh "./jenkins/scripts/dynamic_worker_workflow/feature_tests.sh"
+                  sh "./jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh"
                 }  
               }
             }

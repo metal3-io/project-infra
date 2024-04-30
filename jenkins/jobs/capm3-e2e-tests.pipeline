@@ -1,57 +1,62 @@
 
 ci_git_credential_id = 'metal3-jenkins-github-token'
 
-// 3,5 hours
-int TIMEOUT = 12600
+// 4 hours
+int TIMEOUT = 14400
 
 script {
-    PROJECT_REPO_ORG = (env.REPO_OWNER) ?: (env.PROJECT_REPO_ORG)
-    PROJECT_REPO_NAME = (env.REPO_NAME) ?: (env.PROJECT_REPO_NAME)
-    UPDATED_REPO = "https://github.com/${PROJECT_REPO_ORG}/${PROJECT_REPO_NAME}.git"
-    echo "Test triggered from ${UPDATED_REPO}"
 
-    if ("${PROJECT_REPO_ORG}" == 'metal3-io' && "${PROJECT_REPO_NAME}" == 'project-infra') {
-        ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
-        ci_git_base = (env.PULL_BASE_REF) ?: "main"
-        // Fetch the base branch and the ci_git_branch when running on project-infra PR
-        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
-        ci_git_url = (env.ghprbAuthorRepoGitUrl) ?: "https://github.com/metal3-io/project-infra.git"
-    } else {
-        ci_git_branch = 'main'
-        ci_git_url = 'https://github.com/metal3-io/project-infra.git'
-        refspec = '+refs/heads/*:refs/remotes/origin/*'
-    }
+  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
+  echo "Test triggered from ${UPDATED_REPO}"
+  ci_git_url = "https://github.com/metal3/project-infra.git"
+
+  if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+    ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+    ci_git_base = (env.PULL_BASE_REF) ?: 'main'
+    // Fetch the base branch and the ci_git_branch when running on project-infra PR
+    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+  } else {
+    ci_git_branch = 'main'
+    refspec = '+refs/heads/*:refs/remotes/origin/*'
+  }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
+
+  if  ("${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic') {
+    agent_label = "metal3ci-medium-${IMAGE_OS}"
+    TIMEOUT=7200 // 2h
+  } else {
     agent_label = "metal3ci-large-${IMAGE_OS}"
-    UPDATED_BRANCH = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit)
-    REPO_BRANCH = (env.PULL_BASE_REF) ?: (env.ghprbTargetBranch)
-    if (!env.REPO_OWNER) {
-        UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
-    }
+  }
+        
 }
 
 pipeline {
     agent none
     environment {
-        METAL3_CI_USER = 'metal3ci'
-        REPO_ORG = "${PROJECT_REPO_ORG}"
-        REPO_NAME = "${PROJECT_REPO_NAME}"
+        REPO_ORG = "${env.REPO_OWNER}"
+        REPO_NAME = "${env.REPO_NAME}"
         UPDATED_REPO = "${UPDATED_REPO}"
-        REPO_BRANCH = "${REPO_BRANCH}"
-        UPDATED_BRANCH = "${UPDATED_BRANCH}"
+        REPO_BRANCH = "${env.PULL_BASE_REF}"
+        UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
         BUILD_TAG = "${env.BUILD_TAG}"
         PR_ID = "${env.PULL_NUMBER}"
         IMAGE_OS = "${IMAGE_OS}"
         CAPM3RELEASEBRANCH = "${capm3_release_branch}"
         BMORELEASEBRANCH = "${bmo_release_branch}"
         TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
-        TESTS_FOR = "${TESTS_FOR}"
         GINKGO_FOCUS = "${GINKGO_FOCUS}"
         GINKGO_SKIP = "${GINKGO_SKIP}"
+        NUM_NODES = "${NUM_NODES}"
+        CAPI_VERSION = "${CAPI_VERSION}"
+        CAPM3_VERSION = "${CAPM3_VERSION}"
+        EPHEMERAL_TEST="${EPHEMERAL_TEST}"
+        KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
+        KUBERNETES_VERSION_UPGRADE_TO = "${KUBERNETES_VERSION_UPGRADE_TO}"
+        KUBECTL_SHA256 = "${KUBECTL_SHA256}"
     }
 
     stages {
-        stage('Clusterctl upgrade test') {
+        stage('e2e test') {
             agent { label agent_label }
             options {
                 timeout(time: TIMEOUT, unit: 'SECONDS')
@@ -80,7 +85,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
                     ansiColor('xterm') {
                         timestamps {
-                            sh './jenkins/scripts/dynamic_worker_workflow/feature_tests.sh'
+                            sh './jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh'
                         }
                     }
                 }

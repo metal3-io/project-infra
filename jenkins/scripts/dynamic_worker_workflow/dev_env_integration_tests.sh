@@ -35,7 +35,7 @@ if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
 fi
 
 # shellcheck disable=SC1091
-. "${CI_DIR}/integration_test_env.sh"
+. "${CI_DIR}/test_env.sh"
 
 # Run:
 #   - ansible, basic integration
