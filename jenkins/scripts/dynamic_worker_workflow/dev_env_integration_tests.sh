@@ -49,10 +49,23 @@ else
     export EPHEMERAL_CLUSTER="minikube"
 fi
 
+# Clone the source repository
 git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
 cd tested_repo
 git checkout "${REPO_BRANCH}"
-cd ../
+# If the target and source repos and branches are identical, don't try to merge
+if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
+    [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]; then
+    git config user.email "test@test.test"
+    git config user.name "Test"
+    git remote add test "${UPDATED_REPO}"
+    git fetch test
+    if [[ -n "${PR_ID:-}" ]]; then
+        git fetch origin "pull/${PR_ID}/head:${UPDATED_BRANCH}-branch" || true
+    fi
+    # Merging the PR with the target branch
+    git merge "${UPDATED_BRANCH}" || exit
+fi
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
     # it will already be cloned to tested_repo
