@@ -38,3 +38,6 @@ sudo groupadd docker || true
 sudo usermod -aG docker metal3ci || true
 sudo systemctl enable docker
 sudo systemctl restart docker
+
+# Add metal3ci user to libvirt group
+sudo adduser metal3ci libvirt

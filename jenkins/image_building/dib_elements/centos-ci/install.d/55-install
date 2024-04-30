@@ -18,3 +18,6 @@ sudo dnf install podman -y
 # will be included in RHEL-AV-8.5.0 by next rebase to libvirt 7.4.0.
 sudo mkdir -p /etc/qemu/firmware
 sudo touch /etc/qemu/firmware/50-edk2-ovmf-cc.json
+
+# Add metal3ci user to libvirt group
+sudo usermod -aG libvirt metal3ci || true
