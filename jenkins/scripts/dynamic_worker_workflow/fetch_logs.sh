@@ -71,7 +71,7 @@ fetch_k8s_logs()
 }
 
 # Fetch k8s logs
-fetch_k8s_logs "management_cluster" "/home/metal3ci/.kube/config"
+fetch_k8s_logs "management_cluster" "${HOME}/.kube/config"
 
 # Fetch Ironic containers logs before pivoting to the target cluster, if they exist
 if [[ -d /tmp/"${CONTAINER_RUNTIME}" ]] && [[ -n "$(ls /tmp/"${CONTAINER_RUNTIME}"/)" ]]; then
@@ -121,7 +121,7 @@ if [[ -d "${BML_LOG_LOCATION}" ]]; then
 fi
 
 mkdir -p "${LOGS_DIR}/cluster-api-config"
-cp -r "/home/metal3ci/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
+cp -r "${HOME}/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
 tar -cvzf "${LOGS_TARBALL}" "${LOGS_DIR}"/*
 
