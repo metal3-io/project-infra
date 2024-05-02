@@ -12,9 +12,9 @@ fi
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]] ||
    [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]] \
     ; then
-    pushd tested_repo
+    pushd "${HOME}/tested_repo"
 else
-    pushd metal3
+    pushd "${HOME}/metal3"
 fi
 
 make clean

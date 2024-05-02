@@ -21,32 +21,32 @@ if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
 elif [[ "${REPO_NAME}" == "baremetal-operator" ]]; then
     export BMOREPO="${UPDATED_REPO}"
     export BMOBRANCH="${UPDATED_BRANCH}"
-    export BMOPATH="/home/${USER}/tested_repo"
+    export BMOPATH="${HOME}/tested_repo"
     export BUILD_BMO_LOCALLY="true"
     export IRONIC_KEEPALIVED_LOCAL_IMAGE="${BMOPATH}/resources/keepalived-docker"
 
 elif [[ "${REPO_NAME}" == "ip-address-manager" ]]; then
     export IPAMREPO="${UPDATED_REPO}"
     export IPAMBRANCH="${UPDATED_BRANCH}"
-    export IPAMPATH="/home/${USER}/tested_repo"
+    export IPAMPATH="${HOME}/tested_repo"
     export BUILD_IPAM_LOCALLY="true"
 
 elif [[ "${REPO_NAME}" == "ironic-image" ]]; then
-    export IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
+    export IRONIC_LOCAL_IMAGE="${HOME}/tested_repo"
     # Build/test the sushy-tools/vbmc images, since they are defined in this repo
     export SUSHY_TOOLS_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/sushy-tools"
     export VBMC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/vbmc"
 
 elif [[ "${REPO_NAME}" == "mariadb-image" ]]; then
-    export MARIADB_LOCAL_IMAGE="/home/${USER}/tested_repo"
+    export MARIADB_LOCAL_IMAGE="${HOME}/tested_repo"
 
 elif [[ "${REPO_NAME}" == "ironic-ipa-downloader" ]]; then
-    export IPA_DOWNLOADER_LOCAL_IMAGE="/home/${USER}/tested_repo"
+    export IPA_DOWNLOADER_LOCAL_IMAGE="${HOME}/tested_repo"
 
 elif [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]]; then
     export CAPM3REPO="${UPDATED_REPO}"
     export CAPM3BRANCH="${UPDATED_BRANCH}"
-    export CAPM3PATH="/home/${USER}/tested_repo"
+    export CAPM3PATH="${HOME}/tested_repo"
     export BUILD_CAPM3_LOCALLY="true"
 fi
 

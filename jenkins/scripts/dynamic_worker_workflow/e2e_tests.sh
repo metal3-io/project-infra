@@ -73,8 +73,8 @@ else
 fi
 
 # Clone the source repository
-git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
-cd tested_repo
+git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${HOME}/tested_repo"
+cd "${HOME}/tested_repo"
 git checkout "${REPO_BRANCH}"
 # If the target and source repos and branches are identical, don't try to merge
 if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
@@ -90,18 +90,18 @@ if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
     # Merging the PR with the target branch
     git merge "${UPDATED_BRANCH}" || exit
 fi
-cd ../
+cd "${HOME}/"
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]] ||
     [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]] \
     ; then
     # If we are testing e2e from capm3,
     # it will already be cloned to tested_repo
-    pushd tested_repo
+    pushd /"home/${USER}/tested_repo"
 else
     # if the test is e2e clone capm3 and run the test from there
-    git clone "${CAPM3REPO}" metal3
-    pushd metal3
+    git clone "${CAPM3REPO}" "${HOME}/metal3"
+    pushd "${HOME}/metal3"
     git checkout "${CAPM3BRANCH}"
 fi
 

@@ -28,7 +28,7 @@ export BUILD_IRONIC_IMAGE_LOCALLY=""
 if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
     IRONIC_FROM_SOURCE="true"
     if [[ "${REPO_NAME}" == "ironic-image" ]]; then
-        export IRONIC_LOCAL_IMAGE="/home/${USER}/tested_repo"
+        export IRONIC_LOCAL_IMAGE="${HOME}/tested_repo"
     else
         BUILD_IRONIC_IMAGE_LOCALLY="true"
     fi
@@ -50,8 +50,8 @@ else
 fi
 
 # Clone the source repository
-git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" tested_repo
-cd tested_repo
+git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${HOME}/tested_repo"
+cd "${HOME}/tested_repo"
 git checkout "${REPO_BRANCH}"
 # If the target and source repos and branches are identical, don't try to merge
 if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
@@ -66,14 +66,15 @@ if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
     # Merging the PR with the target branch
     git merge "${UPDATED_BRANCH}" || exit
 fi
+cd "${HOME}"
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
     # it will already be cloned to tested_repo
-    pushd tested_repo
+    pushd "${HOME}/tested_repo"
 else
     # clone metal3-dev-env and run the test from there
-    git clone "${METAL3REPO}" metal3
-    pushd metal3
+    git clone "${METAL3REPO}" "${HOME}/metal3"
+    pushd "${HOME}/metal3"
     git checkout "${METAL3BRANCH}"
 fi
 
