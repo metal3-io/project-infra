@@ -5,7 +5,7 @@ set -eux
 # Description:
 #   Runs the feature tests in dynamic jenkins worker
 # Usage:
-#  ./feature_tests.sh
+#  ./e2e_tests.sh
 
 CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
@@ -19,14 +19,18 @@ export CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 export CAPM3RELEASEBRANCH="${CAPM3RELEASEBRANCH:-main}"
 export BMORELEASEBRANCH="${BMORELEASEBRANCH:-main}"
 export NUM_NODES="${NUM_NODES:-4}"
-export TESTS_FOR="${TESTS_FOR:-e2e_tests}"
 export TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY:-4096}"
 export GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 export GINKGO_SKIP="${GINKGO_SKIP:-}"
-export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
+export REPO_BRANCH="${REPO_BRANCH}"
+export PR_ID="${PR_ID:-}"
+export EPHEMERAL_TEST="${EPHEMERAL_TEST}"
+export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
+export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
+export KUBECTL_SHA256="${KUBECTL_SHA256}"
 
 # shellcheck disable=SC1091
-source "${CI_DIR}/integration_test_env.sh"
+source "${CI_DIR}/test_env.sh"
 
 # Only set these variables if they actually have values.
 # If the variable is unset or empty (""), do nothing.
@@ -42,6 +46,18 @@ fi
 
 if [[ "${KUBECTL_SHA256}" == "null" ]]; then
     unset KUBECTL_SHA256
+fi
+
+if [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then
+    unset KUBERNETES_VERSION_UPGRADE_FROM
+fi
+
+if [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
+    unset KUBERNETES_VERSION_UPGRADE_TO
+fi
+
+if [[ "${EPHEMERAL_TEST}" == "null" ]]; then
+    unset EPHEMERAL_TEST
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
