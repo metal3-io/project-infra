@@ -24,10 +24,10 @@ export GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 export GINKGO_SKIP="${GINKGO_SKIP:-}"
 export REPO_BRANCH="${REPO_BRANCH}"
 export PR_ID="${PR_ID:-}"
-export EPHEMERAL_TEST="${EPHEMERAL_TEST}"
-export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
-export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
-export KUBECTL_SHA256="${KUBECTL_SHA256}"
+export EPHEMERAL_TEST="${EPHEMERAL_TEST:-}"
+export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
+export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
+export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/test_env.sh"
@@ -39,24 +39,23 @@ if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
     export KUBECTL_SHA256="${KUBECTL_SHA256:-4685bfcf732260f72fce58379e812e091557ef1dfc1bc8084226c7891dd6028f}"
 fi
-
-if [[ "${GINKGO_SKIP}" == "null" ]]; then
+if  [[ -z "${KUBERNETES_VERSION:-}" ]]; then
     unset GINKGO_SKIP
 fi
 
-if [[ "${KUBECTL_SHA256}" == "null" ]]; then
+if  [[ -z "${KUBECTL_SHA256:-}" ]]; then
     unset KUBECTL_SHA256
 fi
 
-if [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then
+if  [[ -z "${KUBERNETES_VERSION_UPGRADE_FROM:-}" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_FROM
 fi
 
-if [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
+if  [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_TO
 fi
 
-if [[ "${EPHEMERAL_TEST}" == "null" ]]; then
+if  [[ -z "${EPHEMERAL_TEST:-}" ]]; then
     unset EPHEMERAL_TEST
 fi
 
