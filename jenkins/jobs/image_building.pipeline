@@ -54,7 +54,8 @@ pipeline {
       steps {
         echo 'Building Ubuntu CI image'
         withCredentials([
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
           catchError([stageResult: 'FAILURE', message: "Failed to build Ubuntu CI image"]) {
             sh "./jenkins/image_building/build-image.sh"
@@ -72,7 +73,8 @@ pipeline {
       steps {
         echo 'Building Centos CI image'
         withCredentials([
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
           catchError([stageResult: 'FAILURE', message: "Failed to build Centos CI image"]) {
             sh "./jenkins/image_building/build-image.sh"
