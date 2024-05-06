@@ -886,37 +886,49 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-7
+  - name: metal3-dev-env-integration-test-centos-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-7
     branches:
     - release-0.6
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-6
+  - name: metal3-dev-env-integration-test-centos-release-1-6
     branches:
     - release-0.5
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-5
+  - name: metal3-dev-env-integration-test-centos-release-1-5
     branches:
     - release-0.4
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-7
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
     branches:
     - release-0.6
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-6
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
     branches:
     - release-0.5
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-5
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-5
     branches:
     - release-0.4
     agent: jenkins
@@ -1386,42 +1398,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-7
-    branches:
-    - release-1.7
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-centos-release-1-6
-    branches:
-    - release-1.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-centos-release-1-5
-    branches:
-    - release-1.5
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-7
-    branches:
-    - release-1.7
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-6
-    branches:
-    - release-1.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-5
-    branches:
-    - release-1.5
-    agent: jenkins
-    always_run: false
-    optional: true
 
   metal3-io/community:
   - name: markdownlint
@@ -1639,7 +1615,35 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-5
+  - name: metal3-dev-env-integration-test-centos-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-5
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-5
     agent: jenkins
     always_run: false
     optional: true
@@ -1847,7 +1851,35 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-5
+  - name: metal3-dev-env-integration-test-centos-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-5
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-5
     agent: jenkins
     always_run: false
     optional: true
@@ -2323,42 +2355,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: dev-env-integration-test-centos-release-1-7
-    branches:
-    - release-1.7
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-centos-release-1-6
-    branches:
-    - release-1.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-centos-release-1-5
-    branches:
-    - release-1.5
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-7
-    branches:
-    - release-1.7
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-6
-    branches:
-    - release-1.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: dev-env-integration-test-ubuntu-release-1-5
-    branches:
-    - release-1.5
-    agent: jenkins
-    always_run: false
-    optional: true
 
   metal3-io/ironic-ipa-downloader:
   - name: shellcheck
@@ -2551,6 +2547,54 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: false
+  - name: metal3-dev-env-integration-test-centos-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-7
+    branches:
+    - release-24.1
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-5
+    branches:
+    - release-23.1
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    branches:
+    - release-24.1
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-5
+    branches:
+    - release-23.1
+    agent: jenkins
+    always_run: false
+    optional: true
 
   metal3-io/mariadb-image:
   - name: shellcheck
