@@ -39,24 +39,33 @@ if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
     export KUBECTL_SHA256="${KUBECTL_SHA256:-4685bfcf732260f72fce58379e812e091557ef1dfc1bc8084226c7891dd6028f}"
 fi
-if  [[ -z "${KUBERNETES_VERSION:-}" ]]; then
+
+if [[ -z "${NUM_NODES:-}" ]] || [[ "${NUM_NODES}" == "null" ]]; then
+    unset NUM_NODES
+fi
+
+if [[ -z "${GINKGO_FOCUS:-}" ]] || [[ "${GINKGO_FOCUS}" == "null" ]]; then
+    unset GINKGO_FOCUS
+fi
+
+if [[ -z "${GINKGO_SKIP:-}" ]] || [[ "${GINKGO_SKIP}" == "null" ]]; then
     unset GINKGO_SKIP
 fi
 
-if  [[ -z "${KUBECTL_SHA256:-}" ]]; then
-    unset KUBECTL_SHA256
+if [[ -z "${EPHEMERAL_TEST:-}" ]] || [[ "${EPHEMERAL_TEST}" == "null" ]]; then
+    unset EPHEMERAL_TEST
 fi
 
-if  [[ -z "${KUBERNETES_VERSION_UPGRADE_FROM:-}" ]]; then
+if [[ -z "${KUBERNETES_VERSION_UPGRADE_FROM:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_FROM
 fi
 
-if  [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]]; then
+if [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_TO
 fi
 
-if  [[ -z "${EPHEMERAL_TEST:-}" ]]; then
-    unset EPHEMERAL_TEST
+if [[ -z "${KUBECTL_SHA256:-}" ]] || [[ "${KUBECTL_SHA256}" == "null" ]]; then
+    unset KUBECTL_SHA256
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
