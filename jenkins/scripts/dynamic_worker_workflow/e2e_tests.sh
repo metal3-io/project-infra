@@ -32,13 +32,19 @@ export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 # shellcheck disable=SC1091
 source "${CI_DIR}/test_env.sh"
 
-# Only set these variables if they actually have values.
-# If the variable is unset or empty (""), do nothing.
-
 if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
     export KUBECTL_SHA256="${KUBECTL_SHA256:-4685bfcf732260f72fce58379e812e091557ef1dfc1bc8084226c7891dd6028f}"
 fi
+
+# Set KUBERNETES_VERSION and related variables for k8s-upgrade tests
+if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
+    export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
+    export KUBECTL_SHA256="${KUBECTL_SHA256}"
+    export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
+fi
+
+# Unset empty and null variables
 
 if [[ -z "${NUM_NODES:-}" ]] || [[ "${NUM_NODES}" == "null" ]]; then
     unset NUM_NODES
