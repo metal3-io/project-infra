@@ -226,6 +226,8 @@ periodics:
 presubmits:
   Nordix/metal3-clusterapi-docs:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -240,6 +242,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -256,6 +260,8 @@ presubmits:
 
   Nordix/metal3-dev-tools:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -270,6 +276,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -286,6 +294,9 @@ presubmits:
 
   Nordix/sles-ironic-python-agent-builder:
   - name: shellcheck
+    branches:
+    - main
+    - sles-15-sp4
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -300,6 +311,9 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
+    - sles-15-sp4
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -332,6 +346,8 @@ presubmits:
         image: docker.io/golang:1.21
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -448,6 +464,11 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
+    - release-0.6
+    - release-0.5
+    - release-0.4
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -606,6 +627,11 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
+    branches:
+    - main
+    - release-0.6
+    - release-0.5
+    - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -1022,6 +1048,11 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -1104,6 +1135,11 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -1389,6 +1425,8 @@ presubmits:
 
   metal3-io/community:
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -1403,6 +1441,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -1419,6 +1459,8 @@ presubmits:
 
   metal3-io/metal3-dev-env:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -1433,6 +1475,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -1448,196 +1492,428 @@ presubmits:
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-basic-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-basic-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: false
   - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_branch}
   - name: metal3-centos-e2e-feature-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-clusterctl-upgrade-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-28-1-29-upgrade-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-5
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
 
   metal3-io/project-infra:
   - name: check-prow-config
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -1655,6 +1931,8 @@ presubmits:
           requests:
             memory: "500Mi"
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -1669,6 +1947,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -1684,196 +1964,290 @@ presubmits:
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-basic-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-basic-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_branch}
   - name: metal3-centos-e2e-feature-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-clusterctl-upgrade-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-28-1-29-upgrade-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-27-1-28-upgrade-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-26-1-27-upgrade-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
 
   metal3-io/metal3-docs:
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -1888,6 +2262,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -1902,6 +2278,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: spellcheck
+    branches:
+    - main
     run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
     decorate: true
     spec:
@@ -2015,6 +2393,11 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2095,6 +2478,11 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
+    branches:
+    - main
+    - release-1.7
+    - release-1.6
+    - release-1.5
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -2346,99 +2734,8 @@ presubmits:
 
   metal3-io/ironic-ipa-downloader:
   - name: shellcheck
-    run_if_changed: '((\.sh)|^Makefile)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/shellcheck.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
-        imagePullPolicy: Always
-  - name: markdownlint
-    run_if_changed: '(\.md|markdownlint\.sh)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/markdownlint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
-        imagePullPolicy: Always
-  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
-  - name: metal3-centos-e2e-integration-test-main
-    agent: jenkins
-    always_run: false
-    optional: false
-  - name: metal3-centos-e2e-integration-test-release-1-6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-5
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-4
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-5
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-4
-    agent: jenkins
-    always_run: false
-    optional: true
-
-  metal3-io/ironic-client:
-  - name: shellcheck
-    run_if_changed: '((\.sh)|^Makefile)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/shellcheck.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
-        imagePullPolicy: Always
-  - name: markdownlint
-    run_if_changed: '(\.md|markdownlint\.sh)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/markdownlint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
-        imagePullPolicy: Always
-
-  metal3-io/ironic-image:
-  - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2455,8 +2752,128 @@ presubmits:
   - name: markdownlint
     branches:
     - main
-    - release-24.0
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        imagePullPolicy: Always
+  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-integration-test-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-5
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-4
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-5
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-4
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+
+  metal3-io/ironic-client:
+  - name: shellcheck
+    branches:
+    - main
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
+  - name: markdownlint
+    branches:
+    - main
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        imagePullPolicy: Always
+
+  metal3-io/ironic-image:
+  - name: shellcheck
+    branches:
+    - main
     - release-24.1
+    - release-24.0
+    - release-23.1
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
+  - name: markdownlint
+    branches:
+    - main
+    - release-24.1
+    - release-24.0
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2586,6 +3003,8 @@ presubmits:
 
   metal3-io/mariadb-image:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2600,6 +3019,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2616,40 +3037,57 @@ presubmits:
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
     branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-4
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-5
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-4
+    branches:
+    - main
     agent: jenkins
     always_run: false
     optional: true
 
   metal3-io/ironic-hardware-inventory-recorder-image:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2664,6 +3102,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2680,6 +3120,8 @@ presubmits:
 
   metal3-io/utility-images:
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2694,6 +3136,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2710,6 +3154,8 @@ presubmits:
 
   metal3-io/metal3-io.github.io:
   - name: shellcheck
+    branches:
+    - source
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -2724,6 +3170,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - source
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2738,6 +3186,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
   - name: spellcheck
+    branches:
+    - source
     run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
     decorate: true
     spec:
