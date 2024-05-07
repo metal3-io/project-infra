@@ -262,6 +262,7 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
+
   Nordix/metal3-dev-tools:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -291,6 +292,7 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
+
   Nordix/sles-ironic-python-agent-builder:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -320,6 +322,7 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
+
   metal3-io/ironic-standalone-operator:
   - name: gomod
     branches:
@@ -351,11 +354,11 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
         imagePullPolicy: Always
+
   metal3-io/baremetal-operator:
   - name: gofmt
     branches:
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -372,7 +375,6 @@ presubmits:
   - name: gosec
     branches:
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -407,7 +409,6 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -442,7 +443,6 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    - release-0.3
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -499,7 +499,6 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -550,7 +549,6 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
@@ -575,7 +573,6 @@ presubmits:
   - name: golint
     branches:
     - release-0.4
-    - release-0.3
     skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
     decorate: true
     spec:
