@@ -2,7 +2,7 @@
 
 set -eux
 
-sudo dnf distro-sync -y
+sudo dnf distro-sync -y --nobest
 
 # Install EPEL repo (later required by atop, python3-bcrypt and python3-passlib)
 sudo dnf install epel-release -y
