@@ -22,7 +22,7 @@ script {
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
   if  ("${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic') {
-    agent_label = "metal3ci-medium-${IMAGE_OS}"
+    agent_label = "metal3ci-4c16gb-${IMAGE_OS}"
     TIMEOUT=7200 // 2h
   } else {
     agent_label = "metal3ci-large-${IMAGE_OS}"
