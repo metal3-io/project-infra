@@ -106,9 +106,7 @@ if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
 fi
 cd "${HOME}/"
 
-if [[ "${REPO_NAME}" == "metal3-dev-env" ]] ||
-    [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]] \
-    ; then
+if [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]] ; then
     # If we are testing e2e from capm3,
     # it will already be cloned to tested_repo
     pushd /"home/${USER}/tested_repo"
