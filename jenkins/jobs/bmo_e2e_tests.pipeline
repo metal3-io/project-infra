@@ -18,7 +18,7 @@ pipeline {
   stages {
     stage("Run Baremetal Operator e2e tests") {
       matrix {
-        agent { label "metal3-workers" }
+        agent { label "metal3ci-8c16gb-ubuntu" }
         // Skip redfish on PRs, test all for periodic jobs
         when {
           anyOf {
