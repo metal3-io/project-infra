@@ -1,8 +1,8 @@
 
 ci_git_credential_id = 'metal3-jenkins-github-token'
 
-// 4 hours
-int TIMEOUT = 14400
+// 3 hours
+int TIMEOUT = 10800
 
 script {
 
@@ -23,11 +23,14 @@ script {
 
   if  ("${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic') {
     agent_label = "metal3ci-4c16gb-${IMAGE_OS}"
-    TIMEOUT=7200 // 2h
+    TIMEOUT=10800 // 3h
+  } else if ( "${EPHEMERAL_TEST}" == 'true' ) {
+    TIMEOUT=18000 // 5h
+    agent_label = "metal3ci-large-${IMAGE_OS}"
   } else {
     agent_label = "metal3ci-large-${IMAGE_OS}"
   }
-        
+
 }
 
 pipeline {
