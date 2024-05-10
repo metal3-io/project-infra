@@ -10,51 +10,34 @@ def TIMEOUT = 10800
 def NODE_REUSE_TIMEOUT = 18000
 
 script {
-  PROJECT_REPO_ORG = (env.REPO_OWNER) ?: (env.PROJECT_REPO_ORG)
-  PROJECT_REPO_NAME = (env.REPO_NAME) ?: (env.PROJECT_REPO_NAME)
-  UPDATED_REPO = "https://github.com/${PROJECT_REPO_ORG}/${PROJECT_REPO_NAME}.git"
+  
+  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
   echo "Test triggered from ${UPDATED_REPO}"
+  ci_git_url = "https://github.com/metal3-io/project-infra.git"
 
-  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit) ?: "main"
-    ci_git_base = (env.PULL_BASE_REF) ?: "main"
+  if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+    ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+    ci_git_base = (env.PULL_BASE_REF) ?: 'main'
     // Fetch the base branch and the ci_git_branch when running on project-infra PR
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
-    ci_git_url = (env.ghprbAuthorRepoGitUrl) ?: "https://github.com/metal3-io/project-infra.git"
   } else {
-    ci_git_branch = "main"
-    ci_git_url = "https://github.com/metal3-io/project-infra.git"
+    ci_git_branch = 'main'
     refspec = '+refs/heads/*:refs/remotes/origin/*'
   }
   echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
-  def date = new Date()
-  def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
-  def rand = new Random()
-  VM_KEY = (1..4).collect {
-    ('a'..
-      'z').join("")[rand.nextInt(26)]
-  }.join("")
-
   agent_label="metal3ci-large-${IMAGE_OS}"
-
-  UPDATED_BRANCH = (env.PULL_PULL_SHA) ?: (env.ghprbActualCommit)
-  REPO_BRANCH = (env.PULL_BASE_REF) ?: (env.ghprbTargetBranch)
-  if (!env.REPO_OWNER) {
-    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
-  }
 
 }
 
 pipeline {
   agent none
   environment {
-    METAL3_CI_USER = "metal3ci"
-    REPO_ORG = "${PROJECT_REPO_ORG}"
-    REPO_NAME = "${PROJECT_REPO_NAME}"
+    REPO_ORG = "${env.REPO_OWNER}"
+    REPO_NAME = "${env.REPO_NAME}"
     UPDATED_REPO = "${UPDATED_REPO}"
-    REPO_BRANCH = "${REPO_BRANCH}"
-    UPDATED_BRANCH = "${UPDATED_BRANCH}"
+    REPO_BRANCH = "${env.PULL_BASE_REF}"
+    UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
     BUILD_TAG = "${env.BUILD_TAG}"
     PR_ID = "${env.PULL_NUMBER}"
     IMAGE_OS = "${IMAGE_OS}"
