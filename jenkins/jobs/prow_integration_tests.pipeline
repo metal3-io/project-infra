@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-ci_git_credential_id = "metal3-jenkins-github-token"
+ci_git_credential_id = "metal3-jenkins-github-username-token"
 
 // 10 minutes
 def CLEAN_TIMEOUT = 600
@@ -10,7 +10,7 @@ KUBECTL_SHA256=(env.KUBECTL_SHA256)
 
 script {
   UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  echo "Test triggered from ${UPDATED_REPO}" 
+  echo "Test triggered from ${UPDATED_REPO}"
   ci_git_url = "https://github.com/metal3-io/project-infra.git"
 
   if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
@@ -36,10 +36,10 @@ pipeline {
   agent { label 'metal3-static-workers' }
   environment {
     METAL3_CI_USER="metal3ci"
-    // Defined in the job project 
+    // Defined in the job project
     REPO_ORG = "${env.REPO_OWNER}"
     REPO_NAME = "${env.REPO_NAME}"
-    // Defined in prow env vars 
+    // Defined in prow env vars
     // https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
     REPO_BRANCH = "${env.PULL_BASE_REF}"
     UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
