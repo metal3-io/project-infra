@@ -690,7 +690,7 @@ presubmits:
     - release-0.6
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-6
     branches:
     - release-0.5
