@@ -4,8 +4,8 @@ ci_git_credential_id = "metal3-jenkins-github-token"
 
 // 10 minutes
 def CLEAN_TIMEOUT = 600
-// 2 hours
-def TIMEOUT = 7200
+// 3 hours
+def TIMEOUT = 10800
 
 script {
   UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
