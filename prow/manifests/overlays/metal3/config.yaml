@@ -5,7 +5,7 @@ log_level: debug
 # Sinker configurations (for cleanup)
 sinker:
   resync_period: 1m
-  max_prowjob_age: 4h
+  max_prowjob_age: 24h
   max_pod_age: 30m
   terminated_pod_ttl: 2h
 
