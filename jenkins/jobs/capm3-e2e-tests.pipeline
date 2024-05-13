@@ -1,5 +1,5 @@
 
-ci_git_credential_id = 'metal3-jenkins-github-token'
+ci_git_credential_id = 'metal3-jenkins-github-username-token'
 
 // 3 hours
 int TIMEOUT = 10800

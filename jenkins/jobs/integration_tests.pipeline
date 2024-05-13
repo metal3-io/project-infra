@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-ci_git_credential_id = "metal3-jenkins-github-token"
+ci_git_credential_id = "metal3-jenkins-github-username-token"
 
 // 10 minutes
 def CLEAN_TIMEOUT = 600

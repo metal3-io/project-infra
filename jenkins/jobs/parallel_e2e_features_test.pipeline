@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-ci_git_credential_id = "metal3-jenkins-github-token"
+ci_git_credential_id = "metal3-jenkins-github-username-token"
 
 // 10 minutes
 def CLEAN_TIMEOUT = 600
@@ -109,7 +109,7 @@ pipeline {
               ansiColor('xterm') {
                 timestamps {
                   sh "./jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh"
-                }  
+                }
               }
             }
           }
@@ -167,7 +167,7 @@ pipeline {
               ]
             ]
             ])
-            
+
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
@@ -232,12 +232,12 @@ pipeline {
               ]
             ]
             ])
-            
+
             withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
               ansiColor('xterm') {
                 timestamps {
                   sh "./jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh"
-                }  
+                }
               }
             }
           }
@@ -264,7 +264,7 @@ pipeline {
             }
           }
         }
-      }   
+      }
     }
   }
 }
