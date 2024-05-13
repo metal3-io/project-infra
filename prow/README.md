@@ -64,7 +64,7 @@ You will need the following CLI tools in order to deploy and/or manage Prow:
 ### Folders and components
 
 There are four folders with kustomizations (`capo-cluster`, `cluster-resources`,
-`infra` `manifests`). The `capo-cluster` folder contains everything needed for
+`infra` and `manifests`). The `capo-cluster` folder contains everything needed for
 creating the Kubernetes cluster itself. In `cluster-resources`, you will find
 things the cluster needs to integrate with the cloud, i.e. the external
 cloud-provider for OpenStack and CSI plugin for Cinder. It also has the CNI
@@ -182,7 +182,7 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
    The token will be referred to as `${GITHUB_TOKEN}`.
 
 1. Create a personal access token for the cherry-picker bot. This should be done
-   from the [metal3-cherrypick-bot](https://github.com/metal3-cherrypick-bot)
+   from the [metal3-io-bot](https://github.com/metal3-io-bot)
    GitHub bot account. You can follow this
    [link](https://github.com/settings/tokens) to create the token. When
    generating the token, make sure you have only the following scopes checked
@@ -327,8 +327,16 @@ need to set up a proxy for accessing the API through the bastion:
    ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
 ```
 
+The above command will just "hang". That is expected, since it is just
+forwarding the traffic.
+
 In another terminal you should now be able to use `kubectl` to access the
-cluster.
+cluster:
+
+```bash
+   export KUBECONFIG=capo-cluster/kubeconfig.yaml
+   kubectl get nodes
+```
 
 ## Deploying Prow from scratch
 
@@ -355,14 +363,14 @@ images (see sections above).
 
    ```bash
    BASTION_FLOATING_IP="$(kubectl get openstackcluster prow -o jsonpath="{.status.bastion.floatingIP}")"
-   clusterctl get kubeconfig prow > kubeconfig.yaml
-   export KUBECONFIG=kubeconfig.yaml
+   clusterctl get kubeconfig prow > capo-cluster/kubeconfig.yaml
+   export KUBECONFIG=capo-cluster/kubeconfig.yaml
    kubectl config set clusters.prow.proxy-url socks5://localhost:6443
    # In a separate terminal, set up proxy forwarding
    ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
    ```
 
-1. Install cloud-provider and CNI. See the
+1. Install cloud-provider, cluster-autoscaler and CNI. See the
    [CAPO book](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md),
    the
    [CSI Cinder plugin docs](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/cinder-csi-plugin/using-cinder-csi-plugin.md)
@@ -380,8 +388,8 @@ images (see sections above).
    unset KUBECONFIG
    clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
       --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
-   clusterctl move --to-kubeconfig=kubeconfig.yaml
-   export KUBECONFIG=kubeconfig.yaml
+   clusterctl move --to-kubeconfig=capo-cluster/kubeconfig.yaml
+   export KUBECONFIG=capo-cluster/kubeconfig.yaml
    ```
 
 1. Add ingress-controller, ClusterIssuer and StorageClass
@@ -403,7 +411,7 @@ images (see sections above).
     # Create the CRDs. These are applied separately and using server side apply
     # since they are so huge that the "last applied" annotation that would be
     # added with a normal apply, becomes larger than the allowed limit.
-    kubectl apply --server-side=true -f https://github.com/kubernetes/test-infra/raw/master/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
+    kubectl apply --server-side=true -f https://github.com/kubernetes-sigs/prow/raw/main/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
 
     # Deploy all prow components
     kubectl apply -k manifests/overlays/metal3
