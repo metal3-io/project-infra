@@ -152,3 +152,7 @@ require_matching_label:
 
 override:
   allow_top_level_owners: true
+
+triggers:
+- # Enable prow to trigger GitHub workflows.
+  trigger_github_workflows: true
