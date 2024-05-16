@@ -1,3 +1,4 @@
+# See https://github.com/kubernetes-sigs/prow/blob/main/pkg/plugins/plugin-config-documented.yaml
 owners:
   # By default, prow will use github org membership as the list of who is allowed to
   # /lgtm PRs.  This configuration setting tells it to use the OWNERS file only and
@@ -154,5 +155,7 @@ override:
   allow_top_level_owners: true
 
 triggers:
-- # Enable prow to trigger GitHub workflows.
+- repos:
+  - metal3-io
+  # Enable prow to trigger GitHub workflows.
   trigger_github_workflows: true
