@@ -24,7 +24,7 @@ script {
   if  ("${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic') {
     agent_label = "metal3ci-4c16gb-${IMAGE_OS}"
     TIMEOUT=10800 // 3h
-  } else if ( "${EPHEMERAL_TEST}" == 'true' ) {
+  } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
     TIMEOUT=18000 // 5h
     agent_label = "metal3ci-large-${IMAGE_OS}"
   } else {
@@ -52,7 +52,7 @@ pipeline {
         NUM_NODES = "${NUM_NODES}"
         CAPI_VERSION = "${CAPI_VERSION}"
         CAPM3_VERSION = "${CAPM3_VERSION}"
-        EPHEMERAL_TEST="${EPHEMERAL_TEST}"
+        EPHEMERAL_TEST = "${EPHEMERAL_TEST}"
         KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
         KUBERNETES_VERSION_UPGRADE_TO = "${KUBERNETES_VERSION_UPGRADE_TO}"
         KUBECTL_SHA256 = "${KUBECTL_SHA256}"
