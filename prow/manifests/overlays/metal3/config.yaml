@@ -318,7 +318,7 @@ presubmits:
   - name: gomod
     branches:
     - main
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -350,7 +350,7 @@ presubmits:
   - name: gofmt
     branches:
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -366,7 +366,7 @@ presubmits:
   - name: gosec
     branches:
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -383,7 +383,7 @@ presubmits:
     branches:
     - main
     - release-0.6
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -400,7 +400,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -465,7 +465,7 @@ presubmits:
     branches:
     - main
     - release-0.6
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -490,7 +490,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -515,7 +515,7 @@ presubmits:
     branches:
     - main
     - release-0.6
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -540,7 +540,7 @@ presubmits:
     branches:
     - release-0.5
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -564,7 +564,7 @@ presubmits:
   - name: golint
     branches:
     - release-0.4
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -606,7 +606,7 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -928,7 +928,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -945,7 +945,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1039,7 +1039,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1056,7 +1056,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1073,7 +1073,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1090,7 +1090,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1104,7 +1104,7 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1638,7 +1638,7 @@ presubmits:
 
   metal3-io/project-infra:
   - name: check-prow-config
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1921,7 +1921,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -1938,7 +1938,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -2032,7 +2032,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -2048,7 +2048,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -2064,7 +2064,7 @@ presubmits:
     branches:
     - main
     - release-1.7
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -2081,7 +2081,7 @@ presubmits:
     branches:
     - release-1.6
     - release-1.5
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
@@ -2095,7 +2095,7 @@ presubmits:
         image: docker.io/golang:1.20
         imagePullPolicy: Always
   - name: manifestlint
-    skip_if_only_changed: '(((^|/)OWNERS)|(\.md))$'
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
       containers:
