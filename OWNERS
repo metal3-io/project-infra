@@ -1,16 +1,11 @@
 # See the OWNERS docs at https://go.k8s.io/owners
 
 approvers:
-- kashifest
-- lentzi90
-- mboukhalfa
-- Sunnatillo
-- tuminoid
+- project-infra-maintainers
 
 reviewers:
-- adilGhaffarDev
-- Rozzii
-- smoshiur1237
+- project-infra-maintainers
+- project-infra-reviewers
 
 emeritus_approvers:
 - fmuyassarov
