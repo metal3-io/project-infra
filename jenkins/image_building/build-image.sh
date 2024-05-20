@@ -22,7 +22,7 @@ sudo pip3 install diskimage-builder python-openstackclient
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"
 export DIB_DEV_USER_PWDLESS_SUDO="yes"
-export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/id_ed25519_metal3ci.pub"
+export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   export DIB_RELEASE=jammy
