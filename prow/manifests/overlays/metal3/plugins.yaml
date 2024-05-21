@@ -114,6 +114,11 @@ external_plugins:
     events:
     - pull_request
     - issue_comment
+  - name: cherrypicker
+    events:
+    - issue_comment
+    - pull_request
+    endpoint: http://cherrypicker
   metal3-io:
   - name: needs-rebase
     # No endpoint specified implies "http://{{name}}".
