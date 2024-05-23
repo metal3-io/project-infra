@@ -8,20 +8,21 @@ def TIMEOUT = 10800
 KUBECTL_SHA256=(env.KUBECTL_SHA256)
 
 script {
-  if ("${PROJECT_REPO_ORG}" == "metal3-io" && "${PROJECT_REPO_NAME}" == "project-infra") {
-    echo "Checkout ${ghprbAuthorRepoGitUrl} branch ${ghprbActualCommit}"
-    ci_git_branch="${ghprbActualCommit}"
-    ci_git_url = "${ghprbAuthorRepoGitUrl}"
+
+  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
+  echo "Test triggered from ${UPDATED_REPO}"
+  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+
+  if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+    ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+    ci_git_base = (env.PULL_BASE_REF) ?: 'main'
+    // Fetch the base branch and the ci_git_branch when running on project-infra PR
+    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
-    echo "Checkout ${ghprbAuthorRepoGitUrl} main"
-    ci_git_branch = "main"
-    ci_git_url = "https://github.com/metal3-io/project-infra.git"
+    ci_git_branch = 'main'
+    refspec = '+refs/heads/*:refs/remotes/origin/*'
   }
-  def date = new Date()
-  def dateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
-  def rand = new Random()
-  VM_KEY = (1..4).collect { ('a'..'z').join("")[ rand.nextInt( 26 ) ] }.join("")
-  VM_NAME = "ci-test-vm-" + dateFormat.format(date) + "-" + VM_KEY
+    echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 }
 
 pipeline {
@@ -32,30 +33,21 @@ pipeline {
   agent { label 'metal3ci-bml-jenkins-worker' }
   environment {
     METAL3_CI_USER="metal3ci"
-    REPO_ORG = "${PROJECT_REPO_ORG}"
-    REPO_NAME = "${PROJECT_REPO_NAME}"
-    UPDATED_REPO = "${ghprbAuthorRepoGitUrl}"
-    REPO_BRANCH = "${ghprbTargetBranch}"
-    UPDATED_BRANCH = "${ghprbActualCommit}"
-    TEST_EXECUTER_VM_NAME = "${VM_NAME}"
+    REPO_ORG = "${env.REPO_OWNER}"
+    REPO_NAME = "${env.REPO_NAME}"
+    UPDATED_REPO = "${UPDATED_REPO}"
+    REPO_BRANCH = "${env.PULL_BASE_REF}"
+    UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
     BUILD_TAG = "${env.BUILD_TAG}"
-    PR_ID = "${ghprbPullId}"
+    PR_ID = "${env.PULL_NUMBER}"
     IMAGE_OS = "${IMAGE_OS}"
-    CAPI_VERSION = "${CAPI_VERSION}"
-    CAPM3_VERSION = "${CAPM3_VERSION}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
     BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
-    NUM_NODES="${NUM_NODES}"
-    GINKGO_FOCUS="${GINKGO_FOCUS}"
-    GINKGO_SKIP="${GINKGO_SKIP}"
-    EPHEMERAL_TEST="${EPHEMERAL_TEST}"
-    TESTS_FOR="${TESTS_FOR}"
-    BARE_METAL_LAB=true
-    UPGRADE_FROM_RELEASE="${UPGRADE_FROM_RELEASE}"
-    KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM}"
-    KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO}"
-    KUBECTL_SHA256="${KUBECTL_SHA256}"
+    NUM_NODES = "${NUM_NODES}"
+    CAPI_VERSION = "${CAPI_VERSION}"
+    CAPM3_VERSION = "${CAPM3_VERSION}"
+    KUBECTL_SHA256 = "${KUBECTL_SHA256}"
   }
   stages {
     stage('SCM') {
