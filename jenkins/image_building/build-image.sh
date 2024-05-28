@@ -13,11 +13,27 @@ source "${current_dir}/upload-ci-image.sh"
 source "${current_dir}/upload-node-image.sh"
 
 # Disable needrestart interactive mode
-sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null
+sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 
 sudo apt-get update
 sudo apt-get install python3-pip qemu qemu-kvm -y
 sudo pip3 install diskimage-builder python-openstackclient
+# TODO(Sunnatillo): When newer version than 3.32.0 of disk-image builder released remove changes
+# done by this commit. 
+sudo -H pip install virtualenv
+
+# sudo pip3 install diskimage-builder python-openstackclient
+mkdir "${current_dir}/dib"
+pushd "${current_dir}/dib"
+virtualenv env
+# shellcheck disable=SC1091
+source env/bin/activate
+git clone https://opendev.org/openstack/diskimage-builder
+cd diskimage-builder
+git checkout 4d1e1712b1448b12b97780c4b4cd962646884abb
+sudo pip install --no-cache-dir -e .
+
+popd
 
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"
@@ -54,3 +70,6 @@ if [[ "${IMAGE_TYPE}" == "node" ]]; then
 else
   upload_ci_image "${img_name}"
 fi
+
+deactivate
+sudo rm -rf "${current_dir}/dib"
