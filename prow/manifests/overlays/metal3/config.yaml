@@ -382,6 +382,21 @@ presubmits:
   - name: gomod
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: gomod
+    branches:
     - release-0.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -464,6 +479,29 @@ presubmits:
   - name: unit
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: DEPLOY_KERNEL_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.kernel"
+        - name: DEPLOY_RAMDISK_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.initramfs"
+        - name: IRONIC_ENDPOINT
+          value: "http://localhost:6385/v1/"
+        - name: IRONIC_INSPECTOR_ENDPOINT
+          value: "http://localhost:5050/v1/"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: unit
+    branches:
     - release-0.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -514,6 +552,29 @@ presubmits:
   - name: generate
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/generate.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: DEPLOY_KERNEL_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.kernel"
+        - name: DEPLOY_RAMDISK_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.initramfs"
+        - name: IRONIC_ENDPOINT
+          value: "http://localhost:6385/v1/"
+        - name: IRONIC_INSPECTOR_ENDPOINT
+          value: "http://localhost:5050/v1/"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: generate
+    branches:
     - release-0.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -581,6 +642,18 @@ presubmits:
   - name: test
     branches:
     - main
+    run_if_changed: "^(Makefile|hack/.*)$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: test
+    branches:
     - release-0.6
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
@@ -927,6 +1000,21 @@ presubmits:
   - name: gomod
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: gomod
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -962,6 +1050,18 @@ presubmits:
   - name: test
     branches:
     - main
+    run_if_changed: "^(Makefile|hack/.*)$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: test
+    branches:
     - release-1.7
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
@@ -1038,6 +1138,21 @@ presubmits:
   - name: generate
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: generate
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -1072,6 +1187,21 @@ presubmits:
   - name: unit
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: unit
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -1122,6 +1252,21 @@ presubmits:
   - name: build
     branches:
     - main
+    run_if_changed: "^api|^test|^Makefile$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/build.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: build
+    branches:
     - release-1.7
     run_if_changed: "^api|^test|^Makefile$"
     decorate: true
@@ -1920,6 +2065,21 @@ presubmits:
   - name: gomod
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: gomod
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -1955,6 +2115,18 @@ presubmits:
   - name: test
     branches:
     - main
+    run_if_changed: "^(Makefile|hack/.*)$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: test
+    branches:
     - release-1.7
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
@@ -2031,6 +2203,20 @@ presubmits:
   - name: unit
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+  - name: unit
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -2063,6 +2249,21 @@ presubmits:
   - name: generate
     branches:
     - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.22
+        imagePullPolicy: Always
+  - name: generate
+    branches:
     - release-1.7
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
