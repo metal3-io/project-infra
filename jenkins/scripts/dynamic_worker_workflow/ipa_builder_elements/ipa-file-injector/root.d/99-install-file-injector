@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -eu
+if [ "${DIB_DEBUG_TRACE:-1}" -gt 0 ]; then
+    set -x
+fi
+
+# The TARGET_ROOT env var is expected to be provided by the base os element e.g. 'centos'.
+# The value of TARGET_ROOT is automatically generated so there is no default value available
+# for this environment variable.
+# The script is expected to fail if the TARGET_ROOT is unbound or if it is an empty string.
+if [ -z "${TARGET_ROOT}" ]; then
+    echo "TARGET_ROOT is unbound durin ipa-file-injecto installation, the build process will exit!"
+    exit 1
+fi
+
+SCRIPTDIR=$(dirname "$0")
+
+SEDSTRING="s/Environment=/Environment=\"FILE_INJECTOR_CONFIG_DRIVE_LABEL=${DIB_FILE_INJECTOR_CONFIG_DRIVE_LABEL}\"/"
+
+
+# Output redirection was causing permission errors in DIB when done between host and mounted init
+# filesystem, that is why the the template is rendered first to /tmp then copied to the mounted disk.
+sed -e "${SEDSTRING}" "${SCRIPTDIR}/ipa-file-injector.service.template" > "/tmp/ipa-file-injector.service"
+
+sudo cp "/tmp/ipa-file-injector.service" "${TARGET_ROOT}/lib/systemd/system/ipa-file-injector.service"
+
+sudo cp "${SCRIPTDIR}/ipa-file-injector.sh" "${TARGET_ROOT}/usr/bin/ipa-file-injector.sh"
+

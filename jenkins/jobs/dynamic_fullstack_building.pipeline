@@ -1,0 +1,56 @@
+import java.text.SimpleDateFormat
+
+// 3 hours
+def TIMEOUT = 10800
+
+pipeline {
+  agent none
+  environment {
+    METAL3_CI_USER="metal3ci"
+    RT_URL="https://artifactory.nordix.org/artifactory"
+    CURRENT_DIR = sh (
+                      script: 'readlink -f "."',
+                      returnStdout: true
+                     ).trim()
+  }
+  stages {
+    agent { label metal3ci-large-centos }
+    stage('Building and testing full Metal3 stack'){
+      options {
+        timeout(time: TIMEOUT, unit: 'SECONDS')
+      }
+      steps {
+        script {
+          CURRENT_START_TIME = System.currentTimeMillis()
+        }
+        /* Pass all the credentials */
+        withCredentials([usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')]) {
+          withCredentials([usernamePassword(credentialsId: 'metal3ci_harbor', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')])  {
+            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+              /* Fullstack building script */
+              timestamps {
+                sh './jenkins/scripts/dynamic_worker_workflow/fullstack.sh'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  post{
+    always{
+      script {
+        CURRENT_END_TIME = System.currentTimeMillis()
+        if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
+          echo "Failed due to timeout"
+          currentBuild.result = 'FAILURE'
+        }
+      }
+      timestamps {
+        /* Collect the logs */
+        sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
+        archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+      }
+    }
+  }
+}
