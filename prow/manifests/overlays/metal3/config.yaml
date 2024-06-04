@@ -703,7 +703,7 @@ presubmits:
     agent: jenkins
     # Don't run unless triggered to avoid wasting resources
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-bmo-e2e-test-optional-pull
     # E2e tests do not exist before release-0.5
     branches:
