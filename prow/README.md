@@ -359,6 +359,16 @@ images (see sections above).
    kubectl apply -k capo-cluster
    ```
 
+1. Temporarily allow access from your public IP so that CAPI can access the
+   cluster.
+
+   ```bash
+   # Check public IP
+   curl -s ifconfig.me
+   # Add it to spec.apiServerLoadBalancer.allowedCIDRs
+   kubectl edit openstackcluster prow
+   ```
+
 1. Get kubeconfig and set up proxy for accessing API through the bastion.
 
    ```bash
@@ -385,11 +395,17 @@ images (see sections above).
 1. Make cluster self-hosted
 
    ```bash
-   unset KUBECONFIG
    clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
       --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
+   unset KUBECONFIG
    clusterctl move --to-kubeconfig=capo-cluster/kubeconfig.yaml
    export KUBECONFIG=capo-cluster/kubeconfig.yaml
+   ```
+
+1. Remove the temporary access from your public IP.
+
+   ```bash
+   kubectl edit openstackcluster prow
    ```
 
 1. Add ingress-controller, ClusterIssuer and StorageClass
@@ -411,7 +427,8 @@ images (see sections above).
     # Create the CRDs. These are applied separately and using server side apply
     # since they are so huge that the "last applied" annotation that would be
     # added with a normal apply, becomes larger than the allowed limit.
-    kubectl apply --server-side=true -f https://github.com/kubernetes-sigs/prow/raw/main/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
+    # TODO: This is pinned for now because of https://github.com/kubernetes-sigs/prow/issues/181.
+    kubectl apply --server-side=true -f https://raw.githubusercontent.com/kubernetes-sigs/prow/e67659d368fd013492a9ce038d801ba8998b7d10/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
 
     # Deploy all prow components
     kubectl apply -k manifests/overlays/metal3
