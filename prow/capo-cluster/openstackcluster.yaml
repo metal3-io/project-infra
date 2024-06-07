@@ -8,7 +8,7 @@ spec:
     allowedCIDRs:
     - 10.6.0.0/24
   externalNetwork:
-    id: fba95253-5543-4078-b793-e2de58c31378
+    id: df26cc5b-b122-4506-b948-a213d2b0a7d8
   identityRef:
     cloudName: prow
     name: prow-cloud-config
@@ -40,8 +40,8 @@ spec:
   bastion:
     enabled: true
     spec:
-      flavor: 1C-2GB-50GB
+      flavor: c1m2
       image:
         filter:
-          name: "Ubuntu 22.04 Jammy Jellyfish x86_64"
-      sshKeyName: metal3ci-key
+          name: "Ubuntu-22.04-jammy"
+      sshKeyName: metal3ci

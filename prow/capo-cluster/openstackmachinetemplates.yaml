@@ -1,63 +1,35 @@
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-control-plane-v1-28-7
+  name: prow-control-plane-v1-29-4-new
 spec:
   template:
     spec:
-      flavor: 4C-4GB-100GB
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2204-kube-v1.28.7
-      sshKeyName: metal3ci-key
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-md-0-v1-28-7
-spec:
-  template:
-    spec:
-      flavor: 8C-16GB-100GB
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2204-kube-v1.28.7
-      sshKeyName: metal3ci-key
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-control-plane-v1-29-4
-spec:
-  template:
-    spec:
-      flavor: 4C-4GB-100GB
+      flavor: c4m4
       identityRef:
         cloudName: prow
         name: prow-cloud-config
       image:
         filter:
           name: ubuntu-2204-kube-v1.29.4
-      sshKeyName: metal3ci-key
+      rootVolume:
+        sizeGiB: 100
+      sshKeyName: metal3ci
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-worker-v1-29-4
+  name: prow-worker-v1-29-4-new
 spec:
   template:
     spec:
-      flavor: 8C-16GB-100GB
+      flavor: c8m16avx2
       identityRef:
         cloudName: prow
         name: prow-cloud-config
       image:
         filter:
           name: ubuntu-2204-kube-v1.29.4
-      sshKeyName: metal3ci-key
+      rootVolume:
+        sizeGiB: 100
+      sshKeyName: metal3ci

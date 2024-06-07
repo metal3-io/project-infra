@@ -6,5 +6,5 @@ metadata:
   annotations:
     loadbalancer.openstack.org/keep-floatingip: "true"
 spec:
-  loadBalancerIP: 89.46.86.136
+  loadBalancerIP: 129.192.83.117
   externalTrafficPolicy: Cluster

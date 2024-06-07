@@ -85,6 +85,8 @@ spec:
     app: hook
   ports:
   - port: 8888
+  # TODO: Remove this or turn back to ClusterIP when DNS is set up properly.
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ServiceAccount

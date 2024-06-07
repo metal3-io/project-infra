@@ -20,7 +20,7 @@ more information about who can run each prow command.
 
 ## About the Metal3 Prow instance
 
-Prow is deployed in a Kubernetes cluster in Cleura. The cluster is created using
+Prow is deployed in a Kubernetes cluster in Xerces. The cluster is created using
 the Cluster API provider for OpenStack (CAPO), using the configuration in
 `capo-cluster`. You will need access to (or be able to create) the following
 credentials in order to deploy or manage the Kubernetes cluster and the Prow
@@ -89,7 +89,7 @@ We use API tokens created from GitHub bot accounts.
 
 We use [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) as ingress
 controller. It is fronted by a LoadBalancer Service, i.e. a loadbalancer in
-Cleura. The Service is configured to grab the correct IP automatically and to
+Xerces. The Service is configured to grab the correct IP automatically and to
 avoid deleting it even if the Service is deleted. See
 [infra/service.yaml](infra/service.yaml). For securing it with TLS we rely on
 [cert-manager](https://cert-manager.io/) and the Let's Encrypt HTTP01 challenge,
@@ -100,23 +100,23 @@ as seen in [infra/cluster-issuer-http.yaml](infra/cluster-issuer-http.yaml).
 The Kubernetes cluster where Prow runs needs pre-built images for the Nodes. We
 use [image-builder](https://github.com/kubernetes-sigs/image-builder) for this.
 
-Here is how to build a node image directly in Cleura. See the
+Here is how to build a node image directly in Xerces. See the
 [image-builder book](https://image-builder.sigs.k8s.io/capi/providers/openstack-remote.html)
 for more details. Start by creating a JSON file with relevant parameters for the
 image. Here is an example:
 
 ```json
 {
-  "source_image": "e18066c2-fb21-44d5-8e81-c653b70608b9",
-  "networks": "375af7fe-a2c1-4c26-a57d-6d33175a6650",
-  "flavor": "4C-4GB-100GB",
-  "floating_ip_network": "ext-net",
+  "source_image": "54f49763-5f17-475e-9ad2-67dc8cd9a9ff",
+  "networks": "29fd620e-8145-43a2-8140-5cec6a69f344",
+  "flavor": "c4m4",
+  "floating_ip_network": "internet",
   "ssh_username": "ubuntu",
   "volume_type": "",
-  "kubernetes_deb_version": "1.28.7-1.1",
-  "kubernetes_rpm_version": "1.28.7-150500.1.1",
-  "kubernetes_semver": "v1.28.7",
-  "kubernetes_series": "v1.28"
+  "kubernetes_deb_version": "1.29.4-2.1",
+  "kubernetes_rpm_version": "1.29.4",
+  "kubernetes_semver": "v1.29.4",
+  "kubernetes_series": "v1.29"
 }
 ```
 
@@ -234,16 +234,16 @@ Now you are ready to create the files.
    ```bash
    cat > capo-cluster/clouds.yaml <<EOF
    clouds:
-     prow:
-       auth:
-         auth_url: https://kna1.citycloud.com:5000/v3/
-         auth_type: v3applicationcredential
-         application_credential_id: ${APP_CRED_ID}
-         application_credential_secret: ${APP_CRED_SECRET}
-         domain_name: CCP_Domain_37137
-         project_name: Default Project 37137
-       region_name: Kna1
-       verify: false
+      prow:
+         auth:
+            auth_url: https://xerces.ericsson.net:5000
+            auth_type: v3applicationcredential
+            application_credential_id: ${APP_CRED_ID}
+            application_credential_secret: ${APP_CRED_SECRET}
+            user_domain_name: xerces
+            project_name: EST_Metal3_CI
+            project_id: 51faa3170dfc4990b6654346c2bf2243
+         region_name: RegionOne
    EOF
    ```
 
@@ -252,11 +252,12 @@ Now you are ready to create the files.
    ```bash
    cat > cluster-resources/cloud.conf <<EOF
    [Global]
-   auth-url=https://kna1.citycloud.com:5000/v3/
+   auth-url=https://xerces.ericsson.net:5000
    application-credential-id=${APP_CRED_ID}
    application-credential-secret=${APP_CRED_SECRET}
-   region=Kna1
-   domain-name=CCP_Domain_37137
+   region=RegionOne
+   project-name=EST_Metal3_CI
+   project-id=51faa3170dfc4990b6654346c2bf2243
    EOF
    ```
 
@@ -268,9 +269,9 @@ Now you are ready to create the files.
    # Create service-account.json
    cat > manifests/overlays/metal3/service-account.json <<EOF
    {
-      "region": "Kna1",
+      "region": "RegionOne",
       "access_key": "${S3_ACCESS_KEY}",
-      "endpoint": "s3-kna1.citycloud.com:8080",
+      "endpoint": "xerces.ericsson.net:7480",
       "insecure": false,
       "s3_force_path_style": true,
       "secret_key": "${S3_SECRET_KEY}"
@@ -285,8 +286,8 @@ Now you are ready to create the files.
    s3cmd --config .s3cfg --configure
    # Provide Access key and Secret key from the openstack credentials created above.
    # Leave Default Region as US.
-   # Set S3 Endpoint to s3-kna1.citycloud.com:8080
-   # Set DNS-style bucket+hostname:port template to the same s3-kna1.citycloud.com:8080
+   # Set S3 Endpoint xerces.ericsson.net:7480
+   # Set DNS-style bucket+hostname:port template to the same xerces.ericsson.net:7480
    # Default values for the rest. And save settings.
    ```
 
@@ -344,6 +345,7 @@ When deploying completely from scratch, you will need to first create the
 necessary GitHub bot accounts and webhook configuration. In addition, you need
 to create the credentials, generate secret files from them, and build node
 images (see sections above).
+You may also have to create a keypair with the Metal3 CI ssh key.
 
 1. Create a bootstrap cluster (kind).
 
@@ -360,7 +362,7 @@ images (see sections above).
    ```
 
 1. Temporarily allow access from your public IP so that CAPI can access the
-   cluster.
+   cluster. See the section below about updating the bastion for more details.
 
    ```bash
    # Check public IP
@@ -392,6 +394,9 @@ images (see sections above).
    kubectl apply -k cluster-resources
    ```
 
+   All nodes and pods should become ready at this point, except the cluster
+   autoscaler, which needs the CAPI CRDs to be installed.
+
 1. Make cluster self-hosted
 
    ```bash
@@ -402,10 +407,11 @@ images (see sections above).
    export KUBECONFIG=capo-cluster/kubeconfig.yaml
    ```
 
-1. Remove the temporary access from your public IP.
+1. Remove the temporary access from your public IP and delete the kind cluster.
 
    ```bash
    kubectl edit openstackcluster prow
+   kind cluster delete
    ```
 
 1. Add ingress-controller, ClusterIssuer and StorageClass
@@ -457,6 +463,7 @@ case we should follow the steps below to enable prow:
    (green tick) as shown in the image below once you have configured it
    correctly and communication has been established between Github and prow
    hook.
+   It should point to `https://prow.apps.test.metal3.io/hook`.
 
    ![successful webhook example](images/green_webhook.png)
 
@@ -536,12 +543,12 @@ kubectl get nodes
 
 If everything looks good, consider deleting older OpenStackMachineTemplates, but
 keep the last used templates in case a rollback is needed. Remember to also
-delete the images in Cleura when they are no longer needed.
+delete the images in Xerces when they are no longer needed.
 
 ### Updating the Bastion
 
 The bastion host just runs a normal Ubuntu image. When it needs to be updated,
-just upload the new image to Cleura. The tricky part is then to replace the
+just upload the new image to Xerces. The tricky part is then to replace the
 bastion host. This is a sensitive operation since it could lock us out of the
 cluster if we are not careful. We can work around it by, for example,
 temporarily allowing direct access to the Kubernetes API from your own public
@@ -562,7 +569,7 @@ the IP to the allowed CIDRs:
 spec:
   apiServerLoadBalancer:
     enabled: true
-    allowedCidrs:
+    allowedCIDRs:
       - 10.6.0.0/24
       - <your-ip-here>/32
 ```
