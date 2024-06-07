@@ -43,5 +43,5 @@ spec:
       flavor: 1C-2GB-50GB
       image:
         filter:
-          name: "Ubuntu 22.04.1 Jammy Jellyfish 230124"
+          name: "Ubuntu 22.04 Jammy Jellyfish x86_64"
       sshKeyName: metal3ci-key
