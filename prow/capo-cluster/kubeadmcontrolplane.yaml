@@ -31,6 +31,6 @@ spec:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: OpenStackMachineTemplate
-      name: prow-control-plane-v1-29-4
+      name: prow-control-plane-v1-29-4-new
   replicas: 1
   version: v1.29.4
