@@ -329,7 +329,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.21
+        image: docker.io/golang:1.22
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '(\.md|markdownlint\.sh)$'
