@@ -32,9 +32,8 @@ upload_ci_image() {
   # delete old images for Kna region (keeps latest five)
   delete_old_images
 
-  # Push image to openstack Fra region
-  export OS_AUTH_URL="https://fra1.citycloud.com:5000"
-  export OS_REGION_NAME="Fra1"
+  # Push image to openstack xerces region
+  export OS_AUTH_URL="https://xerces.ericsson.net:5000"
   openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
 
   # delete old images for F region (keeps latest five)
