@@ -26,16 +26,10 @@ upload_ci_image() {
 
   img_name="$1"
 
-  # Push image to openstack Kna region
-  openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
-
-  # delete old images for Kna region (keeps latest five)
-  delete_old_images
-
-  # Push image to openstack xerces region
+  # Push image to openstack xerces
   export OS_AUTH_URL="https://xerces.ericsson.net:5000"
-  openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
+  openstack image create "${img_name}" --file "${img_name}".raw --disk-format=raw
 
-  # delete old images for F region (keeps latest five)
+  # delete old images (keeps latest five)
   delete_old_images
 }

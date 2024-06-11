@@ -63,7 +63,7 @@ fi
 
 export HOSTNAME="${img_name}"
 
-disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
+disk-image-create --no-tmpfs -a amd64 -o "${img_name}".raw -t raw "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   upload_node_image "${img_name}"
