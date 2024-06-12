@@ -8,12 +8,6 @@ pipeline {
   environment {
     IMAGE_TYPE = "${IMAGE_TYPE}"
     METAL3_CI_USER="metal3ci"
-    OS_AUTH_URL="https://xerces.ericsson.net:5000"
-    OS_PROJECT_NAME="EST_Metal3_CI"
-    OS_USER_DOMAIN_NAME="xerces"
-    OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
-    OS_INTERFACE="public"
-    OS_IDENTITY_API_VERSION=3
     KUBERNETES_VERSION = "${KUBERNETES_VERSION}"
     KUBECTL_SHA256 = "${KUBECTL_SHA256}"
     CRICTL_VERSION = "${CRICTL_VERSION}"
@@ -52,7 +46,8 @@ pipeline {
       steps {
         echo 'Building Ubuntu CI image'
         withCredentials([
-          usernamePassword(credentialsId: '7bcee25e-7e8e-4547-8918-898aa117e826', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+          usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
           usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
           catchError([stageResult: 'FAILURE', message: "Failed to build Ubuntu CI image"]) {
@@ -71,7 +66,8 @@ pipeline {
       steps {
         echo 'Building Centos CI image'
         withCredentials([
-          usernamePassword(credentialsId: '7bcee25e-7e8e-4547-8918-898aa117e826', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+          usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
           usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
         ]) {
           catchError([stageResult: 'FAILURE', message: "Failed to build Centos CI image"]) {

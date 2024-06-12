@@ -68,7 +68,8 @@ disk-image-create --no-tmpfs -a amd64 -o "${img_name}".raw -t raw "${IMAGE_OS}"-
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   upload_node_image "${img_name}"
 else
-  upload_ci_image "${img_name}"
+  upload_ci_image_cleura "${img_name}"
+  upload_ci_image_xerces "${img_name}"
 fi
 
 deactivate
