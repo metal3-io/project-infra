@@ -1711,6 +1711,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  # name: {job_prefix}-bml-integration-test-{image_os}
+  - name: metal3-bml-integration-test-centos
+    agent: jenkins
+    always_run: false
+    optional: true
 
   metal3-io/project-infra:
   - name: check-prow-config
@@ -1944,6 +1949,11 @@ presubmits:
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-5
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-bml-integration-test-{image_os}
+  - name: metal3-bml-integration-test-centos
     agent: jenkins
     always_run: false
     optional: true
