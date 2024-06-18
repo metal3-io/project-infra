@@ -1,0 +1,15 @@
+[Unit]
+Description=IPA file injection process
+After=network-pre.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/ipa-file-injector.sh
+RemainAfterExit=true
+StandardOutput=journal+console
+Environment=
+
+[Install]
+WantedBy=basic.target
+
