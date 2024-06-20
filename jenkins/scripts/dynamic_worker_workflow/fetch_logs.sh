@@ -16,10 +16,6 @@ else
 fi
 mkdir -p "${LOGS_DIR}"
 
-# Fetch cluster manifests
-mkdir -p "${LOGS_DIR}/manifests"
-cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
-
 # Fetch target cluster logs which were collected before re-pivoting
 if [[ -d "/tmp/target_cluster_logs" ]]; then
     mkdir -p "${LOGS_DIR}/k8s_target_cluster"
@@ -69,6 +65,57 @@ fetch_k8s_logs()
         done
     done
 }
+
+fetch_manifests()
+{
+    dir_name="${1}"
+    kconfig="$2"
+
+    manifests=(
+      bmh
+      hardwaredata
+      cluster
+      deployment
+      machine
+      machinedeployment
+      machinehealthchecks
+      machinesets
+      machinepools
+      m3cluster
+      m3machine
+      metal3machinetemplate
+      kubeadmconfig
+      kubeadmconfigtemplates
+      kubeadmcontrolplane
+      replicaset
+      ippool
+      ipclaim
+      ipaddress
+      m3data
+      m3dataclaim
+      m3datatemplate
+    )
+
+    NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o jsonpath='{.items[*].metadata.name}')"
+    for NAMESPACE in ${NAMESPACES}; do
+      for kind in "${manifests[@]}"; do
+        mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${kind}"
+        for name in $(kubectl --kubeconfig="${kconfig}" get -n "${NAMESPACE}" -o name "${kind}" || true); do
+          kubectl --kubeconfig="${kconfig}" get -n "${NAMESPACE}" -o yaml "${name}" | tee "${LOGS_DIR}/${dir_name}/${NAMESPACE}/${kind}/$(basename "${name}").yaml" || true
+        done
+      done
+    done
+}
+
+# Fetch cluster manifests
+mkdir -p "${LOGS_DIR}/manifests"
+if [[ -d "/tmp/manifests" ]]; then
+    cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
+else
+    # There will be no manifest directory in case of filure in ephemeral cluster
+    # We are collecting those manifest for debugging
+    fetch_manifests "manifests/ephemeral_cluster" "/home/metal3ci/.kube/config"
+fi
 
 # Fetch k8s logs
 fetch_k8s_logs "management_cluster" "${HOME}/.kube/config"
