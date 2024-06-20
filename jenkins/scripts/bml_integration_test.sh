@@ -21,6 +21,7 @@ REPO_NAME="${REPO_NAME:-metal3-dev-env}"
 REPO_BRANCH="${REPO_BRANCH:-main}"
 UPDATED_REPO="${UPDATED_REPO:-https://github.com/${REPO_ORG}/${REPO_NAME}.git}"
 UPDATED_BRANCH="${UPDATED_BRANCH:-main}"
+PR_ID="${PR_ID:-}"
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
     export BML_METAL3_DEV_ENV_REPO="${UPDATED_REPO}"
@@ -80,6 +81,7 @@ ssh \
     -o SendEnv="REPO_NAME" \
     -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
     -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
+    -o SendEnv="PR_ID" \
     "${SSH_OPTIONS[@]}" \
     "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
     ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml

@@ -56,15 +56,22 @@ pipeline {
       }
       steps {
         /* Checkout CI Repo */
-        checkout([$class: 'GitSCM',
-                 branches: [[name: ci_git_branch]],
-                 doGenerateSubmoduleConfigurations: false,
-                 extensions: [[$class: 'WipeWorkspace'],
-                 [$class: 'CleanCheckout'],
-                 [$class: 'CleanBeforeCheckout']],
-                 submoduleCfg: [],
-                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
-                 url: ci_git_url]]])
+        checkout([
+          $class: 'GitSCM',
+          branches: [
+            [name: ci_git_branch]
+            ],
+          doGenerateSubmoduleConfigurations: false,
+          extensions: [
+              [$class: 'WipeWorkspace'],
+              [$class: 'CleanCheckout'],
+              [$class: 'CleanBeforeCheckout']
+              ],
+          submoduleCfg: [],
+          userRemoteConfigs: [
+              [credentialsId: ci_git_credential_id,url: ci_git_url, refspec: refspec]
+              ]
+          ])
         script {
           CURRENT_START_TIME = System.currentTimeMillis()
         }
