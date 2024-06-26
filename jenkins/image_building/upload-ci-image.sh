@@ -22,21 +22,56 @@ delete_old_images() {
   done
 }
 
-upload_ci_image() {
+upload_ci_image_cleura() {
 
   img_name="$1"
 
-  # Push image to openstack Kna region
+  # Push image to openstack Kna1 cleura
+  export OS_USERNAME="${OPENSTACK_USERNAME_CLEURA}"
+  export OS_PASSWORD="${OPENSTACK_PASSWORD_CLEURA}"
+  export OS_AUTH_URL="https://kna1.citycloud.com:5000"
+  export OS_USER_DOMAIN_NAME="CCP_Domain_37137"
+  export OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
+  export OS_REGION_NAME="Kna1"
+  export OS_PROJECT_NAME="Default Project 37137"
+  export OS_TENANT_NAME="Default Project 37137"
+  export OS_AUTH_VERSION=3
+  export OS_IDENTITY_API_VERSION=3
+
+  qemu-img convert -f raw -O qcow2 "${img_name}".raw "${img_name}".qcow2
   openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
-
-  # delete old images for Kna region (keeps latest five)
+  # delete old images (keeps latest five)
   delete_old_images
-
-  # Push image to openstack Fra region
+  # Push image to openstack Fra1 cleura
   export OS_AUTH_URL="https://fra1.citycloud.com:5000"
   export OS_REGION_NAME="Fra1"
   openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
 
-  # delete old images for F region (keeps latest five)
+  # delete old images (keeps latest five)
   delete_old_images
+
+  #unset openstack variables
+  unset "${!OS_@}"
+}
+
+upload_ci_image_xerces() {
+  img_name="$1"
+
+  # Push image to openstack xerces
+  export OS_USERNAME="${OPENSTACK_USERNAME_XERCES}"
+  export OS_PASSWORD="${OPENSTACK_PASSWORD_XERCES}"
+  export OS_AUTH_URL="https://xerces.ericsson.net:5000"
+  export OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
+  export OS_INTERFACE="public"
+  export OS_PROJECT_NAME="EST_Metal3_CI"
+  export OS_USER_DOMAIN_NAME="xerces"
+  export OS_IDENTITY_API_VERSION=3
+
+  openstack image create "${img_name}" --file "${img_name}".raw --disk-format=raw
+
+  # delete old images (keeps latest five)
+  delete_old_images
+
+  #unset openstack variables
+  unset "${!OS_@}"
 }
