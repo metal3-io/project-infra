@@ -11,8 +11,10 @@ if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
 
     # If the target repo and branch are the same as the source repo and branch
     # we're running a periodic test, that is not for a PR, so we build the CAPM3, BMO and IPAM images)
+    # Last option checks if IMAGE_TESTING is set, in which case we are running tests to verify new image
+    # and don't need to build everything
 
-    if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]]; then
+    if [[ "${UPDATED_BRANCH}" == "${REPO_BRANCH}" ]] && [[ "${UPDATED_REPO}" == *"${REPO_ORG}/${REPO_NAME}"* ]] && [[ -n "${IMAGE_TESTING:-}" ]]; then
         export BUILD_BMO_LOCALLY="true"
         export BUILD_CAPM3_LOCALLY="true"
         export BUILD_IPAM_LOCALLY="true"
