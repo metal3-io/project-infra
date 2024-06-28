@@ -38,7 +38,6 @@ upload_ci_image_cleura() {
   export OS_AUTH_VERSION=3
   export OS_IDENTITY_API_VERSION=3
 
-  qemu-img convert -f raw -O qcow2 "${img_name}".raw "${img_name}".qcow2
   openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
   # delete old images (keeps latest five)
   delete_old_images
@@ -67,6 +66,7 @@ upload_ci_image_xerces() {
   export OS_USER_DOMAIN_NAME="xerces"
   export OS_IDENTITY_API_VERSION=3
 
+  qemu-img convert -f qcow2 -O raw "${img_name}".qcow2 "${img_name}".raw
   openstack image create "${img_name}" --file "${img_name}".raw --disk-format=raw
 
   # delete old images (keeps latest five)
