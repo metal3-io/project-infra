@@ -5,8 +5,6 @@ ci_git_credential_id = "metal3-jenkins-github-username-token"
 // 3 hours
 def TIMEOUT = 10800
 
-KUBECTL_SHA256=(env.KUBECTL_SHA256)
-
 script {
 
   UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
@@ -47,7 +45,6 @@ pipeline {
     NUM_NODES = "${NUM_NODES}"
     CAPI_VERSION = "${CAPI_VERSION}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
-    KUBECTL_SHA256 = "${KUBECTL_SHA256}"
   }
   stages {
     stage('SCM') {

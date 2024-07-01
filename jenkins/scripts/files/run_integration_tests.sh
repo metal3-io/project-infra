@@ -14,17 +14,12 @@ export CAPM3RELEASEBRANCH
 export BMORELEASEBRANCH
 export IMAGE_OS
 export TARGET_NODE_MEMORY
-# unsetting NUM_NODES and KUBECTL_SHA256 when it is unbound
+# unsetting NUM_NODES when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
-export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 
 if [[ "${NUM_NODES}" == "null" ]]; then
     unset NUM_NODES
-fi
-
-if [[ "${KUBECTL_SHA256}" == "null" ]]; then
-    unset KUBECTL_SHA256
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
@@ -53,4 +48,3 @@ fi
 export EXTERNAL_VLAN_ID="3"
 
 make test
-

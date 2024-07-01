@@ -27,20 +27,17 @@ export PR_ID="${PR_ID:-}"
 export EPHEMERAL_TEST="${EPHEMERAL_TEST:-}"
 export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
-export KUBECTL_SHA256="${KUBECTL_SHA256:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/test_env.sh"
 
 if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
     export KUBERNETES_VERSION="v1.23.8"
-    export KUBECTL_SHA256="${KUBECTL_SHA256:-4685bfcf732260f72fce58379e812e091557ef1dfc1bc8084226c7891dd6028f}"
 fi
 
 # Set KUBERNETES_VERSION and related variables for k8s-upgrade tests
 if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
     export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
-    export KUBECTL_SHA256="${KUBECTL_SHA256}"
     export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
 fi
 
@@ -68,10 +65,6 @@ fi
 
 if [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_TO
-fi
-
-if [[ -z "${KUBECTL_SHA256:-}" ]] || [[ "${KUBECTL_SHA256}" == "null" ]]; then
-    unset KUBECTL_SHA256
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
