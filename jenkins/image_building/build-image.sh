@@ -21,7 +21,7 @@ sudo apt-get update
 sudo apt-get install python3-pip qemu qemu-kvm -y
 sudo pip3 install diskimage-builder python-openstackclient
 # TODO(Sunnatillo): When newer version than 3.32.0 of disk-image builder released remove changes
-# done by this commit. 
+# done by this commit.
 sudo -H pip install virtualenv
 
 # sudo pip3 install diskimage-builder python-openstackclient
@@ -68,7 +68,7 @@ export HOSTNAME="${img_name}"
 disk-image-create --no-tmpfs -a amd64 -o "${img_name}".raw -t raw "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
-  verify_node_image "${img_name}" 
+  verify_node_image "${img_name}"
   echo "Image testing successful."
   upload_node_image "${img_name}"
 else
@@ -77,4 +77,5 @@ else
 fi
 
 deactivate
+sudo rm -f "${img_name}".{raw,qcow2}
 sudo rm -rf "${current_dir}/dib"
