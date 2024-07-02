@@ -1999,7 +1999,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: ghcr.io/streetsidesoftware/cspell:8.3.2@sha256:2a6ab337b2f1a89e910653b46fdf219e3e4ec9662fc8d561b956c1fe14db9fac
+        image: ghcr.io/streetsidesoftware/cspell:8.9.0@sha256:84dfae974e878ee364b379f754d221e315facbd903c7797e5ca46b3a31799f26
         imagePullPolicy: Always
 
   metal3-io/ip-address-manager:
@@ -2916,5 +2916,5 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: ghcr.io/streetsidesoftware/cspell:8.3.2@sha256:2a6ab337b2f1a89e910653b46fdf219e3e4ec9662fc8d561b956c1fe14db9fac
+        image: ghcr.io/streetsidesoftware/cspell:8.9.0@sha256:84dfae974e878ee364b379f754d221e315facbd903c7797e5ca46b3a31799f26
         imagePullPolicy: Always
