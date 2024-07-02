@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 def TIMEOUT = 10800
 
 pipeline {
-  agent none
+  agent { label 'metal3ci-large-centos' }
   environment {
     METAL3_CI_USER="metal3ci"
     RT_URL="https://artifactory.nordix.org/artifactory"
@@ -14,7 +14,6 @@ pipeline {
                      ).trim()
   }
   stages {
-    agent { label metal3ci-large-centos }
     stage('Building and testing full Metal3 stack'){
       options {
         timeout(time: TIMEOUT, unit: 'SECONDS')
