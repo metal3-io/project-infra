@@ -6,7 +6,7 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 IPA_BUILDER_SCRIPT_NAME="${IPA_BUILDER_SCRIPT_NAME:-build_ipa.sh}"
 
 echo "Running Ironic image building script"
-"${CI_DIR}/run_build_ironic.sh"
+"${CI_DIR}/fullstack_build_ironic.sh"
 
 IPA_REPO="${IPA_REPO:-https://opendev.org/openstack/ironic-python-agent.git}"
 IPA_BRANCH="${IPA_BRANCH:-master}"
