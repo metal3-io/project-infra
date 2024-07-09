@@ -1,0 +1,4 @@
+---
+spec:
+  rootDeviceHints:
+    serialNumber: drive-scsi0-0-0-0

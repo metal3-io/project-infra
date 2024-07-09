@@ -199,7 +199,7 @@ if $ENABLE_BOOTSTRAP_TEST; then
     source "./lib/releases.sh"
     make
     kubectl patch bmh node-1 -n metal3 --type merge --patch-file \
-        "/tmp/bmh-patch-short-serial.yaml"
+        "${CURRENT_SCRIPT_DIR}/bmh-patch-short-serial.yaml"
     make test
     CERT_MANAGER_VERSION="$(grep -r "Installing cert-manager Version" |sed -n 's/.*\(v[0-9]\.[0-9]\.[0-9]\)"/\1/p' | head -n 1)"
     cat << EOF >> "${METADATA_PATH}"
