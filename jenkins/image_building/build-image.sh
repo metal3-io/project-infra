@@ -2,10 +2,18 @@
 
 set -eux
 
+current_dir="$(dirname "$(readlink -f "${0}")")"
+
+cleanup() {
+  deactivate || true
+  sudo rm -f "${img_name}".{raw,qcow2}
+  sudo rm -rf "${current_dir}/dib"
+}
+
+trap cleanup EXIT
+
 export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
-
-current_dir="$(dirname "$(readlink -f "${0}")")"
 
 # shellcheck disable=SC1091
 source "${current_dir}/upload-ci-image.sh"
@@ -23,11 +31,12 @@ sudo pip3 install diskimage-builder python-openstackclient
 sudo -H pip install virtualenv
 
 # sudo pip3 install diskimage-builder python-openstackclient
-mkdir "${current_dir}/dib" || true
+mkdir "${current_dir}/dib"
 pushd "${current_dir}/dib"
 virtualenv env
 # shellcheck disable=SC1091
 source env/bin/activate
+
 git clone https://opendev.org/openstack/diskimage-builder || true
 cd diskimage-builder
 git checkout 3.33.0
@@ -65,6 +74,7 @@ export HOSTNAME="${img_name}"
 
 disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
 
+
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   verify_node_image "${img_name}"
   echo "Image testing successful."
@@ -73,7 +83,3 @@ else
   upload_ci_image_cleura "${img_name}"
   upload_ci_image_xerces "${img_name}"
 fi
-
-deactivate
-sudo rm -f "${img_name}".{raw,qcow2}
-sudo rm -rf "${current_dir}/dib"
