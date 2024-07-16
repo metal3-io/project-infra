@@ -50,8 +50,10 @@ else
 fi
 
 # Clone the source repository
-git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${HOME}/tested_repo"
-cd "${HOME}/tested_repo"
+REPO_LOCATION=${REPO_LOCATION:-"${HOME}/tested_repo"}
+rm -rf "${REPO_LOCATION}"
+git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${REPO_LOCATION}"
+cd "${REPO_LOCATION}"
 git checkout "${REPO_BRANCH}"
 # If the target and source repos and branches are identical, don't try to merge
 if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
@@ -70,7 +72,7 @@ cd "${HOME}"
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
     # it will already be cloned to tested_repo
-    pushd "${HOME}/tested_repo"
+    pushd "${REPO_LOCATION}"
 else
     # clone metal3-dev-env and run the test from there
     git clone "${METAL3REPO}" "${HOME}/metal3"
