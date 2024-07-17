@@ -3,9 +3,10 @@
 set -eux
 
 verify_node_image() {
-    img_name="$1"
+    current_dir="$(dirname "$(readlink -f "${0}")")"
 
-    IMAGE_DIR="$(dirname "$(readlink -f "${0}")")"
+    img_name="$1"
+    IMAGE_DIR="${2:-"$current_dir"}"
 
     # So that no extra components are built later
     export IMAGE_TESTING="true"
@@ -26,5 +27,5 @@ verify_node_image() {
     
     export IRONIC_INSTALL_TYPE="rpm"
 
-    "${IMAGE_DIR}/../scripts/dynamic_worker_workflow/dev_env_integration_tests.sh" 
+    "${current_dir}/../scripts/dynamic_worker_workflow/dev_env_integration_tests.sh"
 }

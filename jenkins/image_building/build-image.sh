@@ -3,14 +3,19 @@
 set -eux
 
 current_dir="$(dirname "$(readlink -f "${0}")")"
+REPO_ROOT="$(realpath "${current_dir}/../..")"
 
 cleanup() {
   deactivate || true
-  sudo rm -f "${img_name}".{raw,qcow2}
+  sudo rm -f "${REPO_ROOT}/${img_name}".{raw,qcow2}
+  sudo rm -rf "${REPO_ROOT}/${img_name}.d"
   sudo rm -rf "${current_dir}/dib"
 }
 
 trap cleanup EXIT
+
+# Make sure we run everything in the repo root
+cd "${REPO_ROOT}" || true
 
 export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
@@ -76,7 +81,7 @@ disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IM
 
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
-  verify_node_image "${img_name}"
+  verify_node_image "${img_name}" "${REPO_ROOT}"
   echo "Image testing successful."
   upload_node_image "${img_name}"
 else
