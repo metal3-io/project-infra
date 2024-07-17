@@ -895,12 +895,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
-    branches:
-    - release-0.4
-    agent: jenkins
-    always_run: false
-    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-28-1-29-upgrade-test-main
     branches:
@@ -1575,12 +1569,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
-    branches:
-    - release-1.5
-    agent: jenkins
-    always_run: false
-    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-28-1-29-upgrade-test-main
     branches:
@@ -1882,10 +1870,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
-    agent: jenkins
-    always_run: false
-    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-28-1-29-upgrade-test-main
     agent: jenkins
@@ -2184,10 +2168,6 @@ presubmits:
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
     agent: jenkins
     always_run: false
     optional: true
@@ -2819,12 +2799,6 @@ presubmits:
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
     branches:
     - release-1.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-5
-    branches:
-    - release-1.5
     agent: jenkins
     always_run: false
     optional: true
