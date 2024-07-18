@@ -36,7 +36,7 @@ pipeline {
     }
     stage('Build Ubuntu CI image') {
       options {
-        timeout(time: 40, unit: 'MINUTES')
+        timeout(time: 3, unit: 'HOURS')
       }
       environment {
         IMAGE_OS = "ubuntu"
@@ -56,7 +56,7 @@ pipeline {
     }
     stage('Building Centos CI image'){
       options {
-        timeout(time: 40, unit: 'MINUTES')
+        timeout(time: 3, unit: 'HOURS')
       }
       environment {
         IMAGE_OS = "centos"
