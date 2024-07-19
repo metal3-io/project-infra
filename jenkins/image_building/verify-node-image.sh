@@ -11,6 +11,9 @@ verify_node_image() {
     # So that no extra components are built later
     export IMAGE_TESTING="true"
 
+    # Run "make clean" after test, so that next job can start from clean state
+    export CLEANUP_AFTERWARDS="true"
+
     # Tests expect the image name to have the file type extension 
     export IMAGE_NAME="${img_name}.qcow2"
     export IMAGE_OS="${IMAGE_OS}"

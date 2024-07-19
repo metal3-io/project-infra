@@ -82,5 +82,12 @@ fi
 
 echo "Running the tests"
 
+cleanup() {
+    if [[ "${CLEANUP_AFTERWARDS:-}" == "true" ]]; then
+        make clean
+    fi
+}
+trap cleanup EXIT
+
 make
 make test
