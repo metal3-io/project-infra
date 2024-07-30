@@ -68,3 +68,8 @@ upload_node_image() {
         echo "${MAPFILE[i]} has been deleted!"
     done
 }
+
+# If the script was run directly (i.e. not sourced), run the upload_node_image func
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    upload_node_image "$@"
+fi

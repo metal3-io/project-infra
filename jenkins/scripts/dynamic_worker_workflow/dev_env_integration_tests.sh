@@ -84,6 +84,7 @@ echo "Running the tests"
 
 cleanup() {
     if [[ "${CLEANUP_AFTERWARDS:-}" == "true" ]]; then
+        echo "Cleaning up the environment"
         make clean
     fi
 }
