@@ -68,3 +68,7 @@ upload_node_image() {
         echo "${MAPFILE[i]} has been deleted!"
     done
 }
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    upload_node_image "$@"
+fi
