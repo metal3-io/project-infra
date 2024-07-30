@@ -2185,6 +2185,7 @@ presubmits:
     branches:
     - main
     - release-1.7
+    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -2200,7 +2201,6 @@ presubmits:
         imagePullPolicy: Always
   - name: gomod
     branches:
-    - release-1.6
     - release-1.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -2220,6 +2220,7 @@ presubmits:
     branches:
     - main
     - release-1.7
+    - release-1.6
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
     spec:
@@ -2232,7 +2233,6 @@ presubmits:
         imagePullPolicy: Always
   - name: test
     branches:
-    - release-1.6
     - release-1.5
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
@@ -2296,6 +2296,7 @@ presubmits:
     branches:
     - main
     - release-1.7
+    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -2310,7 +2311,6 @@ presubmits:
         image: docker.io/golang:1.22
   - name: unit
     branches:
-    - release-1.6
     - release-1.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -2328,6 +2328,7 @@ presubmits:
     branches:
     - main
     - release-1.7
+    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -2343,7 +2344,6 @@ presubmits:
         imagePullPolicy: Always
   - name: generate
     branches:
-    - release-1.6
     - release-1.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
