@@ -383,6 +383,7 @@ presubmits:
     branches:
     - main
     - release-0.6
+    - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -398,7 +399,6 @@ presubmits:
         imagePullPolicy: Always
   - name: gomod
     branches:
-    - release-0.5
     - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -489,6 +489,7 @@ presubmits:
     branches:
     - main
     - release-0.6
+    - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -512,7 +513,6 @@ presubmits:
         imagePullPolicy: Always
   - name: generate
     branches:
-    - release-0.5
     - release-0.4
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
@@ -556,18 +556,6 @@ presubmits:
     branches:
     - main
     - release-0.6
-    run_if_changed: "^(Makefile|hack/.*)$"
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - test
-        command:
-        - make
-        image: quay.io/metal3-io/basic-checks:golang-1.22
-        imagePullPolicy: Always
-  - name: test
-    branches:
     - release-0.5
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
@@ -577,7 +565,7 @@ presubmits:
         - test
         command:
         - make
-        image: docker.io/golang:1.20
+        image: quay.io/metal3-io/basic-checks:golang-1.22
         imagePullPolicy: Always
   - name: manifestlint
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
