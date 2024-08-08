@@ -1,0 +1,77 @@
+name: build-images action template
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        description: "Name of the image to build"
+        type: string
+      dockerfile-directory:
+        required: false
+        description: "The directory where the dockerfile locates, as relative to the repo root"
+        type: string
+        default: .
+      pushImage:
+        required: false
+        description: "Whether to push the image afterwards"
+        type: boolean
+        default: true
+    secrets:
+      QUAY_USERNAME:
+        required: true
+      QUAY_PASSWORD:
+        required: true
+      SLACK_WEBHOOK:
+        required: true
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'metal3-io'
+
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Get current date
+      id: date
+      run: echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+    - name: Get image tags
+      id: image_tags
+      run: |
+        BASE_TAG=`echo "${{ github.ref_name }}" | sed 's/\//_/'`
+        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ github.sha }}"
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          IMAGE_TAGS="${IMAGE_TAGS}, latest"
+        fi
+        echo "IMAGE_TAGS=${IMAGE_TAGS}" >> $GITHUB_ENV
+
+    - name: Build ${{ inputs.image-name }} image
+      uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
+      with:
+        image: metal3-io/${{ inputs.image-name }}
+        tags: ${{ env.IMAGE_TAGS }}
+        directory: ${{ inputs.dockerfile-directory }}
+        dockerfile: ${{ inputs.dockerfile-directory }}/Dockerfile
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+        pushImage: ${{ inputs.pushImage }}
+
+    - name: Slack Notification on Failure
+      if: ${{ failure() }}
+      uses: rtCamp/action-slack-notify@4e5fb42d249be6a45a298f3c9543b111b02f7907 # 2.3.0
+      env:
+        SLACK_TITLE: 'GitHub Action Failed in ${{ github.repository }}'
+        SLACK_COLOR: '#FF0000'
+        SLACK_MESSAGE: 'The GitHub Action workflow failed for ${{ inputs.image-name }} image build.'
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: metal3-github-actions-notify
+        SLACK_USERNAME: metal3-github-actions-notify
