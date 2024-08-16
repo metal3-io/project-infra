@@ -3,8 +3,7 @@ ci_git_branch = "main"
 ci_git_url = "https://github.com/metal3-io/project-infra.git"
 
 pipeline {
-  agent { label 'metal3ci-jenkins' }
-  options { ansiColor('xterm') }
+  agent none
   environment {
     IMAGE_TYPE = "${IMAGE_TYPE}"
     METAL3_CI_USER="metal3ci"
@@ -15,61 +14,84 @@ pipeline {
   }
   stages {
     stage('SCM') {
-      options {
-        timeout(time: 5, unit: 'MINUTES')
-      }
-      steps {
-        /* Checkout CI Repo */
-        checkout([$class: 'GitSCM',
-                 branches: [[name: ci_git_branch]],
-                 doGenerateSubmoduleConfigurations: false,
-                 extensions: [[$class: 'WipeWorkspace'],
-                 [$class: 'CleanCheckout'],
-                 [$class: 'CleanBeforeCheckout']],
-                 submoduleCfg: [],
-                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
-                 url: ci_git_url]]])
-        script {
-          CURRENT_START_TIME = System.currentTimeMillis()
-        }
-      }
-    }
-    stage('Build Ubuntu CI image') {
-      options {
-        timeout(time: 3, unit: 'HOURS')
-      }
-      environment {
-        IMAGE_OS = "ubuntu"
-      }
-      steps {
-        echo 'Building Ubuntu CI image'
-        withCredentials([
-          usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
-          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
-        ]) {
-          catchError([stageResult: 'FAILURE', message: "Failed to build Ubuntu CI image"]) {
-            sh "./jenkins/image_building/build-image.sh"
+      matrix {
+        agent { label "metal3ci-jenkins" }
+        options { ansiColor('xterm') }
+        axes {
+          axis {
+            name 'IMAGE_OS'
+            values 'ubuntu', 'centos'
           }
         }
-      }
-    }
-    stage('Building Centos CI image'){
-      options {
-        timeout(time: 3, unit: 'HOURS')
-      }
-      environment {
-        IMAGE_OS = "centos"
-      }
-      steps {
-        echo 'Building Centos CI image'
-        withCredentials([
-          usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
-          usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
-          usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
-        ]) {
-          catchError([stageResult: 'FAILURE', message: "Failed to build Centos CI image"]) {
-            sh "./jenkins/image_building/build-image.sh"
+        environment {
+          IMAGE_OS = "${IMAGE_OS}"
+        }
+        stages {
+          stage("Checkout CI Repo") {
+            options {
+              timeout(time: 5, unit: 'MINUTES')
+            }
+            steps {
+              checkout([$class: 'GitSCM',
+                       branches: [[name: ci_git_branch]],
+                       doGenerateSubmoduleConfigurations: false,
+                       extensions: [[$class: 'WipeWorkspace'],
+                       [$class: 'CleanCheckout'],
+                       [$class: 'CleanBeforeCheckout']],
+                       submoduleCfg: [],
+                       userRemoteConfigs: [[credentialsId: ci_git_credential_id,
+                       url: ci_git_url]]])
+            }
+          }
+          stage("Build CI image") {
+            options {
+              timeout(time: 1, unit: 'HOURS')
+            }
+            steps {
+              echo "Building ${IMAGE_OS} CI image"
+              script {
+                sh """
+                ./jenkins/image_building/build-image.sh
+                """
+              }
+            }
+          }
+          stage("Verify the new CI image") {
+            options {
+              timeout(time: 3, unit: 'HOURS')
+            }
+            steps {
+              echo "Testing new ${IMAGE_OS} CI image"
+              script {
+                def imageName = readFile("image_name.txt").trim()
+
+                sh """
+                echo "Testing ${imageName}"
+                ./jenkins/image_building/verify-node-image.sh ${imageName}
+                """
+              }
+            }
+          }
+          stage("Upload the new CI Image") {
+            options {
+              timeout(time: 30, unit: 'MINUTES')
+            }
+            steps {
+              withCredentials([
+                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+                usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
+                usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
+              ]) {
+                script {
+                  def imageName = readFile("image_name.txt").trim()
+
+                  sh """
+                  echo "Uploading ${imageName}"
+                  ./jenkins/image_building/upload-node-image.sh ${imageName}
+                  """
+                }
+              }
+            }
           }
         }
       }
