@@ -8,7 +8,7 @@ REPO_ROOT="$(realpath "${current_dir}/../..")"
 cleanup() {
   deactivate || true
   sudo rm -rf "${REPO_ROOT}/${img_name}.d"
-  sudo rm -rf "${current_dir}/dib"
+  sudo rm -rf "${current_dir}/venv"
 }
 
 trap cleanup EXIT
@@ -20,29 +20,18 @@ export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
 
 # shellcheck disable=SC1091
-source "${current_dir}/upload-ci-image.sh"
+. "${current_dir}/upload-ci-image.sh"
 
 # Disable needrestart interactive mode
 sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 
 sudo apt-get update
-sudo apt-get install python3-pip qemu qemu-kvm -y
-sudo pip3 install diskimage-builder python-openstackclient
-sudo -H pip install virtualenv
+sudo apt-get install -y python3-dev python3-pip python3-venv qemu qemu-kvm
+python3 -m venv venv
 
-# sudo pip3 install diskimage-builder python-openstackclient
-mkdir "${current_dir}/dib"
-pushd "${current_dir}/dib"
-virtualenv env
-# shellcheck disable=SC1091
-source env/bin/activate
-
-git clone https://opendev.org/openstack/diskimage-builder || true
-cd diskimage-builder
-git checkout 3.33.0
-sudo pip install --no-cache-dir -e .
-
-popd
+# shellcheck source=/dev/null
+. venv/bin/activate
+pip install --no-cache-dir diskimage-builder==3.33.0
 
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"
