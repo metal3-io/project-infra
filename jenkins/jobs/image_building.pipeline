@@ -56,9 +56,12 @@ pipeline {
               }
             }
           }
-          stage("Verify the new CI image") {
+          stage("Verify the new node image") {
             options {
               timeout(time: 3, unit: 'HOURS')
+            }
+            when {
+              expression { env.IMAGE_TYPE == 'node' }
             }
             steps {
               echo "Testing new ${IMAGE_OS} CI image"
@@ -72,7 +75,7 @@ pipeline {
               }
             }
           }
-          stage("Upload the new CI Image") {
+          stage("Upload the new Image") {
             options {
               timeout(time: 30, unit: 'MINUTES')
             }
@@ -84,11 +87,17 @@ pipeline {
               ]) {
                 script {
                   def imageName = readFile("image_name.txt").trim()
-
-                  sh """
                   echo "Uploading ${imageName}"
-                  ./jenkins/image_building/upload-node-image.sh ${imageName}
-                  """
+
+                  if (env.IMAGE_TYPE == 'node') {
+                    sh """
+                    ./jenkins/image_building/upload-node-image.sh ${imageName}
+                    """
+                  } else {
+                    sh """
+                    ./jenkins/image_building/upload-ci-image.sh ${imageName}
+                    """
+                  }
                 }
               }
             }

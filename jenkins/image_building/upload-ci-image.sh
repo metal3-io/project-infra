@@ -22,6 +22,15 @@ delete_old_images() {
   done
 }
 
+install_openstack_client() {
+  rm -rf venv
+  python3 -m venv venv
+
+  # shellcheck source=/dev/null
+  . venv/bin/activate
+  pip install python-openstackclient==7.0.0
+}
+
 upload_ci_image_cleura() {
 
   img_name="$1"
@@ -75,3 +84,10 @@ upload_ci_image_xerces() {
   #unset openstack variables
   unset "${!OS_@}"
 }
+
+# If the script was run directly (i.e. not sourced), run both of the upload functions
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    install_openstack_client
+    upload_ci_image_cleura "$@"
+    upload_ci_image_xerces "$@"
+fi

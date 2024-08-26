@@ -63,9 +63,4 @@ export HOSTNAME="${img_name}"
 
 disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
 
-if [[ "${IMAGE_TYPE}" == "node" ]]; then
-  echo "${img_name}" > "${REPO_ROOT}/image_name.txt"
-else
-  upload_ci_image_cleura "${img_name}"
-  upload_ci_image_xerces "${img_name}"
-fi
+echo "${img_name}" > "${REPO_ROOT}/image_name.txt"
