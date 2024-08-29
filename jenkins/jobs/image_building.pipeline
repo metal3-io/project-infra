@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('SCM') {
       matrix {
-        agent { label "metal3ci-jenkins" }
+        agent { label "metal3ci-8c16gb-ubuntu" }
         options { ansiColor('xterm') }
         axes {
           axis {
