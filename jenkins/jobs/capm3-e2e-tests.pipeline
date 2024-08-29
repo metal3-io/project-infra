@@ -21,9 +21,12 @@ script {
   }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
-  if  ("${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic') {
+  if  ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
     agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
     TIMEOUT=10800 // 3h
+  } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
+    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+    TIMEOUT=14400 // 4h
   } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
     TIMEOUT=18000 // 5h
     agent_label = "metal3ci-large-${IMAGE_OS}"
