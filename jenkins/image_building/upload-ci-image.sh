@@ -50,13 +50,6 @@ upload_ci_image_cleura() {
   openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
   # delete old images (keeps latest five)
   delete_old_images
-  # Push image to openstack Fra1 cleura
-  export OS_AUTH_URL="https://fra1.citycloud.com:5000"
-  export OS_REGION_NAME="Fra1"
-  openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
-
-  # delete old images (keeps latest five)
-  delete_old_images
 
   #unset openstack variables
   unset "${!OS_@}"
