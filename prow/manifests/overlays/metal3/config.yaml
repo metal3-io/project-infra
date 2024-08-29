@@ -2950,6 +2950,7 @@ presubmits:
     - release-24.0
     - release-24.1
     - release-25.0
+    - release-26.0
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -2967,6 +2968,12 @@ presubmits:
   - name: metal3-centos-e2e-integration-test-main
     branches:
     - main
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-centos-e2e-integration-test-release-1-8
+    branches:
+    - release-26.0
     agent: jenkins
     always_run: false
     optional: false
@@ -2997,6 +3004,12 @@ presubmits:
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-ubuntu-e2e-integration-test-release-1-8
+    branches:
+    - release-26.0
     agent: jenkins
     always_run: false
     optional: false
@@ -3038,6 +3051,12 @@ presubmits:
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-8
     branches:
+    - release-26.0
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-8
+    branches:
     - release-25.0
     agent: jenkins
     always_run: false
@@ -3069,6 +3088,12 @@ presubmits:
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
     - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-8
+    branches:
+    - release-26.0
     agent: jenkins
     always_run: false
     optional: true
