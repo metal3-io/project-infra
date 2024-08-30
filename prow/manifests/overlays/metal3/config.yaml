@@ -1679,7 +1679,7 @@ presubmits:
   - name: metal3-centos-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-6
     agent: jenkins
     always_run: false
@@ -2693,6 +2693,7 @@ presubmits:
     - release-1.8
     agent: jenkins
     always_run: false
+    optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-7-pivoting
     branches:
     - release-1.7
@@ -2985,12 +2986,6 @@ presubmits:
     optional: false
   - name: metal3-centos-e2e-integration-test-release-1-7
     branches:
-    - release-25.0
-    agent: jenkins
-    always_run: false
-    optional: false
-  - name: metal3-centos-e2e-integration-test-release-1-7
-    branches:
     - release-24.1
     agent: jenkins
     always_run: false
@@ -3014,18 +3009,6 @@ presubmits:
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-8
-    branches:
-    - release-25.0
-    agent: jenkins
-    always_run: false
-    optional: false
-  - name: metal3-ubuntu-e2e-integration-test-release-1-8
-    branches:
-    - release-24.1
-    agent: jenkins
-    always_run: false
-    optional: false
-  - name: metal3-ubuntu-e2e-integration-test-release-1-7
     branches:
     - release-25.0
     agent: jenkins
@@ -3061,18 +3044,6 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-8
-    branches:
-    - release-24.1
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-7
-    branches:
-    - release-25.0
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-7
     branches:
     - release-24.1
@@ -3098,18 +3069,6 @@ presubmits:
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-8
-    branches:
-    - release-25.0
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-8
-    branches:
-    - release-24.1
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
     branches:
     - release-25.0
     agent: jenkins
