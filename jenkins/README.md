@@ -39,10 +39,6 @@ the commands below. The job result will be posted as a comment.
   version v1beta1 and branch release-1.6 on Ubuntu
 * **/test-centos-integration-release-1-6** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.6 on CentOS
-* **/test-ubuntu-integration-release-1-5** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.5 on Ubuntu
-* **/test-centos-integration-release-1-5** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.5 on CentOS
 
 ### E2E tests
 
@@ -69,7 +65,7 @@ easier in certain cases:
 
 **Note:** Please remember to manually create a corresponding branch in
 cherry-pick bot's forked repositories (CAPM3, IPAM) in case a new release branch
-(i.e. release-1.5) is created upstream. That is because when the bot is used to
+(e.g. release-1.5) is created upstream. That is because when the bot is used to
 backport the patches to the new release branch, it has to track the new upstream
 branch to be able to open a PR against it in the future.
 
