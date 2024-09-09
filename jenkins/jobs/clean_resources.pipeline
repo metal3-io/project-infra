@@ -21,7 +21,7 @@ script {
 }
 
 pipeline {
-  agent { label 'metal3-static-workers' }
+  agent { label 'metal3ci-8c16gb-ubuntu' }
   environment {
     OS_USERNAME="metal3ci"
     OS_AUTH_URL="https://kna1.citycloud.com:5000"
@@ -58,9 +58,12 @@ pipeline {
       }
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+          withCredentials([
+                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+                usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
+            ]) {
             timestamps {
-              sh "./jenkins/scripts/integration_clean.sh"
+              sh "./jenkins/scripts/clean_resources.sh"
             }
           }
         }
