@@ -45,7 +45,7 @@ cleanup() {
 }
 
 # Install openstack client
-pip install python-openstackclient="${CLIENT_VERSION}"
+pip install python-openstackclient=="${CLIENT_VERSION}"
 
 # Cleaning up CLEURA resources
 export OS_USERNAME="${OPENSTACK_USERNAME_CLEURA}"
