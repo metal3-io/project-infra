@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eu
+
+if [[ "${DIB_DEBUG_TRACE:-1}" -gt 0 ]]; then
+    set -x
+fi
+
+# Works on Cnetos 9 stream, wasn't tested on other distros
+sudo dnf install -y lvm2
