@@ -320,7 +320,7 @@ Now you are ready to create the files.
 
 For accessing an existing instance, you can simply get the relevant credentials
 and files from the password manager and put them in the correct places (see the
-section for generating secret files). Check the IP of the bastion in cleura and
+section for generating secret files). Check the IP of the bastion in xerces and
 set it in the environment variable `BASTION_FLOATING_IP`. After this you just
 need to set up a proxy for accessing the API through the bastion:
 
