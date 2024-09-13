@@ -14,9 +14,6 @@ resources:
 - pdb.yaml
 - limitrange.yaml
 
-commonLabels:
-  app.kubernetes.io/instance: metal3
-  app.kubernetes.io/part-of: prow
 
 # For some of the configmaps and secrets we could use suffix hash,
 # but some will be used directly by prow, which cannot know about
@@ -93,3 +90,8 @@ patches:
 - path: toleration-node-selector-patch.yaml
   target:
     kind: Deployment
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/instance: metal3
+    app.kubernetes.io/part-of: prow
