@@ -2,6 +2,8 @@
 
 set -eux
 
+COMMON_IMAGE_NAME="metal3-ci-${IMAGE_OS}-latest"
+
 delete_old_images() {
 
   # We keep last RETENTION_NUM of metal3ci images and delete old ones when new image has been pushed
@@ -47,7 +49,17 @@ upload_ci_image_cleura() {
   export OS_AUTH_VERSION=3
   export OS_IDENTITY_API_VERSION=3
 
-  openstack image create "${img_name}" --file "${img_name}".qcow2 --disk-format=qcow2
+# Check if the common image already exists
+  if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
+    # Get the original name of the current common image
+    original_name=$(openstack image show -f value -c properties "${COMMON_IMAGE_NAME}" | grep image_name | cut -d'=' -f2)
+    # Rename the existing common image back to its original name
+    openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
+  fi
+
+  # Create the new image with the common name
+  openstack image create "${COMMON_IMAGE_NAME}" --file "${img_name}".qcow2 --disk-format=qcow2 --property image_name="${img_name}"
+
   # delete old images (keeps latest five)
   delete_old_images
 
@@ -68,8 +80,18 @@ upload_ci_image_xerces() {
   export OS_USER_DOMAIN_NAME="xerces"
   export OS_IDENTITY_API_VERSION=3
 
+ # Check if the common image already exists
+  if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
+    # Get the original name of the current common image
+    original_name=$(openstack image show -f value -c properties "${COMMON_IMAGE_NAME}" | grep image_name | cut -d'=' -f2)
+    # Rename the existing common image back to its original name
+    openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
+  fi
+
   qemu-img convert -f qcow2 -O raw "${img_name}".qcow2 "${img_name}".raw
-  openstack image create "${img_name}" --file "${img_name}".raw --disk-format=raw
+
+  # Create the new image with the common name
+  openstack image create "${COMMON_IMAGE_NAME}" --file "${img_name}".raw --disk-format=raw --property image_name="${img_name}"
 
   # delete old images (keeps latest five)
   delete_old_images
