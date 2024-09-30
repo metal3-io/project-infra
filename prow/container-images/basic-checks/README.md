@@ -3,9 +3,9 @@
 This Dockerfile is used to create the `quay.io/metal3-io/basic-checks` image,
 which is used to run the basic tests in prow.
 
-## Steps to build `basic-checks` image
+## Updating image
 
-- Determine the go version to use, for e.g. `1.22`
-- Login to quay.io `docker login quay.io
-- Build the image with `docker build --build-arg GO_VERSION=1.22 -t quay.io/metal3-io/basic-checks:golang-1.22`
-- Push the image to quay: `docker push quay.io/metal3-io/basic-checks:golang-1.22`
+Make a PR and upon merging, a workflow will build and push the image to Quay to
+be used in future test runs. If you switch Golang minor version, update the
+workflow file in `.github/workflows/build-images-action.yml` and then update
+Prow `config.yaml` accordingly.
