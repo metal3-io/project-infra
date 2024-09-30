@@ -1,0 +1,26 @@
+name: build-images-action
+
+on:
+  push:
+    branches:
+    - 'main'
+    paths:
+    - 'prow/container-images/**/Dockerfile'
+    - '.github/workflows/build-images-action.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build_basic_checks:
+    name: Build basic-checks image
+    if: github.repository == 'metal3-io/project-infra'
+    uses: ./.github/workflows/container-image-build.yml
+    with:
+      image-name: 'basic-checks'
+      image-tag: 'golang-1.22'
+      pushImage: true
+    secrets:
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
