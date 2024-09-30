@@ -53,8 +53,8 @@ jobs:
       run: |
         BASE_TAG=`echo "${{ github.ref_name }}" | sed 's/\//_/'`
         IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ github.sha }}"
-        if [[ -n "${{ inputs.imageTag }}" ]]; then
-          IMAGE_TAGS="${{ inputs.imageTag }}"
+        if [[ -n "${{ inputs.image-tag }}" ]]; then
+          IMAGE_TAGS="${{ inputs.image-tag }}"
         elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
         fi
