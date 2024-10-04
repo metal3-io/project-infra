@@ -251,7 +251,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   Nordix/metal3-dev-tools:
@@ -281,7 +281,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   Nordix/sles-ironic-python-agent-builder:
@@ -311,7 +311,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   metal3-io/ironic-standalone-operator:
@@ -343,7 +343,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   metal3-io/baremetal-operator:
@@ -382,7 +382,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: markdownlint
     branches:
@@ -869,7 +869,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: markdownlint
     branches:
@@ -1281,7 +1281,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -1325,7 +1325,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
@@ -1592,7 +1592,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -1856,7 +1856,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -1940,7 +1940,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '(\.md|markdownlint\.sh)$'
@@ -2346,7 +2346,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
@@ -2409,7 +2409,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   metal3-io/ironic-image:
@@ -2445,7 +2445,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
@@ -2596,7 +2596,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
@@ -2660,7 +2660,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   metal3-io/utility-images:
@@ -2690,7 +2690,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
 
   metal3-io/metal3-io.github.io:
@@ -2720,7 +2720,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.9.0@sha256:71370df6c967bae548b0bfd0ae313ddf44bfad87da76f88180eff55c6264098c
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: spellcheck
     run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
