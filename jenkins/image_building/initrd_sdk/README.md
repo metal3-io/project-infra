@@ -35,6 +35,6 @@ to other systemd services to prepare the root file system. The intention is to
 have a deterministic check/wait loop before the initrd root switching is
 initiated in order to avoid potential race conditions.
 
-This script has to be executed by the `initrd-sitch-root.service` as a
+This script has to be executed by the `initrd-switch-root.service` as a
 `ExecStartPre` option such as:
 `ExecStartPre=/bin/sh -c '/etc/verify-realroot.sh'`
