@@ -10,7 +10,6 @@ echo "Running Ironic image building script"
 
 IPA_REPO="${IPA_REPO:-https://opendev.org/openstack/ironic-python-agent.git}"
 IPA_BRANCH="${IPA_BRANCH:-master}"
-IPA_REF="${IPA_REF:-HEAD}"
 IPA_BUILDER_REPO="${IPA_BUILDER_REPO:-https://opendev.org/openstack/ironic-python-agent-builder.git}"
 IPA_BUILDER_BRANCH="${IPA_BUILDER_BRANCH:-master}"
 IPA_BUILDER_COMMIT="${IPA_BUILDER_COMMIT:-HEAD}"
