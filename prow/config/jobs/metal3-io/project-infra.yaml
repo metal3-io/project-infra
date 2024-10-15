@@ -239,3 +239,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  - name: metal3-fullstack-build
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
