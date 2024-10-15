@@ -1,0 +1,13 @@
+[Unit]
+Description=Unseal TPM key and open LUKS volume
+DefaultDependencies=no
+Before=initrd.target
+Wants=initrd-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/etc/unlock-mount-luks.sh'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=initrd-switch-root.target

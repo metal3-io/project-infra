@@ -21,3 +21,20 @@ dracut and the script relies on only two external tools `blkid` and
 `systemd-cryptsetup`. If an image was built with `dracut` and the `dracut`
 module `crypt` is enabled then both `blkid` and `systemd-cryptsetup` should be
 present in the initrd environment.
+
+## unseal-and-open-luks.service
+
+This is the systemd service unit file that automatically starts the
+`unlock-mount-luks.sh`. This service has to be enabled with `systemctl enable`
+during or after the initrd build process.
+
+## verify-realroot.sh
+
+This script is used to provide a controlled wait loop in order to give time
+to other systemd services to prepare the root file system. The intention is to
+have a deterministic check/wait loop before the initrd root switching is
+initiated in order to avoid potential race conditions.
+
+This script has to be executed by the `initrd-sitch-root.service` as a
+`ExecStartPre` option such as:
+`ExecStartPre=/bin/sh -c '/etc/verify-realroot.sh'`
