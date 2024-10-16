@@ -2,8 +2,6 @@ import java.text.SimpleDateFormat
 
 ci_git_credential_id = "metal3-jenkins-github-username-token"
 
-// 10 minutes
-def CLEAN_TIMEOUT = 600
 // default 3h for other non-pivot feature tests
 def TIMEOUT = 10800
 
@@ -54,7 +52,6 @@ pipeline {
     BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES = 4
-    TESTS_FOR = "${TESTS_FOR}"
     GINKGO_FOCUS = "${GINKGO_FOCUS}"
     GINKGO_SKIP = "${GINKGO_SKIP}"
   }
