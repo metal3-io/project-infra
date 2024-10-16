@@ -20,6 +20,9 @@ mkdir -p "${LOGS_DIR}"
 if [[ -d "/tmp/target_cluster_logs" ]]; then
     mkdir -p "${LOGS_DIR}/k8s_target_cluster"
     cp -r /tmp/target_cluster_logs/* "${LOGS_DIR}/k8s_target_cluster/"
+    if [[ -d "/tmp/clusters" ]]; then
+        cp -r /tmp/clusters/* "${LOGS_DIR}/clusters/"
+    fi
 fi
 
 if [[ "${TESTS_FOR}" == "e2e_tests"* ]]; then
