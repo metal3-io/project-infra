@@ -144,6 +144,10 @@ if _is_luks "${root_device_path}"; then
         config_drive_path="${config_drive_common}${config_drive_part_num}"
     fi
     if _is_luks "${config_drive_path}"; then
+        # Create an empty file to signal to other services that the config
+        # drive was also encrypted, other services might want to know
+        # if they need to keep an eye out for the config drive
+        true > "/tmp/crypt_config"
         printf "Unlocking config drive %s\n" "${config_drive_path}"
         printf "INFO: config-drive:%s disk:%s part_count:%s " \
             "${config_drive_path}" "${root_device}" "${part_count}"
