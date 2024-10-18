@@ -1,12 +1,12 @@
 [Unit]
 Description=Unseal TPM key and open LUKS volume
 DefaultDependencies=no
-Before=initrd.target
-Wants=initrd-fs.target
+Before=initrd-switch-root.target
+After=initrd-udevadm-cleanup-db.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c '/etc/unlock-mount-luks.sh'
+ExecStart=/bin/sh -c '/etc/unlock-mount-luks.sh || /bin/dracut-emergency'
 RemainAfterExit=yes
 
 [Install]

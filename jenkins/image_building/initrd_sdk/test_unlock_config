@@ -1,0 +1,20 @@
+#!/bin/bash
+# This file is used to provide a test configuration for the
+# unlock-mount-luks.sh
+# This script acts as an example config file thus to avoid needless shellchecks
+# the '.sh' extension has been removed intentionally.
+
+# key handling
+key_script="${KEY_SCRIPT:-}"
+auth="${CRYPT_AUTH:-pcr:sha256:0}"
+secret_address="${SECRET_ADDRESS:-}"
+# root partition
+root_dev_part_path="${CRYPT_ROOT_DEV:-}"
+# config drive
+config_drive_dev_path="${CONFIG_DEV_PATH:-}"
+config_drive_part_num="${CONFIG_PART_NUM:-}"
+# dependency checks
+preparation_timeout="${PREP_TIMEOUT:-2}"
+# test config
+dry_run="${DRY_RUN:-true}"
+no_preparation="${NO_PREP:-true}"
