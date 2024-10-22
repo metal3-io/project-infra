@@ -6,7 +6,6 @@ set -ux
 LOGS_TARBALL="logs-${BUILD_TAG}.tgz"
 LOGS_DIR="logs-${BUILD_TAG}"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
-TESTS_FOR="${TESTS_FOR:-}"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
     #Must match with run_integration_tests.sh
@@ -22,16 +21,17 @@ if [[ -d "/tmp/target_cluster_logs" ]]; then
     cp -r /tmp/target_cluster_logs/* "${LOGS_DIR}/k8s_target_cluster/"
 fi
 
-if [[ "${TESTS_FOR}" == "e2e_tests"* ]]; then
+
+# only if we triggered the e2e from the capm3 repo it will be cloned under tested_repo
+# else it is under metal3
+if [[ -d "${HOME}/tested_repo/_artifacts" ]]; then
     mkdir -p "${LOGS_DIR}/e2e_artifacts"
-    # only if we triggered the e2e from the capm3 repo it will be cloned under tested_repo
-    # else it is under metal3
-    if [[ -d "${HOME}/tested_repo/_artifacts" ]]; then
-        cp -r "${HOME}/tested_repo/_artifacts/" "${LOGS_DIR}/e2e_artifacts"
-    else
-        cp -r "${HOME}/metal3/_artifacts/" "${LOGS_DIR}/e2e_artifacts"
-    fi
+    cp -r "${HOME}/tested_repo/_artifacts/" "${LOGS_DIR}/e2e_artifacts"
+else
+    mkdir -p "${LOGS_DIR}/e2e_artifacts"
+    cp -r "${HOME}/metal3/_artifacts/" "${LOGS_DIR}/e2e_artifacts"
 fi
+
 
 fetch_k8s_logs()
 {
