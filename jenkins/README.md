@@ -114,7 +114,7 @@ to familiarize yourself with the JJB syntax. Our job definitions are stored in
 [Nordix Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd) instance under
 `cicd/jjb/metal3/` path. Please, note that
 [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
-gerrit repository includes job defitinions for other projects as well that share
+gerrit repository includes job definitions for other projects as well that share
 the same Jenkins environment.
 
 When you add/remove a new job definition in `cicd/jjb/metal3/` path, you will
