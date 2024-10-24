@@ -1,5 +1,7 @@
 # ubuntu-node element
 
+<!-- cSpell:ignore datasource,devuser -->
+
 ## Overview
 
 **ubuntu-node** element installs packages and makes configuration changes
@@ -8,8 +10,8 @@ shell scripts:  ***setup-repos*** which runs during the pre-install.d phase,
 and ***install***  which runs during the install.d phase. Finally
 ***pre-pull-images*** which runs during the post-install step.
 
-Note that cloud-init datasource defaults to EC2 exclusivley.
-Which is different from a fresh Ubuntu installation that usally has all
+Note that cloud-init datasource defaults to EC2 exclusively.
+Which is different from a fresh Ubuntu installation that usually has all
 different options. This can be set with env variable `DIB_CLOUD_INIT_DATASOURCES`.
 See cloud-init element documentation for more information
 [cloud-init documentation](https://docs.openstack.org/diskimage-builder/latest/elements/cloud-init/README.html)

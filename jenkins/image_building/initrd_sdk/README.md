@@ -1,5 +1,7 @@
 # Initrd SDK
 
+<!-- cSpell:ignore LUKS,dracut,realroot -->
+
 The Initrd SDK folder contains scripts and documentation to help integrate
 features e.g. LUKS and TPM support into the linux "initrd/initramfs" of disk
 images built as part of the Metal3 project.
