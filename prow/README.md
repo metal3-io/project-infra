@@ -1,5 +1,7 @@
 # Prow
 
+<!-- cSpell:ignore openstackcluster -->
+
 Metal3 Prow dashboard: <https://prow.apps.test.metal3.io>
 
 ## Access Controls

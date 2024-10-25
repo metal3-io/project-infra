@@ -1608,6 +1608,20 @@ presubmits:
           value: "TRUE"
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
+  - name: spellcheck
+    run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/spellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: ghcr.io/streetsidesoftware/cspell:8.13.3@sha256:03df0e485775a43531c9c0e829227f39b3380796e92faab4166137dc5712d40a
+        imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
     agent: jenkins

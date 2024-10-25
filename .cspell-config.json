@@ -1,0 +1,52 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "**/.github/workflows/**"
+  ],
+  "patterns": [
+    {
+      "name": "multiline-code-block",
+      "pattern": "/^(>)?\\s*```(?:.|\\s)+?^(>)?\\s*```/mig"
+    },
+    {
+      "name": "inline-code",
+      "pattern": "/`[^`].*`[^`]/g"
+    }
+  ],
+  "ignoreRegExpList": [
+    "multiline-code-block",
+    "inline-code"
+  ],
+  "words": [
+    "autoscaler",
+    "baremetal",
+    "capi",
+    "capm",
+    "cherrypick",
+    "cherrypicking",
+    "cicd",
+    "clusterapi",
+    "clusterctl",
+    "devuser",
+    "diskimage",
+    "estjorvas",
+    "gerrit",
+    "ghprb",
+    "HMAC",
+    "ipam",
+    "keypair",
+    "kubeadm",
+    "kubeadmcontrolplane",
+    "kubeconfig",
+    "kubelet",
+    "kustomizations",
+    "loadbalancer",
+    "machinedeployment",
+    "nordix",
+    "openstackmachinetemplate",
+    "presubmits",
+    "tmpfs",
+    "xerces"
+  ]
+}
