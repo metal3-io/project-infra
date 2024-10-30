@@ -28,7 +28,7 @@ script {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
     TIMEOUT=14400 // 4h
   } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
-    TIMEOUT=18000 // 5h
+    TIMEOUT=21600 // 6h
     agent_label = "metal3ci-large-${IMAGE_OS}"
   } else {
     agent_label = "metal3ci-large-${IMAGE_OS}"
