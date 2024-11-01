@@ -49,8 +49,8 @@ fi
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   # The default data source for cloud-init element is exclusively Amazon EC2
   export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive"
-  export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.31.0"}"
-  export CRIO_VERSION="${CRIO_VERSION:-"v1.30.4"}"
+  export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.31.2"}"
+  export CRIO_VERSION="${CRIO_VERSION:-"v1.31.1"}"
   export CRICTL_VERSION="${CRICTL_VERSION-"v1.31.1"}"
   img_name="${IMAGE_OS^^}_${numeric_release}_NODE_IMAGE_K8S_${KUBERNETES_VERSION}"
 else
