@@ -135,14 +135,17 @@ external_plugins:
 config_updater:
   maps:
     # Update the config configmap whenever config.yaml changes
-    prow/manifests/overlays/metal3/config.yaml:
+    prow/config/config.yaml:
       name: config
     # Update the plugins configmap whenever plugins.yaml changes
-    prow/manifests/overlays/metal3/plugins.yaml:
+    prow/config/plugins.yaml:
       name: plugins
     # Update the label-config configmap whenever labels.yaml changes
-    prow/manifests/overlays/metal3/labels.yaml:
+    prow/config/labels.yaml:
       name: label-config
+    # Update the job-config configmap whenever anything under jobs changes
+    prow/config/jobs/**/*.yaml:
+      name: job-config
 
 require_matching_label:
 # triage configuration

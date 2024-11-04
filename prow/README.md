@@ -442,6 +442,18 @@ You may also have to create a keypair with the Metal3 CI ssh key.
     kubectl apply -k manifests/overlays/metal3
    ```
 
+1. Create config (updated automatically by prow after this)
+
+   ```bash
+   kubectl -n prow create configmap config --from-file=config/config.yaml
+   kubectl -n prow create configmap plugins --from-file=config/plugins.yaml
+   kubectl -n prow create configmap label-config --from-file=config/labels.yaml
+   kubectl -n prow create configmap job-config \
+      --from-file=config/jobs/metal3-io \
+      --from-file=config/jobs/Nordix \
+      --from-file=config/jobs
+   ```
+
 ## Enabling Metal3 prow for new org/repo
 
 Metal3 prow is currently working with two Github organizations(orgs):
