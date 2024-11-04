@@ -25,6 +25,7 @@ spec:
         - --continue-on-error=true
         - --plugin-config=/etc/plugins/plugins.yaml
         - --config-path=/etc/config/config.yaml
+        - --job-config-path=/etc/job-config
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --s3-credentials-file=/etc/s3-credentials/service-account.json
@@ -43,6 +44,9 @@ spec:
         - name: s3-credentials
           mountPath: /etc/s3-credentials
           readOnly: true
+        - name: job-config
+          mountPath: /etc/job-config
+          readOnly: true
       volumes:
       - name: github-token
         secret:
@@ -56,6 +60,9 @@ spec:
       - name: s3-credentials
         secret:
           secretName: s3-credentials
+      - name: job-config
+        configMap:
+          name: job-config
 ---
 apiVersion: v1
 kind: ServiceAccount

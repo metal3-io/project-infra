@@ -27,6 +27,7 @@ spec:
         image: gcr.io/k8s-prow/deck:v20240730-12bb925b4
         args:
         - --config-path=/etc/config/config.yaml
+        - --job-config-path=/etc/job-config
         - --plugin-config=/etc/plugins/plugins.yaml
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
@@ -42,6 +43,9 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/config
+          readOnly: true
+        - name: job-config
+          mountPath: /etc/job-config
           readOnly: true
         - name: github-token
           mountPath: /etc/github
@@ -69,6 +73,9 @@ spec:
       - name: config
         configMap:
           name: config
+      - name: job-config
+        configMap:
+          name: job-config
       - name: github-token
         secret:
           secretName: github-token

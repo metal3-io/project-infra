@@ -39,6 +39,7 @@ spec:
         image: gcr.io/k8s-prow/jenkins-operator:v20240730-12bb925b4
         args:
         - --config-path=/etc/config/config.yaml
+        - --job-config-path=/etc/job-config
         - --jenkins-url=https://jenkins.nordix.org
         - --jenkins-user=metal3.bot@gmail.com
         - --jenkins-token-file=/etc/jenkins/token
@@ -61,6 +62,9 @@ spec:
         - name: config
           mountPath: /etc/config
           readOnly: true
+        - name: job-config
+          mountPath: /etc/job-config
+          readOnly: true
       volumes:
       - name: github-token
         secret:
@@ -71,6 +75,9 @@ spec:
       - name: config
         configMap:
           name: config
+      - name: job-config
+        configMap:
+          name: job-config
 ---
 apiVersion: v1
 kind: ServiceAccount
