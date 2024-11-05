@@ -21,10 +21,10 @@ rt_upload_artifact() {
   ANONYMOUS="${3:-1}"
 
   _CMD="curl \
-    $( ([[ "${ANONYMOUS}" != 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
+    --fail-with-body \
+    $( ([[ "${ANONYMOUS}" -ne 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
     ${RT_URL}/${DST_PATH} \
     -T ${SRC_PATH}"
-
   eval "${_CMD}"
 }
 
@@ -46,7 +46,7 @@ rt_download_artifact() {
   ANONYMOUS="${3:-1}"
 
   _CMD="curl -s \
-    $( ([[ "${ANONYMOUS}" != 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
+    $( ([[ "${ANONYMOUS}" -ne 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
     -XGET \
     ${RT_URL}/${SRC_PATH} \
     -o ${DST_PATH}"
@@ -71,7 +71,7 @@ rt_cat_artifact() {
   ANONYMOUS="${2:-1}"
 
   _CMD="curl -s \
-    $( ([[ "${ANONYMOUS}" != 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
+    $( ([[ "${ANONYMOUS}" -ne 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
     -XGET \
     ${RT_URL}/${SRC_PATH}"
 
@@ -95,7 +95,7 @@ rt_delete_artifact() {
   ANONYMOUS="${2:-1}"
 
   _CMD="curl -s \
-    $( ([[ "${ANONYMOUS}" != 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
+    $( ([[ "${ANONYMOUS}" -ne 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
     -XDELETE \
     ${RT_URL}/${DST_PATH}"
 
@@ -120,7 +120,7 @@ rt_list_directory() {
   ANONYMOUS="${2:-1}"
 
   _CMD="curl -s \
-    $( ([[ "${ANONYMOUS}" != 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
+    $( ([[ "${ANONYMOUS}" -ne 1 ]] && echo " -u${RT_USER:?}:${RT_TOKEN:?}") || true) \
     -XGET \
     ${RT_URL}/api/storage/${DST_PATH}"
 
