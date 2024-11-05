@@ -10,7 +10,7 @@ rt_delete_artifact() {
 rt_upload_artifact() {
     local src_path="${1:?}"
     local dst_path="${2:?}"
-    curl -s -XPUT -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/${dst_path}" -T "${src_path}"
+    curl -s --fail-with-body -XPUT -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/${dst_path}" -T "${src_path}"
 }
 
 rt_list_directory() {
