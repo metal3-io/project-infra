@@ -1,11 +1,6 @@
 presubmits:
   metal3-io/ip-address-manager:
   - name: gomod
-    branches:
-    - main
-    - release-1.8
-    - release-1.7
-    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -21,11 +16,6 @@ presubmits:
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying the Makefile and hack/* scripts only
   - name: test
-    branches:
-    - main
-    - release-1.8
-    - release-1.7
-    - release-1.6
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
     spec:
@@ -85,11 +75,6 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: unit
-    branches:
-    - main
-    - release-1.8
-    - release-1.7
-    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -103,11 +88,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.22
   - name: generate
-    branches:
-    - main
-    - release-1.8
-    - release-1.7
-    - release-1.6
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:

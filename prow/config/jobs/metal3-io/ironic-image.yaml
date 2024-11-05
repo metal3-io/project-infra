@@ -15,12 +15,6 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: markdownlint
-    branches:
-    - main
-    - release-24.0
-    - release-24.1
-    - release-25.0
-    - release-26.0
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:

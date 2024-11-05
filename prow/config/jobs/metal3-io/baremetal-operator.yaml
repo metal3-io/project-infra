@@ -1,11 +1,6 @@
 presubmits:
   metal3-io/baremetal-operator:
   - name: gomod
-    branches:
-    - main
-    - release-0.8
-    - release-0.6
-    - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -68,11 +63,6 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: generate
-    branches:
-    - main
-    - release-0.8
-    - release-0.6
-    - release-0.5
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -96,11 +86,6 @@ presubmits:
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
   - name: test
-    branches:
-    - main
-    - release-0.8
-    - release-0.6
-    - release-0.5
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
     spec:

@@ -56,6 +56,7 @@ tide:
     - metal3-io/baremetal-operator
     - metal3-io/cluster-api-provider-metal3
     - metal3-io/community
+    - metal3-io/ip-address-manager
     - metal3-io/ironic-client
     - metal3-io/ironic-hardware-inventory-recorder-image
     - metal3-io/ironic-image
@@ -67,7 +68,6 @@ tide:
     - metal3-io/metal3-docs
     - metal3-io/metal3-io.github.io
     - metal3-io/project-infra
-    - metal3-io/ip-address-manager
     - metal3-io/utility-images
     - Nordix/metal3-dev-tools
     - Nordix/metal3-clusterapi-docs
