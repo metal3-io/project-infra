@@ -1,0 +1,26 @@
+presubmits:
+  metal3-io/ironic-image:
+  - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-dev-env-integration-test-centos-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    branches:
+    - release-24.0
+    agent: jenkins
+    always_run: false
+    optional: true

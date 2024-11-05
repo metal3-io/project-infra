@@ -32,22 +32,6 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
-  - name: markdownlint
-    branches:
-    - release-0.5
-    run_if_changed: '(\.md|markdownlint\.sh)$'
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/markdownlint.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
-        imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
@@ -119,45 +103,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-basic-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-basic-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-basic-test-release-1-6
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-basic-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-basic-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-basic-test-release-1-6
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -168,45 +116,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-6
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-6
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -217,45 +129,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-8-pivoting
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-pivoting
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-6-pivoting
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-centos-e2e-feature-test-main-remediation
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-8-remediation
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-remediation
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-6-remediation
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -265,45 +141,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-8-features
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-features
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-6-features
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-pivoting
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-8-pivoting
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-pivoting
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-6-pivoting
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -313,45 +153,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-8-remediation
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-remediation
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-6-remediation
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-features
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-8-features
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-features
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-6-features
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -362,46 +166,10 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-29-1-30-upgrade-test-main
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-6
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true
@@ -411,45 +179,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-6
-    branches:
-    - release-0.5
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
     - main
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-8
-    branches:
-    - release-0.8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
-    branches:
-    - release-0.6
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
-    branches:
-    - release-0.5
     agent: jenkins
     always_run: false
     optional: true

@@ -1,0 +1,90 @@
+presubmits:
+  metal3-io/ip-address-manager:
+  - name: markdownlint
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    branches:
+    - release-1.6
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint:0.13.0@sha256:9c0cdfb64fd3f1d3bdc5181629b39c2e43b6a52fc9fdc146611e1860845bbae0
+        imagePullPolicy: Always
+  - name: metal3-centos-e2e-basic-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-centos-e2e-feature-test-release-1-6-pivoting
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-6-remediation
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-6-features
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-pivoting
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-remediation
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-features
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-6
+    branches:
+    - release-1.6
+    agent: jenkins
+    always_run: false
+    optional: true
