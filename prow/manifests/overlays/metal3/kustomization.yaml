@@ -15,25 +15,11 @@ resources:
 - limitrange.yaml
 
 
-# For some of the configmaps and secrets we could use suffix hash,
+# For some of the secrets we could use suffix hash,
 # but some will be used directly by prow, which cannot know about
 # the suffix. So we disable it.
 generatorOptions:
   disableNameSuffixHash: true
-
-configMapGenerator:
-- files:
-  - plugins.yaml
-  name: plugins
-  namespace: prow
-- files:
-  - config.yaml
-  name: config
-  namespace: prow
-- files:
-  - labels.yaml
-  name: label-config
-  namespace: prow
 
 secretGenerator:
 - files:

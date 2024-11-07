@@ -1,0 +1,264 @@
+presubmits:
+  metal3-io/metal3-dev-env:
+  - name: shellcheck
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
+  - name: markdownlint
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
+        imagePullPolicy: Always
+  # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-basic-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-basic-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-basic-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-basic-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-integration-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-centos-e2e-integration-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_job}
+  - name: metal3-centos-e2e-feature-test-main-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-8-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-7-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-6-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-main-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-8-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-7-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-6-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-main-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-8-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-7-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-6-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-main-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-8-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-7-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-pivoting
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-main-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-8-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-7-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-remediation
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-main-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-8-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-7-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-6-features
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-clusterctl-upgrade-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-1-29-1-30-upgrade-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-1-28-1-29-upgrade-test-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    agent: jenkins
+    always_run: false
+    optional: false
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-8
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-6
+    agent: jenkins
+    always_run: false
+    optional: true
+  # name: {job_prefix}-bml-integration-test-{image_os}
+  - name: metal3-bml-integration-test-centos
+    agent: jenkins
+    always_run: false
+    optional: true

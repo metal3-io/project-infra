@@ -1,0 +1,136 @@
+prowjob_namespace: prow
+pod_namespace: test-pods
+log_level: debug
+
+# Sinker configurations (for cleanup)
+sinker:
+  resync_period: 1m
+  max_prowjob_age: 24h
+  max_pod_age: 30m
+  terminated_pod_ttl: 2h
+
+plank:
+  job_url_prefix_config:
+    "*": https://prow.apps.test.metal3.io/view/
+  report_templates:
+    "*": >-
+      [Full PR test history](https://prow.apps.test.metal3.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}). [Your PR dashboard](https://prow.apps.test.metal3.io/pr?query=is:pr+state:open+author:{{with index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
+  default_decoration_configs:
+    "*":
+      gcs_configuration:
+        bucket: s3://prow-logs
+        path_strategy: explicit
+      s3_credentials_secret: s3-credentials
+      utility_images:
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20240730-12bb925b4
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20240730-12bb925b4
+        initupload: gcr.io/k8s-prow/initupload:v20240730-12bb925b4
+        sidecar: gcr.io/k8s-prow/sidecar:v20240730-12bb925b4
+      resources:
+        clonerefs:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        initupload:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        place_entrypoint:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        sidecar:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+
+tide:
+  merge_method:
+    metal3-io: merge
+    Nordix/metal3-dev-tools: rebase
+    Nordix/metal3-clusterapi-docs: rebase
+    Nordix/sles-ironic-python-agent-builder: rebase
+  queries:
+  - repos:
+    - metal3-io/.github
+    - metal3-io/baremetal-operator
+    - metal3-io/cluster-api-provider-metal3
+    - metal3-io/community
+    - metal3-io/ip-address-manager
+    - metal3-io/ironic-client
+    - metal3-io/ironic-hardware-inventory-recorder-image
+    - metal3-io/ironic-image
+    - metal3-io/ironic-agent-image
+    - metal3-io/ironic-ipa-downloader
+    - metal3-io/ironic-standalone-operator
+    - metal3-io/mariadb-image
+    - metal3-io/metal3-dev-env
+    - metal3-io/metal3-docs
+    - metal3-io/metal3-io.github.io
+    - metal3-io/project-infra
+    - metal3-io/utility-images
+    - Nordix/metal3-dev-tools
+    - Nordix/metal3-clusterapi-docs
+    - Nordix/sles-ironic-python-agent-builder
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - needs-rebase
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+  context_options:
+    # Use branch protection options to define required and optional contexts
+    from-branch-protection: true
+
+#
+# Use prow to manage the configuration of github branch protection.
+# This is what controls which github status checks (or CI jobs) must
+# be passing for a PR to merge.
+#
+# Docs: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/branchprotector
+#
+branch-protection:
+  orgs:
+    Nordix:
+      # Require "always_run: true" jobs to pass before merging.
+      # To turn this off for a given job, set "optional: true"
+      # in the job definition.
+      protect: true
+    metal3-io:
+      # Require "always_run: true" jobs to pass before merging.
+      # To turn this off for a given job, set "optional: true"
+      # in the job definition.
+      protect: true
+
+deck:
+  spyglass:
+    size_limit: 500000000 # 500MB
+    lenses:
+    - lens:
+        name: metadata
+      required_files:
+      - started.json|finished.json
+    - lens:
+        config:
+        name: buildlog
+      required_files:
+      - build-log.txt
+    - lens:
+        name: junit
+      required_files:
+      - .*/junit.*\.xml
+    - lens:
+        name: podinfo
+      required_files:
+      - podinfo.json
+  external_agent_logs:
+  - agent: jenkins
+    url_template: "http://jenkins-operator/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/consoleText"
+
+jenkins_operators:
+- max_concurrency: 150
+  max_goroutines: 20
+  job_url_template: "https://jenkins.nordix.org/view/Metal3/job/{{.Spec.Job}}/{{.Status.JenkinsBuildID}}/"
