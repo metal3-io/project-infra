@@ -9,6 +9,7 @@ from typing import DefaultDict, List
 
 # pip3 install PyYAML
 import yaml
+import os
 
 
 def get_external_branchprotection(data: dict) -> DefaultDict[str, List[str]]:
@@ -45,12 +46,18 @@ def get_prow_branchprotection(data: dict) -> DefaultDict[str, List[str]]:
 
 def parse_args() -> Namespace:
     """parse arguments"""
-    parser = ArgumentParser(description="Dump required tests out of Prow config.yaml")
+    parser = ArgumentParser(description="Dump required tests out of Prow config.yaml and job-config")
     parser.add_argument(
         "file",
         type=str,
         help="""
-        Prow's config.yaml (script cannot handle split off config, yet)
+        Prow's config.yaml (if you define presubmit separately, see --job-dir)
+        """,
+    )
+    parser.add_argument(
+        "--job-dir",
+        help="""
+        folder containing additional job definition yaml files. This will be search recursively for yaml files.
         """,
     )
     args = parser.parse_args()
@@ -71,7 +78,18 @@ def main():
     pre_submit = get_prow_branchprotection(presubmits)
     required.update(pre_submit)
 
-    for repo, checks in required.items():
+    if args.job_dir:
+        for root, _, filenames in os.walk(args.job_dir):
+            for filename in filenames:
+                if not filename.endswith(".yaml"):
+                    continue
+                with open(os.path.join(root, filename), "r", encoding="utf-8") as fh:
+                    parsed_data = yaml.safe_load(fh)
+                    presubmits = parsed_data.get("presubmits", {})
+                    pre_submit = get_prow_branchprotection(presubmits)
+                    required.update(pre_submit)
+
+    for repo, checks in sorted(required.items()):
         print(f"{repo}:")
         for check in checks:
             print(f"- {check}")
