@@ -4,6 +4,18 @@
 
 Metal3 Prow dashboard: <https://prow.apps.test.metal3.io>
 
+## Prow config and jobs
+
+The configuration files for prow are in the `config` directory. The prow jobs
+have been split out into multiple files to make managing them easier. They can
+be found under `config/jobs`. They are all collected into a ConfigMap
+`job-config` that prow can access.
+
+The jobs are sorted based on github organization and repository. For
+repositories with release branches, we keep one file per branch. This way it is
+easy to add tests for a new branch by copying an existing file, and removing
+tests for a branch by just deleting the corresponding file.
+
 ## Access Controls
 
 - To merge, patches must have `/approve` and `/lgtm`, which apply the `approved`
