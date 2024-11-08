@@ -167,3 +167,27 @@ triggers:
   - metal3-io
   # Enable prow to trigger GitHub workflows.
   trigger_github_workflows: true
+
+milestone_applier:
+  metal3-io/cluster-api-provider-metal3:
+    main: v1.9
+    release-1.8: v1.8
+    release-1.7: v1.7
+    release-1.6: v1.6
+  metal3-io/baremetal-operator:
+    main: v0.9
+    release-0.8: v0.8
+    release-0.7: v0.7
+    release-0.6: v0.6
+    release-0.5: v0.5
+  metal3-io/ip-address-manager:
+    main: v1.9
+    release-1.8: v1.8
+    release-1.7: v1.7
+    release-1.6: v1.6
+  metal3-io/ironic-image:
+    main: v27.0
+    release-26.0: v26.0
+    release-25.0: v25.0
+    release-24.1: v24.1
+    release-24.0: v24.0
