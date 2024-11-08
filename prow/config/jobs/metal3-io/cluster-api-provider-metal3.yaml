@@ -1,6 +1,8 @@
 presubmits:
   metal3-io/cluster-api-provider-metal3:
   - name: gomod
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -16,6 +18,8 @@ presubmits:
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
   - name: test
+    branches:
+    - main
     run_if_changed: "^(Makefile|hack/.*)$"
     decorate: true
     spec:
@@ -29,8 +33,6 @@ presubmits:
   - name: markdownlint
     branches:
     - main
-    - release-1.8
-    - release-1.7
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
@@ -45,6 +47,8 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   - name: shellcheck
+    branches:
+    - main
     run_if_changed: '((\.sh)|^Makefile)$'
     decorate: true
     spec:
@@ -59,6 +63,8 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: generate
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -73,6 +79,8 @@ presubmits:
         image: docker.io/golang:1.22
         imagePullPolicy: Always
   - name: unit
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -87,6 +95,8 @@ presubmits:
         image: docker.io/golang:1.22
         imagePullPolicy: Always
   - name: manifestlint
+    branches:
+    - main
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
     spec:
@@ -103,6 +113,8 @@ presubmits:
         image: ghcr.io/yannh/kubeconform:v0.6.2-alpine@sha256:49b5f6b320d30c1b8b72a7abdf02740ac9dc36a3ba23b934d1c02f7b37e6e740
         imagePullPolicy: Always
   - name: build
+    branches:
+    - main
     run_if_changed: "^api|^test|^Makefile$"
     decorate: true
     spec:
