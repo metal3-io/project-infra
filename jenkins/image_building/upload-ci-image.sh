@@ -19,7 +19,7 @@ delete_old_images() {
 
   for ((i="${RETENTION_NUM}"; i<${#MAPFILE[@]}; i++)); do
     openstack image set "${MAPFILE[i]}" --deactivate
-    openstack image delete "${MAPFILE[i]}" 
+    openstack image delete "${MAPFILE[i]}"
     echo "${MAPFILE[i]} has been deleted!"
   done
 }
@@ -52,7 +52,7 @@ upload_ci_image_cleura() {
 # Check if the common image already exists
   if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
     # Get the original name of the current common image
-    original_name=$(openstack image show -f value -c properties "${COMMON_IMAGE_NAME}" | grep image_name | cut -d'=' -f2)
+    original_name=$(openstack image show -f json -c properties "${COMMON_IMAGE_NAME}" | jq -r .properties.image_name)
     # Rename the existing common image back to its original name
     openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
   fi
@@ -83,7 +83,7 @@ upload_ci_image_xerces() {
  # Check if the common image already exists
   if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
     # Get the original name of the current common image
-    original_name=$(openstack image show -f value -c properties "${COMMON_IMAGE_NAME}" | grep image_name | cut -d'=' -f2)
+    original_name=$(openstack image show -f json -c properties "${COMMON_IMAGE_NAME}" | jq -r .properties.image_name)
     # Rename the existing common image back to its original name
     openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
   fi
