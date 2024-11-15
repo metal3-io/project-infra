@@ -5,6 +5,10 @@ metadata:
 spec:
   clusterName: prow
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
   selector:
     matchLabels: null
   template:
@@ -23,5 +27,5 @@ spec:
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: OpenStackMachineTemplate
-        name: prow-worker-v1-29-4-new
-      version: v1.29.4
+        name: prow-worker-v1-30-6
+      version: v1.30.6

@@ -127,10 +127,10 @@ image. Here is an example:
   "floating_ip_network": "internet",
   "ssh_username": "ubuntu",
   "volume_type": "",
-  "kubernetes_deb_version": "1.29.4-2.1",
-  "kubernetes_rpm_version": "1.29.4",
-  "kubernetes_semver": "v1.29.4",
-  "kubernetes_series": "v1.29"
+  "kubernetes_deb_version": "1.30.6-1.1",
+  "kubernetes_rpm_version": "1.30.6",
+  "kubernetes_semver": "v1.30.6",
+  "kubernetes_series": "v1.30"
 }
 ```
 
@@ -365,8 +365,8 @@ You may also have to create a keypair with the Metal3 CI ssh key.
 
    ```bash
    kind create cluster
-   clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
-      --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
+   clusterctl init --infrastructure=openstack:v0.11.1 --core=cluster-api:v1.8.5 \
+      --bootstrap=kubeadm:v1.8.5 --control-plane=kubeadm:v1.8.5
    ```
 
 1. Create cluster.
@@ -414,8 +414,8 @@ You may also have to create a keypair with the Metal3 CI ssh key.
 1. Make cluster self-hosted
 
    ```bash
-   clusterctl init --infrastructure=openstack:v0.10.0 --core=cluster-api:v1.7.1 \
-      --bootstrap=kubeadm:v1.7.1 --control-plane=kubeadm:v1.7.1
+   clusterctl init --infrastructure=openstack:v0.11.1 --core=cluster-api:v1.8.5 \
+      --bootstrap=kubeadm:v1.8.5 --control-plane=kubeadm:v1.8.5
    unset KUBECONFIG
    clusterctl move --to-kubeconfig=capo-cluster/kubeconfig.yaml
    export KUBECONFIG=capo-cluster/kubeconfig.yaml
