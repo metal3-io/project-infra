@@ -3,7 +3,7 @@ kind: MachineDeployment
 metadata:
   name: prow-md-0
   annotations:
-    cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "1"
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "2"
     cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "5"
 spec:
   clusterName: prow
