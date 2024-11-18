@@ -175,3 +175,13 @@ rules:
   - list
   - update
   - watch
+# TODO (lentzi90): Remove this when the issue is solved
+# https://github.com/kubernetes/autoscaler/issues/6490
+- apiGroups:
+  - infrastructure.cluster.x-k8s.io
+  resources:
+  - openstackmachinetemplates
+  verbs:
+  - get
+  - list
+  - watch
