@@ -19,7 +19,7 @@ jobs:
     uses: ./.github/workflows/container-image-build.yml
     with:
       image-name: 'basic-checks'
-      image-tag: 'golang-1.22'
+      image-tag: 'golang-1.23'
       dockerfile-directory: 'prow/container-images/basic-checks'
       pushImage: true
     secrets:
