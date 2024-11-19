@@ -37,7 +37,7 @@ script {
 }
 
 pipeline {
-    agent none
+    agent { label agent_label }
     environment {
         REPO_ORG = "${env.REPO_OWNER}"
         REPO_NAME = "${env.REPO_NAME}"
@@ -62,7 +62,6 @@ pipeline {
 
     stages {
         stage('e2e test') {
-            agent { label agent_label }
             options {
                 timeout(time: TIMEOUT, unit: 'SECONDS')
             }
