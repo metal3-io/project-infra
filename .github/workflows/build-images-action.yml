@@ -1,6 +1,7 @@
 name: build-images-action
 
 on:
+  repository_dispatch:
   push:
     branches:
     - 'main'
