@@ -14,7 +14,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: quay.io/metal3-io/basic-checks:golang-1.22
+        image: quay.io/metal3-io/basic-checks:golang-1.23
         imagePullPolicy: Always
   - name: markdownlint
     branches:
@@ -70,7 +70,7 @@ presubmits:
           value: "http://localhost:6385/v1/"
         - name: IRONIC_INSPECTOR_ENDPOINT
           value: "http://localhost:5050/v1/"
-        image: quay.io/metal3-io/basic-checks:golang-1.22
+        image: quay.io/metal3-io/basic-checks:golang-1.23
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
   - name: test
@@ -84,7 +84,7 @@ presubmits:
         - test
         command:
         - make
-        image: quay.io/metal3-io/basic-checks:golang-1.22
+        image: quay.io/metal3-io/basic-checks:golang-1.23
         imagePullPolicy: Always
   - name: manifestlint
     branches:

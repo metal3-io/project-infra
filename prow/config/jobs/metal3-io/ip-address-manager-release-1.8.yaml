@@ -14,7 +14,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.22
+        image: docker.io/golang:1.23
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying the Makefile and hack/* scripts only
   - name: test
@@ -28,7 +28,7 @@ presubmits:
         - test
         command:
         - make
-        image: docker.io/golang:1.22
+        image: docker.io/golang:1.23
         imagePullPolicy: Always
   - name: markdownlint
     branches:
@@ -76,7 +76,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.22
+        image: docker.io/golang:1.23
   - name: generate
     branches:
     - release-1.8
@@ -91,7 +91,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.22
+        image: docker.io/golang:1.23
         imagePullPolicy: Always
   - name: manifestlint
     branches:
