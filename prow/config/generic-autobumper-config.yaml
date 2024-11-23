@@ -8,6 +8,6 @@ includedConfigPaths:
 targetVersion: "latest"
 prefixes:
 - name: "k8s-prow images"
-  prefix: "gcr.io/k8s-prow/"
+  prefix: "us-docker.pkg.dev/k8s-infra-prow/images/"
   repo: "https://github.com/metal3-io/project-infra"
   summarise: false
