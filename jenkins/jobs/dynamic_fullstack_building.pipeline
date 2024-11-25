@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 def TIMEOUT = 10800
 
 pipeline {
-  agent { label 'metal3ci-large-ubuntu' }
+  agent { label 'metal3ci-8c32gb-ubuntu' }
   environment {
     METAL3_CI_USER="metal3ci"
     RT_URL="https://artifactory.nordix.org/artifactory"
