@@ -77,8 +77,10 @@ You will need the following CLI tools in order to deploy and/or manage Prow:
 
 ### Folders and components
 
-There are four folders with kustomizations (`capo-cluster`, `cluster-resources`,
-`infra` and `manifests`). The `capo-cluster` folder contains everything needed for
+There are five folders with kustomizations (`capi`, `capo-cluster`,
+`cluster-resources`, `infra` and `manifests`). The `capi` folder contains a
+kustomization for cert-manager, the cluster API operator as well as the provider
+components we use. The `capo-cluster` folder contains everything needed for
 creating the Kubernetes cluster itself. In `cluster-resources`, you will find
 things the cluster needs to integrate with the cloud, i.e. the external
 cloud-provider for OpenStack and CSI plugin for Cinder. It also has the CNI
@@ -365,8 +367,10 @@ You may also have to create a keypair with the Metal3 CI ssh key.
 
    ```bash
    kind create cluster
-   clusterctl init --infrastructure=openstack:v0.11.1 --core=cluster-api:v1.8.5 \
-      --bootstrap=kubeadm:v1.8.5 --control-plane=kubeadm:v1.8.5
+   kubectl apply -k capi
+   # NOTE! You WILL need to apply multiple times before it is successful.
+   # This is because CRDs and webhooks must be in place before other
+   # resources can be added.
    ```
 
 1. Create cluster.
