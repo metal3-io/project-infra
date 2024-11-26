@@ -285,7 +285,7 @@ Now you are ready to create the files.
    {
       "region": "RegionOne",
       "access_key": "${S3_ACCESS_KEY}",
-      "endpoint": "xerces.ericsson.net:7480",
+      "endpoint": "https://xerces.ericsson.net:7480",
       "insecure": false,
       "s3_force_path_style": true,
       "secret_key": "${S3_SECRET_KEY}"
