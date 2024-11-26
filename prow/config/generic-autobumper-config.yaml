@@ -11,3 +11,5 @@ prefixes:
   prefix: "us-docker.pkg.dev/k8s-infra-prow/images/"
   repo: "https://github.com/metal3-io/project-infra"
   summarise: false
+extraFiles:
+- "prow/Makefile"
