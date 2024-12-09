@@ -46,6 +46,7 @@ plugins:
     - label
     - lgtm
     - lifecycle
+    - milestoneapplier
     - pony
     - retitle
     - shrug
