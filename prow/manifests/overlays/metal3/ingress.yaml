@@ -25,6 +25,13 @@ spec:
             name: hook
             port:
               number: 8888
+      - path: /monitoring
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 80
   tls:
   - hosts:
     - prow.apps.test.metal3.io
