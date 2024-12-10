@@ -64,4 +64,10 @@ CAPM3BRANCH="${CAPM3BRANCH:-${CAPM3RELEASEBRANCH}}"
 
 # Container image registry value to override the default value in m3-dev-env
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
+
+#NOTE (elfosardo): this can be removed once https://github.com/metal3-io/metal3-dev-env/pull/1473 merges
 export DOCKER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
+#NOTE(elfosardo): this can be changed to ${CONTAINER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
+#once https://github.com/metal3-io/metal3-dev-env/pull/1473 merges
+export CONTAINER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
+
