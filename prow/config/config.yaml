@@ -57,7 +57,6 @@ tide:
     - metal3-io/cluster-api-provider-metal3
     - metal3-io/community
     - metal3-io/ip-address-manager
-    - metal3-io/ironic-client
     - metal3-io/ironic-hardware-inventory-recorder-image
     - metal3-io/ironic-image
     - metal3-io/ironic-agent-image
