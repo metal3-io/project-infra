@@ -4,6 +4,10 @@ permissions: {}
 on:
   workflow_call:
     inputs:
+      ref:
+        required: false
+        description: "Git reference of the workflow's trigger"
+        type: string
       image-name:
         required: true
         description: "Name of the image to build"
@@ -40,25 +44,41 @@ jobs:
       contents: read
 
     steps:
+    - name: Set GITHUB_REF and GITHUB_REFNAME to the inputs' ref, or default to github's ref
+      id: set_ref
+      run: |
+        REF="${{ inputs.ref || github.ref }}"
+        echo "Using GITHUB_REF: ${REF}"
+        REF_NAME="${REF#refs/heads}"
+        REF_NAME="${REF_NAME#refs/tags}"
+        echo "GITHUB_REF=${REF}" >> "${GITHUB_ENV}"
+        echo "GITHUB_REFNAME=${REF_NAME}" >> "${GITHUB_ENV}"
+
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
-        ref: ${{ github.ref }}
+        ref: ${{ env.GITHUB_REF }}
+
+    - name: Set GITHUB_REFSHA to sha of the ref
+      id: set_refsha
+      run: |
+        REF_SHA=$(git rev-parse HEAD)
+        echo "GITHUB_REFSHA=${REF_SHA}" >> "${GITHUB_ENV}"
 
     - name: Get current date
       id: date
-      run: echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      run: echo "current_date=$(date +'%Y-%m-%d')" >> "${GITHUB_OUTPUT}"
 
     - name: Get image tags
       id: image_tags
       run: |
-        BASE_TAG=`echo "${{ github.ref_name }}" | sed 's/\//_/'`
-        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ github.sha }}"
+        BASE_TAG=`echo "${{ env.GITHUB_REFNAME }}" | sed 's/\//_/'`
+        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
         if [[ -n "${{ inputs.image-tag }}" ]]; then
           IMAGE_TAGS="${{ inputs.image-tag }}"
-        elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+        elif [[ "${{ env.GITHUB_REF }}" == "refs/heads/main" ]]; then
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
         fi
-        echo "IMAGE_TAGS=${IMAGE_TAGS}" >> $GITHUB_ENV
+        echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
 
     - name: Build ${{ inputs.image-name }} image
       uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
@@ -76,9 +96,9 @@ jobs:
       if: ${{ failure() }}
       uses: rtCamp/action-slack-notify@c33737706dea87cd7784c687dadc9adf1be59990 # 2.3.2
       env:
-        SLACK_TITLE: 'GitHub Action Failed in ${{ github.repository }}'
-        SLACK_COLOR: '#FF0000'
-        SLACK_MESSAGE: 'The GitHub Action workflow failed for ${{ inputs.image-name }} image build.'
+        SLACK_TITLE: "GitHub Action Failed in ${{ github.repository }}"
+        SLACK_COLOR: "#FF0000"
+        SLACK_MESSAGE: "The GitHub Action workflow failed for ${{ inputs.image-name }} image build."
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_CHANNEL: metal3-github-actions-notify
         SLACK_USERNAME: metal3-github-actions-notify
