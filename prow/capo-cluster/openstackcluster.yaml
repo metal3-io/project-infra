@@ -32,7 +32,7 @@ spec:
       remoteManagedGroups:
       - controlplane
       - worker
-    allowAllInClusterTraffic: false
+    allowAllInClusterTraffic: true
   managedSubnets:
   - cidr: 10.6.0.0/24
     dnsNameservers:

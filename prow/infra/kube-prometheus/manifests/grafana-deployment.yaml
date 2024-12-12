@@ -150,12 +150,17 @@ spec:
           readOnly: false
       nodeSelector:
         kubernetes.io/os: linux
+        node-role.kubernetes.io/infra: ""
       securityContext:
         fsGroup: 65534
         runAsGroup: 65534
         runAsNonRoot: true
         runAsUser: 65534
       serviceAccountName: grafana
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        operator: Exists
       volumes:
       - emptyDir: {}
         name: grafana-storage

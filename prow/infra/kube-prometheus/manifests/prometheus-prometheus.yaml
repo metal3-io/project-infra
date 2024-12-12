@@ -21,6 +21,7 @@ spec:
   image: quay.io/prometheus/prometheus:v2.54.1
   nodeSelector:
     kubernetes.io/os: linux
+    node-role.kubernetes.io/infra: ""
   podMetadata:
     labels:
       app.kubernetes.io/component: prometheus
@@ -47,4 +48,8 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/infra
+    operator: Exists
   version: 2.54.1

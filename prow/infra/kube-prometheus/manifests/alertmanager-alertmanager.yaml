@@ -13,6 +13,7 @@ spec:
   image: quay.io/prometheus/alertmanager:v0.27.0
   nodeSelector:
     kubernetes.io/os: linux
+    node-role.kubernetes.io/infra: ""
   podMetadata:
     labels:
       app.kubernetes.io/component: alert-router
@@ -34,4 +35,8 @@ spec:
     runAsNonRoot: true
     runAsUser: 1000
   serviceAccountName: alertmanager-main
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/infra
+    operator: Exists
   version: 0.27.0

@@ -15,6 +15,118 @@ local kp =
         namespace: 'monitoring',
       },
     },
+    prometheus+: {
+      prometheus+: {
+        spec+: {
+          tolerations: [
+            {
+              key: "node-role.kubernetes.io/infra",
+              operator: "Exists",
+              effect: "NoSchedule",
+            },
+          ],
+          nodeSelector+: {
+            'node-role.kubernetes.io/infra': "",
+          },
+        }
+      },
+    },
+    prometheusOperator+: {
+      deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              tolerations: [
+                {
+                  key: "node-role.kubernetes.io/infra",
+                  operator: "Exists",
+                  effect: "NoSchedule",
+                },
+              ],
+              nodeSelector+: {
+                "node-role.kubernetes.io/infra": "",
+              },
+            },
+          },
+        }
+      },
+    },
+    prometheusAdapter+: {
+      deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              tolerations: [
+                {
+                  key: "node-role.kubernetes.io/infra",
+                  operator: "Exists",
+                  effect: "NoSchedule",
+                },
+              ],
+              nodeSelector+: {
+                "node-role.kubernetes.io/infra": "",
+              },
+            },
+          },
+        }
+      },
+    },
+    alertmanager+: {
+      alertmanager+: {
+        spec+: {
+          tolerations: [
+            {
+              key: "node-role.kubernetes.io/infra",
+              operator: "Exists",
+              effect: "NoSchedule",
+            },
+          ],
+          nodeSelector+: {
+            "node-role.kubernetes.io/infra": "",
+          },
+        },
+      },
+    },
+    grafana+: {
+      deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              tolerations: [
+                {
+                  key: "node-role.kubernetes.io/infra",
+                  operator: "Exists",
+                  effect: "NoSchedule",
+                },
+              ],
+              nodeSelector+: {
+                "node-role.kubernetes.io/infra": "",
+              },
+            },
+          },
+        }
+      },
+    },
+    kubeStateMetrics+: {
+      deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              tolerations: [
+                {
+                  key: "node-role.kubernetes.io/infra",
+                  operator: "Exists",
+                  effect: "NoSchedule",
+                },
+              ],
+              nodeSelector+: {
+                "node-role.kubernetes.io/infra": "",
+              },
+            },
+          },
+        }
+      },
+    },
   };
 
 { 'setup/0namespace-namespace': kp.kubePrometheus.namespace } +

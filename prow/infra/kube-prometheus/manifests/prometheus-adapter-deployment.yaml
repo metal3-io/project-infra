@@ -92,7 +92,12 @@ spec:
           readOnly: false
       nodeSelector:
         kubernetes.io/os: linux
+        node-role.kubernetes.io/infra: ""
       serviceAccountName: prometheus-adapter
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        operator: Exists
       volumes:
       - emptyDir: {}
         name: tmpfs

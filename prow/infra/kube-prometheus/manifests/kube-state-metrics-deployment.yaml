@@ -108,4 +108,9 @@ spec:
             type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
+        node-role.kubernetes.io/infra: ""
       serviceAccountName: kube-state-metrics
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        operator: Exists
