@@ -82,6 +82,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/grafana-overview
           name: grafana-dashboard-grafana-overview
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/jobs
+          name: grafana-dashboard-jobs
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-cluster
           name: grafana-dashboard-k8s-resources-cluster
           readOnly: false
@@ -189,6 +192,9 @@ spec:
           name: grafana-dashboard-grafana-overview
         name: grafana-dashboard-grafana-overview
       - configMap:
+          name: grafana-dashboard-jobs
+        name: grafana-dashboard-jobs
+      - configMap:
           name: grafana-dashboard-k8s-resources-cluster
         name: grafana-dashboard-k8s-resources-cluster
       - configMap:
@@ -251,6 +257,9 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
+      - configMap:
+          name: grafana-dashboard-jobs
+        name: grafana-dashboard-jobs
       - name: grafana-config
         secret:
           secretName: grafana-config

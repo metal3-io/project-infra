@@ -32,6 +32,7 @@ spec:
         - --port=8081
         - --telemetry-host=127.0.0.1
         - --telemetry-port=8082
+        - --metric-labels-allowlist=pods=[app.kubernetes.io/name,app.kubernetes.io/component,app.kubernetes.io/instance,prow.k8s.io/id,prow.k8s.io/refs.repo,prow.k8s.io/type,prow.k8s.io/job,prow.k8s.io/refs.org],deployments=[app.kubernetes.io/name,app.kubernetes.io/component,app.kubernetes.io/instance]
         image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0
         name: kube-state-metrics
         resources:

@@ -1,3 +1,13 @@
+// addArgs adds the args to the container with matching name
+local addArgs(args, name, containers) = std.map(
+  function(c) if c.name == name then
+    c {
+      args+: args,
+    }
+  else c,
+  containers,
+);
+
 local kp =
   (import 'kube-prometheus/main.libsonnet') +
   // (import 'kube-prometheus/addons/all-namespaces.libsonnet') +
@@ -13,6 +23,14 @@ local kp =
     values+:: {
       common+: {
         namespace: 'monitoring',
+      },
+      grafana+: {
+        dashboards+:: {  // use this method to import your dashboards to Grafana
+          'jobs.json': (import 'jobs.json'),
+        },
+        rawDashboards+:: {
+          'jobs.json': (importstr 'jobs.json'),
+        },
       },
     },
     // Add toleration and node selector to all components
@@ -144,6 +162,25 @@ local kp =
               nodeSelector+: {
                 "node-role.kubernetes.io/infra": "",
               },
+              // Add allowed labels. We need these labels to keep track of what prowjob each pod belongs to
+              containers: addArgs(
+                ['--metric-labels-allowlist=pods=[' +
+                      'app.kubernetes.io/name,' +
+                      'app.kubernetes.io/component,' +
+                      'app.kubernetes.io/instance,' +
+                      'prow.k8s.io/id,' +
+                      'prow.k8s.io/refs.repo,' +
+                      'prow.k8s.io/type,' +
+                      'prow.k8s.io/job,' +
+                      'prow.k8s.io/refs.org],' +
+                    'deployments=[' +
+                      'app.kubernetes.io/name,' +
+                      'app.kubernetes.io/component,' +
+                      'app.kubernetes.io/instance]'
+                ],
+                'kube-state-metrics',
+                super.containers
+              ),
             },
           },
         }
