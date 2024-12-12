@@ -37,6 +37,7 @@ spec:
   resources:
     requests:
       memory: 400Mi
+  retention: 30d
   ruleNamespaceSelector: {}
   ruleSelector: {}
   scrapeConfigNamespaceSelector: {}
@@ -48,6 +49,17 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
+  storage:
+    volumeClaimTemplate:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: csi-cinderplugin
   tolerations:
   - effect: NoSchedule
     key: node-role.kubernetes.io/infra
