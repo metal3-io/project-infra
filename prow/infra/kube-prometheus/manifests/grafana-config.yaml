@@ -10,6 +10,13 @@ metadata:
   namespace: monitoring
 stringData:
   grafana.ini: |
-    [date_formats]
-    default_timezone = UTC
+    [auth]
+    disable_login_form = true
+    [auth.anonymous]
+    enabled = true
+    org_role = Viewer
+    [auth.basic]
+    enabled = false
+    [security]
+    disable_gravatar = true
 type: Opaque
