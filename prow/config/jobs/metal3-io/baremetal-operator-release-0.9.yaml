@@ -1,0 +1,190 @@
+presubmits:
+  metal3-io/baremetal-operator:
+  - name: gomod
+    branches:
+    - release-0.9
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/basic-checks:golang-1.23
+        imagePullPolicy: Always
+  - name: markdownlint
+    branches:
+    - release-0.9
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
+        imagePullPolicy: Always
+  - name: shellcheck
+    branches:
+    - release-0.9
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
+  - name: generate
+    branches:
+    - release-0.9
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/generate.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: DEPLOY_KERNEL_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.kernel"
+        - name: DEPLOY_RAMDISK_URL
+          value: "http://172.22.0.1/images/ironic-python-agent.initramfs"
+        - name: IRONIC_ENDPOINT
+          value: "http://localhost:6385/v1/"
+        - name: IRONIC_INSPECTOR_ENDPOINT
+          value: "http://localhost:5050/v1/"
+        image: quay.io/metal3-io/basic-checks:golang-1.23
+        imagePullPolicy: Always
+  # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
+  - name: test
+    branches:
+    - release-0.9
+    run_if_changed: "^(Makefile|hack/.*)$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: quay.io/metal3-io/basic-checks:golang-1.23
+        imagePullPolicy: Always
+  - name: manifestlint
+    branches:
+    - release-0.9
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: KUBECONFORM_PATH
+          value: "/"
+        image: ghcr.io/yannh/kubeconform:v0.6.2-alpine@sha256:49b5f6b320d30c1b8b72a7abdf02740ac9dc36a3ba23b934d1c02f7b37e6e740
+        imagePullPolicy: Always
+  - name: metal3-centos-e2e-basic-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-integration-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-9-pivoting
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-9-remediation
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-9-features
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-9-pivoting
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-9-remediation
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-9-features
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-9
+    branches:
+    - release-0.9
+    agent: jenkins
+    always_run: false
+    optional: true
