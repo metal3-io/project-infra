@@ -48,11 +48,12 @@ jobs:
       id: set_ref
       run: |
         REF="${{ inputs.ref || github.ref }}"
-        echo "Using GITHUB_REF: ${REF}"
-        REF_NAME="${REF#refs/heads}"
-        REF_NAME="${REF_NAME#refs/tags}"
+        echo "Using INPUT REF: ${REF}"
+        REF_NAME="${REF#refs/heads/}"
+        REF_NAME="${REF_NAME#refs/tags/}"
         echo "GITHUB_REF=${REF}" >> "${GITHUB_ENV}"
         echo "GITHUB_REFNAME=${REF_NAME}" >> "${GITHUB_ENV}"
+        echo "Using GITHUB REFNAME: ${REF_NAME}"
 
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
