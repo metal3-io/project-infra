@@ -1,9 +1,7 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": [
-    "**/.github/workflows/**"
-  ],
+  "ignorePaths": ["**/.github/workflows/**"],
   "patterns": [
     {
       "name": "multiline-code-block",
@@ -14,10 +12,7 @@
       "pattern": "/`[^`].*`[^`]/g"
     }
   ],
-  "ignoreRegExpList": [
-    "multiline-code-block",
-    "inline-code"
-  ],
+  "ignoreRegExpList": ["multiline-code-block", "inline-code"],
   "words": [
     "autoscaler",
     "baremetal",
@@ -35,6 +30,7 @@
     "ghprb",
     "HMAC",
     "ipam",
+    "jsonnet",
     "keypair",
     "kubeadm",
     "kubeadmcontrolplane",
