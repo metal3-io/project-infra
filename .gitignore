@@ -3,3 +3,12 @@
 *.tmp
 .DS_Store
 *.swp
+
+# Development containers
+.devcontainer
+
+# Zed
+.zed
+.zed_server
+
+vendor
