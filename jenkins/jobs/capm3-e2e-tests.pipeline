@@ -27,7 +27,7 @@ script {
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
     TIMEOUT=14400 // 4h
-  } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
+  } else if ( "${env.EPHEMERAL_TEST}" == 'true' || "${GINKGO_FOCUS}" == "scalability" ) {
     TIMEOUT=21600 // 6h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else {
