@@ -451,8 +451,7 @@ You may also have to create a keypair with the Metal3 CI ssh key.
     # Create the CRDs. These are applied separately and using server side apply
     # since they are so huge that the "last applied" annotation that would be
     # added with a normal apply, becomes larger than the allowed limit.
-    # TODO: This is pinned for now because of https://github.com/kubernetes-sigs/prow/issues/181.
-    kubectl apply --server-side=true -f https://raw.githubusercontent.com/kubernetes-sigs/prow/e67659d368fd013492a9ce038d801ba8998b7d10/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
+    kubectl apply --server-side=true -f https://github.com/kubernetes-sigs/prow/raw/main/config/prow/cluster/prowjob-crd/prowjob_customresourcedefinition.yaml
 
     # Deploy all prow components
     kubectl apply -k manifests/overlays/metal3
