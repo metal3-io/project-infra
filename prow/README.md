@@ -111,6 +111,10 @@ avoid deleting it even if the Service is deleted. See
 [cert-manager](https://cert-manager.io/) and the Let's Encrypt HTTP01 challenge,
 as seen in [infra/cluster-issuer-http.yaml](infra/cluster-issuer-http.yaml).
 
+#### Monitoring
+
+Please see [infra/kube-prometheus](infra/kube-prometheus).
+
 ## Building node images
 
 The Kubernetes cluster where Prow runs needs pre-built images for the Nodes. We
