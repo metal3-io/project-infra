@@ -30,3 +30,21 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
+  - name: manifestlint
+    branches:
+    - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: KUBECONFORM_PATH
+          value: "/"
+        image: ghcr.io/yannh/kubeconform:v0.6.7-alpine@sha256:824e0c248809e4b2da2a768b16b107cf17ada88a89ec6aa6050e566ba93ebbc6
+        imagePullPolicy: Always
