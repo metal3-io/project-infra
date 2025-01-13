@@ -10,7 +10,7 @@ script {
   echo "Test triggered from ${UPDATED_REPO}"
   ci_git_url = "https://github.com/metal3-io/project-infra.git"
 
-  if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+  if ( "${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra' ) {
     ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
     ci_git_base = (env.PULL_BASE_REF) ?: 'main'
     // Fetch the base branch and the ci_git_branch when running on project-infra PR
@@ -24,14 +24,24 @@ script {
   if  ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
     agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
     TIMEOUT=10800 // 3h
+  } else if ( "${GINKGO_FOCUS}" == 'pivoting' ) {
+    BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
+    TIMEOUT = 18000 // 5h for node reuse
+    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+  } else if ( "${GINKGO_FOCUS}" == 'remediation' ) {
+    BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
+    TIMEOUT = 18000 // 5h for remediation
+    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
-    TIMEOUT=14400 // 4h
+    TIMEOUT = 14400 // 4h
   } else if ( "${env.EPHEMERAL_TEST}" == 'true' || "${GINKGO_FOCUS}" == "scalability" ) {
-    TIMEOUT=21600 // 6h
+    TIMEOUT = 21600 // 6h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else {
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+    BUILD_TAG = "${env.BUILD_TAG}-other-features"
+    GINKGO_SKIP = "pivoting remediation" // Allow non pivoting features
   }
 
 }
