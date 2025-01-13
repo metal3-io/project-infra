@@ -1,7 +1,7 @@
 presubmits:
   metal3-io/mariadb-image:
   - name: shellcheck
-    run_if_changed: '((\.sh)|^Makefile)$'
+    run_if_changed: '((\.sh)|^Makefile|^runmariadb)$'
     decorate: true
     spec:
       containers:
