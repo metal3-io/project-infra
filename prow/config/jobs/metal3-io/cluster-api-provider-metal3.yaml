@@ -205,3 +205,10 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  # name: metal3-centos-e2e-feature-test-main-scalability
+  - name: metal3-centos-e2e-feature-test-main-scalability
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
