@@ -48,3 +48,16 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.6.7-alpine@sha256:824e0c248809e4b2da2a768b16b107cf17ada88a89ec6aa6050e566ba93ebbc6
         imagePullPolicy: Always
+  # name: metal3-dev-env-integration-test-{image_os}-main
+  - name: metal3-dev-env-integration-test-ubuntu-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-dev-env-integration-test-centos-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true

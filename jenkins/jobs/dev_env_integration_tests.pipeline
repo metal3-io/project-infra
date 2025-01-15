@@ -32,16 +32,17 @@ pipeline {
     UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
     BUILD_TAG = "${env.BUILD_TAG}"
     PR_ID = "${env.PULL_NUMBER}"
-    IMAGE_OS = "${IMAGE_OS}"
-    CAPI_VERSION = "${CAPI_VERSION}"
-    CAPM3_VERSION = "${CAPM3_VERSION}"
-    CAPM3RELEASEBRANCH = "${capm3_release_branch}"
-    BMORELEASEBRANCH = "${bmo_release_branch}"
-    TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
-    NUM_NODES=2
-    IRONIC_INSTALL_TYPE="${params.IRONIC_INSTALL_TYPE}"
-    IRONIC_USE_MARIADB="${params.IRONIC_USE_MARIADB}"
-    BUILD_MARIADB_IMAGE_LOCALLY="${params.BUILD_MARIADB_IMAGE_LOCALLY}"
+    IMAGE_OS = "${params.IMAGE_OS}"
+    CAPI_VERSION = "${params.CAPI_VERSION}"
+    CAPM3_VERSION = "${params.CAPM3_VERSION}"
+    CAPM3RELEASEBRANCH = "${params.capm3_release_branch}"
+    BMORELEASEBRANCH = "${params.bmo_release_branch}"
+    TARGET_NODE_MEMORY = "${params.TARGET_NODE_MEMORY}"
+    NUM_NODES = 2
+    IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
+    IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
+    BUILD_MARIADB_IMAGE_LOCALLY = "${params.BUILD_MARIADB_IMAGE_LOCALLY}"
+    USE_IRSO = "${params.USE_IRSO}"
   }
 
   stages {
