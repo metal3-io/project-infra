@@ -5,12 +5,16 @@ ci_git_url = "https://github.com/metal3-io/project-infra.git"
 pipeline {
   agent none
   environment {
-    IMAGE_TYPE = "${IMAGE_TYPE}"
+    IMAGE_TYPE = "${env.IMAGE_TYPE}"
     METAL3_CI_USER="metal3ci"
-    KUBERNETES_VERSION = "${KUBERNETES_VERSION}"
-    CRICTL_VERSION = "${CRICTL_VERSION}"
-    CRIO_VERSION = "${CRIO_VERSION}"
+    KUBERNETES_VERSION = "${env.KUBERNETES_VERSION}"
+    CRICTL_VERSION = "${env.CRICTL_VERSION}"
+    CRIO_VERSION = "${env.CRIO_VERSION}"
     RT_URL="https://artifactory.nordix.org/artifactory"
+    CAPM3RELEASEBRANCH = "${env.capm3_release_branch}"
+    BMORELEASEBRANCH = "${env.bmo_release_branch}"
+    CAPI_VERSION = "${env.CAPI_VERSION}"
+    CAPM3_VERSION = "${env.CAPM3_VERSION}"
   }
   stages {
     stage('SCM') {
