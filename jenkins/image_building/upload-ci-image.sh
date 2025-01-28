@@ -33,40 +33,6 @@ install_openstack_client() {
   pip install python-openstackclient==7.0.0
 }
 
-upload_ci_image_cleura() {
-
-  img_name="$1"
-
-  # Push image to openstack Kna1 cleura
-  export OS_USERNAME="${OPENSTACK_USERNAME_CLEURA}"
-  export OS_PASSWORD="${OPENSTACK_PASSWORD_CLEURA}"
-  export OS_AUTH_URL="https://kna1.citycloud.com:5000"
-  export OS_USER_DOMAIN_NAME="CCP_Domain_37137"
-  export OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
-  export OS_REGION_NAME="Kna1"
-  export OS_PROJECT_NAME="Default Project 37137"
-  export OS_TENANT_NAME="Default Project 37137"
-  export OS_AUTH_VERSION=3
-  export OS_IDENTITY_API_VERSION=3
-
-# Check if the common image already exists
-  if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
-    # Get the original name of the current common image
-    original_name=$(openstack image show -f json -c properties "${COMMON_IMAGE_NAME}" | jq -r .properties.image_name)
-    # Rename the existing common image back to its original name
-    openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
-  fi
-
-  # Create the new image with the common name
-  openstack image create "${COMMON_IMAGE_NAME}" --file "${img_name}".qcow2 --disk-format=qcow2 --property image_name="${img_name}"
-
-  # delete old images (keeps latest five)
-  delete_old_images
-
-  #unset openstack variables
-  unset "${!OS_@}"
-}
-
 upload_ci_image_xerces() {
   img_name="$1"
 
@@ -100,9 +66,8 @@ upload_ci_image_xerces() {
   unset "${!OS_@}"
 }
 
-# If the script was run directly (i.e. not sourced), run both of the upload functions
+# If the script was run directly (i.e. not sourced), run upload functions
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     install_openstack_client
-    upload_ci_image_cleura "$@"
     upload_ci_image_xerces "$@"
 fi
