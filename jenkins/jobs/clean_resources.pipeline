@@ -59,7 +59,6 @@ pipeline {
         script {
           withCredentials([
                 usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
-                usernamePassword(credentialsId: 'metal3ci_city_cloud_openstack_credentials', usernameVariable: 'OPENSTACK_USERNAME_CLEURA', passwordVariable: 'OPENSTACK_PASSWORD_CLEURA'),
             ]) {
             timestamps {
               sh "./jenkins/scripts/clean_resources.sh"
