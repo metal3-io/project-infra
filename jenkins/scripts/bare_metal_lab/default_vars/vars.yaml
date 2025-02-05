@@ -5,34 +5,34 @@ bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
 bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
 github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
 # If REPO_NAME == metal3-dev-env clone to tested_repo otherwise clone to metal3
-metal3_dir : "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
+metal3_dir: "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
 metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
 metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
 pr_id: "{{ lookup('env', 'PR_ID') }}"
 serial_log_location: "/tmp/BMLlog"
 bare_metal_hosts:
-  # - id: "02"
-  #   mac: b4:b5:2f:6d:59:b0
-  #   ip: "192.168.1.11"
-  - id: "03"
-    mac: b4:b5:2f:6d:89:d8
-    ip: "192.168.1.24"
-  # - id: "04"
-  #   mac: 80:c1:6e:7a:e8:10
-  #   ip: "192.168.1.13"
-  - id: "05"
-    mac: 80:c1:6e:7a:5a:a8
-    ip: "192.168.1.14"
-  # - id: "06"
-  #   mac: b4:b5:2f:6d:68:10
-  #   ip: "192.168.1.15"
-  # - id: "07"
-  #   mac: b4:b5:2f:6d:a9:d8
-  #   ip: "192.168.1.16"
+# - id: "02"
+#   mac: b4:b5:2f:6d:59:b0
+#   ip: "192.168.1.11"
+- id: "03"
+  mac: b4:b5:2f:6d:89:d8
+  ip: "192.168.1.24"
+- id: "04"
+  mac: 80:c1:6e:7a:e8:10
+  ip: "192.168.1.13"
+# - id: "05"
+#   mac: 80:c1:6e:7a:5a:a8
+#   ip: "192.168.1.14"
+# - id: "06"
+#   mac: b4:b5:2f:6d:68:10
+#   ip: "192.168.1.15"
+# - id: "07"
+#   mac: b4:b5:2f:6d:a9:d8
+#   ip: "192.168.1.16"
 
 EPHEMERAL_CLUSTER: "minikube"
 EXTERNAL_VLAN_ID: 3
-NUM_NODES:  "{{ lookup('env', 'NUM_NODES') }}"
+NUM_NODES: "{{ lookup('env', 'NUM_NODES') }}"
 # In order to run multiple instances (one per jump host), we list the known
 # hosts and tell DNSMasq to ignore all other.
 DHCP_HOSTS: "{{ bare_metal_hosts | map(attribute='mac') | join(';') }}"
