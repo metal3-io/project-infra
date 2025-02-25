@@ -47,17 +47,6 @@
     cmd: "brctl addif provisioning eno1"
   become: true
 
-- name: Deploy bmhosts
-  template:
-    src: "templates/bmhosts_crs.yaml.j2"
-    dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
-
-- name: Apply bmhosts manifest
-  shell:
-    cmd: kubectl apply -f ./bmhosts_crs.yaml -n metal3
-    chdir: "/opt/metal3-dev-env/"
-  tags: kubectl_apply
-
 - name: Set VLAN 3 interface to be up
   shell:
     cmd: "ip link set up dev bmext"
@@ -79,6 +68,17 @@
   become: true
   when: brctl_grep_bmext.rc != 0
   tags: bmext
+
+- name: Deploy bmhosts
+  template:
+    src: "templates/bmhosts_crs.yaml.j2"
+    dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
+
+- name: Apply bmhosts manifest
+  shell:
+    cmd: kubectl apply -f ./bmhosts_crs.yaml -n metal3
+    chdir: "/opt/metal3-dev-env/"
+  tags: kubectl_apply
 
 - name: Wait until all BMHs become available .
   kubernetes.core.k8s_info:
