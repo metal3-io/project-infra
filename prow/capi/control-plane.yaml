@@ -4,7 +4,7 @@ metadata:
   name: kubeadm
   namespace: capi-kubeadm-control-plane-system
 spec:
-  version: v1.8.5
+  version: v1.9.5
   deployment:
     nodeSelector:
       node-role.kubernetes.io/infra: ""

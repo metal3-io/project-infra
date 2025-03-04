@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
 - https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
 - https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.17.0/operator-components.yaml
+# ORC is needed for CAPO
+- https://github.com/k-orc/openstack-resource-controller/releases/download/v1.0.1/install.yaml
 - core.yaml
 - control-plane.yaml
 - bootstrap.yaml
@@ -28,6 +30,18 @@ patches:
     kind: Deployment
     name: capi-operator-controller-manager
     namespace: capi-operator-system
+# ORC does not set either
+- patch: |-
+    - op: add
+      path: /spec/template/spec/nodeSelector
+      value: {}
+    - op: add
+      path: /spec/template/spec/tolerations
+      value: []
+  target:
+    kind: Deployment
+    name: orc-controller-manager
+    namespace: orc-system
 # Add toleration and node selector to run on infra nodes
 - path: toleration-node-selector-patch.yaml
   target:
@@ -39,3 +53,8 @@ patches:
     kind: Deployment
     name: capi-operator-controller-manager
     namespace: capi-operator-system
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: orc-controller-manager
+    namespace: orc-system

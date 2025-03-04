@@ -4,7 +4,7 @@ metadata:
   name: openstack
   namespace: capo-system
 spec:
-  version: v0.11.1
+  version: v0.12.1
   deployment:
     nodeSelector:
       node-role.kubernetes.io/infra: ""
