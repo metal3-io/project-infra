@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
-- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.14.0/operator-components.yaml
+- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.17.0/operator-components.yaml
 - core.yaml
 - control-plane.yaml
 - bootstrap.yaml
@@ -19,9 +19,23 @@ patches:
     kind: Deployment
     name: cert-manager|cert-manager-cainjector|cert-manager-webhook
     namespace: cert-manager
+# CAPI operator does not set any nodeSelector
+- patch: |-
+    - op: add
+      path: /spec/template/spec/nodeSelector
+      value: {}
+  target:
+    kind: Deployment
+    name: capi-operator-controller-manager
+    namespace: capi-operator-system
 # Add toleration and node selector to run on infra nodes
 - path: toleration-node-selector-patch.yaml
   target:
     kind: Deployment
     name: cert-manager|cert-manager-cainjector|cert-manager-webhook
     namespace: cert-manager
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: capi-operator-controller-manager
+    namespace: capi-operator-system

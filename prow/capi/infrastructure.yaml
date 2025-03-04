@@ -5,6 +5,13 @@ metadata:
   namespace: capo-system
 spec:
   version: v0.11.1
+  deployment:
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+    tolerations:
+    - key: node-role.kubernetes.io/infra
+      operator: Exists
+      effect: NoSchedule
 ---
 apiVersion: v1
 kind: Namespace
