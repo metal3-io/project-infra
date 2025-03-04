@@ -422,8 +422,10 @@ You may also have to create a keypair with the Metal3 CI ssh key.
 1. Make cluster self-hosted
 
    ```bash
-   clusterctl init --infrastructure=openstack:v0.11.1 --core=cluster-api:v1.8.5 \
-      --bootstrap=kubeadm:v1.8.5 --control-plane=kubeadm:v1.8.5
+   kubectl apply -k capi
+   # NOTE! You WILL need to apply the above multiple times before it is successful.
+   # This is because CRDs and webhooks must be in place before other
+   # resources can be added.
    unset KUBECONFIG
    clusterctl move --to-kubeconfig=capo-cluster/kubeconfig.yaml
    export KUBECONFIG=capo-cluster/kubeconfig.yaml

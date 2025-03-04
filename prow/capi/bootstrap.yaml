@@ -4,7 +4,14 @@ metadata:
   name: kubeadm
   namespace: capi-kubeadm-bootstrap-system
 spec:
-  version: v1.8.5
+  version: v1.9.5
+  deployment:
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+    tolerations:
+    - key: node-role.kubernetes.io/infra
+      operator: Exists
+      effect: NoSchedule
 ---
 apiVersion: v1
 kind: Namespace
