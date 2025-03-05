@@ -7,6 +7,8 @@ spec:
     enabled: true
     allowedCIDRs:
     - 10.6.0.0/24
+    # Jumphost
+    - 129.192.83.86/32
   externalNetwork:
     id: df26cc5b-b122-4506-b948-a213d2b0a7d8
   identityRef:
@@ -40,8 +42,8 @@ spec:
   bastion:
     enabled: true
     spec:
-      flavor: c1m2
+      flavor: c1m2-est
       image:
-        filter:
-          name: "Ubuntu-22.04-jammy"
+        # Ubuntu-24.04
+        id: 19e017ae-2759-479c-90ac-a400a3f64678
       sshKeyName: metal3ci
