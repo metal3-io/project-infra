@@ -27,6 +27,16 @@ on:
         description: "Whether to push the image afterwards"
         type: boolean
         default: true
+      multiPlatform:
+        required: false
+        description: "Enable multiPlatform builds for the container image"
+        type: boolean
+        default: false
+      platform:
+        required: false
+        description: "Architecture platforms for the image build (linux/amd64,linux/arm64, etc.)"
+        type: string
+        default: ""
     secrets:
       QUAY_USERNAME:
         required: true
@@ -92,6 +102,8 @@ jobs:
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
         pushImage: ${{ inputs.pushImage }}
+        multiPlatform: ${{ inputs.multiPlatform }}
+        platform: ${{ inputs.platform }}
 
     - name: Slack Notification on Failure
       if: ${{ failure() }}
