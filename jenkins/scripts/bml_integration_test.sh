@@ -37,9 +37,7 @@ CAPM3RELEASEBRANCH="${CAPM3RELEASEBRANCH:-main}"
 BMORELEASEBRANCH="${BMORELEASEBRANCH:-main}"
 BARE_METAL_LAB=true
 
-TEST_EXECUTER_IP="192.168.1.3"
-
-cat <<-EOF >"${CI_DIR}/files/vars.sh"
+cat <<-EOF >"/tmp/vars.sh"
 REPO_ORG="${REPO_ORG}"
 REPO_NAME="${REPO_NAME}"
 REPO_BRANCH="${REPO_BRANCH}"
@@ -54,43 +52,14 @@ TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
 EOF
 
-cat "${CI_DIR}/integration_test_env.sh" >>"${CI_DIR}/files/vars.sh"
-
-declare -a SSH_OPTIONS=(
-    -o StrictHostKeyChecking=no
-    -o UserKnownHostsFile=/dev/null
-    -o ServerAliveInterval=15
-    -o ServerAliveCountMax=10
-    -i "${METAL3_CI_USER_KEY}"
-)
-
-# Send Remote script to Executer
-scp -r \
-    "${CI_DIR}/files/run_integration_tests.sh" \
-    "${CI_DIR}/files/vars.sh" \
-    "${CI_DIR}/bare_metal_lab/" \
-    "${METAL3_CI_USER}@${TEST_EXECUTER_IP}:/tmp/" >/dev/null
+cat "${CI_DIR}/integration_test_env.sh" >>"/tmp/vars.sh"
 
 echo "Setting up the lab"
-# Execute remote script
-# shellcheck disable=SC2029
-ssh \
-    -o SendEnv="BML_ILO_USERNAME" \
-    -o SendEnv="BML_ILO_PASSWORD" \
-    -o SendEnv="GITHUB_TOKEN" \
-    -o SendEnv="REPO_NAME" \
-    -o SendEnv="BML_METAL3_DEV_ENV_REPO" \
-    -o SendEnv="BML_METAL3_DEV_ENV_BRANCH" \
-    -o SendEnv="PR_ID" \
-    "${SSH_OPTIONS[@]}" \
-    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-    ANSIBLE_FORCE_COLOR=true ansible-playbook -v /tmp/bare_metal_lab/deploy-lab.yaml
+
+ANSIBLE_FORCE_COLOR=true ansible-playbook -v "${CI_DIR}"/bare_metal_lab/deploy-lab.yaml
 
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
-ssh \
-    "${SSH_OPTIONS[@]}" \
-    "${METAL3_CI_USER}"@"${TEST_EXECUTER_IP}" \
-    PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin \
-    /tmp/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+
+"${CI_DIR}"/files/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"

@@ -15,8 +15,8 @@ else
     export EPHEMERAL_CLUSTER="minikube"
 fi
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
-    pushd tested_repo
+    pushd "${HOME}/tested_repo"
 else
-    pushd metal3
+    pushd "${HOME}/metal3"
 fi
 make clean

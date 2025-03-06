@@ -2,11 +2,7 @@
 
 set -eux
 
-VARS_FILE="${1:?}"
-export GITHUB_TOKEN="${2:?}"
-
-# shellcheck disable=SC1090
-source "${VARS_FILE}"
+export GITHUB_TOKEN="${1:?}"
 
 export CAPI_VERSION
 export CAPM3_VERSION
@@ -37,9 +33,9 @@ fi
 # In the bare metal lab, we have already cloned metal3-dev-env and we run integration tests
 # so no need to clone other repos.
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
-    cd tested_repo
+    cd "${HOME}/tested_repo"
 else
-    cd metal3
+    cd "${HOME}/metal3"
 fi
 
 # See bare metal lab infrastructure documentation:
