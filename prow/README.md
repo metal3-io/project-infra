@@ -49,11 +49,9 @@ instance:
    Prow.
 
 In addition to this, we rely on a GitHub bot account
-([metal3-io-bot](https://github.com/metal3-io-bot), owner of the GitHub token)
-and a separate GitHub bot
-[metal3-cherrypick-bot](https://github.com/metal3-cherrypick-bot), for cherry
-picking pull requests. A webhook must be configured in GitHub to send events to
-Prow and a DNS record must be configured so that
+([metal3-io-bot](https://github.com/metal3-io-bot), owner of the GitHub token).
+A webhook must be configured in GitHub to
+send events to Prow and a DNS record must be configured so that
 <https://prow.apps.test.metal3.io> points to the IP where Prow can be accessed.
 
 The DNS records are managed by CNCF for us. Any changes to them can be done
