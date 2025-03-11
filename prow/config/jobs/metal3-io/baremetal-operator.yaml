@@ -193,3 +193,9 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  - name: metal3-bmo-e2e-test-optional-pull
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
