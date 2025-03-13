@@ -67,6 +67,11 @@ def get_github_branch_protection(owner: str, repo: str, branch: str, token: str)
                 status_checks = settings["required_status_checks"]
                 if status_checks:
                     return status_checks.get("contexts", [])
+    except requests.exceptions.HTTPError as ex:
+        if response.status_code == 404:
+            # branch protection is not configured at all
+            return []
+        sys.exit(f"Error: {str(ex)}")
     except requests.exceptions.RequestException as ex:
         sys.exit(f"Error: {str(ex)}")
     return []
