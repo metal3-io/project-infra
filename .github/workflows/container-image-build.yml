@@ -88,6 +88,7 @@ jobs:
         tags: ${{ env.IMAGE_TAGS }}
         directory: ${{ inputs.dockerfile-directory }}
         dockerfile: ${{ inputs.dockerfile-directory }}/Dockerfile
+        buildArgs: ${{ env.IMAGE_BUILD_ARGS || '' }}
         registry: quay.io
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
