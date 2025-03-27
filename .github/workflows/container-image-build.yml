@@ -8,6 +8,10 @@ on:
         required: false
         description: "Git reference of the workflow's trigger"
         type: string
+      image-build-args:
+        required: false
+        description: "Arguments to pass to the image build process"
+        type: string
       image-name:
         required: true
         description: "Name of the image to build"
@@ -88,7 +92,7 @@ jobs:
         tags: ${{ env.IMAGE_TAGS }}
         directory: ${{ inputs.dockerfile-directory }}
         dockerfile: ${{ inputs.dockerfile-directory }}/Dockerfile
-        buildArgs: ${{ env.IMAGE_BUILD_ARGS || '' }}
+        buildArgs: ${{ inputs.image-build-args || '' }}
         registry: quay.io
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
