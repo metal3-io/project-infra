@@ -46,4 +46,4 @@ spec:
       image:
         # Ubuntu-24.04
         id: 19e017ae-2759-479c-90ac-a400a3f64678
-      sshKeyName: metal3ci
+      sshKeyName: prow

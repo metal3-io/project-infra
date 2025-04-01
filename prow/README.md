@@ -214,9 +214,11 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
 
    The token will be referred to as `${CHERRYPICK_TOKEN}`.
 
-1. Create a GitHub webhook for <https://prow.apps.test.metal3.io/hook> using the
-   HMAC token generated earlier. Add the URL and token as below. Select **"Send
-   me everything"**, and for Content type: **application/json**.
+1. Create a [GitHub webhook in the Metal3-io
+   organization](https://github.com/organizations/metal3-io/settings/hooks) for
+   <https://prow.apps.test.metal3.io/hook> using the HMAC token generated
+   earlier. Add the URL and token as below. Select **"Send me everything"**, and
+   for Content type: **application/json**.
 
    ![webhook configuration](images/webhook.png)
 
@@ -262,7 +264,7 @@ Now you are ready to create the files.
             application_credential_secret: ${APP_CRED_SECRET}
             user_domain_name: xerces
             project_name: EST_Metal3_CI
-            project_id: 51faa3170dfc4990b6654346c2bf2243
+            project_id: b62dc8622f87407589de9f7dcec13d25
          region_name: RegionOne
    EOF
    ```
@@ -277,7 +279,7 @@ Now you are ready to create the files.
    application-credential-secret=${APP_CRED_SECRET}
    region=RegionOne
    project-name=EST_Metal3_CI
-   project-id=51faa3170dfc4990b6654346c2bf2243
+   project-id=b62dc8622f87407589de9f7dcec13d25
    EOF
    ```
 
