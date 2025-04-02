@@ -1,6 +1,5 @@
 import java.text.SimpleDateFormat
 
-ci_git_credential_id = "metal3-jenkins-github-username-token"
 def TIMEOUT = 1800
 
 script {
@@ -47,8 +46,7 @@ pipeline {
                  [$class: 'CleanCheckout'],
                  [$class: 'CleanBeforeCheckout']],
                  submoduleCfg: [],
-                 userRemoteConfigs: [[credentialsId: ci_git_credential_id,
-                 url: ci_git_url,  refspec: refspec]]])
+                 userRemoteConfigs: [[url: ci_git_url,  refspec: refspec]]])
       }
     }
     stage('Clean old integration test vms') {

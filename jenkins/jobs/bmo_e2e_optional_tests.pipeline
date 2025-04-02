@@ -40,7 +40,7 @@ pipeline {
             steps {
               checkout scmGit(
                   branches: [[name: pullSha]],
-                  userRemoteConfigs: [[url: repoUrl, credentialsId: "metal3-jenkins-github-username-token", refspec: refspec]],
+                  userRemoteConfigs: [[url: repoUrl, refspec: refspec]],
                   extensions: [[$class: "WipeWorkspace"],
                   [$class: "CleanCheckout"],
                   [$class: "CleanBeforeCheckout"],

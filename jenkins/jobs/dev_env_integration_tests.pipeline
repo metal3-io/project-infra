@@ -1,7 +1,5 @@
 import java.text.SimpleDateFormat
 
-ci_git_credential_id = "metal3-jenkins-github-username-token"
-
 // 3 hours
 def TIMEOUT = 10800
 
@@ -69,12 +67,7 @@ pipeline {
           [$class: 'CleanBeforeCheckout']
         ],
         submoduleCfg: [],
-        userRemoteConfigs: [
-          [credentialsId: ci_git_credential_id,
-          url: ci_git_url,
-          refspec: refspec
-          ]
-        ]
+        userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
         ])
 
        withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
