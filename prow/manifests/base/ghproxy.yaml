@@ -39,6 +39,7 @@ spec:
         - --cache-dir=/cache
         - --cache-sizeGB=99
         - --serve-metrics=true
+        - --legacy-disable-disk-cache-partitions-by-auth-header=false
         ports:
         - containerPort: 8888
         volumeMounts:
