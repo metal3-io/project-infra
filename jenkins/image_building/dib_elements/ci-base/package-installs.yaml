@@ -7,7 +7,7 @@ jq:
 libguestfs-tools:
 libvirt-daemon-system:
 make:
-openjdk-11-jre:
+openjdk-17-jre:
 ovmf:
 python3:
 python3-pip:
