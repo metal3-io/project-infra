@@ -39,8 +39,8 @@ export DIB_DEV_USER_PWDLESS_SUDO="yes"
 export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-  export DIB_RELEASE=jammy
-  numeric_release=22.04
+  export DIB_RELEASE=noble
+  numeric_release=24.04
 else
   export DIB_RELEASE=9
   numeric_release=9
