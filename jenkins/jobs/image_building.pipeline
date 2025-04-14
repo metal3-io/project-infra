@@ -16,6 +16,12 @@ pipeline {
     BMORELEASEBRANCH = "${env.bmo_release_branch}"
     CAPI_VERSION = "${env.CAPI_VERSION}"
     CAPM3_VERSION = "${env.CAPM3_VERSION}"
+    OS_AUTH_URL = "https://xerces.ericsson.net:5000"
+    OS_PROJECT_ID = "b62dc8622f87407589de9f7dcec13d25"
+    OS_INTERFACE = "public"
+    OS_PROJECT_NAME = "EST_Metal3_CI"
+    OS_USER_DOMAIN_NAME = "xerces"
+    OS_IDENTITY_API_VERSION = 3
   }
   stages {
     stage('SCM') {
@@ -52,12 +58,12 @@ pipeline {
               ])
             }
           }
-          stage("Build CI image") {
+          stage("Build disk image") {
             options {
               timeout(time: 1, unit: 'HOURS')
             }
             steps {
-              echo "Building ${IMAGE_OS} CI image"
+              echo "Building ${IMAGE_OS} ${IMAGE_TYPE} image"
               script {
                 sh """
                 ./jenkins/image_building/build-image.sh
@@ -73,7 +79,7 @@ pipeline {
               expression { env.IMAGE_TYPE == 'node' }
             }
             steps {
-              echo "Testing new ${IMAGE_OS} CI image"
+              echo "Testing new ${IMAGE_OS} node image"
               script {
                 def imageName = readFile("image_name.txt").trim()
 
@@ -84,13 +90,50 @@ pipeline {
               }
             }
           }
+          stage("Upload the new CI image with -staging suffix") {
+            options {
+              timeout(time: 30, unit: 'MINUTES')
+            }
+            when {
+              expression { env.IMAGE_TYPE == 'ci' }
+            }
+            steps {
+              script {
+                def imageName = readFile("image_name.txt").trim()
+                withCredentials([
+                  usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+                ]) {
+                  sh """
+                  ./jenkins/image_building/upload-ci-image.sh ${imageName} "metal3-ci-${IMAGE_OS}-staging"
+                  """
+                }
+              }
+            }
+          }
+          stage("Verify the new CI image") {
+            agent { label "metal3ci-staging" }
+            options {
+              timeout(time: 2, unit: 'HOURS')
+            }
+            when {
+              expression { env.IMAGE_TYPE == 'ci' }
+            }
+            steps {
+              echo "Testing new ${IMAGE_OS} CI image"
+              script {
+                sh """
+                ./jenkins/image_building/verify-ci-image.sh
+                """
+              }
+            }
+          }
           stage("Upload the new Image") {
             options {
               timeout(time: 30, unit: 'MINUTES')
             }
             steps {
               withCredentials([
-                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
                 usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
               ]) {
                 script {
@@ -102,8 +145,10 @@ pipeline {
                     ./jenkins/image_building/upload-node-image.sh ${imageName}
                     """
                   } else {
+                    // The CI image is already uploaded with a different name so we just need to rename it.
                     sh """
-                    ./jenkins/image_building/upload-ci-image.sh ${imageName}
+                    source ./jenkins/image_building/upload-ci-image.sh
+                    rename_image_common "metal3-ci-${IMAGE_OS}-staging"
                     """
                   }
                 }
