@@ -1,5 +1,7 @@
-ci_git_branch = "main"
-ci_git_url = "https://github.com/metal3-io/project-infra.git"
+script {
+  ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
+  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+}
 
 pipeline {
   agent none
@@ -35,14 +37,19 @@ pipeline {
               timeout(time: 5, unit: 'MINUTES')
             }
             steps {
-              checkout([$class: 'GitSCM',
-                       branches: [[name: ci_git_branch]],
-                       doGenerateSubmoduleConfigurations: false,
-                       extensions: [[$class: 'WipeWorkspace'],
-                       [$class: 'CleanCheckout'],
-                       [$class: 'CleanBeforeCheckout']],
-                       submoduleCfg: [],
-                       userRemoteConfigs: [[url: ci_git_url]]])
+              checkout([
+                $class: 'GitSCM',
+                branches: [[name: ci_git_branch]],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [
+                  [$class: 'WipeWorkspace'],
+                  [$class: 'CleanCheckout'],
+                  [$class: 'CleanBeforeCheckout'],
+                  [$class: 'PreBuildMerge', options: [mergeTarget: 'main']]
+                ],
+                submoduleCfg: [],
+                userRemoteConfigs: [[url: ci_git_url]]
+              ])
             }
           }
           stage("Build CI image") {
