@@ -19,9 +19,6 @@ cd "${REPO_ROOT}" || true
 export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
 
-# shellcheck disable=SC1091
-. "${current_dir}/upload-ci-image.sh"
-
 # Disable needrestart interactive mode
 sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 

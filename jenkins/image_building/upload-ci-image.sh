@@ -33,37 +33,39 @@ install_openstack_client() {
   pip install python-openstackclient==7.0.0
 }
 
+# upload_ci_image_xerces uploads an image to OpenStack and names it COMMON_IMAGE_NAME.
+# It also renames the existing COMMON_IMAGE_NAME to its original name if it exists.
+# Each image has its "original" name stored as the property image_name.
+# Finally, this function also deletes old images, keeping the latest five.
 upload_ci_image_xerces() {
-  img_name="$1"
+  local img_name="$1"
+  local common_img_name="${2:-${COMMON_IMAGE_NAME}}"
 
-  # Push image to openstack xerces
-  export OS_USERNAME="${OPENSTACK_USERNAME_XERCES}"
-  export OS_PASSWORD="${OPENSTACK_PASSWORD_XERCES}"
-  export OS_AUTH_URL="https://xerces.ericsson.net:5000"
-  export OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
-  export OS_INTERFACE="public"
-  export OS_PROJECT_NAME="EST_Metal3_CI"
-  export OS_USER_DOMAIN_NAME="xerces"
-  export OS_IDENTITY_API_VERSION=3
-
- # Check if the common image already exists
-  if openstack image show "${COMMON_IMAGE_NAME}" &>/dev/null; then
-    # Get the original name of the current common image
-    original_name=$(openstack image show -f json -c properties "${COMMON_IMAGE_NAME}" | jq -r .properties.image_name)
-    # Rename the existing common image back to its original name
-    openstack image set --name "${original_name}" "${COMMON_IMAGE_NAME}"
-  fi
+  rename_image_common "${img_name}" "${common_img_name}"
 
   qemu-img convert -f qcow2 -O raw "${img_name}".qcow2 "${img_name}".raw
 
   # Create the new image with the common name
-  openstack image create "${COMMON_IMAGE_NAME}" --file "${img_name}".raw --disk-format=raw --property image_name="${img_name}"
+  openstack image create "${common_img_name}" --file "${img_name}".raw --disk-format=raw --property image_name="${img_name}"
 
   # delete old images (keeps latest five)
   delete_old_images
+}
 
-  #unset openstack variables
-  unset "${!OS_@}"
+# rename_image_common renames an image to the COMMON_IMAGE_NAME.
+# If the COMMON_IMAGE_NAME already exists, it renames it back to its "original" name.
+rename_image_common() {
+  local from_name="$1"
+  local common_img_name="${2:-${COMMON_IMAGE_NAME}}"
+
+  # Check if the common image already exists
+   if openstack image show "${common_img_name}" &>/dev/null; then
+     # Get the original name of the current common image
+     original_name=$(openstack image show -f json -c properties "${common_img_name}" | jq -r .properties.image_name)
+     # Rename the existing common image back to its original name
+     openstack image set --name "${original_name}" "${common_img_name}"
+   fi
+  openstack image set --name "${common_img_name}" "${from_name}"
 }
 
 # If the script was run directly (i.e. not sourced), run upload functions

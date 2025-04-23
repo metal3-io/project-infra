@@ -245,3 +245,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  - name: metal3-ci-image-building
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-node-image-building
+    agent: jenkins
+    always_run: false
+    optional: true
