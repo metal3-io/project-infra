@@ -1,6 +1,8 @@
 script {
   ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
+  ci_git_base = (env.PULL_BASE_REF) ?: "main"
   ci_git_url = "https://github.com/metal3-io/project-infra.git"
+  refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
 }
 
 pipeline {
@@ -54,7 +56,7 @@ pipeline {
                   [$class: 'PreBuildMerge', options: [mergeTarget: 'main']]
                 ],
                 submoduleCfg: [],
-                userRemoteConfigs: [[url: ci_git_url]]
+                userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
               ])
             }
           }
