@@ -36,20 +36,15 @@ install_openstack_client() {
 # upload_ci_image_xerces uploads an image to OpenStack and names it COMMON_IMAGE_NAME.
 # It also renames the existing COMMON_IMAGE_NAME to its original name if it exists.
 # Each image has its "original" name stored as the property image_name.
-# Finally, this function also deletes old images, keeping the latest five.
 upload_ci_image_xerces() {
   local img_name="$1"
   local common_img_name="${2:-${COMMON_IMAGE_NAME}}"
 
-  rename_image_common "${img_name}" "${common_img_name}"
-
   qemu-img convert -f qcow2 -O raw "${img_name}".qcow2 "${img_name}".raw
-
-  # Create the new image with the common name
-  openstack image create "${common_img_name}" --file "${img_name}".raw --disk-format=raw --property image_name="${img_name}"
-
-  # delete old images (keeps latest five)
-  delete_old_images
+  # Create the new image
+  openstack image create "${img_name}" --file "${img_name}".raw --disk-format=raw --property image_name="${img_name}"
+  # Rename the image to the common name (and the existing common image to its original name)
+  rename_image_common "${img_name}" "${common_img_name}"
 }
 
 # rename_image_common renames an image to the COMMON_IMAGE_NAME.
@@ -66,6 +61,16 @@ rename_image_common() {
      openstack image set --name "${original_name}" "${common_img_name}"
    fi
   openstack image set --name "${common_img_name}" "${from_name}"
+}
+
+# delete_if_exists deletes an image if it exists in OpenStack.
+delete_if_exists() {
+  local image_name="$1"
+  if openstack image show "${image_name}" &>/dev/null; then
+    openstack image set "${image_name}" --deactivate
+    openstack image delete "${image_name}"
+    echo "${image_name} has been deleted!"
+  fi
 }
 
 # If the script was run directly (i.e. not sourced), run upload functions
