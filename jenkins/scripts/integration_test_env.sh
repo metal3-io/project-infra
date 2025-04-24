@@ -57,10 +57,10 @@ export ANSIBLE_FORCE_COLOR=true
 # Make 'changed' tasks the same color as 'succeeded' tasks in Jenkins output
 export ANSIBLE_COLOR_CHANGED="green"
 
-METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
-METAL3BRANCH="${METAL3BRANCH:-main}"
-CAPM3REPO="${CAPM3REPO:-https://github.com/metal3-io/cluster-api-provider-metal3}"
-CAPM3BRANCH="${CAPM3BRANCH:-${CAPM3RELEASEBRANCH}}"
+METAL3REPO="https://github.com/Nordix/metal3-dev-env.git"
+METAL3BRANCH="test-bml-fix/sunnat"
+CAPM3REPO="https://github.com/Nordix/cluster-api-provider-metal3"
+CAPM3BRANCH="fix-setting-empty-ip/sunnat"
 
 # Container image registry value to override the default value in m3-dev-env
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}

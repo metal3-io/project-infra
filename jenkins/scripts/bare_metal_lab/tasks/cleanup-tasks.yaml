@@ -97,9 +97,9 @@
 
 - name: Clone the metal3-dev-env repo
   git:
-    repo: "https://github.com/metal3-io/metal3-dev-env.git"
+    repo: "https://github.com/Nordix/metal3-dev-env.git"
     dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
-    version: "main"
+    version: "test-bml-fix/sunnat"
   tags: clone
 
 - name: Merge branch for PR
@@ -113,8 +113,8 @@
     - git fetch test
     - git fetch origin pull/{{ pr_id }}/head:{{ metal3_dev_env_branch }}-branch
     - git merge {{ metal3_dev_env_branch }}
-  when: ((metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
-        (metal3_dev_env_branch != "main"))
+  when: ((metal3_dev_env_repo != "https://github.com/Nordix/metal3-dev-env.git") or
+        (metal3_dev_env_branch != "test-bml-fix/sunnat"))
   tags: clone
 
 - name: Clean any existing setup
