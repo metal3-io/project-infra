@@ -6,6 +6,12 @@ script {
 }
 
 pipeline {
+  options {
+    // We verify the CI images by uploading and testing them as jenkins agents.
+    // If multiple jobs would run in parallel, they may overwrite each others image
+    // and/or delete them before the test is finished.
+    disableConcurrentBuilds()
+  }
   agent none
   environment {
     IMAGE_TYPE = "${env.IMAGE_TYPE}"
@@ -52,8 +58,7 @@ pipeline {
                 extensions: [
                   [$class: 'WipeWorkspace'],
                   [$class: 'CleanCheckout'],
-                  [$class: 'CleanBeforeCheckout'],
-                  [$class: 'PreBuildMerge', options: [mergeTarget: 'main']]
+                  [$class: 'CleanBeforeCheckout']
                 ],
                 submoduleCfg: [],
                 userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
@@ -70,6 +75,32 @@ pipeline {
                 sh """
                 ./jenkins/image_building/build-image.sh
                 """
+              }
+            }
+          }
+          stage("Upload the new CI image with -staging suffix") {
+            options {
+              timeout(time: 30, unit: 'MINUTES')
+            }
+            when {
+              expression { env.IMAGE_TYPE == 'ci' }
+            }
+            steps {
+              // NOTE: We delete any existing *-staging images before uploading the new one.
+              // This is important because the images cannot be separated from the older "latest" images
+              // if they are renamed to their "original" names (which they would be when the next image is uploaded).
+              script {
+                def imageName = readFile("image_name.txt").trim()
+                withCredentials([
+                  usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
+                ]) {
+                  sh """#!/bin/bash
+                  source ./jenkins/image_building/upload-ci-image.sh
+                  install_openstack_client
+                  delete_if_exists "metal3-ci-${IMAGE_OS}-staging"
+                  upload_ci_image_xerces ${imageName} "metal3-ci-${IMAGE_OS}-staging"
+                  """
+                }
               }
             }
           }
@@ -92,28 +123,8 @@ pipeline {
               }
             }
           }
-          stage("Upload the new CI image with -staging suffix") {
-            options {
-              timeout(time: 30, unit: 'MINUTES')
-            }
-            when {
-              expression { env.IMAGE_TYPE == 'ci' }
-            }
-            steps {
-              script {
-                def imageName = readFile("image_name.txt").trim()
-                withCredentials([
-                  usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
-                ]) {
-                  sh """
-                  ./jenkins/image_building/upload-ci-image.sh ${imageName} "metal3-ci-${IMAGE_OS}-staging"
-                  """
-                }
-              }
-            }
-          }
           stage("Verify the new CI image") {
-            agent { label "metal3ci-staging" }
+            agent { label "metal3ci-${IMAGE_OS}-staging" }
             options {
               timeout(time: 2, unit: 'HOURS')
             }
@@ -133,6 +144,10 @@ pipeline {
             options {
               timeout(time: 30, unit: 'MINUTES')
             }
+            when {
+              // Don't upload from PR tests
+              expression { ci_git_branch == 'main' }
+            }
             steps {
               withCredentials([
                 usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
@@ -148,9 +163,11 @@ pipeline {
                     """
                   } else {
                     // The CI image is already uploaded with a different name so we just need to rename it.
-                    sh """
+                    // Also clean up old images (keeping the last 5)
+                    sh """#!/bin/bash
                     source ./jenkins/image_building/upload-ci-image.sh
                     rename_image_common "metal3-ci-${IMAGE_OS}-staging"
+                    delete_old_images
                     """
                   }
                 }
