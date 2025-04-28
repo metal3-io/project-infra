@@ -7,8 +7,8 @@ export CRIO_MINOR_VERSION=${CRIO_VERSION%.*}
 
 curl -fsSL "https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/deb/Release.key" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
-curl -fsSL "https://download.opensuse.org/repositories/isv:/kubernetes:/addons:/cri-o:/stable:/${CRIO_MINOR_VERSION}/deb/Release.key" | gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.opensuse.org/repositories/isv:/kubernetes:/addons:/cri-o:/stable:/${CRIO_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/cri-o.list
+curl -fsSL "https://download.opensuse.org/repositories/isv:/cri-o:/stable:/${CRIO_MINOR_VERSION}/deb/Release.key" | gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.opensuse.org/repositories/isv:/cri-o:/stable:/${CRIO_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/cri-o.list
 
 sudo apt-get update
 sudo apt-get dist-upgrade -f -y
