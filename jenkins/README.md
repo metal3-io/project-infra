@@ -55,7 +55,7 @@ easier in certain cases:
    commenting:
    * **/cherry-pick release-x.y** where `release-x.y` is any supported release
      branch, where the backport PR will be opened by the
-     [cherry picker bot](https://github.com/metal3-cherrypick-bot).
+     [metal3-io-bot](https://github.com/metal3-io-bot).
 1. `transfer-issue` plugin can be used for transferring issues across
    repositories in the same GitHub organization by commenting:
    * **/transfer-issue target-repo-name** on the issue. One simple example
@@ -72,7 +72,7 @@ branch to be able to open a PR against it in the future.
 ## Cloud Resources cleanup
 
 There is a Jenkins
-[main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_daily_main_integration_tests_cleanup/)
+[main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_periodic_resource_cleanup/)
 that cleans up all the leftover VMs from [CityCloud](https://www.citycloud.com/)
 every 6 hours which has failed to be deleted at the end of v1alphaX/v1betaX
 integration tests.
@@ -91,7 +91,7 @@ trusted.
 Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
-[job](https://jenkins.nordix.org/view/Metal3/job/metal3_bmo_main_integration_test_ubuntu/).
+[job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3-periodic-centos-e2e-integration-test-main/).
 Please note that the logs will be removed 30 days after creation or after 100
 subsequent job runs, whichever occurs first.
 
@@ -132,15 +132,14 @@ stored in
 [metal3-io/project-infra](https://github.com/metal3-io/project-infra/tree/main/jenkins/jobs)
 repository. In a nutshell, pipelines defines sequence of steps to be executed.
 Each step can run a script or perform something else. For example,
-[integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/integration_tests.pipeline)
+[dev_env_integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/dev_env_integration_tests.pipeline)
 executes following scripts:
 
-1. [clones](https://github.com/metal3-io/project-infra/blob/0a6cc3f9f8592914a316c27ea2411ccb48aba7c3/jenkins/jobs/integration_tests.pipeline#L65)
+1. [clones](https://github.com/metal3-io/project-infra/blob/1e8d2111a33dc95134b6f546d76f19be4a637e3d/jenkins/jobs/dev_env_integration_tests.pipeline#L56)
    git repository
-1. [jenkins/scripts/integration_test.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_test.sh)
-1. [jenkins/scripts/fetch_logs.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/fetch_logs.sh)
-1. [jenkins/scripts/integration_test_clean.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_test_clean.sh)
-1. [jenkins/scripts/integration_delete.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/integration_delete.sh)
+1. [jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh)
+1. [jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh)
+1. [jenkins/scripts/dynamic_worker_workflow/run_clean.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/dynamic_worker_workflow/run_clean.sh)
 
 ### GitHub Pull Request Builder, a.k.a. ghprb
 

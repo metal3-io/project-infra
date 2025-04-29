@@ -1,0 +1,67 @@
+name: Check Links In Pull Requests
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+  workflow_call:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-links-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - name: Checkout base branch
+        run: git checkout ${{ github.event.pull_request.base.ref }}
+
+      - name: Get list of changed Markdown files
+        id: changed-files
+        run: |
+          git diff --name-only "origin/${{ github.event.pull_request.base.ref }}...${{ github.head_ref }}" -- "*.md" > changed-files.txt
+          cat changed-files.txt
+          if [[ -s "changed-files.txt" ]]; then
+            echo "Changed md files found"
+            echo "foundFiles=true" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Switch to PR branch
+        run: git checkout ${{ github.head_ref }}
+
+      - name: Check links in changed files
+        if: env.foundFiles == 'true'
+        uses: lycheeverse/lychee-action@f796c8b7d468feb9b8c0a46da3fac0af6874d374 # v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          failIfEmpty: false
+          args: |
+            --no-progress
+            --github-token
+            $(cat changed-files.txt | tr '\n' ' ')
+
+      - name: Provide helpful failure message
+        if: failure()
+        run: |
+          echo "::error::Link check failed! Please review the broken links reported above."
+          echo ""
+          echo "If certain links are valid but fail due to:"
+          echo "- CAPTCHA challenges"
+          echo "- IP blocking"
+          echo "- Authentication requirements"
+          echo "- Rate limiting"
+          echo ""
+          echo "Consider adding them to .lycheeignore to bypass future checks."
+          echo "Format: Add one URL pattern per line"
+          exit 1
