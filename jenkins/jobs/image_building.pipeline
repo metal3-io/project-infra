@@ -129,6 +129,9 @@ pipeline {
               timeout(time: 2, unit: 'HOURS')
             }
             when {
+              // IMPORTANT: We must evaluate the when block before the agent or we will get stuck
+              // since there is no stagig image available when IMAGE_TYPE is not "ci".
+              beforeAgent true
               expression { env.IMAGE_TYPE == 'ci' }
             }
             steps {
