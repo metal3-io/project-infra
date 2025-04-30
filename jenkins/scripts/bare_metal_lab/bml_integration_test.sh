@@ -52,14 +52,14 @@ TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
 EOF
 
-cat "${CI_DIR}/integration_test_env.sh" >>"/tmp/vars.sh"
+cat "${CI_DIR}/../dynamic_worker_workflow/test_env.sh" >>"/tmp/vars.sh"
 
 echo "Setting up the lab"
 
-ANSIBLE_FORCE_COLOR=true ansible-playbook -v "${CI_DIR}"/bare_metal_lab/deploy-lab.yaml
+ANSIBLE_FORCE_COLOR=true ansible-playbook -v "${CI_DIR}"/deploy-lab.yaml
 
 echo "Running the tests"
 # Execute remote script
 # shellcheck disable=SC2029
 
-"${CI_DIR}"/files/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"
+"${CI_DIR}"/run_integration_tests.sh /tmp/vars.sh "${GITHUB_TOKEN}"

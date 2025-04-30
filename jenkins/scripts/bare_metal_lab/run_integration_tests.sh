@@ -23,7 +23,7 @@ fi
 export FORCE_REPO_UPDATE=false
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-    #Must match with run_fetch_logs.sh
+    #Must match with fetch_logs.sh
     export CONTAINER_RUNTIME="docker"
     export EPHEMERAL_CLUSTER="kind"
 else
