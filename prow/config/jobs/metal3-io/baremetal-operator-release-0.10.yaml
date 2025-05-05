@@ -170,7 +170,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-10
+  - name: metal3-e2e-1-32-1-33-upgrade-test-release-1-10
     branches:
     - release-0.10
     agent: jenkins
