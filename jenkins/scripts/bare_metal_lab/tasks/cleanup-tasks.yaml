@@ -136,3 +136,11 @@
 
 - name: Reset network
   script: reset_network.sh
+
+# dnsmasq version is downgraded in ubuntu 24.04 to version 2.89.
+# version 2.89 causing an libvirt related processes are not properly cleaned.
+# This task can be removed after issue https://bugs.launchpad.net/ubuntu/+source/dnsmasq/+bug/2055776 is fixed
+- name: Kill lingering libvirt dnsmasq processes
+  become: true
+  shell: |
+    pkill -f "dnsmasq.*libvirt" || true

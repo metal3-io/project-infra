@@ -99,7 +99,7 @@ pipeline {
       withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY')]){
         withCredentials([usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
           timestamps {
-            sh "./jenkins/scripts/fetch_logs.sh"
+            sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
           }
         }
       }
