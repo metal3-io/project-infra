@@ -35,10 +35,6 @@ the commands below. The job result will be posted as a comment.
   version v1beta1 and branch release-1.8 on Ubuntu
 * **/test-centos-integration-release-1-8** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.8 on CentOS
-* **/test-ubuntu-integration-release-1-7** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.7 on Ubuntu
-* **/test-centos-integration-release-1-7** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.7 on CentOS
 
 ### E2E tests
 

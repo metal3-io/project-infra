@@ -70,19 +70,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-basic-test-release-1-7
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-basic-test-release-1-7
     agent: jenkins
     always_run: false
     optional: true
@@ -95,19 +87,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-integration-test-release-1-7
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
     agent: jenkins
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-integration-test-release-1-7
     agent: jenkins
     always_run: false
     optional: true
@@ -120,19 +104,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-pivoting
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-centos-e2e-feature-test-main-remediation
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-8-remediation
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-remediation
     agent: jenkins
     always_run: false
     optional: true
@@ -144,19 +120,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-7-features
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-pivoting
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-8-pivoting
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-pivoting
     agent: jenkins
     always_run: false
     optional: true
@@ -168,19 +136,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-remediation
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-features
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-8-features
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-ubuntu-e2e-feature-test-release-1-7-features
     agent: jenkins
     always_run: false
     optional: true
@@ -193,20 +153,12 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-e2e-clusterctl-upgrade-test-release-1-7
-    agent: jenkins
-    always_run: false
-    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-29-1-30-upgrade-test-main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-e2e-1-29-1-30-upgrade-test-release-1-7
     agent: jenkins
     always_run: false
     optional: true
@@ -218,19 +170,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-dev-env-integration-test-centos-release-1-7
-    agent: jenkins
-    always_run: false
-    optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
     agent: jenkins
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-release-1-8
-    agent: jenkins
-    always_run: false
-    optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-release-1-7
     agent: jenkins
     always_run: false
     optional: true
