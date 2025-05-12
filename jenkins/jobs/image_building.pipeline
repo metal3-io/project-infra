@@ -169,6 +169,7 @@ pipeline {
                     // Also clean up old images (keeping the last 5)
                     sh """#!/bin/bash
                     source ./jenkins/image_building/upload-ci-image.sh
+                    install_openstack_client
                     rename_image_common "metal3-ci-${IMAGE_OS}-staging"
                     delete_old_images
                     """
