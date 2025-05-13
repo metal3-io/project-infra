@@ -36,6 +36,11 @@
     jump: ACCEPT
   become: true
 
+- name: Deploy bmhosts
+  template:
+    src: "templates/bmhosts_crs.yaml.j2"
+    dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
+
 - name: Launch management cluster
   shell:
     cmd: make launch_mgmt_cluster
@@ -68,11 +73,6 @@
   become: true
   when: brctl_grep_bmext.rc != 0
   tags: bmext
-
-- name: Deploy bmhosts
-  template:
-    src: "templates/bmhosts_crs.yaml.j2"
-    dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
 
 - name: Apply bmhosts manifest
   shell:
