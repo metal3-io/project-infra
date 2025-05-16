@@ -42,13 +42,11 @@ jobs:
       - name: Check links in changed files
         if: env.foundFiles == 'true'
         uses: lycheeverse/lychee-action@f796c8b7d468feb9b8c0a46da3fac0af6874d374 # v2.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           failIfEmpty: false
           args: |
             --no-progress
-            --github-token
+            --github-token "${GITHUB_TOKEN}"
             $(cat changed-files.txt | tr '\n' ' ')
 
       - name: Provide helpful failure message
