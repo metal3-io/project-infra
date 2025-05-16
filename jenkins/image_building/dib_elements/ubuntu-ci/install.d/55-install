@@ -12,7 +12,7 @@ sudo apt-get install -y \
   openssl \
   python-is-python3 \
   chrony \
-  qemu
+  qemu-kvm
 
 # Configure
 sudo chronyc -a 'burst 4/4' && sudo chronyc -a makestep
