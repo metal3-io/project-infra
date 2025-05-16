@@ -140,7 +140,11 @@
 # dnsmasq version is downgraded in ubuntu 24.04 to version 2.89.
 # version 2.89 causing an libvirt related processes are not properly cleaned.
 # This task can be removed after issue https://bugs.launchpad.net/ubuntu/+source/dnsmasq/+bug/2055776 is fixed
-- name: Kill lingering libvirt dnsmasq processes
-  become: true
-  shell: |
-    pkill -f "dnsmasq.*libvirt" || true
+- name: Attempt to kill lingering libvirt dnsmasq processes (will not fail playbook)
+  ansible.builtin.shell:
+    cmd: pkill -f "dnsmasq.*libvirt"
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+  changed_when: false
+  register: pkill_result
