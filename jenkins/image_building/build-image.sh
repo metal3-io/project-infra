@@ -23,7 +23,7 @@ export IMAGE_TYPE="${IMAGE_TYPE}"
 sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 
 sudo apt-get update
-sudo apt-get install -y python3-dev python3-pip python3-venv qemu qemu-kvm
+sudo apt-get install -y python3-dev python3-pip python3-venv qemu-kvm
 python3 -m venv venv
 
 # shellcheck source=/dev/null
@@ -36,8 +36,8 @@ export DIB_DEV_USER_PWDLESS_SUDO="yes"
 export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-  export DIB_RELEASE=jammy
-  numeric_release=22.04
+  export DIB_RELEASE=noble
+  numeric_release=24.04
 else
   export DIB_RELEASE=9
   numeric_release=9
