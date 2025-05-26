@@ -87,6 +87,7 @@ jobs:
       id: image_tags
       run: |
         BASE_TAG=$(echo "${{ env.GITHUB_REFNAME }}" | sed 's/\//_/')
+        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
 
         if [[ -n "${{ inputs.image-tag }}" ]]; then
           IMAGE_TAGS="${{ inputs.image-tag }}"
@@ -95,7 +96,6 @@ jobs:
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
           IMAGE_VERSION="latest"
         else
-          IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
           IMAGE_VERSION="${{ env.GITHUB_REFNAME }}"
         fi
 
