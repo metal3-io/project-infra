@@ -83,17 +83,24 @@ jobs:
       id: date
       run: echo "current_date=$(date +'%Y-%m-%d')" >> "${GITHUB_OUTPUT}"
 
-    - name: Get image tags
+    - name: Get image tags and set version label
       id: image_tags
       run: |
-        BASE_TAG=`echo "${{ env.GITHUB_REFNAME }}" | sed 's/\//_/'`
-        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
+        BASE_TAG=$(echo "${{ env.GITHUB_REFNAME }}" | sed 's/\//_/')
+
         if [[ -n "${{ inputs.image-tag }}" ]]; then
           IMAGE_TAGS="${{ inputs.image-tag }}"
+          IMAGE_VERSION="${{ inputs.image-tag }}"
         elif [[ "${{ env.GITHUB_REF }}" == "refs/heads/main" ]]; then
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
+          IMAGE_VERSION="latest"
+        else
+          IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
+          IMAGE_VERSION="${{ env.GITHUB_REFNAME }}"
         fi
+
         echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
+        echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
 
     - name: Build ${{ inputs.image-name }} image
       uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
@@ -103,6 +110,8 @@ jobs:
         directory: ${{ inputs.dockerfile-directory }}
         dockerfile: ${{ inputs.dockerfile-directory }}/Dockerfile
         buildArgs: ${{ inputs.image-build-args || '' }}
+        labels: |
+          org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
         registry: quay.io
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
