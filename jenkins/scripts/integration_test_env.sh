@@ -23,7 +23,6 @@ elif [[ "${REPO_NAME}" == "baremetal-operator" ]]; then
     export BMOBRANCH="${UPDATED_BRANCH}"
     export BMOPATH="/home/${USER}/tested_repo"
     export BUILD_BMO_LOCALLY="true"
-    export IRONIC_KEEPALIVED_LOCAL_IMAGE="${BMOPATH}/resources/keepalived-docker"
 
 elif [[ "${REPO_NAME}" == "ip-address-manager" ]]; then
     export IPAMREPO="${UPDATED_REPO}"
