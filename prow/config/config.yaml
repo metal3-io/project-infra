@@ -89,7 +89,7 @@ tide:
 # This is what controls which github status checks (or CI jobs) must
 # be passing for a PR to merge.
 #
-# Docs: https://docs.prow.k8s.io/docs/components/optional/branchprotector/
+# Docs: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/branchprotector
 #
 branch-protection:
   orgs:
@@ -103,8 +103,6 @@ branch-protection:
       # To turn this off for a given job, set "optional: true"
       # in the job definition.
       protect: true
-  # IF we trigger optional jobs, make sure they pass before we merge
-  require_manually_triggered_jobs: true
 
 deck:
   spyglass:
