@@ -31,10 +31,6 @@ export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 # shellcheck disable=SC1091
 source "${CI_DIR}/test_env.sh"
 
-if [[ "${CAPM3_VERSION}" == "v1alpha5" ]]; then
-    export KUBERNETES_VERSION="v1.23.8"
-fi
-
 # Set KUBERNETES_VERSION and related variables for k8s-upgrade tests
 if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
     export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
