@@ -14,7 +14,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.23
+        image: docker.io/golang:1.24
         imagePullPolicy: Always
   # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
   - name: test
@@ -28,7 +28,7 @@ presubmits:
         - test
         command:
         - make
-        image: docker.io/golang:1.23
+        image: docker.io/golang:1.24
         imagePullPolicy: Always
   - name: markdownlint
     branches:
@@ -76,7 +76,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.23
+        image: docker.io/golang:1.24
         imagePullPolicy: Always
   - name: unit
     branches:
@@ -92,7 +92,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.23
+        image: docker.io/golang:1.24
         imagePullPolicy: Always
   - name: manifestlint
     branches:
@@ -126,7 +126,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.23
+        image: docker.io/golang:1.24
         imagePullPolicy: Always
   - name: metal3-centos-e2e-basic-test-release-1-9
     branches:
