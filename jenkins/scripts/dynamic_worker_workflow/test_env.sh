@@ -66,3 +66,6 @@ export CAPM3BRANCH="${CAPM3BRANCH:-${CAPM3RELEASEBRANCH}}"
 # Container image registry value to override the default value in m3-dev-env
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-proxy"}
 export DOCKER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
+
+# Proxy IPA's base URI value to override the default value in m3-dev-env
+export IPA_BASEURI="https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib"
