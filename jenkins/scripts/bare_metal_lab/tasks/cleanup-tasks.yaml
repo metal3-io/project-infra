@@ -148,3 +148,5 @@
   ignore_errors: true
   changed_when: false
   register: pkill_result
+  become: true
+  become_user: root
