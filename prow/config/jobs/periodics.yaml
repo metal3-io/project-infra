@@ -71,7 +71,7 @@ periodics:
     base_ref: main
   spec:
     containers:
-    - image: us-docker.pkg.dev/k8s-infra-prow/images/generic-autobumper:v20250430-f422de961
+    - image: us-docker.pkg.dev/k8s-infra-prow/images/generic-autobumper:v20250522-9b3f5faca
       command:
       - generic-autobumper
       args:
