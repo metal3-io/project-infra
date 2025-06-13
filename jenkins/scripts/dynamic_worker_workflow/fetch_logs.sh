@@ -171,4 +171,3 @@ mkdir -p "${LOGS_DIR}/cluster-api-config"
 cp -r "${HOME}/.cluster-api/." "${LOGS_DIR}/cluster-api-config/"
 
 tar -cvzf "${LOGS_TARBALL}" "${LOGS_DIR}"/*
-
