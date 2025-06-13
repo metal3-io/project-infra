@@ -17,6 +17,8 @@ presubmits:
         image: docker.io/golang:1.24
         imagePullPolicy: Always
   - name: markdownlint
+    branches:
+    - main
     run_if_changed: '(\.md|markdownlint\.sh)$'
     decorate: true
     spec:
