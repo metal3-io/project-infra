@@ -38,6 +38,9 @@ script {
   } else if ( "${GINKGO_FOCUS}" == 'k8s-conformance' ) {
     TIMEOUT = 7200 // 2h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+  } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests' ) {
+    TIMEOUT = 10800 // 3h
+    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else {
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
     BUILD_TAG = "${env.BUILD_TAG}-other-features"
