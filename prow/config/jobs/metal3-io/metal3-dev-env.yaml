@@ -262,3 +262,11 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  - name: metal3-ubuntu-e2e-capi-md-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-capi-md-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
