@@ -18,6 +18,9 @@ if [[ "${NUM_NODES}" == "null" ]]; then
     unset NUM_NODES
 fi
 
+IMAGE_NAME="UBUNTU_24.04_NODE_IMAGE_K8S_v1.33.0.qcow2"
+export IMAGE_NAME
+
 # Since we take care of the repo tested here (to merge the PR), do not update
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
 export FORCE_REPO_UPDATE=false
@@ -25,10 +28,8 @@ export FORCE_REPO_UPDATE=false
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
     #Must match with fetch_logs.sh
     export CONTAINER_RUNTIME="docker"
-    export EPHEMERAL_CLUSTER="kind"
-else
-    export EPHEMERAL_CLUSTER="minikube"
 fi
+export EPHEMERAL_CLUSTER="minikube"
 
 # In the bare metal lab, we have already cloned metal3-dev-env and we run integration tests
 # so no need to clone other repos.

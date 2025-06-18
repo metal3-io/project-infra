@@ -36,7 +36,7 @@ pipeline {
     UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
     BUILD_TAG = "${env.BUILD_TAG}"
     PR_ID = "${env.PULL_NUMBER}"
-    IMAGE_OS = "${IMAGE_OS}"
+    IMAGE_OS = "ubuntu"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
     BMORELEASEBRANCH = "${bmo_release_branch}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
