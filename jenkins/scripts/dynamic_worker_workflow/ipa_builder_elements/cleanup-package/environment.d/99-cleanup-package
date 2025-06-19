@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export DIB_CLEANUP_NVIDIA_GPUS="${DIB_CLEANUP_NVIDIA_GPUS:-false}"
+
+if [[ "${DIB_CLEANUP_NVIDIA_GPUS}" == "true" ]]; then
+    sudo rm -rf /usr/lib/firmware/nvidia
+fi

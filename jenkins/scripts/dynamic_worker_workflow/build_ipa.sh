@@ -127,6 +127,7 @@ fi
 export DIB_INSTALLTYPE_simple_init="repo"
 export DIB_REPOLOCATION_glean="https://github.com/Nordix/glean.git"
 export DIB_REPOREF_glean="refs/heads/parsing_error"
+export DIB_CLEANUP_NVIDIA_GPUS="true"
 
 # IPA builder customisation variables
 # Path to custom IPA builder kernel module element
@@ -160,6 +161,7 @@ size_domain_offset=1024
 filesize_MB=$((filesize / size_domain_offset / size_domain_offset))
 echo "Size of the archive: ${filesize_MB}MB"
 if [ ${filesize_MB} -ge ${IRONIC_SIZE_LIMIT_MB} ]; then
+    echo "FATAL: Ironic size limit is ${IRONIC_SIZE_LIMIT_MB}MB. Size of the archive (${filesize_MB}MB) is too large."
     exit 1
 fi
 
