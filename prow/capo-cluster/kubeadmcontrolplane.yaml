@@ -5,9 +5,6 @@ metadata:
 spec:
   kubeadmConfigSpec:
     clusterConfiguration:
-      apiServer:
-        extraArgs:
-          cloud-provider: external
       controllerManager:
         extraArgs:
           cloud-provider: external
@@ -31,6 +28,6 @@ spec:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: OpenStackMachineTemplate
-      name: prow-control-plane-v1-31-6-rotated
+      name: prow-control-plane-v1-32-5
   replicas: 1
-  version: v1.31.6
+  version: v1.32.5
