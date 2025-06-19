@@ -18,6 +18,9 @@ if [[ "${NUM_NODES}" == "null" ]]; then
     unset NUM_NODES
 fi
 
+IMAGE_NAME="UBUNTU_24.04_NODE_IMAGE_K8S_v1.33.0.qcow2"
+export IMAGE_NAME
+
 # Since we take care of the repo tested here (to merge the PR), do not update
 # the repo in metal3-dev-env 03_launch_mgmt_cluster.sh
 export FORCE_REPO_UPDATE=false
