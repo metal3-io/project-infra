@@ -125,16 +125,17 @@ image. Here is an example:
 
 ```json
 {
-  "source_image": "54f49763-5f17-475e-9ad2-67dc8cd9a9ff",
+  "source_image": "19e017ae-2759-479c-90ac-a400a3f64678",
   "networks": "29fd620e-8145-43a2-8140-5cec6a69f344",
-  "flavor": "c4m4",
+  "flavor": "c4m12-est",
   "floating_ip_network": "internet",
   "ssh_username": "ubuntu",
   "volume_type": "",
-  "kubernetes_deb_version": "1.30.6-1.1",
-  "kubernetes_rpm_version": "1.30.6",
-  "kubernetes_semver": "v1.30.6",
-  "kubernetes_series": "v1.30"
+  "image_disk_format": "raw",
+  "kubernetes_deb_version": "1.32.5-1.1",
+  "kubernetes_rpm_version": "1.32.5",
+  "kubernetes_semver": "v1.32.5",
+  "kubernetes_series": "v1.32"
 }
 ```
 
@@ -142,7 +143,7 @@ Then build the image like this:
 
 ```bash
 cd images/capi
-PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2204
+PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 ```
 
 ## Create credentials
