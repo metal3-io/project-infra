@@ -11,12 +11,12 @@ CI_DIR="$(dirname "$(readlink -f "${0}")")"
 
 export IMAGE_OS="${IMAGE_OS:-ubuntu}"
 export REPO_ORG="${REPO_ORG:-metal3-io}"
-export REPO_NAME="${REPO_NAME:-metal3-dev-env}"
+export REPO_NAME="${REPO_NAME:-metal3-project-infra}"
 export REPO_BRANCH="${REPO_BRANCH:-main}"
 export PR_ID="${PR_ID:-}"
 export PULL_PULL_SHA="${PULL_PULL_SHA:-}"
-export METAL3REPO="${METAL3REPO:-https://github.com/metal3-io/metal3-dev-env.git}"
-export METAL3BRANCH="${METAL3BRANCH:-main}"
+export METAL3REPO="${METAL3REPO:-https://github.com/Nordix/metal3-dev-env.git}"
+export METAL3BRANCH="${METAL3BRANCH:-Sunnatillo/fix-interface-name-vrrp}"
 export CAPM3RELEASEBRANCH="${CAPM3RELEASEBRANCH:-main}"
 export BMORELEASEBRANCH="${BMORELEASEBRANCH:-main}"
 export NUM_NODES="${NUM_NODES:-1}"
@@ -51,24 +51,6 @@ else
 fi
 
 # Clone the source repository
-REPO_LOCATION=${REPO_LOCATION:-"${HOME}/tested_repo"}
-rm -rf "${REPO_LOCATION}"
-git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${REPO_LOCATION}"
-cd "${REPO_LOCATION}"
-git checkout "${REPO_BRANCH}"
-# If the target and source repos and branches are identical, don't try to merge
-if [[ "${UPDATED_REPO}" != *"${REPO_ORG}/${REPO_NAME}"* ]] ||
-    [[ "${UPDATED_BRANCH}" != "${REPO_BRANCH}" ]]; then
-    git config user.email "test@test.test"
-    git config user.name "Test"
-    git remote add test "${UPDATED_REPO}"
-    git fetch test
-    if [[ -n "${PR_ID:-}" ]]; then
-        git fetch origin "pull/${PR_ID}/head:${UPDATED_BRANCH}-branch" || true
-    fi
-    # Merging the PR with the target branch
-    git merge "${UPDATED_BRANCH}" || exit
-fi
 cd "${HOME}"
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
