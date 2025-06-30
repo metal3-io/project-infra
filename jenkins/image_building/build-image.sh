@@ -70,7 +70,7 @@ if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
 elif [[ "${IMAGE_OS}" == "centos" ]]; then
   numeric_release=9
   # Setting upstrem Centos 9 stream image
-  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250811.0.x86_64.qcow2"
+  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250812.1.x86_64.qcow2"
 
   if [[ ! -f "${REPO_ROOT}/${centos_upstream_img}" ]]; then
     wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/9-stream/x86_64/images/${centos_upstream_img}"
@@ -83,26 +83,28 @@ elif [[ "${IMAGE_OS}" == "leap" ]]; then
   # Patch DIB source to accept openSUSE Leap 15.6
   # shellcheck disable=SC2016
   sed -i '8i15.6) export OPENSUSE_REPO_DIR=openSUSE_Leap_${DIB_RELEASE} ;;' \
-      "${REPO_ROOT}"/venv/lib/python*/site-packages/diskimage_builder/elements/opensuse/environment.d/10-opensuse-distro-name.bash 
+      "${REPO_ROOT}"/venv/lib/python*/site-packages/diskimage_builder/elements/opensuse/environment.d/10-opensuse-distro-name.bash
 fi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   # The default data source for cloud-init element is exclusively Amazon EC2
   export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive"
-  export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.34.0"}"
+  export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.34.1"}"
 
   if [[ "${PRE_RELEASE:-}" == "true" ]]; then
-    # Extract minor version (e.g., "1.34" from "v1.34.0")
-    KUBERNETES_MINOR_VERSION=$(echo "${KUBERNETES_VERSION:-"v1.34.0"}" | sed 's/^v//' | cut -d'.' -f1,2)
+    # Extract minor version (e.g., "1.34" from "v1.34.1")
+    KUBERNETES_MINOR_VERSION=$(echo "${KUBERNETES_VERSION:-"v1.34.1"}" | sed 's/^v//' | cut -d'.' -f1,2)
 
     # Fetch the latest pre-release Kubernetes version for the minor version
     FETCHED_VERSION=$(curl -L -s "https://dl.k8s.io/release/latest-${KUBERNETES_MINOR_VERSION}.txt")
     export KUBERNETES_VERSION="${FETCHED_VERSION}"
   fi
 
-  export CRIO_VERSION="${CRIO_VERSION:-"v1.33.3"}"
+  export CRIO_VERSION="${CRIO_VERSION:-"v1.34.0"}"
   export CRICTL_VERSION="${CRICTL_VERSION:-"v1.34.0"}"
   img_name="${IMAGE_OS^^}_${numeric_release}_NODE_IMAGE_K8S_${KUBERNETES_VERSION}"
+  # enable predictable interface names
+  export DIB_BOOTLOADER_DEFAULT_CMDLINE="net.ifnames=1"
 else
   commit_short="$(git rev-parse --short HEAD)"
   img_date="$(date --utc +"%Y%m%dT%H%MZ")"
