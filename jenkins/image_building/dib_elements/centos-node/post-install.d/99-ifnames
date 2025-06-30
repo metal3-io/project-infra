@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This sets net.ifnames to 0 to disable Predictable network interface
+# Interfaces still get Predictable names as alternative name
+# e.g. altname enp1s0
+
+set -eux
+
+dnf update -y
+dnf install -y grub2-pc
+
+GRUB_FILE="$TMP_MOUNT_PATH/etc/default/grub"
+
+if [ -f "$GRUB_FILE" ]; then
+    # Remove all existing net.ifnames= statements
+    sed -i 's/\bnet\.ifnames=[01]\b//g' "$GRUB_FILE"
+
+    sed -i 's/  / /g' "$GRUB_FILE"
+
+    # Add net.ifnames=0 at the beginning of GRUB_CMDLINE_LINUX
+    sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="net.ifnames=0 /' "$GRUB_FILE"
+fi
+
+/usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
