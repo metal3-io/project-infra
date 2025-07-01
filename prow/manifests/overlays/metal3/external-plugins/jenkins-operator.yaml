@@ -36,7 +36,7 @@ spec:
       serviceAccountName: jenkins-operator
       containers:
       - name: jenkins-operator
-        image: us-docker.pkg.dev/k8s-infra-prow/images/jenkins-operator:v20250522-9b3f5faca
+        image: us-docker.pkg.dev/k8s-infra-prow/images/jenkins-operator:v20250626-3e50f2237
         args:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
