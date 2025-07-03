@@ -41,3 +41,8 @@ sudo systemctl restart docker
 
 # Add metal3ci user to libvirt group
 sudo adduser metal3ci libvirt
+
+# NOTE(Sunnatillo): Workaround to run minikube via kvm on ubuntu
+# Check this issue https://bugs.launchpad.net/ubuntu/+source/dnsmasq/+bug/2055776
+# https://forum.level1techs.com/t/failed-to-start-network-default-libvirt-errors-why-how-to-fix/207789/7
+sudo apt install dnsmasq-base=2.86-1.1
