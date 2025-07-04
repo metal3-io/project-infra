@@ -21,4 +21,6 @@ spec:
     address: ilo4://{{ bmh.ip }}
     credentialsName: bml-ilo-login-secret-{{ bmh.id }}
     disableCertificateVerification: true
+  rootDeviceHints:
+    deviceName: {{ bmh.rootDeviceHint }}
 {% endfor %}
