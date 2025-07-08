@@ -15,7 +15,7 @@ verify_node_image() {
     # Run "make clean" after test, so that next job can start from clean state
     export CLEANUP_AFTERWARDS="${CLEANUP_AFTERWARDS:-false}"
 
-    # Tests expect the image name to have the file type extension 
+    # Tests expect the image name to have the file type extension
     export IMAGE_NAME="${img_name}.qcow2"
     export IMAGE_OS="${IMAGE_OS}"
     export IMAGE_TYPE="${IMAGE_TYPE}"
@@ -28,7 +28,7 @@ verify_node_image() {
     export UPDATED_REPO="metal3-io/metal3-dev-env"
     export UPDATED_BRANCH="main"
     export NUM_NODES=2
-    
+
     export IRONIC_INSTALL_TYPE="rpm"
 
     "${current_dir}/../scripts/dynamic_worker_workflow/dev_env_integration_tests.sh"

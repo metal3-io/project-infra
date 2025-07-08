@@ -39,10 +39,13 @@ pipeline {
     IMAGE_OS = "${IMAGE_OS}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
     BMORELEASEBRANCH = "${bmo_release_branch}"
-    TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     NUM_NODES = "${NUM_NODES}"
+    WORKER_MACHINE_COUNT = 1
+    CONTROL_PLANE_MACHINE_COUNT = 1
     CAPI_VERSION = "${CAPI_VERSION}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
+    EPHEMERAL_CLUSTER = "minikube"
+    EXTERNAL_VLAN_ID = "3"
   }
   stages {
     stage('SCM') {

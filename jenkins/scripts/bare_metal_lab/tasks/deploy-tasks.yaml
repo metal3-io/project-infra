@@ -6,11 +6,6 @@
       exit 0
   with_items: "{{ bare_metal_hosts }}"
 
-- name: Add config file for metal3-dev-env
-  copy:
-    src: /tmp/vars.sh
-    dest: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/config_{{ ansible_user_id }}.sh"
-
 - name: Install requirements for host
   shell:
     cmd: "make install_requirements"
@@ -22,9 +17,9 @@
     cmd: "make configure_host"
     chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
   environment:
-    NUM_NODES: 0
-    CONTROL_PLANE_MACHINE_COUNT: 0
-    WORKER_MACHINE_COUNT: 0
+    NUM_NODES: "0"
+    CONTROL_PLANE_MACHINE_COUNT: "0"
+    WORKER_MACHINE_COUNT: "0"
 
   # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as
   # well as allowing TFTP traffic outside the host (random port)
@@ -92,4 +87,4 @@
     query: "[? status.provisioning.state=='available']"
   until: (available_bmh is succeeded) and
         (available_bmh.resources | length > 0) and
-        (available_bmh.resources | json_query(query) | length ==  (2))
+        (available_bmh.resources | json_query(query) | length == 2)

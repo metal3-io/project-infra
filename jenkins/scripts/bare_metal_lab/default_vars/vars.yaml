@@ -43,11 +43,5 @@ bare_metal_hosts:
   #   mac: b4:b5:2f:6f:01:40
   #   ip: "192.168.1.33"
   #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-
-EPHEMERAL_CLUSTER: "minikube"
-EXTERNAL_VLAN_ID: 3
-NUM_NODES:  "{{ lookup('env', 'NUM_NODES') }}"
-# In order to run multiple instances (one per jump host), we list the known
-# hosts and tell DNSMasq to ignore all other.
 DHCP_HOSTS: "{{ bare_metal_hosts | map(attribute='mac') | join(';') }}"
 DHCP_IGNORE: "tag:!known"

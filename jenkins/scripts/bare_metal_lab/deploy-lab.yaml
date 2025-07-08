@@ -1,8 +1,7 @@
 ---
 - hosts: localhost
+  connection: local
   environment:
-    EPHEMERAL_CLUSTER: "{{ EPHEMERAL_CLUSTER }}"
-    EXTERNAL_VLAN_ID: "{{ EXTERNAL_VLAN_ID }}"
     DHCP_HOSTS: "{{ DHCP_HOSTS }}"
     DHCP_IGNORE: "{{ DHCP_IGNORE }}"
   vars_files:
