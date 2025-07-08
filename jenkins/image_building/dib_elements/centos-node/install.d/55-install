@@ -21,3 +21,5 @@ EOF
 
 sudo yum install -y container-selinux
 sudo yum install -y kubelet-"${KUBERNETES_BINARIES_VERSION//v}" kubeadm-"${KUBERNETES_BINARIES_VERSION//v}" kubectl-"${KUBERNETES_BINARIES_VERSION//v}" cri-o-"${CRIO_BINARIES_VERSION//v}" cri-tools-"${CRICTL_BINARIES_VERSION//v}"
+
+sudo pip install kubernetes
