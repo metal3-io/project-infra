@@ -1,8 +1,9 @@
 ---
 - hosts: localhost
   environment:
-    EPHEMERAL_CLUSTER: "{{ EPHEMERAL_CLUSTER }}"
-    EXTERNAL_VLAN_ID: "{{ EXTERNAL_VLAN_ID }}"
+    NUM_NODES:  "{{ lookup('env', 'NUM_NODES') }}"
+    CONTROL_PLANE_MACHINE_COUNT: "{{ lookup('env', 'CONTROL_PLANE_MACHINE_COUNT') }}"
+    WORKER_MACHINE_COUNT: "{{ lookup('env', 'WORKER_MACHINE_COUNT') }}"
   vars_files:
     - default_vars/vars.yaml
   tasks:

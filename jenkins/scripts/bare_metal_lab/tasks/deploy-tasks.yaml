@@ -22,9 +22,9 @@
     cmd: "make configure_host"
     chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}/"
   environment:
-    NUM_NODES: 0
-    CONTROL_PLANE_MACHINE_COUNT: 0
-    WORKER_MACHINE_COUNT: 0
+    NUM_NODES: "0"
+    CONTROL_PLANE_MACHINE_COUNT: "0"
+    WORKER_MACHINE_COUNT: "0"
 
   # Allowing UDP forwarding allows minikube to use ipmitool (port 623) as
   # well as allowing TFTP traffic outside the host (random port)
@@ -90,6 +90,7 @@
   delay: 30
   vars:
     query: "[? status.provisioning.state=='available']"
+    expected_available_count: "{{ lookup('env', 'NUM_NODES')') | int }}"
   until: (available_bmh is succeeded) and
         (available_bmh.resources | length > 0) and
-        (available_bmh.resources | json_query(query) | length ==  (2))
+        (available_bmh.resources | json_query(query) | length == expected_available_count)
