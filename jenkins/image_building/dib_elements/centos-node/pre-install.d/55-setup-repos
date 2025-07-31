@@ -7,7 +7,7 @@ export CRIO_MINOR_VERSION=${CRIO_VERSION%.*}
 
 sudo sed -i 's/enforcing/disabled/g' /etc/selinux/config /etc/selinux/config
 
-if [[ "${PRE_RELEASE}" != "true" ]]; then  # migrate to the Kubernetes community-owned repositories
+if [[ "${PRE_RELEASE:-}" != "true" ]]; then  # migrate to the Kubernetes community-owned repositories
   cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes

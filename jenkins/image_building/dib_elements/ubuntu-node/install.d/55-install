@@ -20,7 +20,7 @@ KUBERNETES_DEB_VERSION="${KUBERNETES_VERSION//v}"-\*
 CRIO_DEB_VERSION="${CRIO_VERSION//v}"-\*
 CRICTL_DEB_VERSION="${CRICTL_VERSION//v}"-\*
 
-if [[ "${PRE_RELEASE}" == "true" ]]; then
+if [[ "${PRE_RELEASE:-}" == "true" ]]; then
   # See https://github.com/containernetworking/plugins/releases
   CNI_PLUGINS_VERSION="v1.7.1"
 
@@ -50,5 +50,5 @@ else
   sudo apt-mark hold kubelet kubeadm kubectl cri-tools
 fi
 
-sudo apt-get install -y cri-o="${CRIO_DEB_VERSION}" linux-headers-"$(uname -r)"
+sudo apt-get install -y cri-o="${CRIO_DEB_VERSION}"
 sudo apt-mark hold cri-o

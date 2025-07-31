@@ -5,7 +5,7 @@ set -eux
 export KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
 export CRIO_MINOR_VERSION=${CRIO_VERSION%.*}
 
-if [[ "${PRE_RELEASE}" != "true" ]]; then
+if [[ "${PRE_RELEASE:-}" != "true" ]]; then
   curl -fsSL "https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/deb/Release.key" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
   echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
 fi
