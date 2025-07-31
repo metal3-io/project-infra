@@ -29,7 +29,12 @@ if [[ "${PRE_RELEASE}" == "true" ]]; then
   # See https://github.com/kubernetes/release/releases
   RELEASE_VERSION="${RELEASE_VERSION:-v0.18.0}"
 
-  ARCH=$(dpkg --print-architecture)
+  case $(uname -m) in
+    x86_64) ARCH="amd64" ;;
+    aarch64) ARCH="arm64" ;;
+    *) echo "Unsupported architecture: $(uname -m)"; exit 1 ;;
+  esac
+
   DEST="/opt/cni/bin"
   sudo mkdir -p "$DEST"
   curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGINS_VERSION}/cni-plugins-linux-${ARCH}-${CNI_PLUGINS_VERSION}.tgz" | sudo tar -C "$DEST" -xz
