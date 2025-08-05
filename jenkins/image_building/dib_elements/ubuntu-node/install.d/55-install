@@ -20,5 +20,5 @@ KUBERNETES_DEB_VERSION="${KUBERNETES_VERSION//v}"-\*
 CRIO_DEB_VERSION="${CRIO_VERSION//v}"-\*
 CRICTL_DEB_VERSION="${CRICTL_VERSION//v}"-\*
 
-sudo apt-get install -y kubelet="${KUBERNETES_DEB_VERSION}" kubeadm="${KUBERNETES_DEB_VERSION}" kubectl="${KUBERNETES_DEB_VERSION}" cri-o="${CRIO_DEB_VERSION}" cri-tools="${CRICTL_DEB_VERSION}" inux-headers-"$(uname -r)"
+sudo apt-get install -y kubelet="${KUBERNETES_DEB_VERSION}" kubeadm="${KUBERNETES_DEB_VERSION}" kubectl="${KUBERNETES_DEB_VERSION}" cri-o="${CRIO_DEB_VERSION}" cri-tools="${CRICTL_DEB_VERSION}"
 sudo apt-mark hold kubelet kubeadm kubectl cri-o cri-tools
