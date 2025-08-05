@@ -43,6 +43,11 @@ elif [[ "${AGENT_OS}" == "centos" ]]; then
   sudo pip3 install virtualenv
 
   python3 -m virtualenv venv
+elif [[ "${AGENT_OS}" == "opensuse-leap" ]]; then
+  sudo zypper refresh
+  sudo zypper -n in python3-devel python3-pip qemu
+
+  python3 -m venv venv
 else
   echo "Unsupported AGENT_OS: ${AGENT_OS}"
   exit 1
@@ -62,7 +67,7 @@ if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   # Setting upstrem Ubuntu 24.04 image
   export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
   numeric_release=24.04
-else
+elif [[ "${IMAGE_OS}" == "centos" ]]; then
   numeric_release=9
   # Setting upstrem Centos 9 stream image
   centos_upstream_img="CentOS-Stream-GenericCloud-9-20250811.0.x86_64.qcow2"
@@ -71,6 +76,14 @@ else
     wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/9-stream/x86_64/images/${centos_upstream_img}"
   fi
   export DIB_LOCAL_IMAGE="${REPO_ROOT}/${centos_upstream_img}"
+elif [[ "${IMAGE_OS}" == "leap" ]]; then
+  numeric_release="15_6"
+  export DIB_RELEASE="15.6"
+  export DIB_BOOTLOADER_DEFAULT_CMDLINE="nofb nomodeset gfxpayload=text root=LABEL=cloudimg-rootfs"
+  # Patch DIB source to accept openSUSE Leap 15.6
+  # shellcheck disable=SC2016
+  sed -i '8i15.6) export OPENSUSE_REPO_DIR=openSUSE_Leap_${DIB_RELEASE} ;;' \
+      "${REPO_ROOT}"/venv/lib/python*/site-packages/diskimage_builder/elements/opensuse/environment.d/10-opensuse-distro-name.bash 
 fi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then

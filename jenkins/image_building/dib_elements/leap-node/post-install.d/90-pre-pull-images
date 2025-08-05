@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eux
+
+for container in $(env | grep "CALICO_*" | cut -f2 -d'='); do
+  sudo crictl pull "${container}"
+done
