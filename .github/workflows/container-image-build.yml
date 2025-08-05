@@ -103,7 +103,7 @@ jobs:
         echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
 
     - name: Build ${{ inputs.image-name }} image
-      uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
+      uses: mr-smithers-excellent/docker-build-push@d340da11223063b221f873be135aaddd8aba52c5 # v6.5
       with:
         image: metal3-io/${{ inputs.image-name }}
         tags: ${{ env.IMAGE_TAGS }}
