@@ -30,22 +30,28 @@ python3 -m venv venv
 . venv/bin/activate
 pip install --no-cache-dir diskimage-builder==3.33.0
 
+# Patch DIB source to accept openSUSE Leap 15.6. This is merged into upstream
+# but we have to wait for new release. Most likely will be in >3.39
+python_version=$(python3 --version | awk '{print $2}')
+python_version_minor=${python_version%.*}
+sed -i "8i15.6) export OPENSUSE_REPO_DIR=openSUSE_Leap_\${DIB_RELEASE} ;;" \
+    "${REPO_ROOT}"venv/lib/python"${python_version_minor}"/site-packages/diskimage_builder/elements/opensuse/environment.d/10-opensuse-distro-name.bash 
+
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"
 export DIB_DEV_USER_PWDLESS_SUDO="yes"
 export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-  if [[ "${IMAGE_TYPE}" == "node" ]]; then
-    export DIB_RELEASE=noble
-    numeric_release=24.04
-  elif [[ "${IMAGE_TYPE}" == "ci" ]]; then
-    export DIB_RELEASE=jammy
-    numeric_release=22.04
-  fi
-else
+  export DIB_RELEASE=jammy
+  numeric_release=22.04
+elif [[ "${IMAGE_OS}" == "centos" ]]; then
   export DIB_RELEASE=9
   numeric_release=9
+elif [[ "${IMAGE_OS}" == "leap" ]]; then
+  export DIB_BOOTLOADER_DEFAULT_CMDLINE="nofb nomodeset gfxpayload=text root=LABEL=cloudimg-rootfs"
+  export DIB_RELEASE=15.6
+  numeric_release=15-6
 fi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
