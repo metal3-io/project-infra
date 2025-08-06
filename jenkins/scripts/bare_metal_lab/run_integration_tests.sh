@@ -10,6 +10,8 @@ export CAPM3RELEASEBRANCH
 export BMORELEASEBRANCH
 export IMAGE_OS
 export TARGET_NODE_MEMORY
+export IRONIC_IMAGE
+
 # unsetting NUM_NODES when it is unbound
 # in BML tests it is not passed through vars file
 export NUM_NODES="${NUM_NODES:-}"
@@ -42,5 +44,6 @@ fi
 # https://wiki.nordix.org/pages/viewpage.action?spaceKey=CPI&title=Bare+Metal+Lab
 # In the bare metal lab, the external network has vlan id 3
 export EXTERNAL_VLAN_ID="3"
+export IRONIC_IMAGE="quay.io/metal3-io/ironic:v30.0.0"
 
 make test

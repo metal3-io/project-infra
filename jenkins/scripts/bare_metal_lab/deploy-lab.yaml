@@ -5,6 +5,7 @@
     EXTERNAL_VLAN_ID: "{{ EXTERNAL_VLAN_ID }}"
     DHCP_HOSTS: "{{ DHCP_HOSTS }}"
     DHCP_IGNORE: "{{ DHCP_IGNORE }}"
+    IRONIC_IMAGE: "quay.io/metal3-io/ironic:v30.0.0"
   vars_files:
     - default_vars/vars.yaml
   tasks:
