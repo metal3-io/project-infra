@@ -1,0 +1,13 @@
+conntrack-tools:
+ca-certificates:
+coreutils:
+gcc:
+git:
+gpg2:
+net-tools:
+openssl:
+socat:
+ethtool:
+iptables:
+keepalived:
+NetworkManager:

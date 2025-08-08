@@ -44,6 +44,25 @@
           "vim": "vim",
           "virt-manager": "virt-manager",
           "wget": "wget"
+        },
+        "suse":{
+          "bash-completion":"bash-completion",
+          "build-essential":"",
+          "curl": "curl",
+          "dnsmasq":"dnsmasq",
+          "git": "git",
+          "libguestfs-tools":"libguestfs",
+          "libvirt-daemon-system":"libvirt-daemon",
+          "make": "make",
+          "openjdk-17-jre": "java-17-openjdk",
+          "ovmf":"ovmf",
+          "python3": "python3",
+          "python3-pip":"python3-pip",
+          "qemu-kvm":"qemu",
+          "tree": "tree",
+          "vim": "vim",
+          "virt-manager": "virt-manager",
+          "wget": "wget"
         }
     }
 }
