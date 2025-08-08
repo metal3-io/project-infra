@@ -1,0 +1,29 @@
+#!/bin/bash
+set -eux
+
+# This sets net.ifnames to 0 to disable Predictable network interface
+# Interfaces still get Predictable names as alternative name
+# e.g. altname enp1s0
+
+CLOUDIMG_GRUB_D_FILE="/etc/default/grub.d/50-cloudimg-settings.cfg"
+
+# --- Step 1: Ensure GRUB package is installed ---
+echo "INFO: Ensuring grub-pc (or grub-efi) is installed..."
+apt-get update
+apt-get install -y grub-pc
+
+# --- Step 2: Modify /etc/default/grub.d/50-cloudimg-settings.cfg ---
+echo "INFO: Appending net.ifnames=0 to $CLOUDIMG_GRUB_D_FILE."
+# Append ' net.ifnames=0' before the closing double quote.
+sed -i -E '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ net.ifnames=0"/' "$CLOUDIMG_GRUB_D_FILE"
+
+# --- Step 3: Update GRUB configuration ---
+echo "INFO: Running update-grub..."
+update-grub
+
+if [ $? -eq 0 ]; then
+  echo "INFO: GRUB configuration updated successfully."
+else
+  echo "ERROR: Failed to update GRUB configuration. This may lead to issues."
+  exit 1
+fi
