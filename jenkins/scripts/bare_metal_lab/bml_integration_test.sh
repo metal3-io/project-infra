@@ -50,6 +50,7 @@ BMORELEASEBRANCH="${BMORELEASEBRANCH}"
 IMAGE_OS="${IMAGE_OS}"
 TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY}"
 BARE_METAL_LAB="${BARE_METAL_LAB}"
+export IRONIC_IMAGE="quay.io/metal3-io/ironic:v30.0.0"
 EOF
 
 cat "${CI_DIR}/../dynamic_worker_workflow/test_env.sh" >>"/tmp/vars.sh"
