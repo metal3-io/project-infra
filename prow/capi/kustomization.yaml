@@ -1,10 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
-- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.19.0/operator-components.yaml
+# Stick to v1.17 for now, as v1.18 has an issue when combined with nginx-ingress.
+# TL;DR: cert-manager v1.18 uses `PathType: Exact` for HTTP01 challenge paths,
+# and nginx-ingress has a bug that forbids dots (.) in the path when strict-validate-path-type
+# is enabled (default).
+# See https://cert-manager.io/docs/releases/release-notes/release-notes-1.18/#acme-http01-challenge-paths-now-use-pathtype-exact-in-ingress-routes
+- https://github.com/cert-manager/cert-manager/releases/download/v1.17.4/cert-manager.yaml
+- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.22.0/operator-components.yaml
 # ORC is needed for CAPO
-- https://github.com/k-orc/openstack-resource-controller/releases/download/v2.1.0/install.yaml
+- https://github.com/k-orc/openstack-resource-controller/releases/download/v2.2.0/install.yaml
 - core.yaml
 - control-plane.yaml
 - bootstrap.yaml
