@@ -16,15 +16,33 @@ trap cleanup EXIT
 # Make sure we run everything in the repo root
 cd "${REPO_ROOT}" || true
 
+export AGENT_OS="${AGENT_OS:-"ubuntu"}"
+
 export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
 
-# Disable needrestart interactive mode
-sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
+# Jenkins agent OS-specific package installation and configuration
+if [[ "${AGENT_OS}" == "ubuntu" ]]; then
+  # Disable needrestart interactive mode
+  sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 
-sudo apt-get update
-sudo apt-get install -y python3-dev python3-pip python3-venv qemu qemu-kvm
-python3 -m venv venv
+  sudo apt-get update
+  sudo apt-get install -y python3-dev python3-pip python3-venv qemu qemu-kvm
+
+  python3 -m venv venv
+elif [[ "${AGENT_OS}" == "centos" ]]; then
+  # Install EPEL repository for additional packages
+  sudo yum install -y epel-release
+
+  # Install required packages
+  sudo yum install -y python3-devel python3-pip qemu-kvm
+  sudo pip3 install virtualenv
+
+  python3 -m virtualenv venv
+else
+  echo "Unsupported AGENT_OS: ${AGENT_OS}"
+  exit 1
+fi
 
 # shellcheck source=/dev/null
 . venv/bin/activate
