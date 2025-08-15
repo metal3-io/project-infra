@@ -4,7 +4,7 @@ metadata:
   name: cluster-api
   namespace: capi-system
 spec:
-  version: v1.10.1
+  version: v1.10.4
   deployment:
     nodeSelector:
       node-role.kubernetes.io/infra: ""
