@@ -73,7 +73,6 @@ pipeline {
               echo "Building ${IMAGE_OS} ${IMAGE_TYPE} image"
               script {
                 sh """
-                def AGENT_OS = "ubuntu"
                 ./jenkins/image_building/build-image.sh
                 """
               }

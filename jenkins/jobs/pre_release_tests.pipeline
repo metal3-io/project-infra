@@ -18,7 +18,6 @@ script {
 pipeline {
   agent { label "metal3ci-8c16gb-${IMAGE_OS}" }
   environment {
-    AGENT_OS = "${IMAGE_OS}"
     REPO_ORG = "${env.REPO_OWNER}"
     REPO_NAME = "${env.REPO_NAME}"
     UPDATED_REPO = "${UPDATED_REPO}"
