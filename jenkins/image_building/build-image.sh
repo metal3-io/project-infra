@@ -16,7 +16,11 @@ trap cleanup EXIT
 # Make sure we run everything in the repo root
 cd "${REPO_ROOT}" || true
 
-export AGENT_OS="${AGENT_OS:-"ubuntu"}"
+if [ -r /etc/os-release ]; then
+  # shellcheck disable=SC1091
+  . /etc/os-release
+  AGENT_OS="${ID}"
+fi
 
 export IMAGE_OS="${IMAGE_OS}"
 export IMAGE_TYPE="${IMAGE_TYPE}"
