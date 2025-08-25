@@ -28,7 +28,7 @@ pipeline {
     IMAGE_OS = "${IMAGE_OS}"
     PRE_RELEASE = "true" // Affects the way k8s is installed in node image building
     IMAGE_TYPE = "node"
-    KUBERNETES_VERSION = "v1.34.0-beta.0"
+    KUBERNETES_VERSION = "v1.34.0" // base version, the pre-release version will be fetched automatically
     CRICTL_VERSION = "${CRICTL_VERSION}"
     CRIO_VERSION = "${CRIO_VERSION}"
     CAPM3RELEASEBRANCH = "${capm3_release_branch}"
@@ -81,7 +81,7 @@ pipeline {
         script {
           START_TIME = System.currentTimeMillis()
 
-          // Set image name and location as env variables
+          // Set image name and location and used k8s version as env variables
           // to use the local image in the testing
           def img_name = readFile("image_name.txt").trim()
 
@@ -92,10 +92,13 @@ pipeline {
           echo "Set IMAGE_LOCATION to: ${env.IMAGE_LOCATION}"
         }
         echo "Testing with the new ${IMAGE_OS} node image"
-        withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
-          ansiColor('xterm') {
-            timestamps {
-                sh './jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh'
+        withEnv(["KUBERNETES_VERSION=${readFile('image_name.txt').trim().split('_').last()}"]) {
+          echo "Set KUBERNETES_VERSION to: ${env.KUBERNETES_VERSION}"
+          withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+            ansiColor('xterm') {
+              timestamps {
+                  sh './jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh'
+              }
             }
           }
         }
