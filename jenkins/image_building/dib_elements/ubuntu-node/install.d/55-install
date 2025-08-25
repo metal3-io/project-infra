@@ -16,39 +16,32 @@ net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
-KUBERNETES_DEB_VERSION="${KUBERNETES_VERSION//v}"-\*
 CRIO_DEB_VERSION="${CRIO_VERSION//v}"-\*
-CRICTL_DEB_VERSION="${CRICTL_VERSION//v}"-\*
 
-if [[ "${PRE_RELEASE:-}" == "true" ]]; then
-  # See https://github.com/containernetworking/plugins/releases
-  CNI_PLUGINS_VERSION="v1.7.1"
+# See https://github.com/containernetworking/plugins/releases
+CNI_PLUGINS_VERSION="v1.7.1"
 
-  # Kubernetes release tooling
-  # See https://github.com/kubernetes/release/releases
-  RELEASE_VERSION="${RELEASE_VERSION:-v0.18.0}"
+# Kubernetes release tooling
+# See https://github.com/kubernetes/release/releases
+RELEASE_VERSION="${RELEASE_VERSION:-v0.18.0}"
 
-  ARCH=$(dpkg --print-architecture)
-  DEST="/opt/cni/bin"
-  sudo mkdir -p "${DEST}"
-  curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGINS_VERSION}/cni-plugins-linux-${ARCH}-${CNI_PLUGINS_VERSION}.tgz" | sudo tar -C "${DEST}" -xz
-  curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" | sudo tar -C /usr/local/bin -xz
+ARCH=$(dpkg --print-architecture)
+DEST="/opt/cni/bin"
+sudo mkdir -p "${DEST}"
+curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGINS_VERSION}/cni-plugins-linux-${ARCH}-${CNI_PLUGINS_VERSION}.tgz" | sudo tar -C "${DEST}" -xz
+curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" | sudo tar -C /usr/local/bin -xz
 
-  sudo curl -L --remote-name-all "https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/linux/${ARCH}/{kubeadm,kubelet}"
-  curl -LO "https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/linux/${ARCH}/kubectl"
+sudo curl -L --remote-name-all "https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/linux/${ARCH}/{kubeadm,kubelet}"
+curl -LO "https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/linux/${ARCH}/kubectl"
 
-  sudo install kubeadm kubelet /usr/bin/
-  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo install kubeadm kubelet /usr/bin/
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-  curl -L --output 10-kubeadm.conf "https://github.com/kubernetes/release/raw/${RELEASE_VERSION}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf"
-  sudo mkdir -p /usr/lib/systemd/system/kubelet.service.d
-  sudo mv 10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
-  curl -L --output kubelet.service "https://github.com/kubernetes/release/raw/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service"
-  sudo mv kubelet.service /usr/lib/systemd/system/kubelet.service
-else
-  sudo apt-get install -y kubelet="${KUBERNETES_DEB_VERSION}" kubeadm="${KUBERNETES_DEB_VERSION}" kubectl="${KUBERNETES_DEB_VERSION}" cri-tools="${CRICTL_DEB_VERSION}"
-  sudo apt-mark hold kubelet kubeadm kubectl cri-tools
-fi
+curl -L --output 10-kubeadm.conf "https://github.com/kubernetes/release/raw/${RELEASE_VERSION}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf"
+sudo mkdir -p /usr/lib/systemd/system/kubelet.service.d
+sudo mv 10-kubeadm.conf /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+curl -L --output kubelet.service "https://github.com/kubernetes/release/raw/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service"
+sudo mv kubelet.service /usr/lib/systemd/system/kubelet.service
 
 sudo apt-get install -y cri-o="${CRIO_DEB_VERSION}"
 sudo apt-mark hold cri-o
