@@ -60,14 +60,24 @@ export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   if [[ "${IMAGE_TYPE}" == "node" ]]; then
     export DIB_RELEASE=noble
+    # Setting upstrem Ubuntu 24.04 image
+    export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
     numeric_release=24.04
   elif [[ "${IMAGE_TYPE}" == "ci" ]]; then
     export DIB_RELEASE=jammy
+    # Setting upstrem Ubuntu 22.04 image
+    export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
     numeric_release=22.04
   fi
 else
-  export DIB_RELEASE=9
   numeric_release=9
+  # Setting upstrem Centos 9 stream image
+  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250811.0.x86_64.qcow2"
+
+  if [[ ! -f "${REPO_ROOT}/${centos_upstream_img}" ]]; then
+    wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/9-stream/x86_64/images/${centos_upstream_img}"
+  fi
+  export DIB_LOCAL_IMAGE="${REPO_ROOT}/${centos_upstream_img}"
 fi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
