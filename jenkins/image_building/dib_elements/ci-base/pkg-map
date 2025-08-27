@@ -1,7 +1,7 @@
 {
     "release": {
       "ubuntu": {
-        "22.04": {
+        "24.04": {
           "ntp": "chrony"
         }
       }

@@ -31,7 +31,7 @@ if [[ "${AGENT_OS}" == "ubuntu" ]]; then
   sudo sed -i "s/^#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf > /dev/null || true
 
   sudo apt-get update
-  sudo apt-get install -y python3-dev python3-pip python3-venv qemu qemu-kvm
+  sudo apt-get install -y python3-dev python3-pip python3-venv qemu-system qemu-utils qemu-kvm
 
   python3 -m venv venv
 elif [[ "${AGENT_OS}" == "centos" ]]; then
@@ -58,17 +58,10 @@ export DIB_DEV_USER_PWDLESS_SUDO="yes"
 export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
-  if [[ "${IMAGE_TYPE}" == "node" ]]; then
-    export DIB_RELEASE=noble
-    # Setting upstrem Ubuntu 24.04 image
-    export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
-    numeric_release=24.04
-  elif [[ "${IMAGE_TYPE}" == "ci" ]]; then
-    export DIB_RELEASE=jammy
-    # Setting upstrem Ubuntu 22.04 image
-    export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
-    numeric_release=22.04
-  fi
+  export DIB_RELEASE=noble
+  # Setting upstrem Ubuntu 24.04 image
+  export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
+  numeric_release=24.04
 else
   numeric_release=9
   # Setting upstrem Centos 9 stream image
