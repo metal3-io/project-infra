@@ -57,6 +57,19 @@ IPA_IMAGE_NAME="${IPA_IMAGE_NAME:-ironic-python-agent}"
 IPA_IMAGE_TAR="${IPA_IMAGE_NAME}.tar"
 IPA_BASE_OS="${IPA_BASE_OS:-centos}"
 IPA_BASE_OS_RELEASE="${IPA_BASE_OS_RELEASE:-9-stream}"
+
+if [[ "${IPA_BASE_OS}" == "centos" ]]; then
+  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250812.1.x86_64.qcow2"
+
+  if [[ ! -f "${centos_upstream_img}" ]]; then
+    wget -O "${centos_upstream_img}" \
+      "https://cloud.centos.org/centos/9-stream/x86_64/images/${centos_upstream_img}"
+  fi
+
+  DIB_LOCAL_IMAGE="$(pwd)/${centos_upstream_img}"
+  export DIB_LOCAL_IMAGE
+fi
+
 IRONIC_SIZE_LIMIT_MB=525
 DEV_ENV_REPO_LOCATION="${DEV_ENV_REPO_LOCATION:-/tmp/dib/metal3-dev-env}"
 IMAGE_REGISTRY="registry.nordix.org"
@@ -146,6 +159,10 @@ ironic-python-agent-builder --output "${IPA_IMAGE_NAME}" \
     --element='ipa-add-buildinfo' --element='ipa-cleanup-dracut' \
     --element='simple-init' --element='override-simple-init' \
     --element='ipa-file-injector' --element='cleanup-package' --verbose
+
+# Clean up DIB_LOCAL_IMAGE to prevent interference in Metal3 dev-env
+# when building other images based on LOCAL_IMAGE suffix
+unset DIB_LOCAL_IMAGE
 
 # Deactivate the python virtual environment
 deactivate
