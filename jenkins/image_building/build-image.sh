@@ -52,6 +52,11 @@ fi
 . venv/bin/activate
 pip install --no-cache-dir diskimage-builder==3.33.0
 
+# Patch DIB source to accept openSUSE Leap 15.6
+# shellcheck disable=SC2016
+sed -i '8i15.6) export OPENSUSE_REPO_DIR=openSUSE_Leap_${DIB_RELEASE} ;;' \
+    "${current_dir}"venv/lib/python3.6/site-packages/diskimage_builder/elements/opensuse/environment.d/10-opensuse-distro-name.bash 
+
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"
 export DIB_DEV_USER_PWDLESS_SUDO="yes"
