@@ -4,7 +4,7 @@ set -eu
 
 # Description:
 # Runs in main integration cleanup job defined in jjb.
-# Consumed by clean_resources.pipeline and cleans any leftover metal3ci vms 
+# Consumed by clean_resources.pipeline and cleans any leftover metal3ci vms
 # every 6 hours.
 #   Requires:
 #     - source openstack.rc file
@@ -36,7 +36,6 @@ cleanup() {
             # Check if the server is older than 6 hours
             if [[ "${server_age}" -gt "${age_threshold}" ]]; then
                 echo "Deleting server: ${server_id} (Name: ${server_name}, Created at: ${created_at})"
-                
                 # Delete the server
                 openstack server delete "${server_id}"
             fi
@@ -44,6 +43,11 @@ cleanup() {
     done
 }
 
+rm -rf venv
+python3 -m venv venv
+
+# shellcheck source=/dev/null
+. venv/bin/activate
 # Install openstack client
 pip install python-openstackclient=="${CLIENT_VERSION}"
 # export openstackclient path
