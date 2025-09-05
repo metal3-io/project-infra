@@ -74,6 +74,7 @@ else
 fi
 
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
+
   # The default data source for cloud-init element is exclusively Amazon EC2
   export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive"
   export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.34.0"}"
@@ -90,6 +91,8 @@ if [[ "${IMAGE_TYPE}" == "node" ]]; then
   export CRIO_VERSION="${CRIO_VERSION:-"v1.33.3"}"
   export CRICTL_VERSION="${CRICTL_VERSION:-"v1.34.0"}"
   img_name="${IMAGE_OS^^}_${numeric_release}_NODE_IMAGE_K8S_${KUBERNETES_VERSION}"
+  # enable predictable interface names
+  export DIB_BOOTLOADER_DEFAULT_CMDLINE="net.ifnames=1"
 else
   commit_short="$(git rev-parse --short HEAD)"
   img_date="$(date --utc +"%Y%m%dT%H%MZ")"
