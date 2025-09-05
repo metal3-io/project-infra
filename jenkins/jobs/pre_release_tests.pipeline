@@ -13,10 +13,16 @@ script {
     refspec = '+refs/heads/*:refs/remotes/origin/*'
   }
   echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
+
+  if  ( "${GINKGO_FOCUS}" == 'integration' ) {
+    agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+  } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
+    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+  }
 }
 
 pipeline {
-  agent { label "metal3ci-8c16gb-${IMAGE_OS}" }
+  agent { label agent_label }
   environment {
     REPO_ORG = "${env.REPO_OWNER}"
     REPO_NAME = "${env.REPO_NAME}"
@@ -39,6 +45,7 @@ pipeline {
     GINKGO_SKIP = "${GINKGO_SKIP}"
     NUM_NODES = "${NUM_NODES}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
+    KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
   }
   stages {
     stage("Checkout CI Repo") {
@@ -84,12 +91,15 @@ pipeline {
           // Set image name and location and used k8s version as env variables
           // to use the local image in the testing
           def img_name = readFile("image_name.txt").trim()
+          def k8s_version = img_name.split('_').last()
 
           env.IMAGE_NAME = "${img_name}.qcow2"
           env.IMAGE_LOCATION = env.WORKSPACE
+          env.KUBERNETES_VERSION_UPGRADE_TO = k8s_version
 
           echo "Set IMAGE_NAME to: ${env.IMAGE_NAME}"
           echo "Set IMAGE_LOCATION to: ${env.IMAGE_LOCATION}"
+          echo "Set KUBERNETES_VERSION_UPGRADE_TO to: ${env.KUBERNETES_VERSION_UPGRADE_TO}"
         }
         echo "Testing with the new ${IMAGE_OS} node image"
         withEnv(["KUBERNETES_VERSION=${readFile('image_name.txt').trim().split('_').last()}"]) {
