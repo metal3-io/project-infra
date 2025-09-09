@@ -43,6 +43,8 @@ cleanup() {
     done
 }
 
+sudo apt install python3.12-venv
+
 rm -rf venv
 python3 -m venv venv
 
