@@ -10,6 +10,8 @@ sinker:
   terminated_pod_ttl: 2h
 
 plank:
+  pod_pending_timeout: 15m
+  pod_unscheduled_timeout: 15m
   job_url_prefix_config:
     "*": https://prow.apps.test.metal3.io/view/
   report_templates:
