@@ -26,6 +26,24 @@ export IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE:-false}"
 export BUILD_IRONIC_IMAGE_LOCALLY=""
 export USE_IRSO="${USE_IRSO:-false}"
 
+# IPv6 needed vars
+if [[ "${IPV6_ONLY}" == true ]]; then
+	export IPXE_ENABLE_IPV6=true
+	export IP_STACK="v6"
+	export EXTERNAL_SUBNET_V6="fd55::/64"
+	export BARE_METAL_PROVISIONER_SUBNET_IPV6_ONLY=true
+	export DOCKER_USE_IPV6_INTERNALLY=true
+	export POD_CIDR="fd00:6969::/64"
+	export BUILD_IPXE=true
+
+	# Set and clone utility images repo
+	export UTILITY_IMAGES_REPO="https://github.com/metal3-io/utility-images"
+	UTILITY_IMAGES_LOCATION="${HOME}/utility-images"
+	rm -rf "${UTILITY_IMAGES_LOCATION}"
+	git clone "${UTILITY_IMAGES_REPO}" "${UTILITY_IMAGES_LOCATION}"
+	export IPXE_BUILDER_LOCAL_IMAGE="${UTILITY_IMAGES_LOCATION}/ipxe-builder/"
+fi
+
 if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
     IRONIC_FROM_SOURCE="true"
     if [[ "${REPO_NAME}" == "ironic-image" ]]; then
