@@ -184,3 +184,16 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  # name: {job_prefix}-{image_os}-e2e-integration-k8s-pre-release-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-integration-k8s-pre-release-test-release-1.11
+    branches:
+    - release-1.11
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-k8s-pre-release-test-release-1.11
+    branches:
+    - release-1.11
+    agent: jenkins
+    always_run: false
+    optional: true
