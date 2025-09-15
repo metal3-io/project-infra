@@ -33,25 +33,25 @@ presubmits:
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
-  - name: metal3-centos-e2e-integration-test-main
+  - name: metal3-centos-e2e-integration-test-release-1-11
     branches:
     - release-31.0
     agent: jenkins
     always_run: false
     optional: false
-  - name: metal3-ubuntu-e2e-integration-test-main
+  - name: metal3-ubuntu-e2e-integration-test-release-1-11
     branches:
     - release-31.0
     agent: jenkins
     always_run: false
     optional: false
-  - name: metal3-dev-env-integration-test-centos-main
+  - name: metal3-dev-env-integration-test-centos-release-1-11
     branches:
     - release-31.0
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-dev-env-integration-test-ubuntu-main
+  - name: metal3-dev-env-integration-test-ubuntu-release-1-11
     branches:
     - release-31.0
     agent: jenkins

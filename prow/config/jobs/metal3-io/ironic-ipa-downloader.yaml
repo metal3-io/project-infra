@@ -33,6 +33,10 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: false
+  - name: metal3-centos-e2e-integration-test-release-1-11
+    agent: jenkins
+    always_run: false
+    optional: true
   - name: metal3-centos-e2e-integration-test-release-1-10
     agent: jenkins
     always_run: false
@@ -46,6 +50,10 @@ presubmits:
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-release-1-11
     agent: jenkins
     always_run: false
     optional: true

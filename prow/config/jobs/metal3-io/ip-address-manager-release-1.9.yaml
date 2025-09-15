@@ -129,13 +129,13 @@ presubmits:
     - release-1.9
     agent: jenkins
     always_run: false
-    optional: true
+    optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-9
     branches:
     - release-1.9
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-centos-e2e-feature-test-release-1-9-pivoting
     branches:
     - release-1.9
