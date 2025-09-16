@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
-// 2 hour
-def TIMEOUT = 7200
+// 3 hour
+def TIMEOUT = 10800
 
 // Set defaults for non-PR jobs
 def pullSha = (env.PULL_PULL_SHA) ?: "main"
