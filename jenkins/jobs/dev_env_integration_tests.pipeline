@@ -41,6 +41,7 @@ pipeline {
     IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
     BUILD_MARIADB_IMAGE_LOCALLY = "${params.BUILD_MARIADB_IMAGE_LOCALLY}"
     USE_IRSO = "${params.USE_IRSO}"
+    CNI_NAME = "${params.CNI_NAME}"
   }
 
   stages {
