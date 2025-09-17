@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -eux
+
+sudo sed -i "0,/.*PermitRootLogin.*/s//PermitRootLogin yes/" /etc/ssh/sshd_config
+
+# SETUP MONITORING
+sudo zypper in -y sysstat atop atop-daemon cronie
+## Collect all metrics every minute
+sudo tee -a /etc/sysconfig/atop <<EOF
+LOGOPTS=""
+LOGINTERVAL=60
+LOGGENERATIONS=3
+LOGPATH=/var/log/atop
+EOF
+sudo mkdir -v /etc/systemd/system/sysstat-collect.timer.d/
+sudo sudo tee -a /etc/systemd/system/sysstat-collect.timer.d/override.conf <<EOF
+[Unit]
+Description=Run system activity accounting tool every 1 minutes
+[Timer]
+OnCalendar=*:00/1
+[Install]
+WantedBy=sysstat.service
+EOF
+sudo mkdir -p /var/log/sysstat
+sudo tee -a /etc/sysconfig/sysstat <<EOF
+HISTORY=3
+COMPRESSAFTER=31
+SADC_OPTIONS=" -S XALL"
+SA_DIR="/var/log/sysstat"
+ZIP="xz"
+#YESTERDAY=no
+#REPORTS=false
+DELAY_RANGE=0
+UMASK=0022
+EOF
+
+## Enable services
+sudo systemctl enable atop.service cron.service sysstat.service
+
+# Change default to shell to bash
+sudo usermod --shell /bin/bash metal3ci

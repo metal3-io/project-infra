@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eux
+
+## Install atop and sysstat
+sudo zypper refresh
+sudo zypper -n in atop sysstat
+
+# Add metal3ci user to libvirt group
+sudo usermod -aG libvirt metal3ci

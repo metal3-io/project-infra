@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -eux
+
+export KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
+export CRIO_MINOR_VERSION=${CRIO_VERSION%.*}
+
+sudo sed -i 's/enforcing/disabled/g' /etc/selinux/semanage.conf /etc/selinux/semanage.conf
+
+cat <<EOF | sudo tee /etc/zypp/repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/${KUBERNETES_MINOR_VERSION}/rpm/repodata/repomd.xml.key
+EOF
+
+cat <<EOF | tee /etc/zypp/repos.d/cri-o.repo
+[cri-o]
+name=CRI-O
+baseurl=https://download.opensuse.org/repositories/isv:/cri-o:/stable:/${CRIO_MINOR_VERSION}/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/isv:/cri-o:/stable:/${CRIO_MINOR_VERSION}/rpm/repodata/repomd.xml.key
+EOF
+
+sudo zypper --non-interactive --gpg-auto-import-keys refresh
