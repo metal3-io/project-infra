@@ -22,12 +22,10 @@ verify_node_image() {
     export IMAGE_LOCATION="${IMAGE_DIR}"
 
     # Similar config to periodic integration tests
-    export REPO_BRANCH="main"
-    export REPO_ORG="metal3-io"
-    export REPO_NAME="metal3-dev-env"
-    export UPDATED_REPO="metal3-io/metal3-dev-env"
+    export REPO_NAME="metal3-project-infra"
     export UPDATED_BRANCH="main"
     export NUM_NODES=2
+    export UPDATED_REPO="metal3-io/metal3-project-infra"
 
     export IRONIC_INSTALL_TYPE="rpm"
 
