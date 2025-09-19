@@ -58,11 +58,21 @@ ANSIBLE_FORCE_COLOR=true ansible-playbook -v "${CI_DIR}"/deploy-lab.yaml
 # In the bare metal lab, we have already cloned metal3-dev-env and we run integration tests
 # so no need to clone other repos.
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]]; then
-    cd "${HOME}/tested_repo"
+    export METAL3_DIR="${HOME}/tested_repo"
 else
-    cd "${HOME}/metal3"
+    export METAL3_DIR="${HOME}/metal3"
 fi
+
+cd "${METAL3_DIR}"
 
 echo "Running the tests"
 
-make test
+make provision
+make pivot
+
+# Run Pods Scaling test
+export ANSIBLE_CONFIG="${CI_DIR}"/tasks/pod_scaling/ansible.cfg
+ANSIBLE_FORCE_COLOR=true ansible-playbook -b "${CI_DIR}"/tasks/pod_scaling/pod-scaling.yaml -i "${CI_DIR}"/tasks/pod_scaling/inventory.ini
+
+make repivot
+make deprovision
