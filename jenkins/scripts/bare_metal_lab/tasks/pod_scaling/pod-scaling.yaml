@@ -1,0 +1,206 @@
+---
+- name: Increase max number of pods on worker node
+  hosts: kube_worker_node
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: Add maxPod value on worker node kubelet config
+    ansible.builtin.blockinfile:
+      path: /var/lib/kubelet/config.yaml
+      block: |
+        maxPods: 700
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Restart kubelet
+    ansible.builtin.systemd:
+      name: kubelet
+      state: restarted
+      enabled: yes
+
+- name: Deploy 650 nginx pods and watch resources
+  hosts: kube_control_plane
+  gather_facts: false
+
+  tasks:
+  - name: Create Namespace
+    kubernetes.core.k8s:
+      api_version: v1
+      name: pod-scaling-test
+      kind: Namespace
+      state: present
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Apply nginx manifest
+    kubernetes.core.k8s:
+      state: present
+      src: "https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/controllers/nginx-deployment.yaml"
+      kubeconfig: /home/metal3/.kube/config
+      namespace: pod-scaling-test
+    register: install_nginx_deployment
+
+  - name: Wait until 3 NGINX pods are available
+    kubernetes.core.k8s_info:
+      api_version: apps/v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      kubeconfig: /home/metal3/.kube/config
+    retries: 30
+    delay: 10
+    register: nginx_deployment
+    until: (nginx_deployment.resources[0].status.availableReplicas | default(0)) == 3
+
+  - name: Scale up NGINX deployment to 50
+    kubernetes.core.k8s_scale:
+      api_version: apps/v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 50
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 100
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 100
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 150
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 150
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 200
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 200
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 250
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 250
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 300
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 300
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 350
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 350
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 400
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 400
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 450
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 450
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 500
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 500
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 550
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 550
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 600
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 600
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Scale up NGINX deployment to 650
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 650
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Pause for 5 minutes to run 650 pods simultaneously
+    ansible.builtin.pause:
+      minutes: 5
+
+  - name: PODS_SCALING TESTS COMPLETED!!! Scaling down
+    kubernetes.core.k8s_scale:
+      api_version: v1
+      kind: Deployment
+      name: nginx-deployment
+      namespace: pod-scaling-test
+      replicas: 1
+      wait_timeout: 1200
+      kubeconfig: /home/metal3/.kube/config
+
+  - name: Delete nginx deployment
+    kubernetes.core.k8s:
+      state: absent
+      kind: Deployment
+      name: nginx-deployment
+      kubeconfig: /home/metal3/.kube/config
+      namespace: pod-scaling-test
