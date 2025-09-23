@@ -141,7 +141,7 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
+  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}{suffix|} # suffix is optional
   - name: metal3-centos-e2e-integration-test-main
     branches:
     - main
@@ -154,6 +154,19 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: false
+  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}{suffix|} # suffix is optional
+  - name: metal3-centos-e2e-integration-test-main-capi-nightly-build
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-integration-test-main-capi-nightly-build
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_job}
   - name: metal3-centos-e2e-feature-test-main-pivoting
     branches:
