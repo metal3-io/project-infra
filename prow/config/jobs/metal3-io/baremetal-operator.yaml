@@ -86,6 +86,19 @@ presubmits:
         - make
         image: quay.io/metal3-io/basic-checks:golang-1.24
         imagePullPolicy: Always
+  - name: generate-api-docs
+    branches:
+    - main
+    run_if_changed: '(config/base/crds/bases/.*|^Makefile|hack/gen-api-doc\.sh)$*'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gen-api-docs.sh
+        command:
+        - sh
+        image: ghcr.io/fybrik/crdoc:0.6.2@sha256:355ef777a45021ee864e613b2234b4f2c6193762e3e0de94a26b66d06cec81c3
+        imagePullPolicy: Always
   - name: manifestlint
     branches:
     - main
