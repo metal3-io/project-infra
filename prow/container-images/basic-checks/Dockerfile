@@ -4,5 +4,5 @@ FROM docker.io/golang:${GO_VERSION}
 # Install additional packages not present in regular golang image
 RUN apt-get update \
     && apt-get -y upgrade \
-    && apt-get install -y libvirt-dev \
+    && apt-get install -y libvirt-dev podman \
     && apt-get clean
