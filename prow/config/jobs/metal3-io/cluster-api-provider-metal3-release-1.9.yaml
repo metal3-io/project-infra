@@ -128,6 +128,24 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.24
         imagePullPolicy: Always
+  - name: build-fkas
+    branches:
+    - release-1.9
+    run_if_changed: "^hack/fake-apiserver/.*$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/build.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: BUILD_FKAS
+          value: "TRUE"
+        image: docker.io/golang:1.24
+        imagePullPolicy: Always
   - name: metal3-centos-e2e-basic-test-release-1-9
     branches:
     - release-1.9
