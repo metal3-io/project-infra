@@ -198,6 +198,7 @@ milestone_applier:
     release-27.0: "ironic-image - v27.0"
     release-26.0: "ironic-image - v26.0"
   metal3-io/ironic-standalone-operator:
-    main: "IrSO - v0.6"
+    main: "IrSO - v0.7"
+    release-0.6: "IrSO - v0.6"
     release-0.5: "IrSO - v0.5"
     release-0.4: "IrSO - v0.4"
