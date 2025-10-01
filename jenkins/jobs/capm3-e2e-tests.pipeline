@@ -32,13 +32,13 @@ script {
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
     TIMEOUT = 14400 // 4h
-  } else if ( "${env.EPHEMERAL_TEST}" == 'true' || "${GINKGO_FOCUS}" == "scalability" ) {
+  } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
     TIMEOUT = 21600 // 6h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-conformance' ) {
     TIMEOUT = 7200 // 2h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
-  } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests' ) {
+  } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests'  || "${GINKGO_FOCUS}" == "scalability") {
     TIMEOUT = 10800 // 3h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else {
