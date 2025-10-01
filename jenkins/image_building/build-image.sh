@@ -68,12 +68,12 @@ if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
   numeric_release=24.04
 elif [[ "${IMAGE_OS}" == "centos" ]]; then
-  numeric_release=9
-  # Setting upstrem Centos 9 stream image
-  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250812.1.x86_64.qcow2"
+  numeric_release=10
+  # Setting upstrem Centos 10 stream image
+  centos_upstream_img="CentOS-Stream-GenericCloud-10-20250915.0.x86_64.qcow2"
 
   if [[ ! -f "${REPO_ROOT}/${centos_upstream_img}" ]]; then
-    wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/9-stream/x86_64/images/${centos_upstream_img}"
+    wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/10-stream/x86_64/images/${centos_upstream_img}"
   fi
   export DIB_LOCAL_IMAGE="${REPO_ROOT}/${centos_upstream_img}"
 elif [[ "${IMAGE_OS}" == "leap" ]]; then
