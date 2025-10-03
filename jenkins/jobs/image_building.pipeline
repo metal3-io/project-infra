@@ -39,7 +39,7 @@ pipeline {
         axes {
           axis {
             name 'IMAGE_OS'
-            values 'ubuntu', 'centos', "opensuse-leap"
+            values 'ubuntu', 'centos', "leap"
           }
         }
         environment {
