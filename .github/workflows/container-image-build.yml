@@ -41,6 +41,11 @@ on:
         description: "Architecture platforms for the image build (linux/amd64,linux/arm64, etc.)"
         type: string
         default: ""
+      artifact-name:
+        required: false
+        description: "Name of an artifact to be downloaded. Setting this will set the downloaded artifact direcory as image building base."
+        type: string
+        default: ""
     secrets:
       QUAY_USERNAME:
         required: true
@@ -102,13 +107,21 @@ jobs:
         echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
         echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
 
+    - name: Download artifact
+      id: download-artifact
+      if: ${{ inputs.artifact-name }} != ""
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: /tmp/build-${{ inputs.image-name }}
+
     - name: Build ${{ inputs.image-name }} image
       uses: mr-smithers-excellent/docker-build-push@19d2beefef6bcdc202195fdcb9deb79a4fab5c1f # v6.8
       with:
         image: metal3-io/${{ inputs.image-name }}
         tags: ${{ env.IMAGE_TAGS }}
-        directory: ${{ inputs.dockerfile-directory }}
-        dockerfile: ${{ inputs.dockerfile-directory }}/Dockerfile
+        directory: ${{ steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}
+        dockerfile: ${{ steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}/Dockerfile
         buildArgs: ${{ inputs.image-build-args || '' }}
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
