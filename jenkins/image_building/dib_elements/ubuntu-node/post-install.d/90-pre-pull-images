@@ -9,5 +9,3 @@ sudo sed -i "s/MACAddressPolicy=persistent/MACAddressPolicy=none/g" /usr/lib/sys
 for container in $(env | grep "CALICO_*" | cut -f2 -d'='); do
   sudo crictl pull "${container}"
 done
-
-sudo usermod --shell /bin/bash metal3ci

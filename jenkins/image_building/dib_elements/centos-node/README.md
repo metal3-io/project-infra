@@ -13,7 +13,6 @@ and ***install***  which runs during the install.d phase. Finally
 * [centos](https://docs.openstack.org/diskimage-builder/latest/elements/centos/README.html)
 * [base](https://docs.openstack.org/diskimage-builder/latest/elements/base/README.html)
 * [vm](https://docs.openstack.org/diskimage-builder/latest/elements/vm/README.html)
-* [devuser](https://docs.openstack.org/diskimage-builder/latest/elements/devuser/README.html)
 * [openssh-server](https://docs.openstack.org/diskimage-builder/latest/elements/openssh-server/README.html)
 * [modprobe](https://docs.openstack.org/diskimage-builder/latest/elements/modprobe/README.html)
 * [package-installs](https://docs.openstack.org/diskimage-builder/latest/elements/package-installs/README.html)

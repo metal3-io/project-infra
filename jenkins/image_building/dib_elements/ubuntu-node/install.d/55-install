@@ -2,8 +2,6 @@
 
 set -eux
 
-sudo sed -i "0,/.*PermitRootLogin.*/s//PermitRootLogin yes/" /etc/ssh/sshd_config
-
 sudo cat <<EOF | sudo tee /etc/modules-load.d/crio.conf
 overlay
 br_netfilter

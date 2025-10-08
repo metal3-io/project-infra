@@ -59,3 +59,22 @@ creation. It likely includes configurations or tasks related to block devices
 and EFI (Extensible Firmware Interface), commonly used in modern systems for booting.
 
 More information on building and image via Diskimage Builder can be found [here](https://docs.openstack.org/diskimage-builder/latest/user_guide/building_an_image.html).
+
+## Debugging
+
+In some cases, it might be useful to create an image with a pre-configured user
+account for debugging purposes. This can be achieved by adding the `devuser`
+element. See the
+[documentation](https://docs.openstack.org/diskimage-builder/latest/elements/devuser/README.html)
+for more information.
+
+Example:
+
+Add `devuser` to the list of elements in the `element-deps` file. Then set the
+following environment variables to configure the user account:
+
+```bash
+export DIB_DEV_USER_USERNAME="developer"
+export DIB_DEV_USER_PWDLESS_SUDO="yes"
+export DIB_DEV_USER_AUTHORIZED_KEYS="/path/to/authorized_keys"
+```

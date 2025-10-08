@@ -5,5 +5,3 @@ set -eux
 for container in $(env | grep "CALICO_*" | cut -f2 -d'='); do
   sudo crictl pull "${container}"
 done
-
-sudo sed -i "0,/.*PermitRootLogin.*/s//PermitRootLogin yes/" /etc/ssh/sshd_config
