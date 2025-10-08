@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Replaces rootfs label in the kernel command line.
+#
+# The problem stems from the fact that DIB assigns label cloudimg-rootfs to the
+# root filesystem and this cannot be modified. If we don't change the kernel
+# command line parameters, the image will try to look for nonexistent label
+# ROOT during boot and the boot will fail.
+
+sed -i 's/GRUB_CMDLINE_LINUX.*/GRUB_CMDLINE_LINUX="root=LABEL=cloudimg-rootfs"/' /etc/default/grub
+grub2-mkconfig --output=/boot/grub2/grub.cfg
+sed -i 's/ROOT/cloudimg-rootfs/' /config.bootoptions
