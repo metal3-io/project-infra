@@ -79,7 +79,6 @@ elif [[ "${IMAGE_OS}" == "centos" ]]; then
 elif [[ "${IMAGE_OS}" == "leap" ]]; then
   numeric_release="15_6"
   export DIB_RELEASE="15.6"
-  export DIB_BOOTLOADER_DEFAULT_CMDLINE="nofb nomodeset gfxpayload=text root=LABEL=cloudimg-rootfs"
   # Patch DIB source to accept openSUSE Leap 15.6
   # shellcheck disable=SC2016
   sed -i '8i15.6) export OPENSUSE_REPO_DIR=openSUSE_Leap_${DIB_RELEASE} ;;' \
