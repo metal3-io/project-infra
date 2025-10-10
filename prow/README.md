@@ -132,10 +132,10 @@ image. Here is an example:
   "ssh_username": "ubuntu",
   "volume_type": "",
   "image_disk_format": "raw",
-  "kubernetes_deb_version": "1.32.5-1.1",
-  "kubernetes_rpm_version": "1.32.5",
-  "kubernetes_semver": "v1.32.5",
-  "kubernetes_series": "v1.32"
+  "kubernetes_deb_version": "1.33.5-1.1",
+  "kubernetes_rpm_version": "1.33.5",
+  "kubernetes_semver": "v1.33.5",
+  "kubernetes_series": "v1.33"
 }
 ```
 
