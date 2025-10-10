@@ -33,7 +33,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-control-plane-v1-31-6
+  name: prow-control-plane-v1-33-5
 spec:
   template:
     spec:
@@ -43,45 +43,13 @@ spec:
         name: prow-cloud-config
       image:
         filter:
-          name: ubuntu-2404-kube-v1.31.6
-      sshKeyName: metal3ci
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-worker-v1-31-6
-spec:
-  template:
-    spec:
-      flavor: c8m24-est
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2404-kube-v1.31.6
-      sshKeyName: metal3ci
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-control-plane-v1-31-6-rotated
-spec:
-  template:
-    spec:
-      flavor: c4m12-est
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2404-kube-v1.31.6
+          name: ubuntu-2404-kube-v1.33.5
       sshKeyName: prow
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
-  name: prow-worker-v1-31-6-rotated
+  name: prow-worker-v1-33-5
 spec:
   template:
     spec:
@@ -91,5 +59,5 @@ spec:
         name: prow-cloud-config
       image:
         filter:
-          name: ubuntu-2404-kube-v1.31.6
+          name: ubuntu-2404-kube-v1.33.5
       sshKeyName: prow
