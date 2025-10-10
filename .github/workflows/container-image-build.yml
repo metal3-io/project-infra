@@ -120,8 +120,8 @@ jobs:
       with:
         image: metal3-io/${{ inputs.image-name }}
         tags: ${{ env.IMAGE_TAGS }}
-        directory: ${{ steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}
-        dockerfile: ${{ steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}/Dockerfile
+        directory: ${{ inputs.artifact-name != '' && steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}
+        dockerfile: ${{ inputs.artifact-name != '' && steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}/Dockerfile
         buildArgs: ${{ inputs.image-build-args || '' }}
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
