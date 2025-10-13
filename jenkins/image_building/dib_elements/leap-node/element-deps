@@ -1,7 +1,6 @@
 opensuse
 base
 vm
-devuser
 openssh-server
 package-installs
 cloud-init-datasources

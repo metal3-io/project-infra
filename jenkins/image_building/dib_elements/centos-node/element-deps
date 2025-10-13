@@ -1,6 +1,5 @@
 centos
 base
 vm
-devuser
 openssh-server
 package-installs
