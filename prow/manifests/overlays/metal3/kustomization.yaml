@@ -57,6 +57,11 @@ secretGenerator:
   name: jenkins-token
   namespace: prow
   type: Opaque
+- files:
+  - token=artifactory-token
+  name: artifactory-token
+  namespace: prow
+  type: Opaque
 
 patches:
 - path: patches/crier.yaml
