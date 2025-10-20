@@ -115,7 +115,7 @@ presubmits:
   - name: build
     branches:
     - main
-    run_if_changed: "^api|^test|^Makefile$"
+    run_if_changed: "^api|^test|^Makefile$|^hack/buils.sh$"
     decorate: true
     spec:
       containers:
@@ -125,6 +125,24 @@ presubmits:
         - sh
         env:
         - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.24
+        imagePullPolicy: Always
+  - name: build-fkas
+    branches:
+    - main
+    run_if_changed: "^hack/fake-apiserver|^api|^Makefile$|^hack/build.sh$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/build.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: BUILD_FKAS
           value: "TRUE"
         image: docker.io/golang:1.24
         imagePullPolicy: Always
