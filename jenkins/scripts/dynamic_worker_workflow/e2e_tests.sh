@@ -24,7 +24,6 @@ export GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 export GINKGO_SKIP="${GINKGO_SKIP:-}"
 export REPO_BRANCH="${REPO_BRANCH}"
 export PR_ID="${PR_ID:-}"
-export EPHEMERAL_TEST="${EPHEMERAL_TEST:-}"
 export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 
@@ -49,10 +48,6 @@ fi
 
 if [[ -z "${GINKGO_SKIP:-}" ]] || [[ "${GINKGO_SKIP}" == "null" ]]; then
     unset GINKGO_SKIP
-fi
-
-if [[ -z "${EPHEMERAL_TEST:-}" ]] || [[ "${EPHEMERAL_TEST}" == "null" ]]; then
-    unset EPHEMERAL_TEST
 fi
 
 if [[ -z "${KUBERNETES_VERSION_UPGRADE_FROM:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then

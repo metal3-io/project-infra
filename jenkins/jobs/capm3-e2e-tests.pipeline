@@ -32,9 +32,6 @@ script {
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
     TIMEOUT = 14400 // 4h
-  } else if ( "${env.EPHEMERAL_TEST}" == 'true' ) {
-    TIMEOUT = 21600 // 6h
-    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-conformance' ) {
     TIMEOUT = 7200 // 2h
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
@@ -68,7 +65,6 @@ pipeline {
         NUM_NODES = "${NUM_NODES}"
         CAPI_VERSION = "${CAPI_VERSION}"
         CAPM3_VERSION = "${CAPM3_VERSION}"
-        EPHEMERAL_TEST = "${EPHEMERAL_TEST}"
         KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
         KUBERNETES_VERSION_UPGRADE_TO = "${KUBERNETES_VERSION_UPGRADE_TO}"
         CNI_NAME = "${CNI_NAME}"
