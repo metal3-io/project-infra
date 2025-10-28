@@ -9,6 +9,11 @@ on:
         description: 'Name of the repository being scanned'
         required: true
         type: string
+      ref:
+        description: 'Git reference branch to checkout and scan'
+        required: false
+        type: string
+        default: 'main'
       scan-args:
         description: 'Additional OSV scanner arguments'
         required: false
@@ -33,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      with:
+        ref: ${{ inputs.ref }}
     - name: Calculate go version
       id: vars
       run: echo "go_version=$(make go-version)" >> "${GITHUB_OUTPUT}"
@@ -71,9 +78,9 @@ jobs:
         if: ${{ steps.check.outputs.has_vulnerabilities == 'true' || contains(needs.*.result, 'failure') }}
         uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # 2.3.3
         env:
-          SLACK_TITLE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
+          SLACK_TITLE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }} on branch ${{ inputs.ref }})"
           SLACK_COLOR: "#FF0000"
-          SLACK_MESSAGE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
+          SLACK_MESSAGE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }} on branch ${{ inputs.ref }}"
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: metal3-github-actions-notify
           SLACK_USERNAME: metal3-github-actions-notify
