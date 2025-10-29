@@ -4,9 +4,9 @@ set -eux
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
     export CONTAINER_RUNTIME="docker"
-    export EPHEMERAL_CLUSTER="kind"
+    export BOOTSTRAP_CLUSTER="kind"
 else
-    export EPHEMERAL_CLUSTER="minikube"
+    export BOOTSTRAP_CLUSTER="minikube"
 fi
 
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]] ||

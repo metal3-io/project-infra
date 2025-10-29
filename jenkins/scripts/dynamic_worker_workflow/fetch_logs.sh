@@ -112,9 +112,9 @@ mkdir -p "${LOGS_DIR}/manifests"
 if [[ -d "/tmp/manifests" ]]; then
     cp -r /tmp/manifests/* "${LOGS_DIR}/manifests"
 else
-    # There will be no manifest directory in case of filure in ephemeral cluster
+    # There will be no manifest directory in case of filure in bootstrap cluster
     # We are collecting those manifest for debugging
-    fetch_manifests "manifests/ephemeral_cluster" "/home/metal3ci/.kube/config"
+    fetch_manifests "manifests/bootstrap_cluster" "/home/metal3ci/.kube/config"
 fi
 
 # Fetch k8s logs

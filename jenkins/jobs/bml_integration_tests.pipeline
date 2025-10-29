@@ -44,7 +44,7 @@ pipeline {
     CONTROL_PLANE_MACHINE_COUNT = 1
     CAPI_VERSION = "${CAPI_VERSION}"
     CAPM3_VERSION = "${CAPM3_VERSION}"
-    EPHEMERAL_CLUSTER = "minikube"
+    BOOTSTRAP_CLUSTER = "minikube"
     EXTERNAL_VLAN_ID = "3"
   }
   stages {

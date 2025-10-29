@@ -65,9 +65,9 @@ export FORCE_REPO_UPDATE=false
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
     #Must match with fetch_logs.sh
     export CONTAINER_RUNTIME="docker"
-    export EPHEMERAL_CLUSTER="kind"
+    export BOOTSTRAP_CLUSTER="kind"
 else
-    export EPHEMERAL_CLUSTER="minikube"
+    export BOOTSTRAP_CLUSTER="minikube"
 fi
 
 # Clone the source repository
