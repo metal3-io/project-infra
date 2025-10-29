@@ -4,6 +4,11 @@
 .DS_Store
 *.swp
 
+# Quick start test temp files
+hack/quick-start-test/disk-images
+hack/quick-start-test/bmh-vm-01.xml
+
+
 # Development containers
 .devcontainer
 

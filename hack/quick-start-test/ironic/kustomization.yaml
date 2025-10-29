@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: baremetal-operator-system
+# These are the kustomizations we build on. You can download them and change the URLs to relative
+# paths if you do not want to access them over the network.
+# Note that the ref=v0.11.0 specifies the version to use.
+resources:
+- https://github.com/metal3-io/baremetal-operator/config/namespace?ref=v0.11.0
+- https://github.com/metal3-io/baremetal-operator/ironic-deployment/base?ref=v0.11.0
+# The kustomize components configure basic-auth and TLS
+components:
+- https://github.com/metal3-io/baremetal-operator/ironic-deployment/components/basic-auth?ref=v0.11.0
+- https://github.com/metal3-io/baremetal-operator/ironic-deployment/components/tls?ref=v0.11.0
+images:
+- name: quay.io/metal3-io/ironic
+  newTag: v32.0.0
+# Create a ConfigMap from ironic_bmo.env and call it ironic-bmo-configmap.
+# This ConfigMap will be used to set environment variables for the containers.
+configMapGenerator:
+- envs:
+  - ironic_bmo.env
+  name: ironic-bmo-configmap
+  behavior: create
+
+patches:
+# Patch for removing dnsmasq
+- path: ironic-patch.yaml
+# The TLS component adds certificates but it cannot know the exact IPs of our environment.
+# Here we patch the certificates to have the correct IPs.
+# - 192.168.1.7: management computer IP in out of band network
+# - 172.18.0.2: kind cluster node IP. This is what Ironic will see attached to the interface.
+# - 192.168.0.150: management computer IP in the other network
+- patch: |-
+    - op: replace
+      path: /spec/ipAddresses/0
+      value: 192.168.222.1
+    - op: add
+      path: /spec/ipAddresses/-
+      value: 172.18.0.2
+  target:
+    kind: Certificate
+    name: ironic-cert
+# Create secrets from the authentication configuration.
+# These will be mounted or used for environment variables.
+# See the basic-auth component for more details on how they are used.
+secretGenerator:
+- name: ironic-htpasswd
+  behavior: create
+  envs:
+  - ironic-htpasswd
