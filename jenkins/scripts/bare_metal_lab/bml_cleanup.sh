@@ -9,7 +9,7 @@ set -eu
 #  cleanup_bml.sh
 #
 export EXTERNAL_VLAN_ID="${EXTERNAL_VLAN_ID:-3}"
-export EPHEMERAL_CLUSTER="${EPHEMERAL_CLUSTER:-"minikube"}"
+export BOOTSTRAP_CLUSTER="${BOOTSTRAP_CLUSTER:-"minikube"}"
 export CAPI_VERSION="${CAPI_VERSION:-v1beta2}"
 export CAPM3_VERSION="${CAPM3_VERSION:-v1beta1}"
 export CAPM3RELEASEBRANCH="${CAPM3RELEASEBRANCH:-main}"
