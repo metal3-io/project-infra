@@ -70,7 +70,7 @@ if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
 elif [[ "${IMAGE_OS}" == "centos" ]]; then
   numeric_release=10
   # Setting upstrem Centos 10 stream image
-  centos_upstream_img="CentOS-Stream-GenericCloud-10-20250915.0.x86_64.qcow2"
+  centos_upstream_img="CentOS-Stream-GenericCloud-10-20251027.0.x86_64.qcow2"
 
   if [[ ! -f "${REPO_ROOT}/${centos_upstream_img}" ]]; then
     wget -O "${REPO_ROOT}/${centos_upstream_img}" "https://cloud.centos.org/centos/10-stream/x86_64/images/${centos_upstream_img}"
