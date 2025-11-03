@@ -9,4 +9,3 @@
 
 sed -i 's/GRUB_CMDLINE_LINUX.*/GRUB_CMDLINE_LINUX="root=LABEL=cloudimg-rootfs"/' /etc/default/grub
 grub2-mkconfig --output=/boot/grub2/grub.cfg
-sed -i 's/ROOT/cloudimg-rootfs/' /config.bootoptions
