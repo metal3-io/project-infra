@@ -200,9 +200,3 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
-  - name: metal3-centos-e2e-feature-test-release-1-9-scalability
-    branches:
-    - release-1.9
-    agent: jenkins
-    always_run: false
-    optional: true
