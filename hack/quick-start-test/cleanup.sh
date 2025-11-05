@@ -13,3 +13,6 @@ virsh -c qemu:///system undefine --domain bmh-vm-01 --remove-all-storage --nvram
 
 virsh -c qemu:///system net-destroy baremetal-e2e
 virsh -c qemu:///system net-undefine baremetal-e2e
+
+export QUICK_START_BASE=${QUICK_START_BASE:="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"}
+rm -rf "${QUICK_START_BASE}/bmh-vm-01.xml"

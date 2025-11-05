@@ -3,30 +3,17 @@ kind: Kustomization
 namespace: baremetal-operator-system
 # This is the kustomization that we build on. You can download it and change
 # the URL to a relative path if you do not want to access it over the network.
-# Note that the ref=v0.11.0 specifies the version to use.
+# Note that the ref=main specifies the version to use.
+# We use main here simply because the integration with IrSO is not included in a release yet.
 resources:
-- https://github.com/metal3-io/baremetal-operator/config/namespace?ref=v0.11.0
-- https://github.com/metal3-io/baremetal-operator/config/base?ref=v0.11.0
-components:
-- https://github.com/metal3-io/baremetal-operator/config/components/basic-auth?ref=v0.11.0
-- https://github.com/metal3-io/baremetal-operator/config/components/tls?ref=v0.11.0
-images:
-- name: quay.io/metal3-io/baremetal-operator
-  newTag: v0.11.0
-# Create a ConfigMap from ironic.env and name it ironic.
-configMapGenerator:
-- name: ironic
-  behavior: create
-  envs:
-  - ironic.env
+- https://github.com/metal3-io/baremetal-operator/config/use-irso?ref=main
 
-# We cannot use suffix hashes since the kustomizations we build on
-# cannot be aware of what suffixes we add.
 generatorOptions:
   disableNameSuffixHash: true
-# Create secrets with the credentials for accessing Ironic.
+
 secretGenerator:
 - name: ironic-credentials
+  namespace: baremetal-operator-system
   files:
   - username=ironic-username
   - password=ironic-password
