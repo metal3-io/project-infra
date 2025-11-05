@@ -36,6 +36,14 @@ if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
     export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
 fi
 
+# Set KUBERNETES_VERSION and related variables for k8s-upgrade-n3 tests
+if [[ "${GINKGO_FOCUS}" == "k8s-upgrade-n3" ]]; then
+    export KUBERNETES_N0_VERSION=${KUBERNETES_N0_VERSION:-"v1.31.13"}
+    export KUBERNETES_N1_VERSION=${KUBERNETES_N1_VERSION:-"v1.32.9"}
+    export KUBERNETES_N2_VERSION=${KUBERNETES_N2_VERSION:-"v1.33.5"}
+    export KUBERNETES_N3_VERSION=${KUBERNETES_N3_VERSION:-"v1.34.1"}
+fi
+
 # Unset empty and null variables
 
 if [[ -z "${NUM_NODES:-}" ]] || [[ "${NUM_NODES}" == "null" ]]; then
@@ -56,6 +64,22 @@ fi
 
 if [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
     unset KUBERNETES_VERSION_UPGRADE_TO
+fi
+
+if [[ -z "${KUBERNETES_N0_VERSION:-}" ]] || [[ "${KUBERNETES_N0_VERSION}" == "null" ]]; then
+    unset KUBERNETES_N0_VERSION
+fi
+
+if [[ -z "${KUBERNETES_N1_VERSION:-}" ]] || [[ "${KUBERNETES_N1_VERSION}" == "null" ]]; then
+    unset KUBERNETES_N1_VERSION
+fi
+
+if [[ -z "${KUBERNETES_N2_VERSION:-}" ]] || [[ "${KUBERNETES_N2_VERSION}" == "null" ]]; then
+    unset KUBERNETES_N2_VERSION
+fi
+
+if [[ -z "${KUBERNETES_N3_VERSION:-}" ]] || [[ "${KUBERNETES_N3_VERSION}" == "null" ]]; then
+    unset KUBERNETES_N3_VERSION
 fi
 
 # Since we take care of the repo tested here (to merge the PR), do not update
