@@ -18,6 +18,8 @@ script {
     agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
     agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+  } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade-n3' ) {
+    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
   }
 }
 
@@ -46,6 +48,10 @@ pipeline {
     NUM_NODES = "${NUM_NODES}"
     TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
     KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
+    KUBERNETES_N0_VERSION= "${KUBERNETES_N0_VERSION}"
+    KUBERNETES_N1_VERSION= "${KUBERNETES_N1_VERSION}"
+    KUBERNETES_N2_VERSION= "${KUBERNETES_N2_VERSION}"
+    KUBERNETES_N3_VERSION= "${KUBERNETES_N3_VERSION}"
   }
   stages {
     stage("Checkout CI Repo") {
