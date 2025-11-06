@@ -30,7 +30,6 @@ presubmits:
         imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
-    branches:
     agent: jenkins
     always_run: false
     optional: true

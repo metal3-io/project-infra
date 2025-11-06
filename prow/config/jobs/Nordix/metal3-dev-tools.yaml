@@ -2,6 +2,8 @@ presubmits:
   Nordix/metal3-dev-tools:
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
+    branches:
+    - main
     decorate: true
     spec:
       containers:
@@ -16,6 +18,8 @@ presubmits:
         imagePullPolicy: Always
   - name: markdownlint
     run_if_changed: '(\.md|markdownlint\.sh)$'
+    branches:
+    - main
     decorate: true
     spec:
       containers:

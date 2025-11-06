@@ -175,19 +175,16 @@ milestone_applier:
     release-1.11: "CAPM3 - v1.11"
     release-1.10: "CAPM3 - v1.10"
     release-1.9: "CAPM3 - v1.9"
-    release-1.8: "CAPM3 - v1.8"
   metal3-io/baremetal-operator:
     main: "BMO - v0.12"
     release-0.11: "BMO - v0.11"
     release-0.10: "BMO - v0.10"
     release-0.9: "BMO - v0.9"
-    release-0.8: "BMO - v0.8"
   metal3-io/ip-address-manager:
     main: "IPAM - v1.12"
     release-1.11: "IPAM - v1.11"
     release-1.10: "IPAM - v1.10"
     release-1.9: "IPAM - v1.9"
-    release-1.8: "IPAM - v1.8"
   metal3-io/ironic-image:
     main: "ironic-image - v33.0"
     release-32.0: "ironic-image - v32.0"
@@ -196,7 +193,6 @@ milestone_applier:
     release-29.0: "ironic-image - v29.0"
     release-28.0: "ironic-image - v28.0"
     release-27.0: "ironic-image - v27.0"
-    release-26.0: "ironic-image - v26.0"
   metal3-io/ironic-standalone-operator:
     main: "IrSO - v0.7"
     release-0.6: "IrSO - v0.6"
