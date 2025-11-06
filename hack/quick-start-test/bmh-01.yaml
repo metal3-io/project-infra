@@ -5,7 +5,7 @@ metadata:
 spec:
   online: true
   bootMACAddress: 00:60:2f:31:81:01
-  bootMode: legacy # use 'UEFI' for Scenario 1
+  bootMode: UEFI
   hardwareProfile: libvirt
   bmc:
     address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/bmh-vm-01

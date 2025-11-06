@@ -7,13 +7,3 @@ namespace: baremetal-operator-system
 # We use main here simply because the integration with IrSO is not included in a release yet.
 resources:
 - https://github.com/metal3-io/baremetal-operator/config/use-irso?ref=main
-
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- name: ironic-credentials
-  namespace: baremetal-operator-system
-  files:
-  - username=ironic-username
-  - password=ironic-password
