@@ -5,17 +5,6 @@ namespace: ironic-standalone-operator-system
 resources:
 - https://github.com/metal3-io/ironic-standalone-operator/releases/latest/download/install.yaml
 
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- name: ironic-auth
-  behavior: create
-  files:
-  - username=ironic-username
-  - password=ironic-password
-  type: Opaque
-
 configMapGenerator:
 - name: ironic-operator-config
   literals:
@@ -38,4 +27,3 @@ patches:
               envFrom:
                 - configMapRef:
                     name: ironic-operator-config
-                  
