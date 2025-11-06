@@ -5,4 +5,4 @@ metadata:
 type: Opaque
 stringData:
   username: admin #replace with desired username
-  password: supersecretpassword #replace with desired password
+  password: password #replace with desired password

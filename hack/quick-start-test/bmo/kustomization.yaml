@@ -8,9 +8,6 @@ namespace: baremetal-operator-system
 resources:
 - https://github.com/metal3-io/baremetal-operator/config/use-irso?ref=main
 
-generatorOptions:
-  disableNameSuffixHash: true
-
 secretGenerator:
 - name: ironic-credentials
   namespace: baremetal-operator-system

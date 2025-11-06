@@ -38,10 +38,6 @@ setup() {
     echo "${IRONIC_USERNAME}" > "${QUICK_START_BASE}/irso/ironic-username"
     echo "${IRONIC_PASSWORD}" > "${QUICK_START_BASE}/irso/ironic-password"
 
-    # Replace in the username and password in bml-vm-01.yaml
-    sed -i "s/username: .*/username: ${IRONIC_USERNAME}/" ${QUICK_START_BASE}/bml-01.yaml
-    sed -i "s/password: .*/password: ${IRONIC_PASSWORD}/" ${QUICK_START_BASE}/bml-01.yaml
-
     echo "Deploying IrSO..."
     # This is deploying a patch where the IPA_BASEURI are set to the local image server.
     # This could be replaced with just kubectl apply -f https://github.com/metal3-io/ironic-standalone-operator/releases/latest/download/install.yaml
