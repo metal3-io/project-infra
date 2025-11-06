@@ -16,3 +16,8 @@ virsh -c qemu:///system net-undefine baremetal-e2e
 
 export QUICK_START_BASE=${QUICK_START_BASE:="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"}
 rm -rf "${QUICK_START_BASE}/bmh-vm-01.xml"
+
+sudo ip link del metalend # delete both ends of veth pair
+docker network rm kind
+sudo iptables -D FORWARD 1
+sudo iptables -D FORWARD 1 # twice because we want to remove the first rule twice

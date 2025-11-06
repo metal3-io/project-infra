@@ -5,8 +5,13 @@ metadata:
 spec:
   online: true
   bootMACAddress: 00:60:2f:31:81:01
-  bootMode: legacy # use 'UEFI' for Scenario 1
+  bootMode: UEFI
   hardwareProfile: libvirt
   bmc:
     address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/bmh-vm-01
     credentialsName: bml-01
+  image:
+    checksumType: sha256
+    checksum: http://192.168.222.1/SHA256SUMS
+    format: qcow2
+    url: http://192.168.222.1/noble-server-cloudimg-amd64.img

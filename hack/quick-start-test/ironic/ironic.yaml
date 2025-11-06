@@ -4,7 +4,6 @@ metadata:
   name: ironic
   namespace: baremetal-operator-system
 spec:
-  apiCredentialsName: ironic-credentials
   networking:
     dhcp:
       rangeBegin: "192.168.222.100"
@@ -13,3 +12,5 @@ spec:
     interface: "eth0"
     ipAddress: "192.168.222.2"
     ipAddressManager: "keepalived"
+  tls:
+    certificateName: ironic-cert
