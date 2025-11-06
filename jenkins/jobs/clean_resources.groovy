@@ -1,45 +1,33 @@
-import java.text.SimpleDateFormat
-
-def TIMEOUT = 1800
+// Global variables
+def TIMEOUT = 600, ci_git_url, ci_git_branch, refspec
 
 script {
-  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  echo "Test triggered from ${UPDATED_REPO}"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
-
-  if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
-    ci_git_base = (env.PULL_BASE_REF) ?: "main"
-    // Fetch the base branch and the ci_git_branch when running on project-infra PR
-    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
-  } else {
-    ci_git_branch = "main"
+    ci_git_url   = 'https://github.com/metal3-io/project-infra.git'
+    ci_git_branch = 'main'
     refspec = '+refs/heads/*:refs/remotes/origin/*'
-  }
-  echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 }
 
 pipeline {
-  agent { label 'metal3ci-8c16gb-ubuntu' }
-  environment {
-    OS_USERNAME="metal3ci"
-    OS_AUTH_URL="https://kna1.citycloud.com:5000"
-    OS_USER_DOMAIN_NAME="CCP_Domain_37137"
-    OS_PROJECT_DOMAIN_NAME="CCP_Domain_37137"
-    OS_REGION_NAME="Kna1"
-    OS_PROJECT_NAME="Default Project 37137"
-    OS_TENANT_NAME="Default Project 37137"
-    OS_AUTH_VERSION=3
-    OS_IDENTITY_API_VERSION=3
-  }
-  stages {
-    stage('SCM') {
-      options {
-        timeout(time: 5, unit: 'MINUTES')
-      }
-      steps {
-        /* Checkout CI Repo */
-        checkout([$class: 'GitSCM',
+    agent { label 'metal3ci-8c16gb-ubuntu' }
+    environment {
+        OS_USERNAME = 'metal3ci'
+        OS_AUTH_URL = 'https://kna1.citycloud.com:5000'
+        OS_USER_DOMAIN_NAME = 'CCP_Domain_37137'
+        OS_PROJECT_DOMAIN_NAME = 'CCP_Domain_37137'
+        OS_REGION_NAME = 'Kna1'
+        OS_PROJECT_NAME = 'Default Project 37137'
+        OS_TENANT_NAME = 'Default Project 37137'
+        OS_AUTH_VERSION = 3
+        OS_IDENTITY_API_VERSION = 3
+    }
+    stages {
+        stage('SCM') {
+            options {
+                timeout(time: 5, unit: 'MINUTES')
+            }
+            steps {
+                /* Checkout CI Repo */
+                checkout([$class: 'GitSCM',
                  branches: [[name: ci_git_branch]],
                  doGenerateSubmoduleConfigurations: false,
                  extensions: [[$class: 'WipeWorkspace'],
@@ -47,23 +35,23 @@ pipeline {
                  [$class: 'CleanBeforeCheckout']],
                  submoduleCfg: [],
                  userRemoteConfigs: [[url: ci_git_url,  refspec: refspec]]])
-      }
-    }
-    stage('Clean old integration test vms') {
-      options {
-        timeout(time: TIMEOUT, unit: 'SECONDS')
-      }
-      steps {
-        script {
-          withCredentials([
-                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
-            ]) {
-            timestamps {
-              sh "./jenkins/scripts/clean_resources.sh"
             }
-          }
         }
-      }
+        stage('Clean old integration test vms') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                script {
+                    withCredentials([
+                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OPENSTACK_USERNAME_XERCES', passwordVariable: 'OPENSTACK_PASSWORD_XERCES'),
+                ])  {
+                        timestamps {
+                            sh './jenkins/scripts/clean_resources.sh'
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }
