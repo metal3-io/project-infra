@@ -1,49 +1,48 @@
-// 3 hours
-int TIMEOUT = 10800
+// Global variables
+def TIMEOUT, ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
+def UPDATED_REPO, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME
 
 script {
+    UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
+    echo "Test triggered from ${UPDATED_REPO}"
+    ci_git_url = 'https://github.com/metal3-io/project-infra.git'
 
-  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  echo "Test triggered from ${UPDATED_REPO}"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
-
-  if ( "${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra' ) {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
-    ci_git_base = (env.PULL_BASE_REF) ?: 'main'
-    // Fetch the base branch and the ci_git_branch when running on project-infra PR
-    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+    if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+        ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+        ci_git_base = (env.PULL_BASE_REF) ?: 'main'
+        // Fetch the base branch and the ci_git_branch when running on project-infra PR
+        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
-    ci_git_branch = 'main'
-    refspec = '+refs/heads/*:refs/remotes/origin/*'
-  }
+        ci_git_branch = 'main'
+        refspec = '+refs/heads/*:refs/remotes/origin/*'
+    }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
-  if  ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
-    agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
-    TIMEOUT=10800 // 3h
+    if ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
+        agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+        TIMEOUT = 10800 // 3h
   } else if ( "${GINKGO_FOCUS}" == 'pivoting' ) {
-    BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
-    TIMEOUT = 18000 // 5h for node reuse
-    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
+        TIMEOUT = 18000 // 5h for node reuse
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'remediation' ) {
-    BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
-    TIMEOUT = 18000 // 5h for remediation
-    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
+        TIMEOUT = 18000 // 5h for remediation
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
-    agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
-    TIMEOUT = 14400 // 4h
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        TIMEOUT = 14400 // 4h
   } else if ( "${GINKGO_FOCUS}" == 'k8s-conformance' ) {
-    TIMEOUT = 7200 // 2h
-    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
-  } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests'  || "${GINKGO_FOCUS}" == "scalability") {
-    TIMEOUT = 10800 // 3h
-    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        TIMEOUT = 7200 // 2h
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+  } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests'  || "${GINKGO_FOCUS}" == 'scalability') {
+        TIMEOUT = 10800 // 3h
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
   } else {
-    agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
-    BUILD_TAG = "${env.BUILD_TAG}-other-features"
-    GINKGO_SKIP = "pivoting remediation" // Allow non pivoting features
-  }
-
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        BUILD_TAG = "${env.BUILD_TAG}-other-features"
+        GINKGO_SKIP = 'pivoting remediation' // Allow non pivoting features
+    }
 }
 
 pipeline {

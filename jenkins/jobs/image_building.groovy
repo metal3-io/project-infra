@@ -1,57 +1,60 @@
+// Global variables
+def ci_git_url, ci_git_branch, ci_git_base, refspec
+
 script {
-  ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
-  ci_git_base = (env.PULL_BASE_REF) ?: "main"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
-  refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+    ci_git_url   = 'https://github.com/metal3-io/project-infra.git'
+    ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+    ci_git_base = (env.PULL_BASE_REF) ?: 'main'
+    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
 }
 
 pipeline {
-  options {
-    // We verify the CI images by uploading and testing them as jenkins agents.
-    // If multiple jobs would run in parallel, they may overwrite each others image
-    // and/or delete them before the test is finished.
-    disableConcurrentBuilds()
-  }
-  agent none
-  environment {
-    IMAGE_TYPE = "${env.IMAGE_TYPE}"
-    METAL3_CI_USER="metal3ci"
-    KUBERNETES_VERSION = "${env.KUBERNETES_VERSION}"
-    CRICTL_VERSION = "${env.CRICTL_VERSION}"
-    CRIO_VERSION = "${env.CRIO_VERSION}"
-    RT_URL="https://artifactory.nordix.org/artifactory"
-    CAPM3RELEASEBRANCH = "${env.capm3_release_branch}"
-    BMORELEASEBRANCH = "${env.bmo_release_branch}"
-    CAPI_VERSION = "${env.CAPI_VERSION}"
-    CAPM3_VERSION = "${env.CAPM3_VERSION}"
-    OS_AUTH_URL = "https://xerces.ericsson.net:5000"
-    OS_PROJECT_ID = "b62dc8622f87407589de9f7dcec13d25"
-    OS_INTERFACE = "public"
-    OS_PROJECT_NAME = "EST_Metal3_CI"
-    OS_USER_DOMAIN_NAME = "xerces"
-    OS_IDENTITY_API_VERSION = 3
-  }
-  stages {
-    stage('SCM') {
-      matrix {
-        agent { label "metal3ci-8c16gb-ubuntu" }
-        options { ansiColor('xterm') }
-        axes {
-          axis {
-            name 'IMAGE_OS'
-            values 'ubuntu', 'centos', "leap"
-          }
-        }
-        environment {
-          IMAGE_OS = "${IMAGE_OS}"
-        }
-        stages {
-          stage("Checkout CI Repo") {
-            options {
-              timeout(time: 5, unit: 'MINUTES')
-            }
-            steps {
-              checkout([
+    options {
+        // We verify the CI images by uploading and testing them as jenkins agents.
+        // If multiple jobs would run in parallel, they may overwrite each others image
+        // and/or delete them before the test is finished.
+        disableConcurrentBuilds()
+    }
+    agent none
+    environment {
+        IMAGE_TYPE = "${env.IMAGE_TYPE}"
+        METAL3_CI_USER = 'metal3ci'
+        KUBERNETES_VERSION = "${env.KUBERNETES_VERSION}"
+        CRICTL_VERSION = "${env.CRICTL_VERSION}"
+        CRIO_VERSION = "${env.CRIO_VERSION}"
+        RT_URL = 'https://artifactory.nordix.org/artifactory'
+        CAPM3RELEASEBRANCH = "${env.capm3_release_branch}"
+        BMORELEASEBRANCH = "${env.bmo_release_branch}"
+        CAPI_VERSION = "${env.CAPI_VERSION}"
+        CAPM3_VERSION = "${env.CAPM3_VERSION}"
+        OS_AUTH_URL = 'https://xerces.ericsson.net:5000'
+        OS_PROJECT_ID = 'b62dc8622f87407589de9f7dcec13d25'
+        OS_INTERFACE = 'public'
+        OS_PROJECT_NAME = 'EST_Metal3_CI'
+        OS_USER_DOMAIN_NAME = 'xerces'
+        OS_IDENTITY_API_VERSION = 3
+    }
+    stages {
+        stage('SCM') {
+            matrix {
+                agent { label 'metal3ci-8c16gb-ubuntu' }
+                options { ansiColor('xterm') }
+                axes {
+                    axis {
+                        name 'IMAGE_OS'
+                        values 'ubuntu', 'centos', 'leap'
+                    }
+                }
+                environment {
+                    IMAGE_OS = "${IMAGE_OS}"
+                }
+                stages {
+                    stage('Checkout CI Repo') {
+                        options {
+                            timeout(time: 5, unit: 'MINUTES')
+                        }
+                        steps {
+                            checkout([
                 $class: 'GitSCM',
                 branches: [[name: ci_git_branch]],
                 doGenerateSubmoduleConfigurations: false,
@@ -63,123 +66,119 @@ pipeline {
                 submoduleCfg: [],
                 userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
               ])
-            }
-          }
-          stage("Build disk image") {
-            options {
-              timeout(time: 1, unit: 'HOURS')
-            }
-            steps {
-              echo "Building ${IMAGE_OS} ${IMAGE_TYPE} image"
-              script {
-                sh """
-                ./jenkins/image_building/build-image.sh
-                """
-              }
-            }
-          }
-          stage("Upload the new CI image with -staging suffix") {
-            options {
-              timeout(time: 30, unit: 'MINUTES')
-            }
-            when {
-              expression { env.IMAGE_TYPE == 'ci' }
-            }
-            steps {
-              // NOTE: We delete any existing *-staging images before uploading the new one.
-              // This is important because the images cannot be separated from the older "latest" images
-              // if they are renamed to their "original" names (which they would be when the next image is uploaded).
-              script {
-                def imageName = readFile("image_name.txt").trim()
-                withCredentials([
+                        }
+                    }
+                    stage('Build disk image') {
+                        options {
+                            timeout(time: 1, unit: 'HOURS')
+                        }
+                        steps {
+                            echo "Building ${IMAGE_OS} ${IMAGE_TYPE} image"
+                            script {
+                                sh './jenkins/image_building/build-image.sh'
+                            }
+                        }
+                    }
+                    stage('Upload the new CI image with -staging suffix') {
+                        options {
+                            timeout(time: 30, unit: 'MINUTES')
+                        }
+                        when {
+                            expression { env.IMAGE_TYPE == 'ci' }
+                        }
+                        steps {
+                            // NOTE: We delete any existing *-staging images before uploading the new one.
+                            // This is important because the images cannot be separated from the older "latest" images
+                            // if they are renamed to their "original" names (which they would be when the next image is uploaded).
+                            script {
+                                def imageName = readFile('image_name.txt').trim()
+                                withCredentials([
                   usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
-                ]) {
-                  sh """#!/bin/bash
-                  source ./jenkins/image_building/upload-ci-image.sh
-                  install_openstack_client
-                  delete_if_exists "metal3-ci-${IMAGE_OS}-staging"
-                  upload_ci_image_xerces ${imageName} "metal3-ci-${IMAGE_OS}-staging"
-                  """
-                }
-              }
-            }
-          }
-          stage("Verify the new node image") {
-            options {
-              timeout(time: 3, unit: 'HOURS')
-            }
-            when {
-              expression { env.IMAGE_TYPE == 'node' }
-            }
-            steps {
-              echo "Testing new ${IMAGE_OS} node image"
-              script {
-                def imageName = readFile("image_name.txt").trim()
+                                ]) {
+                                    sh """#!/bin/bash
+                                    source ./jenkins/image_building/upload-ci-image.sh
+                                    install_openstack_client
+                                    delete_if_exists "metal3-ci-${IMAGE_OS}-staging"
+                                    upload_ci_image_xerces ${imageName} "metal3-ci-${IMAGE_OS}-staging"
+                                    """
+                                }
+                            }
+                        }
+                    }
+                    stage('Verify the new node image') {
+                        options {
+                            timeout(time: 3, unit: 'HOURS')
+                        }
+                        when {
+                            expression { env.IMAGE_TYPE == 'node' }
+                        }
+                        steps {
+                            echo "Testing new ${IMAGE_OS} node image"
+                            script {
+                                def imageName = readFile('image_name.txt').trim()
 
-                sh """
-                echo "Testing ${imageName}"
-                ./jenkins/image_building/verify-node-image.sh ${imageName}
-                """
-              }
-            }
-          }
-          stage("Verify the new CI image") {
-            agent { label "metal3ci-${IMAGE_OS}-staging" }
-            options {
-              timeout(time: 2, unit: 'HOURS')
-            }
-            when {
-              // IMPORTANT: We must evaluate the when block before the agent or we will get stuck
-              // since there is no stagig image available when IMAGE_TYPE is not "ci".
-              beforeAgent true
-              expression { env.IMAGE_TYPE == 'ci' }
-            }
-            steps {
-              echo "Testing new ${IMAGE_OS} CI image"
-              script {
-                sh """
-                ./jenkins/image_building/verify-ci-image.sh
-                """
-              }
-            }
-          }
-          stage("Upload the new Image") {
-            options {
-              timeout(time: 30, unit: 'MINUTES')
-            }
-            when {
-              // Don't upload from PR tests
-              expression { ci_git_branch == 'main' }
-            }
-            steps {
-              withCredentials([
-                usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
-                usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
-              ]) {
-                script {
-                  def imageName = readFile("image_name.txt").trim()
-                  echo "Uploading ${imageName}"
+                                sh """
+                                echo "Testing ${imageName}"
+                                ./jenkins/image_building/verify-node-image.sh ${imageName}
+                                """
+                            }
+                        }
+                    }
+                    stage('Verify the new CI image') {
+                        agent { label "metal3ci-${IMAGE_OS}-staging" }
+                        options {
+                            timeout(time: 2, unit: 'HOURS')
+                        }
+                        when {
+                            // IMPORTANT: We must evaluate the when block before the agent or we will get stuck
+                            // since there is no stagig image available when IMAGE_TYPE is not "ci".
+                            beforeAgent true
+                            expression { env.IMAGE_TYPE == 'ci' }
+                        }
+                        steps {
+                            echo "Testing new ${IMAGE_OS} CI image"
+                            script {
+                                sh './jenkins/image_building/verify-ci-image.sh'
+                            }
+                        }
+                    }
+                    stage('Upload the new Image') {
+                        options {
+                            timeout(time: 30, unit: 'MINUTES')
+                        }
+                        when {
+                            // Don't upload from PR tests
+                            expression { ci_git_branch == 'main' }
+                        }
+                        steps {
+                            withCredentials([
+                              usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
+                              usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
+                              ]) {
+                                script {
+                                    def imageName = readFile('image_name.txt').trim()
+                                    echo "Uploading ${imageName}"
 
-                  if (env.IMAGE_TYPE == 'node') {
-                    sh """
-                    ./jenkins/image_building/upload-node-image.sh ${imageName}
-                    """
-                  } else {
-                    // The CI image is already uploaded with a different name so we just need to rename it.
-                    // Also clean up old images (keeping the last 5)
-                    sh """#!/bin/bash
-                    source ./jenkins/image_building/upload-ci-image.sh
-                    install_openstack_client
-                    rename_image_common "metal3-ci-${IMAGE_OS}-staging"
-                    delete_old_images
-                    """
-                  }
+                                    if (env.IMAGE_TYPE == 'node') {
+                                        sh """
+                                        ./jenkins/image_building/upload-node-image.sh ${imageName}
+                                        """
+                                    } else {
+                                        // The CI image is already uploaded with a different name so we just need to rename it.
+                                        // Also clean up old images (keeping the last 5)
+                                        sh """#!/bin/bash
+                                        source ./jenkins/image_building/upload-ci-image.sh
+                                        install_openstack_client
+                                        rename_image_common "metal3-ci-${IMAGE_OS}-staging"
+                                        delete_old_images
+                                        """
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
     }
-  }
 }
