@@ -64,9 +64,11 @@ export DIB_DEV_USER_AUTHORIZED_KEYS="${current_dir}/authorized_keys"
 
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
   export DIB_RELEASE=noble
-  # Setting upstrem Ubuntu 24.04 image
-  export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/${DIB_RELEASE}/20250725"
   numeric_release=24.04
+  build_number=20251031
+  # Setting upstrem Ubuntu 24.04 image
+  export DIB_CLOUD_IMAGES="https://cloud-images.ubuntu.com/releases/${DIB_RELEASE}/release-${build_number}/"
+  export BASE_IMAGE_FILE="${IMAGE_OS}-${numeric_release}-server-cloudimg-amd64.squashfs"
 elif [[ "${IMAGE_OS}" == "centos" ]]; then
   numeric_release=10
   # Setting upstrem Centos 10 stream image
