@@ -2,7 +2,7 @@
 - hosts: localhost
   connection: local
   vars_files:
-    - default_vars/vars.yaml
+  - default_vars/vars.yaml
   tasks:
   - name: Cleanup Bare Metal Lab
     include_tasks: tasks/cleanup-tasks.yaml
