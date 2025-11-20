@@ -55,30 +55,30 @@ jobs:
 
   check-and-notify:
     name: Check vulnerabilities and notify
-    needs: [set-go-version, scan-scheduled]
+    needs: [ set-go-version, scan-scheduled ]
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
-        with:
-          name: SARIF file
-      - name: Check for vulnerabilities in SARIF
-        id: check
-        run: |
-          HAS_VULN=$(jq '[.runs[].results[]] | length > 0' results.sarif)
-          echo "has_vulnerabilities=$HAS_VULN" >> $GITHUB_OUTPUT
-      - name: Slack Notification on Vulnerability or Failure
-        if: ${{ steps.check.outputs.has_vulnerabilities == 'true' || contains(needs.*.result, 'failure') }}
-        uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # 2.3.3
-        env:
-          SLACK_TITLE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
-          SLACK_COLOR: "#FF0000"
-          SLACK_MESSAGE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: metal3-github-actions-notify
-          SLACK_USERNAME: metal3-github-actions-notify
-      - name: Fail if vulnerabilities found or previous job failed
-        if: ${{ steps.check.outputs.has_vulnerabilities == 'true' || contains(needs.*.result, 'failure') }}
-        run: |
-          echo "Vulnerabilities found or previous job failed"
-          exit 1
+    - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      with:
+        name: SARIF file
+    - name: Check for vulnerabilities in SARIF
+      id: check
+      run: |
+        HAS_VULN=$(jq '[.runs[].results[]] | length > 0' results.sarif)
+        echo "has_vulnerabilities=$HAS_VULN" >> $GITHUB_OUTPUT
+    - name: Slack Notification on Vulnerability or Failure
+      if: ${{ steps.check.outputs.has_vulnerabilities == 'true' || contains(needs.*.result, 'failure') }}
+      uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # 2.3.3
+      env:
+        SLACK_TITLE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
+        SLACK_COLOR: "#FF0000"
+        SLACK_MESSAGE: "OSV-Scanner failed or detected vulnerabilities in ${{ inputs.repository-name }}"
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: metal3-github-actions-notify
+        SLACK_USERNAME: metal3-github-actions-notify
+    - name: Fail if vulnerabilities found or previous job failed
+      if: ${{ steps.check.outputs.has_vulnerabilities == 'true' || contains(needs.*.result, 'failure') }}
+      run: |
+        echo "Vulnerabilities found or previous job failed"
+        exit 1

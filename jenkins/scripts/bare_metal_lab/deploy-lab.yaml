@@ -5,9 +5,9 @@
     DHCP_HOSTS: "{{ DHCP_HOSTS }}"
     DHCP_IGNORE: "{{ DHCP_IGNORE }}"
   vars_files:
-    - default_vars/vars.yaml
+  - default_vars/vars.yaml
   tasks:
   - name: Deploy Bare Metal Lab
     block:
-      - include_tasks: tasks/cleanup-tasks.yaml
-      - include_tasks: tasks/deploy-tasks.yaml
+    - include_tasks: tasks/cleanup-tasks.yaml
+    - include_tasks: tasks/deploy-tasks.yaml

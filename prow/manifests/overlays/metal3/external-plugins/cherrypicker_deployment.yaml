@@ -47,8 +47,8 @@ spec:
         - --github-endpoint=https://api.github.com
         - --dry-run=false
         ports:
-          - name: http
-            containerPort: 8888
+        - name: http
+          containerPort: 8888
         volumeMounts:
         - name: hmac
           mountPath: /etc/webhook

@@ -6,8 +6,8 @@
 - name: Install dependencies for metal3-dev-env and hpilo_boot
   apt:
     pkg:
-      - make
-      - python3-hpilo
+    - make
+    - python3-hpilo
   become: true
 
 - name: Add passwordless sudo
@@ -17,7 +17,7 @@
     create: true
     owner: root
     group: root
-    mode: 0400
+    mode: 400
   become: true
 
 # Note: This file is persistent, so even though we do this *after* sending the
@@ -58,14 +58,14 @@
     state: absent
     path: "{{ item }}"
   with_items:
-    - "{{ old_logs.files | map(attribute='path') }}"
-    - /home/{{ ansible_user_id }}/go
-    - /opt/metal3-dev-env
-    - /tmp/mariadb.csr
-    - /tmp/ironic.csr
-    - /tmp/manifests
-    - /tmp/target_cluster_logs
-    - "{{ serial_log_location }}"
+  - "{{ old_logs.files | map(attribute='path') }}"
+  - /home/{{ ansible_user_id }}/go
+  - /opt/metal3-dev-env
+  - /tmp/mariadb.csr
+  - /tmp/ironic.csr
+  - /tmp/manifests
+  - /tmp/target_cluster_logs
+  - "{{ serial_log_location }}"
 
 - name: Delete folder containing metal3-dev-env
   become: true
@@ -74,9 +74,9 @@
     state: absent
     path: "{{ item }}"
   with_items:
-    - /home/{{ ansible_user_id }}/tested_repo
-    - /home/{{ ansible_user_id }}/metal3
-    - /home/{{ ansible_user_id }}/metal3-dev-env
+  - /home/{{ ansible_user_id }}/tested_repo
+  - /home/{{ ansible_user_id }}/metal3
+  - /home/{{ ansible_user_id }}/metal3-dev-env
   tags: clone
 
 - name: Delete existing ssh connections to HPE CLI
@@ -107,14 +107,13 @@
   args:
     chdir: "/home/{{ ansible_user_id }}/{{ metal3_dir }}"
   loop:
-    - git config user.email "test@test.test"
-    - git config user.name "Test"
-    - git remote add test {{ metal3_dev_env_repo }}
-    - git fetch test
-    - git fetch origin pull/{{ pr_id }}/head:{{ metal3_dev_env_branch }}-branch
-    - git merge {{ metal3_dev_env_branch }}
-  when: ((metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or
-        (metal3_dev_env_branch != "main"))
+  - git config user.email "test@test.test"
+  - git config user.name "Test"
+  - git remote add test {{ metal3_dev_env_repo }}
+  - git fetch test
+  - git fetch origin pull/{{ pr_id }}/head:{{ metal3_dev_env_branch }}-branch
+  - git merge {{ metal3_dev_env_branch }}
+  when: ((metal3_dev_env_repo != "https://github.com/metal3-io/metal3-dev-env.git") or (metal3_dev_env_branch != "main"))
   tags: clone
 
 - name: Clean any existing setup
@@ -128,11 +127,11 @@
 - name: Prune docker containers, images and volumes
   ansible.builtin.command: "{{ item }}"
   loop:
-    - docker container prune --force
-    # Note: Without --all it just removes images that are not tagged
-    - docker image prune --force --all
-    - docker volume prune --force
-    - docker system prune --force --all
+  - docker container prune --force
+  # Note: Without --all it just removes images that are not tagged
+  - docker image prune --force --all
+  - docker volume prune --force
+  - docker system prune --force --all
 
 - name: Reset network
   script: reset_network.sh

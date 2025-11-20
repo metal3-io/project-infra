@@ -5,43 +5,43 @@ bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
 bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
 github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
 # If REPO_NAME == metal3-dev-env clone to tested_repo otherwise clone to metal3
-metal3_dir : "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
+metal3_dir: "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
 metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
 metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
 pr_id: "{{ lookup('env', 'PR_ID') }}"
 serial_log_location: "/tmp/BMLlog"
 bare_metal_hosts:
-  - id: "03"
-    mac: b4:b5:2f:6d:89:d8
-    ip: "192.168.1.24"
-    rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:1"
-  # - id: "04"
-  #   mac: 80:c1:6e:7a:e8:10
-  #   ip: "192.168.1.13"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  - id: "05"
-    mac: 80:c1:6e:7a:5a:a8
-    ip: "192.168.1.14"
-    rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  # - id: "06"
-  #   mac: b4:b5:2f:6d:68:10
-  #   ip: "192.168.1.15"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  # - id: "07"
-  #   mac: b4:b5:2f:6d:a9:d8
-  #   ip: "192.168.1.16"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  # - id: "14"
-  #   mac: 6c:3b:e5:b5:03:c8
-  #   ip: "192.168.1.32"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  # - id: "15"
-  #   mac: 10:60:4b:b4:be:00
-  #   ip: "192.168.1.37"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-  # - id: "16"
-  #   mac: b4:b5:2f:6f:01:40
-  #   ip: "192.168.1.33"
-  #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+- id: "03"
+  mac: b4:b5:2f:6d:89:d8
+  ip: "192.168.1.24"
+  rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:1"
+# - id: "04"
+#   mac: 80:c1:6e:7a:e8:10
+#   ip: "192.168.1.13"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+- id: "05"
+  mac: 80:c1:6e:7a:5a:a8
+  ip: "192.168.1.14"
+  rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+# - id: "06"
+#   mac: b4:b5:2f:6d:68:10
+#   ip: "192.168.1.15"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+# - id: "07"
+#   mac: b4:b5:2f:6d:a9:d8
+#   ip: "192.168.1.16"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+# - id: "14"
+#   mac: 6c:3b:e5:b5:03:c8
+#   ip: "192.168.1.32"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+# - id: "15"
+#   mac: 10:60:4b:b4:be:00
+#   ip: "192.168.1.37"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
+# - id: "16"
+#   mac: b4:b5:2f:6f:01:40
+#   ip: "192.168.1.33"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 DHCP_HOSTS: "{{ bare_metal_hosts | map(attribute='mac') | join(';') }}"
 DHCP_IGNORE: "tag:!known"
