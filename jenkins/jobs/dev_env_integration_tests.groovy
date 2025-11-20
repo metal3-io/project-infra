@@ -1,106 +1,104 @@
-import java.text.SimpleDateFormat
-
-// 3 hours
-def TIMEOUT = 10800
+// Global variables
+def TIMEOUT = 1800, ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
+def UPDATED_REPO, BUILD_TAG, CURRENT_START_TIME, CURRENT_END_TIME
 
 script {
-  UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-  echo "Test triggered from ${UPDATED_REPO}"
-  ci_git_url = "https://github.com/metal3-io/project-infra.git"
+    UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
+    echo "Test triggered from ${UPDATED_REPO}"
+    ci_git_url = 'https://github.com/metal3-io/project-infra.git'
 
-  if ("${env.REPO_OWNER}" == "metal3-io" && "${env.REPO_NAME}" == "project-infra") {
-    ci_git_branch = (env.PULL_PULL_SHA) ?: "main"
-    ci_git_base = (env.PULL_BASE_REF) ?: "main"
-    // Fetch the base branch and the ci_git_branch when running on project-infra PR
-    refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+    if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
+        ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
+        ci_git_base = (env.PULL_BASE_REF) ?: 'main'
+        // Fetch the base branch and the ci_git_branch when running on project-infra PR
+        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
   } else {
-    ci_git_branch = "main"
-    refspec = '+refs/heads/*:refs/remotes/origin/*'
-  }
-  agent_label="metal3ci-8c16gb-${IMAGE_OS}"
+        ci_git_branch = 'main'
+        refspec = '+refs/heads/*:refs/remotes/origin/*'
+    }
+    agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
 }
 
 pipeline {
-  agent { label agent_label }
-  environment {
-    REPO_ORG = "${env.REPO_OWNER}"
-    REPO_NAME = "${env.REPO_NAME}"
-    REPO_BRANCH = "${env.PULL_BASE_REF}"
-    UPDATED_REPO = "${UPDATED_REPO}"
-    UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
-    BUILD_TAG = "${env.BUILD_TAG}"
-    PR_ID = "${env.PULL_NUMBER}"
-    IMAGE_OS = "${params.IMAGE_OS}"
-    CAPI_VERSION = "${params.CAPI_VERSION}"
-    CAPM3_VERSION = "${params.CAPM3_VERSION}"
-    CAPM3RELEASEBRANCH = "${params.capm3_release_branch}"
-    BMORELEASEBRANCH = "${params.bmo_release_branch}"
-    TARGET_NODE_MEMORY = "${params.TARGET_NODE_MEMORY}"
-    NUM_NODES = 2
-    IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
-    IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
-    BUILD_MARIADB_IMAGE_LOCALLY = "${params.BUILD_MARIADB_IMAGE_LOCALLY}"
-    USE_IRSO = "${params.USE_IRSO}"
-    CNI_NAME = "${params.CNI_NAME}"
-  }
-
-  stages {
-    stage('Run integration test') {
-      options {
-        timeout(time: TIMEOUT, unit: 'SECONDS')
-      }
-      environment {
-        BUILD_TAG = "${env.BUILD_TAG}-integration"
-      }
-      steps {
-        script {
-          CURRENT_START_TIME = System.currentTimeMillis()
-        }
-        /* Checkout CI Repo */
-        checkout([$class: 'GitSCM',
-        branches: [
-          [name: ci_git_branch]
-        ],
-        doGenerateSubmoduleConfigurations: false,
-        extensions: [
-          [$class: 'WipeWorkspace'],
-          [$class: 'CleanCheckout'],
-          [$class: 'CleanBeforeCheckout']
-        ],
-        submoduleCfg: [],
-        userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
-        ])
-
-       withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
-          ansiColor('xterm') {
-            timestamps {
-              sh "./jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh"
-            }
-          }
-        }
-      }
-      post {
-        always {
-          script {
-            CURRENT_END_TIME = System.currentTimeMillis()
-            if ((((CURRENT_END_TIME - CURRENT_START_TIME)/1000) - TIMEOUT) > 0) {
-              echo "Failed due to timeout"
-              currentBuild.result = 'FAILURE'
-            }
-            timestamps {
-              sh "./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh"
-              archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-            }
-          }
-        }
-        cleanup {
-          script {
-            timestamps {
-              sh "./jenkins/scripts/dynamic_worker_workflow/run_clean.sh"
-            }
-          }
-        }
-      }
+    agent { label agent_label }
+    environment {
+        REPO_ORG = "${env.REPO_OWNER}"
+        REPO_NAME = "${env.REPO_NAME}"
+        REPO_BRANCH = "${env.PULL_BASE_REF}"
+        UPDATED_REPO = "${UPDATED_REPO}"
+        UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
+        BUILD_TAG = "${env.BUILD_TAG}"
+        PR_ID = "${env.PULL_NUMBER}"
+        IMAGE_OS = "${params.IMAGE_OS}"
+        CAPI_VERSION = "${params.CAPI_VERSION}"
+        CAPM3_VERSION = "${params.CAPM3_VERSION}"
+        CAPM3RELEASEBRANCH = "${params.capm3_release_branch}"
+        BMORELEASEBRANCH = "${params.bmo_release_branch}"
+        TARGET_NODE_MEMORY = "${params.TARGET_NODE_MEMORY}"
+        NUM_NODES = 2
+        IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
+        IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
+        BUILD_MARIADB_IMAGE_LOCALLY = "${params.BUILD_MARIADB_IMAGE_LOCALLY}"
+        USE_IRSO = "${params.USE_IRSO}"
+        CNI_NAME = "${params.CNI_NAME}"
     }
-  }
+
+    stages {
+        stage('Run integration test') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            environment {
+                BUILD_TAG = "${env.BUILD_TAG}-integration"
+            }
+            steps {
+                script {
+                    CURRENT_START_TIME = System.currentTimeMillis()
+                }
+                /* Checkout CI Repo */
+                checkout([$class: 'GitSCM',
+                  branches: [
+                    [name: ci_git_branch]
+                  ],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [
+                    [$class: 'WipeWorkspace'],
+                    [$class: 'CleanCheckout'],
+                    [$class: 'CleanBeforeCheckout']
+                  ],
+                  submoduleCfg: [],
+                  userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
+                ])
+                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    ansiColor('xterm') {
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        CURRENT_END_TIME = System.currentTimeMillis()
+                        if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
+                            echo 'Failed due to timeout'
+                            currentBuild.result = 'FAILURE'
+                        }
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
+                            archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                        }
+                    }
+                }
+                cleanup {
+                    script {
+                        timestamps {
+                            sh './jenkins/scripts/dynamic_worker_workflow/run_clean.sh'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
