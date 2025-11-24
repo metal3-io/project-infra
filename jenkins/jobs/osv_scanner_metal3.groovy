@@ -87,10 +87,10 @@ pipeline {
                       returnStdout: true
                     ).trim().split('\\n').findAll { it }
 
-                    echo "CAPM3_BRANCHES=${CAPM3_BRANCHES}"
-                    echo "BMO_BRANCHES=${BMO_BRANCHES}"
-                    echo "IPAM_BRANCHES=${IPAM_BRANCHES}"
-                    echo "IRSO_BRANCHES=${IRSO_BRANCHES}"
+                    echo "CAPM3_BRANCHES=main ${CAPM3_BRANCHES}"
+                    echo "BMO_BRANCHES=main ${BMO_BRANCHES}"
+                    echo "IPAM_BRANCHES=main ${IPAM_BRANCHES}"
+                    echo "IRSO_BRANCHES=main ${IRSO_BRANCHES}"
 
                     if (!CAPM3_BRANCHES || !BMO_BRANCHES || !IPAM_BRANCHES || !IRSO_BRANCHES) {
                         error 'Failed to resolve one or more branch sets.'
