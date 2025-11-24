@@ -7,32 +7,32 @@ script {
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
 }
 
-array CAPM3_BRANCHES = []
-array BMO_BRANCHES   = []
-array IPAM_BRANCHES  = []
-array IRSO_BRANCHES  = []
+def CAPM3_BRANCHES = []
+def BMO_BRANCHES   = []
+def IPAM_BRANCHES  = []
+def IRSO_BRANCHES  = []
 
-array CAPM3_TAGS = []
-array BMO_TAGS   = []
-array IPAM_TAGS  = []
-array IRSO_TAGS  = []
+def CAPM3_TAGS = []
+def BMO_TAGS   = []
+def IPAM_TAGS  = []
+def IRSO_TAGS  = []
 
-string METAL3_GITHUB_BASE = 'https://github.com/metal3-io/'
-string METAL3_GOPROXY_BASE = 'https://proxy.golang.org/github.com/metal3-io/'
+def METAL3_GITHUB_BASE = 'https://github.com/metal3-io'
+def METAL3_GOPROXY_BASE = 'https://proxy.golang.org/github.com/metal3-io'
 
-string CAPM3_GOPROXY = "${METAL3_GOPROXY_BASE}cluster-api-provider-metal3"
-string BMO_GOPROXY   = "${METAL3_GOPROXY_BASE}baremetal-operator"
-string IPAM_GOPROXY  = "${METAL3_GOPROXY_BASE}ip-address-manager"
-string IRSO_GOPROXY  = "${METAL3_GOPROXY_BASE}ironic-standalone-operator"
+def CAPM3_GOPROXY = "${METAL3_GOPROXY_BASE}/cluster-api-provider-metal3"
+def BMO_GOPROXY   = "${METAL3_GOPROXY_BASE}/baremetal-operator"
+def IPAM_GOPROXY  = "${METAL3_GOPROXY_BASE}/ip-address-manager"
+def IRSO_GOPROXY  = "${METAL3_GOPROXY_BASE}/ironic-standalone-operator"
 
-string CAPM3_GIT_URL = "${METAL3_GITHUB_BASE}cluster-api-provider-metal3.git"
-string BMO_GIT_URL   = "${METAL3_GITHUB_BASE}baremetal-operator.git"
-string IPAM_GIT_URL  = "${METAL3_GITHUB_BASE}ip-address-manager.git"
-string IRSO_GIT_URL  = "${METAL3_GITHUB_BASE}ironic-standalone-operator.git"
+def CAPM3_GIT_URL = "${METAL3_GITHUB_BASE}/cluster-api-provider-metal3.git"
+def BMO_GIT_URL   = "${METAL3_GITHUB_BASE}/baremetal-operator.git"
+def IPAM_GIT_URL  = "${METAL3_GITHUB_BASE}/ip-address-manager.git"
+def IRSO_GIT_URL  = "${METAL3_GITHUB_BASE}/ironic-standalone-operator.git"
 
-string DEFAULT_SCAN_ARGS = '--recursive'
-string GO_VERSION = ''
-string OSV_SCANNER_COMMIT = '8b6727b2c439cdea8bc3a033bf7c76d76cbaee08'  // v2.2.4
+def DEFAULT_SCAN_ARGS = '--recursive'
+def GO_VERSION = ''
+def OSV_SCANNER_COMMIT = '8b6727b2c439cdea8bc3a033bf7c76d76cbaee08'  // v2.2.4
 
 script { agent_label = 'metal3ci-8c32gb-ubuntu' }
 
@@ -87,6 +87,11 @@ pipeline {
                       returnStdout: true
                     ).trim().split('\\n').findAll { it }
 
+                    CAPM3_BRANCHES.add('main')
+                    BMO_BRANCHES.add('main')
+                    IPAM_BRANCHES.add('main')
+                    IRSO_BRANCHES.add('main')
+
                     echo "CAPM3_BRANCHES=${CAPM3_BRANCHES}"
                     echo "BMO_BRANCHES=${BMO_BRANCHES}"
                     echo "IPAM_BRANCHES=${IPAM_BRANCHES}"
@@ -102,13 +107,20 @@ pipeline {
             steps {
                 script {
                     sh 'chmod +x jenkins/scripts/get_latest_tag.sh || true'
-                    CAPM3_TAGS = CAPM3_BRANCHES.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${CAPM3_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
 
-                    BMO_TAGS = BMO_BRANCHES.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${BMO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    // exclude main branch from tag resolution
+                    def capm3ReleaseBranches = CAPM3_BRANCHES.findAll { it != 'main' }
+                    def bmoReleaseBranches = BMO_BRANCHES.findAll { it != 'main' }
+                    def ipamReleaseBranches = IPAM_BRANCHES.findAll { it != 'main' }
+                    def irsoReleaseBranches = IRSO_BRANCHES.findAll { it != 'main' }
 
-                    IPAM_TAGS = IPAM_BRANCHES.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IPAM_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    CAPM3_TAGS = capm3ReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${CAPM3_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
 
-                    IRSO_TAGS = IRSO_BRANCHES.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IRSO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    BMO_TAGS = bmoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${BMO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+
+                    IPAM_TAGS = ipamReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IPAM_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+
+                    IRSO_TAGS = irsoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IRSO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
 
                     echo "CAPM3_TAGS=${CAPM3_TAGS}"
                     echo "BMO_TAGS=${BMO_TAGS}"
@@ -204,21 +216,28 @@ pipeline {
                         entry.branches.each { br ->
                             def label = "${entry.name}-branch-${br}"
                             tasks[label] = {
-                                def workDir = "work-${entry.name}-branch-${br}"
-                                sh "git clone --depth 1 --branch ${br} ${entry.url} ${workDir}"
-                                dir(workDir) {
-                                    def go_version = ''
-                                    try {
-                                        go_version = sh(script: 'make go-version', returnStdout: true).trim()
-                                } catch (err) {
-                                        echo "make go-version failed: ${err}"
+                                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                    def workDir = "work-${entry.name}-branch-${br}"
+                                    sh "git clone --depth 1 --branch ${br} ${entry.url} ${workDir}"
+                                    dir(workDir) {
+                                        def go_version = ''
+                                        try {
+                                            go_version = sh(script: 'make go-version', returnStdout: true).trim()
+                                        } catch (err) {
+                                            echo "make go-version failed: ${err}"
+                                        }
+                                        if (!go_version) {
+                                            go_version = GO_VERSION
+                                        }
+                                        sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
+                                        def outFile = "${WORKSPACE}/results/${entry.name}_branch_${br}.txt"
+                                        def ec = sh(script: "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} .", returnStatus: true)
+                                        if (ec != 0) {
+                                            echo "Scan failed (exit ${ec}) for ${label}"
+                                            sh "echo '${label}' >> ${WORKSPACE}/results/branch_scan_failures.txt"
+                                            error("Marking ${label} failed")
+                                        }
                                     }
-                                    if (!go_version) {
-                                        go_version = GO_VERSION
-                                    }
-                                    sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
-                                    def outFile = "${WORKSPACE}/results/${entry.name}_branch_${br}.txt"
-                                    sh "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} ."
                                 }
                             }
                         }
@@ -243,28 +262,52 @@ pipeline {
                         entry.tags.each { tg ->
                             def label = "${entry.name}-tag-${tg}".replace('/', '_')
                             tasks[label] = {
-                                def workDir = "work-${entry.name}-tag-${tg}"
-                                sh "git clone ${entry.url} ${workDir}"
-                                dir(workDir) {
-                                    sh 'git fetch --tags --quiet || true'
-                                    sh "git checkout ${tg}"
-                                    def go_version = ''
-                                    try {
-                                        go_version = sh(script: 'make go-version', returnStdout: true).trim()
-                                } catch (err) {
-                                        echo "make go-version failed: ${err}"
-                                    }
-                                    if (!go_version) {
-                                        go_version = GO_VERSION
-                                    }
-                                    sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
-                                    def outFile = "${WORKSPACE}/results/${entry.name}_tag_${tg}.txt"
-                                    sh "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} ."
+                                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                    def workDir = "work-${entry.name}-tag-${tg}"
+                                    sh "git clone ${entry.url} ${workDir}"
+                                    dir(workDir) {
+                                        sh 'git fetch --tags --quiet || true'
+                                        sh "git checkout ${tg}"
+                                        def go_version = ''
+                                        try {
+                                            go_version = sh(script: 'make go-version', returnStdout: true).trim()
+                                        } catch (err) {
+                                            echo "make go-version failed: ${err}"
+                                        }
+                                        if (!go_version) {
+                                            go_version = GO_VERSION
+                                        }
+                                        sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
+                                        def outFile = "${WORKSPACE}/results/${entry.name}_tag_${tg}.txt"
+                                        def ec = sh(script: "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} .", returnStatus: true)
+                                        if (ec != 0) {
+                                            echo "Scan failed (exit ${ec}) for ${label}"
+                                            sh "echo '${label}' >> ${WORKSPACE}/results/tag_scan_failures.txt"
+                                            error("Marking ${label} failed")
+                                        }
                                 }
+                            }
                             }
                         }
                     }
                     parallel tasks
+                }
+            }
+        }
+        stage('Evaluate Scan Results') {
+            steps {
+                script {
+                    if (fileExists('results/branch_scan_failures.txt')) {
+                        echo 'One or more scans failed:'
+                        sh 'cat results/branch_scan_failures.txt'
+                        currentBuild.result = 'FAILURE'  // make whole build red
+                    } else if (fileExists('results/tag_scan_failures.txt')) {
+                        echo 'One or more scans failed:'
+                        sh 'cat results/tag_scan_failures.txt'
+                        currentBuild.result = 'UNSTABLE'  // make whole build yellow
+                    } else {
+                        echo 'All scans succeeded.'
+                    }
                 }
             }
         }
