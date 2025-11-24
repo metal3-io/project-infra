@@ -606,8 +606,8 @@ spec:
   apiServerLoadBalancer:
     enabled: true
     allowedCIDRs:
-      - 10.6.0.0/24
-      - <your-ip-here>/32
+    - 10.6.0.0/24
+    - <your-ip-here>/32
 ```
 
 Apply the changes and try accessing the API directly to make sure it is working:

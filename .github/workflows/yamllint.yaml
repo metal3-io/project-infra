@@ -3,6 +3,12 @@ name: yamllint
 on:
   pull_request:
     types: [ opened, edited, synchronize, reopened ]
+  workflow_call:
+    inputs:
+      ref:
+        required: false
+        description: "Git reference of the workflow's trigger"
+        type: string
 
 permissions:
   contents: read
@@ -11,9 +17,52 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: Install yamllint
+      run: sudo apt-get update && sudo apt-get install -y yamllint
+
     - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+    - name: Extract YAML snippets from md files
+      run: |
+        set -euo pipefail
+        mkdir -p .yaml-snippet
+
+        # Process each md file
+        while IFS= read -r md_file; do
+          echo "Processing: ${md_file}"
+
+          # Get safe filename based on full path
+          safe_name=$(echo "${md_file}" | sed 's/[\/\.]/_/g')
+
+          # Extract YAML code blocks and save each one
+          awk -v base="${safe_name}" '
+            BEGIN { count=0 }
+            /^```(yaml|yml)/ { in_block=1; next }
+            /^```/ && in_block {
+              if (block != "") {
+                count++
+                file = sprintf(".yaml-snippet/%s_snippet_%03d.yaml", base, count)
+                print block > file
+                close(file)
+                block = ""
+              }
+              in_block=0
+              next
+            }
+            in_block { block = (block == "" ? $0 : block "\n" $0) }
+          ' "${md_file}"
+        done < <(find . -name "*.md" -not -path "./.git/*")
+
+        echo "Extracted $(ls -1 .yaml-snippet/*.yaml 2>/dev/null | wc -l) YAML snippet(s)"
 
     - name: yaml-lint
       uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c # v3.1.1
       with:
         config_file: .yamllint.yaml
+
+    - name: yaml-lint for md snippets
+      uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c # v3.1.1
+      with:
+        config_file: .yamllint.yaml
+        file_or_dir: .yaml-snippet/
+        strict: true
