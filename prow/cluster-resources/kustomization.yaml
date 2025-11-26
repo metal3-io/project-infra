@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- https://raw.githubusercontent.com/projectcalico/calico/v3.30.1/manifests/calico.yaml
 # Check available versions at https://github.com/kubernetes/cloud-provider-openstack/releases
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.33.1/manifests/controller-manager/cloud-controller-manager-roles.yaml
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.33.1/manifests/controller-manager/cloud-controller-manager-role-bindings.yaml
@@ -13,21 +12,12 @@ resources:
 - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.33.1/manifests/cinder-csi-plugin/csi-cinder-driver.yaml
 - autoscaler.yaml
 - coredns-pdb.yaml
+- externalsecret.yaml
 
 images:
 # Check available tags at https://github.com/kubernetes/autoscaler/tags
 - name: registry.k8s.io/autoscaling/cluster-autoscaler
   newTag: v1.33.1
-
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- files:
-  - cloud.conf
-  name: cloud-config
-  namespace: kube-system
-  type: Opaque
 
 patches:
 # CSI Cinder does not set any toleration or nodeSelector so we have to first create
@@ -47,3 +37,13 @@ patches:
   target:
     kind: Deployment
     name: csi-cinder-controllerplugin|calico-kube-controllers
+
+## If there is ever a need to deploy without ESO, the following can be used to create the secret directly.
+# generatorOptions:
+#   disableNameSuffixHash: true
+# secretGenerator:
+# - files:
+#   - cloud.conf
+#   name: cloud-config
+#   namespace: kube-system
+#   type: Opaque
