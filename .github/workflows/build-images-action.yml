@@ -10,13 +10,13 @@ on:
     - '.github/workflows/build-images-action.yml'
     - '.github/workflows/container-image-build.yml'
 
-permissions:
-  contents: read
-
 jobs:
   build_basic_checks:
     name: Build basic-checks image
     if: github.repository == 'metal3-io/project-infra'
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/container-image-build.yml
     with:
       image-name: 'basic-checks'
