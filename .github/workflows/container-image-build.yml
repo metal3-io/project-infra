@@ -46,6 +46,11 @@ on:
         description: "Name of an artifact to be downloaded. Setting this will set the downloaded artifact direcory as image building base."
         type: string
         default: ""
+      generate-sbom:
+        required: false
+        description: "Generate SBOM for the container image"
+        type: boolean
+        default: false
     secrets:
       QUAY_USERNAME:
         required: true
@@ -53,6 +58,13 @@ on:
         required: true
       SLACK_WEBHOOK:
         required: true
+    outputs:
+      image-digest:
+        description: "The digest of the built image"
+        value: ${{ jobs.job.outputs.digest }}
+      sbom-artifact:
+        description: "Name of the uploaded SBOM artifact (if generated)"
+        value: ${{ jobs.job.outputs.sbom-artifact }}
 
 jobs:
   job:
@@ -61,6 +73,11 @@ jobs:
 
     permissions:
       contents: read
+      id-token: write  # Required for Sigstore keyless attestation
+
+    outputs:
+      digest: ${{ steps.get-digest.outputs.digest }}
+      sbom-artifact: ${{ inputs.generate-sbom && inputs.pushImage && format('{0}-sbom', inputs.image-name) || '' }}
 
     steps:
     - name: Set GITHUB_REF and GITHUB_REFNAME to the inputs' ref, or default to github's ref
@@ -131,6 +148,59 @@ jobs:
         pushImage: ${{ inputs.pushImage }}
         multiPlatform: ${{ inputs.multiPlatform }}
         platform: ${{ inputs.platform }}
+
+    - name: Get image digest
+      id: get-digest
+      if: ${{ inputs.pushImage }}
+      run: |
+        FIRST_TAG=$(echo "${{ env.IMAGE_TAGS }}" | cut -d',' -f1 | tr -d ' ')
+        DIGEST=$(docker buildx imagetools inspect "quay.io/metal3-io/${{ inputs.image-name }}:${FIRST_TAG}" --format "{{json .Manifest.Digest}}" | tr -d '"')
+        echo "digest=${DIGEST}" >> "${GITHUB_OUTPUT}"
+        echo "IMAGE_REF=quay.io/metal3-io/${{ inputs.image-name }}@${DIGEST}" >> "${GITHUB_ENV}"
+        echo "Image digest: ${DIGEST}"
+
+    # === SBOM Generation (when enabled) ===
+    - name: Set up Go
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+      with:
+        go-version: '1.24'
+
+    - name: Install bom tool
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      run: go install sigs.k8s.io/bom/cmd/bom@1ab6284ac5e118267414f2ac3874bb08a701e9ad # v0.7.1
+
+    - name: Generate Image SBOM
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      run: |
+        bom generate \
+          -i "${IMAGE_REF}" \
+          --output ${{ inputs.image-name }}-sbom.spdx.json \
+          --format json \
+          --name "${{ inputs.image-name }}-${{ env.IMAGE_VERSION }}"
+        echo "Image SBOM generated for ${IMAGE_REF}"
+        echo "Package count: $(jq '.packages | length' ${{ inputs.image-name }}-sbom.spdx.json)"
+
+    - name: Install Cosign
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+
+    - name: Attest SBOM to image
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      run: |
+        cosign attest --yes \
+          --predicate ${{ inputs.image-name }}-sbom.spdx.json \
+          --type spdxjson \
+          "${IMAGE_REF}"
+        echo "SBOM attestation attached to: ${IMAGE_REF}"
+
+    - name: Upload SBOM artifact
+      id: upload-sbom
+      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      with:
+        name: ${{ inputs.image-name }}-sbom
+        path: ${{ inputs.image-name }}-sbom.spdx.json
 
     - name: Slack Notification on Failure
       if: ${{ failure() }}

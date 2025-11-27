@@ -23,6 +23,7 @@ jobs:
       image-tag: 'golang-1.24'
       dockerfile-directory: 'prow/container-images/basic-checks'
       pushImage: true
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
