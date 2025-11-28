@@ -9,22 +9,22 @@ resources:
 - openstackmachinetemplates.yaml
 - infra-kct.yaml
 - infra-md.yaml
+- externalsecret.yaml
 
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- files:
-  - clouds.yaml
-  name: prow-cloud-config
-  type: Opaque
-
-# Add label for moving the prow-cloud-config secret with clusterctl move.
-patches:
-- patch: |-
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: prow-cloud-config
-      labels:
-        clusterctl.cluster.x-k8s.io/move: "true"
+## If there is ever a need to deploy without ESO, the following can be used to create the secret directly.
+# generatorOptions:
+#   disableNameSuffixHash: true
+# secretGenerator:
+# - files:
+#   - clouds.yaml
+#   name: prow-cloud-config
+#   type: Opaque
+# # Add label for moving the prow-cloud-config secret with clusterctl move.
+# patches:
+# - patch: |-
+#     apiVersion: v1
+#     kind: Secret
+#     metadata:
+#       name: prow-cloud-config
+#       labels:
+#         clusterctl.cluster.x-k8s.io/move: "true"

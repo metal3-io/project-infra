@@ -13,50 +13,8 @@ resources:
 - external-plugins/jenkins-operator.yaml
 - pdb.yaml
 - limitrange.yaml
-
-
-# For some of the secrets we could use suffix hash,
-# but some will be used directly by prow, which cannot know about
-# the suffix. So we disable it.
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- files:
-  - token=github-token
-  name: github-token
-  namespace: prow
-  type: Opaque
-- files:
-  - token=github-token
-  name: github-token
-  namespace: test-pods
-  type: Opaque
-- files:
-  - hmac=hmac-token
-  name: hmac-token
-  namespace: prow
-  type: Opaque
-- files:
-  - service-account.json
-  name: s3-credentials
-  namespace: prow
-  type: Opaque
-- files:
-  - service-account.json
-  name: s3-credentials
-  namespace: test-pods
-  type: Opaque
-- files:
-  - token=cherrypick-bot-github-token
-  name: cherrypick-bot-github-token
-  namespace: prow
-  type: Opaque
-- files:
-  - token=jenkins-token
-  name: jenkins-token
-  namespace: prow
-  type: Opaque
+- prow-externalsecrets.yaml
+- test-pods-externalsecrets.yaml
 
 patches:
 - path: patches/crier.yaml
@@ -81,3 +39,43 @@ labels:
   pairs:
     app.kubernetes.io/instance: metal3
     app.kubernetes.io/part-of: prow
+
+## If there is ever a need to deploy without ESO, the following can be used to create the secrets directly.
+# generatorOptions:
+#   disableNameSuffixHash: true
+# secretGenerator:
+# - files:
+#   - token=github-token
+#   name: github-token
+#   namespace: prow
+#   type: Opaque
+# - files:
+#   - token=github-token
+#   name: github-token
+#   namespace: test-pods
+#   type: Opaque
+# - files:
+#   - hmac=hmac-token
+#   name: hmac-token
+#   namespace: prow
+#   type: Opaque
+# - files:
+#   - service-account.json
+#   name: s3-credentials
+#   namespace: prow
+#   type: Opaque
+# - files:
+#   - service-account.json
+#   name: s3-credentials
+#   namespace: test-pods
+#   type: Opaque
+# - files:
+#   - token=cherrypick-bot-github-token
+#   name: cherrypick-bot-github-token
+#   namespace: prow
+#   type: Opaque
+# - files:
+#   - token=jenkins-token
+#   name: jenkins-token
+#   namespace: prow
+#   type: Opaque

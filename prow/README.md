@@ -75,18 +75,16 @@ You will need the following CLI tools in order to deploy and/or manage Prow:
 
 ### Folders and components
 
-There are five folders with kustomizations (`capi`, `capo-cluster`,
-`cluster-resources`, `infra` and `manifests`). The `capi` folder contains a
-kustomization for cert-manager, the cluster API operator as well as the provider
-components we use. The `capo-cluster` folder contains everything needed for
-creating the Kubernetes cluster itself. In `cluster-resources`, you will find
-things the cluster needs to integrate with the cloud, i.e. the external
-cloud-provider for OpenStack and CSI plugin for Cinder. It also has the CNI
-(Calico), since that is needed to get a healthy cluster and the cluster
-autoscaler. The `infra` folder contains "optional" add-ons and configuration
-e.g. an ingress controller, a ClusterIssuer for getting Let's Encrypt
-certificates and a LoadBalancer Service for ingress and a StorageClass for
-Cinder volumes.
+There are multiple folders with kustomizations:
+
+- `bootstrap`: CNI, External Secrets Operator and (Cluster)SecretStores.
+- `capi`: Cluster API operator, cert-manager and CAPI/CAPO.
+- `capo-cluster`: Configuration for the Kubernetes cluster where Prow runs.
+- `cluster-resources`: Cloud provider for OpenStack, Cinder CSI and
+  cluster-autoscaler.
+- `infra`: Configuration and add-ons: ingress controller, ClusterIssuer,
+  StorageClass, etc.
+- `manifests`: Prow deployment manifests.
 
 The deployment manifests for Prow (`manifests`) are based on the
 [getting started guide](https://docs.prow.k8s.io/docs/getting-started-deploy/)
@@ -147,6 +145,10 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 ```
 
 ## Create credentials
+
+1. Create a 1Password service account with access to the vault we use
+   (Prow_GitOps). You can follow the instructions
+   [here](https://developer.1password.com/docs/sdks/#get-started).
 
 1. Create application credentials for use by the OpenStack cloud provider.
 
@@ -247,13 +249,15 @@ Then you will be able to just copy and paste the snippets below.
 - `CHERRYPICK_TOKEN`
 - `JENKINS_TOKEN`
 
-Now you are ready to create the files.
+Now you are ready to create the files. Save them as file attachments in
+1password so that they can be synced into the cluster by External Secrets
+Operator.
 
 1. Create `clouds.yaml` secret used by the CAPO controllers to manage the
    infrastructure.
 
    ```bash
-   cat > capo-cluster/clouds.yaml <<EOF
+   cat > clouds.yaml <<EOF
    clouds:
       prow:
          auth:
@@ -271,7 +275,7 @@ Now you are ready to create the files.
 1. Create `cloud.conf` secret for the cloud provider integration.
 
    ```bash
-   cat > cluster-resources/cloud.conf <<EOF
+   cat > cloud.conf <<EOF
    [Global]
    auth-url=https://xerces.ericsson.net:5000
    application-credential-id=${APP_CRED_ID}
@@ -282,13 +286,11 @@ Now you are ready to create the files.
    EOF
    ```
 
-1. Get the kubeconfig and save it as `capo-cluster/kubeconfig.yaml`.
-
 1. Create S3 credentials secret.
 
    ```bash
    # Create service-account.json
-   cat > manifests/overlays/metal3/service-account.json <<EOF
+   cat > service-account.json <<EOF
    {
       "region": "RegionOne",
       "access_key": "${S3_ACCESS_KEY}",
@@ -310,31 +312,6 @@ Now you are ready to create the files.
    # Set S3 Endpoint xerces.ericsson.net:7480
    # Set DNS-style bucket+hostname:port template to the same xerces.ericsson.net:7480
    # Default values for the rest. And save settings.
-   ```
-
-1. Save the HMAC token as `manifests/overlays/metal3/hmac-token`.
-
-   ```bash
-   echo "${HMAC_TOKEN}" > manifests/overlays/metal3/hmac-token
-   ```
-
-1. Save the metal3-io-bot token as `manifests/overlays/metal3/github-token`.
-
-   ```bash
-   echo "${GITHUB_TOKEN}" > manifests/overlays/metal3/github-token
-   ```
-
-1. Save the metal3-cherrypick-bot token as
-   `manifests/overlays/metal3/cherrypick-bot-github-token`.
-
-   ```bash
-   echo "${CHERRYPICK_TOKEN}" > manifests/overlays/metal3/cherrypick-bot-github-token
-   ```
-
-1. Save the Jenkins token as `manifests/overlays/metal3/jenkins-token`.
-
-   ```bash
-   echo "${JENKINS_TOKEN}" > manifests/overlays/metal3/jenkins-token
    ```
 
 ## Access existing instance
@@ -365,17 +342,31 @@ cluster:
 When deploying completely from scratch, you will need to first create the
 necessary GitHub bot accounts and webhook configuration. In addition, you need
 to create the credentials, generate secret files from them, and build node
-images (see sections above).
-You may also have to create a keypair with the Metal3 CI ssh key.
+images (see sections above). You may also have to create a keypair with the
+Metal3 CI ssh key.
 
 1. Create a bootstrap cluster (kind).
 
    ```bash
    kind create cluster
+   # Install External Secrets Operator
+   kustomize build --enable-helm bootstrap/external-secrets-operator |
+     kubectl apply --server-side -f -
+   # Deploy CAPI components
    kubectl apply -k capi
    # NOTE! You WILL need to apply multiple times before it is successful.
    # This is because CRDs and webhooks must be in place before other
    # resources can be added.
+   ```
+
+1. Create Secret with service account token for 1password SDK integration and
+   apply ClusterSecretStore.
+
+   ```bash
+   kubectl -n external-secrets create secret generic \
+     onepassword-prow-service-account \
+     --from-literal=token='<YOUR_1PASSWORD_SERVICE_ACCOUNT_TOKEN>'
+   kubectl apply -f bootstrap/clustersecretstore.yaml
    ```
 
 1. Create cluster.
@@ -405,7 +396,7 @@ You may also have to create a keypair with the Metal3 CI ssh key.
    ssh -N -D 127.0.0.1:6443 "ubuntu@${BASTION_FLOATING_IP}"
    ```
 
-1. Install cloud-provider, cluster-autoscaler and CNI. See the
+1. Install cloud-provider, cluster-autoscaler, CNI and ESO. See the
    [CAPO book](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md),
    the
    [CSI Cinder plugin docs](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/cinder-csi-plugin/using-cinder-csi-plugin.md)
@@ -414,6 +405,16 @@ You may also have to create a keypair with the Metal3 CI ssh key.
    for more information.
 
    ```bash
+    # Install Calico CNI
+   kubectl apply -k bootstrap/calico
+   # Install External Secrets Operator and setup ClusterSecretStores
+   kustomize build --enable-helm bootstrap/external-secrets-operator |
+     kubectl apply --server-side -f -
+   kubectl -n external-secrets create secret generic \
+     onepassword-prow-service-account \
+     --from-literal=token='<YOUR_1PASSWORD_SERVICE_ACCOUNT_TOKEN>'
+   kubectl apply -f bootstrap/clustersecretstore.yaml
+   # Install cloud-provider, cluster-autoscaler
    kubectl apply -k cluster-resources
    ```
 
