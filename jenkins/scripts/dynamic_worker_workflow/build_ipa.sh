@@ -9,36 +9,11 @@ CURRENT_SCRIPT_DIR="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"
 # IPA BRANCH IS PINNED ATM
 IPA_REPO="${IPA_REPO:-https://opendev.org/openstack/ironic-python-agent.git}"
 IPA_BRANCH="${IPA_BRANCH:-master}"
-IPA_REF="${IPA_REF:-HEAD}"
 IPA_BUILDER_REPO="${IPA_BUILDER_REPO:-https://opendev.org/openstack/ironic-python-agent-builder.git}"
 IPA_BUILDER_BRANCH="${IPA_BUILDER_BRANCH:-master}"
 IPA_BUILDER_COMMIT="${IPA_BUILDER_COMMIT:-HEAD}"
 IPA_BUILD_WORKSPACE="${IPA_BUILD_WORKSPACE:-/tmp/dib}"
 OPENSTACK_REQUIREMENTS_REF="${OPENSTACK_REQUIREMENTS_REF:-master}"
-# Metal3 dev env repo configuration for testing the newly built IPA
-METAL3_DEV_ENV_REPO="${METAL3_DEV_ENV_REPO:-https://github.com/metal3-io/metal3-dev-env}"
-METAL3_DEV_ENV_BRANCH="${METAL3_DEV_ENV_BRANCH:-main}"
-METAL3_DEV_ENV_COMMIT="${METAL3_DEV_ENV_COMMIT:-HEAD}"
-# Components needed for a working Metal3 deployment
-# Changes done to the component's git configuration makes a difference only
-# in case local image building is enabled.
-BMOREPO="${BMOREPO:-https://github.com/metal3-io/baremetal-operator.git}"
-BMOBRANCH="${BMO_BRANCH:-main}"
-BMOCOMMIT="${BMO_COMMIT:-HEAD}"
-CAPM3REPO="${CAPM3_REPO:-https://github.com/metal3-io/cluster-api-provider-metal3.git}"
-CAPM3BRANCH="${CAPM3_BRANCH:-main}"
-CAPM3COMMIT="${CAPM3_COMMIT:-HEAD}"
-IPAMREPO="${IPAM_REPO:-https://github.com/metal3-io/ip-address-manager.git}"
-IPAMBRANCH="${IPAM_BRANCH:-main}"
-IPAMCOMMIT="${IPAM_COMMIT:-HEAD}"
-CAPIREPO="${CAPI_REPO:-https://github.com/kubernetes-sigs/cluster-api.git}"
-CAPIBRANCH="${CAPI_BRANCH:-main}"
-CAPICOMMIT="${CAPI_COMMIT:-HEAD}"
-# Metal3 dev env local build configuration
-BUILD_CAPM3_LOCALLY="${BUILD_CAPM3_LOCALLY:-true}"
-BUILD_BMO_LOCALLY="${BUILD_BMO_LOCALLY:-true}"
-BUILD_IPAM_LOCALLY="${BUILD_IPAM_LOCALLY:-true}"
-BUILD_CAPI_LOCALLY="${BUILD_CAPI_LOCALLY:-false}"
 
 # General environment variables
 # The following 3 vars could be usefull to be changed during testing
@@ -49,14 +24,13 @@ TEST_IN_CI="${TEST_IN_CI:-true}"
 ENABLE_DEV_USER_PASS="${ENABLE_DEV_USER_PASS:-false}"
 ENABLE_DEV_USER_SSH="${ENABLE_DEV_USER_SSH:-false}"
 DEV_USER_SSH_PATH="${DEV_USER_SSH_PATH:-$HOME/.ssh/id_rsa.pub}"
-
-
 RT_URL="${RT_URL:-https://artifactory.nordix.org/artifactory}"
 IPA_BUILDER_PATH="ironic-python-agent-builder"
 IPA_IMAGE_NAME="${IPA_IMAGE_NAME:-ironic-python-agent}"
 IPA_IMAGE_TAR="${IPA_IMAGE_NAME}.tar"
 IPA_BASE_OS="${IPA_BASE_OS:-centos}"
 IPA_BASE_OS_RELEASE="${IPA_BASE_OS_RELEASE:-9-stream}"
+IPA_SOURCE_DOWNLOAD_CACHE="${IPA_SOURCE_DOWNLOAD_CACHE:-${HOME}/.cache/image-create/source-repositories}"
 
 if [[ "${IPA_BASE_OS}" == "centos" ]]; then
   centos_upstream_img="CentOS-Stream-GenericCloud-9-20250812.1.x86_64.qcow2"
@@ -78,6 +52,7 @@ STAGING="${STAGING:-false}"
 METADATA_PATH="/tmp/metadata.txt"
 
 sudo rm -rf "${IPA_BUILD_WORKSPACE}"
+sudo rm -rf "${IPA_SOURCE_DOWNLOAD_CACHE}"
 # Update apt packages
 sudo apt-get update -y
 
@@ -105,19 +80,19 @@ sed -i '43i sed -i "s/oslo.log===5.0.0//" "$UPPER_CONSTRAINTS"' \
 popd
 
 # Pull IPA repository to create IPA_IDENTIFIER
+# IDENTIFIER is the git commit of the HEAD and the ISO 8061 UTC timestamp
 git clone --single-branch --branch "${IPA_BRANCH}" "${IPA_REPO}"
 
 # Generate the IPA image identifier string
 pushd "./ironic-python-agent"
-# IDENTIFIER is the git commit of the HEAD and the ISO 8061 UTC timestamp
-git checkout "${IPA_REF}"
+# Collect IPA commit metadata for buildinfo generation
 IPA_COMMIT="$(git rev-parse HEAD)"
 IPA_BUILDER_COMMIT_SHORT="$(git rev-parse --short HEAD)"
 IPA_IDENTIFIER="$(date --utc +"%Y%m%dT%H%MZ")-${IPA_BUILDER_COMMIT_SHORT}"
 echo "IPA_IDENTIFIER is the following:${IPA_IDENTIFIER}"
 popd
 
-# Install the cloned IPA builder tool
+# Install the  previously cloned IPA builder tool
 virtualenv venv
 # shellcheck source=/dev/null
 source "./venv/bin/activate"
@@ -185,30 +160,53 @@ fi
 # Test whether the newly built IPA is compatible with the choosen Ironic version and with
 # the Metal3 dev-env
 if $ENABLE_BOOTSTRAP_TEST; then
+    # Metal3 dev env repo configuration for testing the newly built IPA
+    export METAL3_DEV_ENV_REPO="${METAL3_DEV_ENV_REPO:-https://github.com/metal3-io/metal3-dev-env}"
+    export METAL3_DEV_ENV_BRANCH="${METAL3_DEV_ENV_BRANCH:-main}"
+    export METAL3_DEV_ENV_COMMIT="${METAL3_DEV_ENV_COMMIT:-HEAD}"
+    # Ironic sournce and Ironic-image repos
+    export IRONIC_SOURCE_REPO="${IRONIC_SOURCE_REPO:-https://opendev.org/openstack/ironic.git}"
+    export IRONIC_SOURCE_COMMIT="${IRONIC_SOURCE_COMMIT:-HEAD}"
+    export IRONIC_SOURCE_BRANCH="${IRONIC_SOURCE_BRANCH:-master}"
+    export IRONIC_SOURCE="${IPA_BUILD_WORKSPACE}/ironic" # Sourced by dev-env too
+    export IRONIC_IMAGE_REPO="${IRONIC_IMAGE_REPO:-https://github.com/metal3-io/ironic-image.git}"
+    export IRONIC_IMAGE_COMMIT="${IRONIC_IMAGE_REPO_COMMIT:-HEAD}"
+    export IRONIC_IMAGE_BRANCH="${IRONIC_IMAGE_BRANCH:-main}"
+    export IRONIC_IMAGE_PATH="${IPA_BUILD_WORKSPACE}/ironic-image" # Sourced by dev-env too
+    export IRONIC_LOCAL_IMAGE="${IRONIC_IMAGE_PATH}" # Sourced by dev-env too
+    # Pull dev-env
     git clone --single-branch --branch "${METAL3_DEV_ENV_BRANCH}" "${METAL3_DEV_ENV_REPO}"
-    if $TEST_IN_CI; then
-        # shellcheck source=/dev/null
-        source "/tmp/vars.sh"
-        export IRONIC_IMAGE="${IMAGE_REGISTRY}/${CONTAINER_IMAGE_REPO}/ironic-image:${IRONIC_TAG}"
-    fi
+    # Make sure the correct versions of Ironic and Ironic-image are checked out
+    # dev-env has no builtin cloning for ironic-image and ironic custom branches
+    git clone --single-branch --branch "${IRONIC_IMAGE_BRANCH}" "${IRONIC_IMAGE_REPO}" "ironic-image"
+    pushd "${IPA_BUILD_WORKSPACE}/ironic-image"
+    git checkout "${IRONIC_IMAGE_COMMIT}"
+    popd
+    git clone --single-branch --branch "${IRONIC_SOURCE_BRANCH}" "${IRONIC_SOURCE_REPO}" "ironic"
+    pushd "${IPA_BUILD_WORKSPACE}/ironic"
+    git checkout "${IRONIC_SOURCE_COMMIT}"
+    popd
+    # Components needed for a working Metal3 deployment
+    export BMOREPO="${BMOREPO:-https://github.com/metal3-io/baremetal-operator.git}"
+    export BMOBRANCH="${BMO_BRANCH:-main}"
+    export BMOCOMMIT="${BMO_COMMIT:-HEAD}"
+    export CAPM3REPO="${CAPM3_REPO:-https://github.com/metal3-io/cluster-api-provider-metal3.git}"
+    export CAPM3BRANCH="${CAPM3_BRANCH:-main}"
+    export CAPM3COMMIT="${CAPM3_COMMIT:-HEAD}"
+    export IPAMREPO="${IPAM_REPO:-https://github.com/metal3-io/ip-address-manager.git}"
+    export IPAMBRANCH="${IPAM_BRANCH:-main}"
+    export IPAMCOMMIT="${IPAM_COMMIT:-HEAD}"
+    export CAPIREPO="${CAPI_REPO:-https://github.com/kubernetes-sigs/cluster-api.git}"
+    export CAPIBRANCH="${CAPI_BRANCH:-main}"
+    export CAPICOMMIT="${CAPI_COMMIT:-HEAD}"
+    # Metal3 dev env local build configuration
+    export BUILD_CAPM3_LOCALLY="${BUILD_CAPM3_LOCALLY:-true}"
+    export BUILD_BMO_LOCALLY="${BUILD_BMO_LOCALLY:-true}"
+    export BUILD_IPAM_LOCALLY="${BUILD_IPAM_LOCALLY:-true}"
+    export BUILD_IRONIC_IMAGE_LOCALLY="true"
+    export BUILD_CAPI_LOCALLY="${BUILD_CAPI_LOCALLY:-false}"
     export USE_LOCAL_IPA=true
     export IPA_DOWNLOAD_ENABLED=false
-    export BMOREPO
-    export BMOBRANCH
-    export BMOCOMMIT
-    export CAPM3REPO
-    export CAPM3BRANCH
-    export CAPM3COMMIT
-    export IPAMREPO
-    export IPAMBRANCH
-    export IPAMCOMMIT
-    export CAPIREPO
-    export CAPIBRANCH
-    export CAPICOMMIT
-    export BUILD_CAPM3_LOCALLY
-    export BUILD_BMO_LOCALLY
-    export BUILD_IPAM_LOCALLY
-    export BUILD_CAPI_LOCALLY
     # execute
     pushd "${DEV_ENV_REPO_LOCATION}"
     git checkout "${METAL3_DEV_ENV_COMMIT}"
@@ -221,8 +219,20 @@ if $ENABLE_BOOTSTRAP_TEST; then
     kubectl patch bmh node-1 -n metal3 --type merge --patch-file \
         "${CURRENT_SCRIPT_DIR}/bmh-patch-short-serial.yaml"
     make test
-    CERT_MANAGER_VERSION="$(grep -r "Installing cert-manager Version" |sed -n 's/.*\(v[0-9]\.[0-9]\.[0-9]\)"/\1/p' | head -n 1)"
-    cat << EOF >> "${METADATA_PATH}"
+    CERT_MANAGER_VERSION="$(grep -r "Installing cert-manager Version" | sed -n 's/.*\(v[0-9]\.[0-9]\.[0-9]\)"/\1/p' | head -n 1)"
+    touch "${METADATA_PATH}"
+    cat << EOF > "${METADATA_PATH}"
+IRONIC_TAG="${IRONIC_TAG}"
+IRONIC_REPO="${IRONIC_REPO}"
+IRONIC_REFSPEC="${IRONIC_REFSPEC}"
+IRONIC_COMMIT="${IRONIC_COMMIT}"
+IRONIC_IMAGE_REPO="${IRONIC_IMAGE_REPO}"
+IRONIC_IMAGE_REPO_COMMIT="${IRONIC_IMAGE_REPO_COMMIT}"
+IRONIC_IMAGE_BRANCH="${IRONIC_IMAGE_BRANCH}"
+IRONIC_INSPECTOR_REFSPEC="${IRONIC_INSPECTOR_REFSPEC}"
+IRONIC_INSPECTOR_REPO="${IRONIC_INSPECTOR_REPO}"
+IRONIC_INSPECTOR_COMMIT="${IRONIC_INSPECTOR_COMMIT}"
+IRONIC_IMAGE_HARBOR_DIGEST="${HARBOR_ARTIFACT_DIGEST}"
 METAL3_DEV_ENV_REPO="${METAL3_DEV_ENV_REPO}"
 METAL3_DEV_ENV_BRANCH="${METAL3_DEV_ENV_BRANCH}"
 METAL3_DEV_ENV_COMMIT="${METAL3_DEV_ENV_COMMIT}"
