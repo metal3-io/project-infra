@@ -34,6 +34,38 @@ def DEFAULT_SCAN_ARGS = '--recursive'
 def GO_VERSION = ''
 def OSV_SCANNER_COMMIT = '8b6727b2c439cdea8bc3a033bf7c76d76cbaee08'  // v2.2.4
 
+def runOsvScan = { String repoName, String refType, String ref, String repoUrl, String goVersion, String failuresFile ->
+    def workDir = "work-${repoName}-${refType}-${ref}".replace('/', '_')
+    if (refType == 'branch') {
+        sh "git clone --depth 1 --branch ${ref} ${repoUrl} ${workDir}"
+    } else {
+        sh "git clone ${repoUrl} ${workDir}"
+    }
+    dir(workDir) {
+        if (refType == 'tag') {
+            sh 'git fetch --tags --quiet || true'
+            sh "git checkout ${ref}"
+        }
+        // Resolve go-version per repo if available, fallback to provided
+        def gv = ''
+        try { gv = sh(script: 'make go-version', returnStdout: true).trim() } catch (e) { echo "make go-version failed: ${e}" }
+        if (!gv) { gv = goVersion }
+        sh "echo 'GoVersionOverride = \"${gv}\"' > config.toml"
+
+        def label   = "${repoName}-${refType}-${ref}".replace('/', '_')
+        def outFile = "${WORKSPACE}/results/${repoName}_${refType}_${ref}.txt".replace('/', '_')
+        sh """
+          set +e
+          bash -o pipefail -c "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} . | tee \\\"${outFile}\\\""
+          ec=\$?
+          if [ \$ec -ne 0 ]; then
+            echo "${label}" >> ${WORKSPACE}/results/${failuresFile}
+            exit \$ec
+          fi
+        """
+    }
+}
+
 script { agent_label = 'metal3ci-8c32gb-ubuntu' }
 
 pipeline {
@@ -217,27 +249,7 @@ pipeline {
                             def label = "${entry.name}-branch-${br}"
                             tasks[label] = {
                                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                    def workDir = "work-${entry.name}-branch-${br}"
-                                    sh "git clone --depth 1 --branch ${br} ${entry.url} ${workDir}"
-                                    dir(workDir) {
-                                        def go_version = ''
-                                        try {
-                                            go_version = sh(script: 'make go-version', returnStdout: true).trim()
-                                        } catch (err) {
-                                            echo "make go-version failed: ${err}"
-                                        }
-                                        if (!go_version) {
-                                            go_version = GO_VERSION
-                                        }
-                                        sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
-                                        def outFile = "${WORKSPACE}/results/${entry.name}_branch_${br}.txt"
-                                        def ec = sh(script: "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} .", returnStatus: true)
-                                        if (ec != 0) {
-                                            echo "Scan failed (exit ${ec}) for ${label}"
-                                            sh "echo '${label}' >> ${WORKSPACE}/results/branch_scan_failures.txt"
-                                            error("Marking ${label} failed")
-                                        }
-                                    }
+                                    runOsvScan(entry.name, 'branch', br, entry.url, GO_VERSION, 'branch_scan_failures.txt')
                                 }
                             }
                         }
@@ -263,30 +275,8 @@ pipeline {
                             def label = "${entry.name}-tag-${tg}".replace('/', '_')
                             tasks[label] = {
                                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                    def workDir = "work-${entry.name}-tag-${tg}"
-                                    sh "git clone ${entry.url} ${workDir}"
-                                    dir(workDir) {
-                                        sh 'git fetch --tags --quiet || true'
-                                        sh "git checkout ${tg}"
-                                        def go_version = ''
-                                        try {
-                                            go_version = sh(script: 'make go-version', returnStdout: true).trim()
-                                        } catch (err) {
-                                            echo "make go-version failed: ${err}"
-                                        }
-                                        if (!go_version) {
-                                            go_version = GO_VERSION
-                                        }
-                                        sh "echo 'GoVersionOverride = \"${go_version}\"' > config.toml"
-                                        def outFile = "${WORKSPACE}/results/${entry.name}_tag_${tg}.txt"
-                                        def ec = sh(script: "osv-scanner scan --config ./config.toml ${params.SCAN_ARGS} --output ${outFile} .", returnStatus: true)
-                                        if (ec != 0) {
-                                            echo "Scan failed (exit ${ec}) for ${label}"
-                                            sh "echo '${label}' >> ${WORKSPACE}/results/tag_scan_failures.txt"
-                                            error("Marking ${label} failed")
-                                        }
+                                    runOsvScan(entry.name, 'tag', tg, entry.url, GO_VERSION, 'tag_scan_failures.txt')
                                 }
-                            }
                             }
                         }
                     }
@@ -320,4 +310,3 @@ pipeline {
         }
     }
 }
-
