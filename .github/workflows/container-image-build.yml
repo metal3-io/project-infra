@@ -73,8 +73,7 @@ jobs:
 
     permissions:
       contents: read
-      # temporarily disabled to fix the builds
-      # id-token: write
+      id-token: write  # Required for Sigstore keyless attestation
 
     outputs:
       digest: ${{ steps.get-digest.outputs.digest }}
