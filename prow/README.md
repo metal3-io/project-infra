@@ -227,8 +227,9 @@ Files with credentials and other sensitive information are not stored in this
 repository. You will need to add them manually before you can apply any
 manifests and build the kustomizations. CAPO needs access to the OpenStack API
 and so does the external cloud-provider. Prow needs a GitHub token for accessing
-GitHub, a HMAC token for validating webhook requests, and S3 credentials for
-storing logs and similar.
+GitHub, a HMAC token for validating webhook requests, S3 credentials for
+storing logs and similar and Nordix Artifactory token for cleaning the proxy
+cache and in general accessing Artifactory.
 
 If you are deploying from scratch or rotating credentials, please make sure to
 save them in a secure place after creating them. If there is an existing
@@ -246,6 +247,7 @@ Then you will be able to just copy and paste the snippets below.
 - `GITHUB_TOKEN`
 - `CHERRYPICK_TOKEN`
 - `JENKINS_TOKEN`
+- `ARTIFACTORY_TOKEN`
 
 Now you are ready to create the files.
 
@@ -335,6 +337,12 @@ Now you are ready to create the files.
 
    ```bash
    echo "${JENKINS_TOKEN}" > manifests/overlays/metal3/jenkins-token
+   ```
+
+1. Save the Artifactory token as `manifests/overlays/metal3/artifactory-token`.
+
+   ```bash
+   echo "${ARTIFACTORY_TOKEN}" > manifests/overlays/metal3/artifactory-token
    ```
 
 ## Access existing instance
