@@ -1,0 +1,43 @@
+name: Quick Start Test
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: "ubuntu-latest"
+      timeout-minutes:
+        type: number
+        default: 30
+
+permissions: {}
+
+jobs:
+  test:
+    name: Quick Start Test
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+
+    steps:
+    - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+    - name: Install libvirt
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libvirt-daemon-system qemu-kvm virt-manager libvirt-dev
+
+    - name: Run Quick Start Test
+      # We need a new shell to pick up the new group. That is why we do the sudo -s -u $USER ...
+      # Remove the pre-installed go version. We install the exact version we need.
+      run: |
+        sudo usermod -a -G libvirt $USER
+        sudo ${{ github.workspace }}/hack/quick-start-test/quick-start-test.sh
+
+    - name: Upload artifacts
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: artifacts-${{ inputs.bmc-protocol }}.tar.gz
+        path: test/quick-start/_artifacts
+        if-no-files-found: error
+        overwrite: false
