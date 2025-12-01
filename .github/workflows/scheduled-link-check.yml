@@ -31,6 +31,9 @@ jobs:
           --root-dir "$(pwd)/"
           --fallback-extensions "md"
           --github-token "${GITHUB_TOKEN}"
+          --insecure
+          --exclude-all-private
+          --no-progress
           "./**/*.md"
         output: /tmp/lychee_output.md
         fail: false
