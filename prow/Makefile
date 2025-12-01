@@ -6,7 +6,7 @@ validate:
 	$(CONTAINER_RUNTIME) run --rm \
 		--volume "${PWD}:/workdir:ro,z" \
 		--entrypoint /ko-app/checkconfig \
-		us-docker.pkg.dev/k8s-infra-prow/images/checkconfig:v20251030-0e4d5be42 \
+		us-docker.pkg.dev/k8s-infra-prow/images/checkconfig:v20251125-e3ae8cf22 \
 		--config-path /workdir/config/config.yaml \
 		--job-config-path /workdir/config/jobs \
 		--plugin-config /workdir/config/plugins.yaml \
