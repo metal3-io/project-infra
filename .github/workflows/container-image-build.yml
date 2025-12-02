@@ -51,6 +51,11 @@ on:
         description: "Generate SBOM for the container image"
         type: boolean
         default: false
+      sign-image:
+        required: false
+        description: "Sign the container image with Cosign (keyless)"
+        type: boolean
+        default: false
     secrets:
       QUAY_USERNAME:
         required: true
@@ -182,8 +187,14 @@ jobs:
         echo "Package count: $(jq '.packages | length' ${{ inputs.image-name }}-sbom.spdx.json)"
 
     - name: Install Cosign
-      if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      if: ${{ (inputs.generate-sbom || inputs.sign-image) && inputs.pushImage }}
       uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+
+    - name: Sign container image
+      if: ${{ inputs.sign-image && inputs.pushImage }}
+      run: |
+        cosign sign --yes "${IMAGE_REF}"
+        echo "Container image signed: ${IMAGE_REF}"
 
     - name: Attest SBOM to image
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
