@@ -23,8 +23,9 @@ tests for a branch by just deleting the corresponding file.
   reviews are also needed to avoid accidental merges when an approver puts
   `lgtm` and approves (which adds `approved`) in one review.
 - The use of `/approve` and `/lgtm` is controlled by the `OWNERS` file in each
-  repository. See the [OWNERS spec](https://go.k8s.io/owners) for more details
-  about how to manage access to all or part of a repo with this file.
+  repository. See the [OWNERS spec](https://www.kubernetes.dev/docs/guide/owners/)
+  for more details about how to manage access to all or part of a repo with
+  this file.
 - Tests will run automatically for PRs authored by **public** members of the
   `metal3-io` GitHub organization. Members of the GitHub org can run
   `/ok-to-test` for PRs authored by those not in the GitHub org.
@@ -56,7 +57,7 @@ send events to Prow and a DNS record must be configured so that
 
 The DNS records are managed by CNCF for us. Any changes to them can be done
 through the
-[service desk](https://cncfservicedesk.atlassian.net/servicedesk/customer/portals).
+[service desk](https://cncfservicedesk.atlassian.net/servicedesk/customer/user/login?destination=portals).
 All project maintainers have (or can request) access. See
 [their FAQ](https://github.com/cncf/servicedesk#how-do-i-file-a-ticket-with-the-service-desk)
 for more details.
@@ -192,8 +193,9 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 
 1. Create a personal access token for the GitHub bot account. This should be
    done from the [metal3-io-bot](https://github.com/metal3-io-bot) GitHub bot
-   account. You can follow this [link](https://github.com/settings/tokens) to
-   create the token. When generating the token, make sure you have only the
+   account. You can follow this
+   [link](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens)
+   to create the token. When generating the token, make sure you have only the
    following scopes checked in.
 
    - `repo` scope for full control of all repositories
@@ -205,9 +207,9 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 1. Create a personal access token for the cherry-picker bot. This should be done
    from the [metal3-io-bot](https://github.com/metal3-io-bot)
    GitHub bot account. You can follow this
-   [link](https://github.com/settings/tokens) to create the token. When
-   generating the token, make sure you have only the following scopes checked
-   in.
+   [link](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens)
+   to create the token. When generating the token, make sure you have only the
+   following scopes checked in.
 
    - `repo`
    - `workflow`
@@ -216,8 +218,8 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
    The token will be referred to as `${CHERRYPICK_TOKEN}`.
 
 1. Create a [GitHub webhook in the Metal3-io
-   organization](https://github.com/organizations/metal3-io/settings/hooks) for
-   <https://prow.apps.test.metal3.io/hook> using the HMAC token generated
+   organization](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Forganizations%2Fmetal3-io%2Fsettings%2Fhooks)
+   for <https://prow.apps.test.metal3.io/hook> using the HMAC token generated
    earlier. Add the URL and token as below. Select **"Send me everything"**, and
    for Content type: **application/json**.
 
