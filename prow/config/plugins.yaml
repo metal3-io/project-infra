@@ -186,7 +186,8 @@ milestone_applier:
     release-1.10: "IPAM - v1.10"
     release-1.9: "IPAM - v1.9"
   metal3-io/ironic-image:
-    main: "ironic-image - v33.0"
+    main: "ironic-image - v34.0"
+    release-33.0: "ironic-image - v33.0"
     release-32.0: "ironic-image - v32.0"
     release-31.0: "ironic-image - v31.0"
     release-30.0: "ironic-image - v30.0"
