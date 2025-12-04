@@ -451,6 +451,7 @@ Metal3 CI ssh key.
    ```bash
    s3cmd --config .s3cfg mb s3://prow-logs
    s3cmd --config .s3cfg mb s3://tide
+   s3cmd --config .s3cfg mb s3://status-reconciler
    ```
 
 1. Deploy Prow
