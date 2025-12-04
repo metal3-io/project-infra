@@ -156,6 +156,12 @@ sudo sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
 sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
 sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
 
+# Fetch host network interface information
+mkdir -p "${LOGS_DIR}/hostinfo/network"
+ip address > "${LOGS_DIR}/hostinfo/network/interfaces.txt"
+host -v "artifactory.nordix.org" > "${LOGS_DIR}/hostinfo/network/nordixresolve.txt"
+sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/hostinfo"
+
 # Fetch BML log if exists
 BML_LOG_LOCATION="/tmp/BMLlog"
 if [[ -d "${BML_LOG_LOCATION}" ]]; then
