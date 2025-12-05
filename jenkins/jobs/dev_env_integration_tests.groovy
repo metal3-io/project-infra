@@ -1,5 +1,5 @@
 // Global variables
-def TIMEOUT = 1800, ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
+def TIMEOUT = 10800, ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
 def UPDATED_REPO, BUILD_TAG, CURRENT_START_TIME, CURRENT_END_TIME
 
 script {
