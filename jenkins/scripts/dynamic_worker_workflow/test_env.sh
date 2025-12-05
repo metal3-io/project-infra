@@ -34,6 +34,8 @@ elif [[ "${REPO_NAME}" == "ip-address-manager" ]]; then
 
 elif [[ "${REPO_NAME}" == "ironic-image" ]]; then
     export IRONIC_LOCAL_IMAGE="${HOME}/tested_repo"
+    export IRONIC_IMAGE_PATH="${IRONIC_LOCAL_IMAGE}"
+    export BUILD_IRONIC_IMAGE_LOCALLY="true"
     # Build/test the sushy-tools/vbmc images, since they are defined in this repo
     export SUSHY_TOOLS_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/sushy-tools"
     export VBMC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/vbmc"
