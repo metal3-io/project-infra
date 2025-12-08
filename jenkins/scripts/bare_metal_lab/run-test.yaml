@@ -1,0 +1,148 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+  - default_vars/vars.yaml
+  tasks:
+  - name: Apply cluster, control-plane and worker manifests
+    shell:
+      cmd: kubectl apply -f bml_test/manifests/ -n metal3
+    tags: kubectl_apply
+
+  - name: Wait until cluster becomes provisioned.
+    k8s_info:
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Cluster
+      namespace: metal3
+    register: cluster
+    retries: 100
+    delay: 20
+    until: (cluster is succeeded) and (cluster.resources | length > 0) and (cluster.resources[0].status.phase | default("none") | lower == "provisioned")
+
+  - name: Wait until 2 BMHs become provisioned.
+    kubernetes.core.k8s_info:
+      api_version: metal3.io/v1alpha1
+      kind: BareMetalHost
+      namespace: metal3
+    register: bmh
+    retries: 200
+    delay: 60
+    vars:
+      query: "[? status.provisioning.state=='provisioned']"
+    until: (bmh is succeeded) and (bmh.resources | length > 0) and (bmh.resources | json_query(query) | length == 2)
+
+  - name: Wait until 2 metal3machines become ready.
+    kubernetes.core.k8s_info:
+      api_version: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: Metal3Machine
+      namespace: metal3
+    register: m3m
+    retries: 60
+    delay: 20
+    vars:
+      # Note: the 'ready' field is a boolean (not a string)
+      query: "[? status.ready]"
+    until: (m3m is succeeded) and (m3m.resources | length > 0) and (m3m.resources | json_query(query) | length == 2)
+
+  - name: Wait until 2 machines become running.
+    k8s_info:
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Machine
+      namespace: "metal3"
+    register: machines
+    retries: 60
+    delay: 30
+    vars:
+      query: "[? status.phase=='running' || status.phase=='Running']"
+    until: (machines is succeeded) and (machines.resources | length > 0) and (machines.resources | json_query(query) | length == 2 )
+
+  - name: Fetch target cluster kubeconfig
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Secret
+      name: "test1-kubeconfig"
+      namespace: "metal3"
+    register: kubeconfig_secret
+
+  - name: Store target cluster kubeconfig
+    blockinfile:
+      path: /tmp/kubeconfig-test1.yaml
+      create: true
+      block: "{{ kubeconfig_secret.resources[0].data.value | b64decode }}"
+
+  # Install Calico
+  - name: Download Calico manifests
+    get_url:
+      url: "https://raw.githubusercontent.com/projectcalico/calico/v3.31.0/manifests/calico.yaml"
+      dest: /tmp/
+      mode: '664'
+    register: calico_manifest
+
+  - name: Uncomment CALICO_IPV4POOL_CIDR name
+    replace:
+      path: /tmp/calico.yaml
+      regexp: "# - name: CALICO_IPV4POOL_CIDR"
+      replace: "- name: CALICO_IPV4POOL_CIDR"
+
+  - name: Uncomment CALICO_IPV4POOL_CIDR value and set POD_CIDR
+    replace:
+      path: /tmp/calico.yaml
+      regexp: '#   value: "192.168.0.0/16"'
+      replace: '  value: "192.168.0.0/18"'
+
+  - name: Add IP_AUTODETECTION_METHOD in calico config Ubuntu
+    blockinfile:
+      path: /tmp/calico.yaml
+      insertafter: "192.168.0.0/18"
+      block: |
+        # for indentation
+                    - name: IP_AUTODETECTION_METHOD
+                      value: "cidr=192.168.111.1/24"
+
+  - name: Apply Calico manifest
+    kubernetes.core.k8s:
+      state: present
+      src: "/tmp/calico.yaml"
+      kubeconfig: "/tmp/kubeconfig-test1.yaml"
+    register: install_cni
+
+  - name: Wait (maximum 10 mins) until Calico pods start running
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Pod
+      namespace: kube-system
+      kubeconfig: /tmp/kubeconfig-test1.yaml
+      field_selectors:
+      - status.phase!=Running
+    retries: 60
+    delay: 10
+    register: calico_pods
+    until: (calico_pods is succeeded) and (calico_pods.resources | length == 0)
+
+
+  # Check for pods & nodes on the target cluster
+  - name: Wait for all pods to be in running state
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Pod
+      namespace: metal3
+      kubeconfig: /tmp/kubeconfig-test1.yaml
+      field_selectors:
+      - status.phase!=Running
+    retries: 150
+    delay: 20
+    register: not_running_pods
+    until: (not_running_pods is succeeded) and (not_running_pods.resources | length == 0)
+
+  - name: Wait for nodes to be in ready state
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Node
+      kubeconfig: /tmp/kubeconfig-test1.yaml
+    retries: 150
+    delay: 3
+    register: nodes
+    vars:
+      # For all Nodes, select those that have the Ready condition set to True
+      query: "[*].status.conditions[? type=='Ready' && status=='True']"
+    until: (nodes is succeeded) and (nodes.resources | length > 0) and (nodes.resources | json_query(query) | length == 2 )

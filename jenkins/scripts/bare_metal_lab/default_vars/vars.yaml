@@ -4,11 +4,6 @@
 bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
 bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
 github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
-# If REPO_NAME == metal3-dev-env clone to tested_repo otherwise clone to metal3
-metal3_dir: "{{ (lookup('env', 'REPO_NAME') == 'metal3-dev-env') | ternary('tested_repo', 'metal3') }}"
-metal3_dev_env_repo: "{{ lookup('env', 'BML_METAL3_DEV_ENV_REPO') }}"
-metal3_dev_env_branch: "{{ lookup('env', 'BML_METAL3_DEV_ENV_BRANCH') }}"
-pr_id: "{{ lookup('env', 'PR_ID') }}"
 serial_log_location: "/tmp/BMLlog"
 bare_metal_hosts:
 - id: "03"

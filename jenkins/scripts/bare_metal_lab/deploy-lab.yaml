@@ -7,7 +7,51 @@
   vars_files:
   - default_vars/vars.yaml
   tasks:
-  - name: Deploy Bare Metal Lab
-    block:
-    - include_tasks: tasks/cleanup-tasks.yaml
-    - include_tasks: tasks/deploy-tasks.yaml
+  - name: Start to capture log from virtual serial port
+    shell:
+      cmd: |
+        mkdir -p "{{ serial_log_location }}"
+        nohup ssh -o "KexAlgorithms=diffie-hellman-group14-sha1" -o "HostKeyAlgorithms=+ssh-rsa" "{{ lookup('env', 'BML_ILO_USERNAME') }}"@"{{ item.ip }}"  'vsp' > "{{ serial_log_location }}"/"{{ item.ip }}".txt 2>&1 &
+        exit 0
+    with_items: "{{ bare_metal_hosts }}"
+
+  - name: Configure host
+    shell:
+      cmd: "./bml_test/02_configure_host.sh"
+
+  - name: Deploy bmhosts
+    template:
+      src: "templates/bmhosts_crs.yaml.j2"
+      dest: "/opt/metal3-dev-env/bmhosts_crs.yaml"
+
+  - name: Launch bootstrap cluster
+    shell:
+      cmd: ./bml_test/03_launch_bootstrap_cluster.sh
+    become: true
+    become_user: metal3ci
+    tags: launch_bootstrap_cluster
+
+  - name: Verify bootstrap cluster is running
+    shell:
+      cmd: ./bml_test/04_verify.sh
+    tags: verify
+
+  - name: Apply bmhosts manifest
+    shell:
+      cmd: kubectl apply -f ./bmhosts_crs.yaml -n metal3
+      chdir: "/opt/metal3-dev-env/"
+    tags: kubectl_apply
+
+  - name: Wait until all BMHs become available .
+    kubernetes.core.k8s_info:
+      api_version: metal3.io/v1alpha1
+      kind: BareMetalHost
+      namespace: "metal3"
+    register: available_bmh
+    retries: 200
+    delay: 30
+    vars:
+      query: "[? status.provisioning.state=='available']"
+    until: (available_bmh is succeeded) and
+          (available_bmh.resources | length > 0) and
+          (available_bmh.resources | json_query(query) | length == 2)
