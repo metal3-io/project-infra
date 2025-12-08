@@ -1,11 +1,16 @@
 // Jenkins pipeline: OSV-Scanner for three Metal3 repositories.
 
+// Global variables
+def ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
+
 script {
     ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
     ci_git_base = (env.PULL_BASE_REF) ?: 'main'
     ci_git_url = 'https://github.com/metal3-io/project-infra.git'
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
 }
+
+def mainBranch = 'main'
 
 def CAPM3_BRANCHES = []
 def BMO_BRANCHES   = []
@@ -17,13 +22,16 @@ def BMO_TAGS   = []
 def IPAM_TAGS  = []
 def IRSO_TAGS  = []
 
+def BRANCH
+def EXCLUDE = 'beta|rc|alpha|pre'  // default exclude pattern for tags
+
 def METAL3_GITHUB_BASE = 'https://github.com/metal3-io'
 def METAL3_GOPROXY_BASE = 'https://proxy.golang.org/github.com/metal3-io'
 
-def CAPM3_GOPROXY = "${METAL3_GOPROXY_BASE}/cluster-api-provider-metal3"
-def BMO_GOPROXY   = "${METAL3_GOPROXY_BASE}/baremetal-operator"
-def IPAM_GOPROXY  = "${METAL3_GOPROXY_BASE}/ip-address-manager"
-def IRSO_GOPROXY  = "${METAL3_GOPROXY_BASE}/ironic-standalone-operator"
+def CAPM3_GOPROXY_LIST = "${METAL3_GOPROXY_BASE}/cluster-api-provider-metal3/@v/list"
+def BMO_GOPROXY_LIST   = "${METAL3_GOPROXY_BASE}/baremetal-operator/@v/list"
+def IPAM_GOPROXY_LIST  = "${METAL3_GOPROXY_BASE}/ip-address-manager/@v/list"
+def IRSO_GOPROXY_LIST  = "${METAL3_GOPROXY_BASE}/ironic-standalone-operator/@v/list"
 
 def CAPM3_GIT_URL = "${METAL3_GITHUB_BASE}/cluster-api-provider-metal3.git"
 def BMO_GIT_URL   = "${METAL3_GITHUB_BASE}/baremetal-operator.git"
@@ -49,7 +57,7 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
         // Resolve go-version per repo if available, fallback to provided
         def gv = ''
         try { gv = sh(script: 'make go-version', returnStdout: true).trim() } catch (e) { echo "make go-version failed: ${e}" }
-        if (!gv) { gv = goVersion }
+        gv = gv ?: goVersion
         sh "echo 'GoVersionOverride = \"${gv}\"' > config.toml"
 
         def label   = "${repoName}-${refType}-${ref}".replace('/', '_')
@@ -102,27 +110,39 @@ pipeline {
             steps {
                 script {
                     sh 'chmod +x jenkins/scripts/get_last_n_release_branches.sh || true'
+
                     CAPM3_BRANCHES = sh(
                       script: "jenkins/scripts/get_last_n_release_branches.sh ${CAPM3_GIT_URL} 2",
                       returnStdout: true
-                    ).trim().split('\\n').findAll { it }
+                    ).trim()
+                    .split('\\n')
+                    .findAll { branch -> branch }
+
                     BMO_BRANCHES = sh(
                       script: "jenkins/scripts/get_last_n_release_branches.sh ${BMO_GIT_URL} 2",
                       returnStdout: true
-                    ).trim().split('\\n').findAll { it }
+                    ).trim()
+                    .split('\\n')
+                    .findAll { branch -> branch }
+
                     IPAM_BRANCHES = sh(
                       script: "jenkins/scripts/get_last_n_release_branches.sh ${IPAM_GIT_URL} 2",
                       returnStdout: true
-                    ).trim().split('\\n').findAll { it }
+                    ).trim()
+                    .split('\\n')
+                    .findAll { branch -> branch }
+
                     IRSO_BRANCHES = sh(
                       script: "jenkins/scripts/get_last_n_release_branches.sh ${IRSO_GIT_URL} 2",
                       returnStdout: true
-                    ).trim().split('\\n').findAll { it }
+                    ).trim()
+                    .split('\\n')
+                    .findAll { branch -> branch }
 
-                    CAPM3_BRANCHES.add('main')
-                    BMO_BRANCHES.add('main')
-                    IPAM_BRANCHES.add('main')
-                    IRSO_BRANCHES.add('main')
+                    CAPM3_BRANCHES.add(mainBranch)
+                    BMO_BRANCHES.add(mainBranch)
+                    IPAM_BRANCHES.add(mainBranch)
+                    IRSO_BRANCHES.add(mainBranch)
 
                     echo "CAPM3_BRANCHES=${CAPM3_BRANCHES}"
                     echo "BMO_BRANCHES=${BMO_BRANCHES}"
@@ -141,18 +161,71 @@ pipeline {
                     sh 'chmod +x jenkins/scripts/get_latest_tag.sh || true'
 
                     // exclude main branch from tag resolution
-                    def capm3ReleaseBranches = CAPM3_BRANCHES.findAll { it != 'main' }
-                    def bmoReleaseBranches = BMO_BRANCHES.findAll { it != 'main' }
-                    def ipamReleaseBranches = IPAM_BRANCHES.findAll { it != 'main' }
-                    def irsoReleaseBranches = IRSO_BRANCHES.findAll { it != 'main' }
+                    def capm3ReleaseBranches = CAPM3_BRANCHES - [ mainBranch ]
+                    def bmoReleaseBranches = BMO_BRANCHES - [ mainBranch ]
+                    def ipamReleaseBranches = IPAM_BRANCHES - [ mainBranch ]
+                    def irsoReleaseBranches = IRSO_BRANCHES - [ mainBranch ]
 
-                    CAPM3_TAGS = capm3ReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${CAPM3_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
+                    CAPM3_TAGS = capm3ReleaseBranches.collect { br ->
+                        withEnv([
+                            "CAPM3_GOPROXY_LIST=${CAPM3_GOPROXY_LIST}",
+                            "BRANCH=${br}",
+                            "EXCLUDE=${EXCLUDE}",
+                        ]) {
+                            sh(
+                                script: '''
+                                    jenkins/scripts/get_latest_tag.sh "$CAPM3_GOPROXY_LIST" "$BRANCH" "$EXCLUDE" || true
+                                ''',
+                                returnStdout: true
+                            ).trim()
+                        }
+                    }.findAll { tag -> tag }
 
-                    BMO_TAGS = bmoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${BMO_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
+                    BMO_TAGS = bmoReleaseBranches.collect { br ->
+                        withEnv([
+                            "BMO_GOPROXY_LIST=${BMO_GOPROXY_LIST}",
+                            "BRANCH=${br}",
+                            "EXCLUDE=${EXCLUDE}",
+                        ]) {
+                            sh(
+                                script: '''
+                                    jenkins/scripts/get_latest_tag.sh "$BMO_GOPROXY_LIST" "$BRANCH" "$EXCLUDE" || true
+                                ''',
+                                returnStdout: true
+                            ).trim()
+                        }
+                    }.findAll { tag -> tag }
 
-                    IPAM_TAGS = ipamReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IPAM_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
+                    IPAM_TAGS = ipamReleaseBranches.collect { br ->
+                        withEnv([
+                            "IPAM_GOPROXY_LIST=${IPAM_GOPROXY_LIST}",
+                            "BRANCH=${br}",
+                            "EXCLUDE=${EXCLUDE}",
+                        ]) {
+                            sh(
+                                script: '''
+                                    jenkins/scripts/get_latest_tag.sh "$IPAM_GOPROXY_LIST" "$BRANCH" "$EXCLUDE" || true
+                                ''',
+                                returnStdout: true
+                            ).trim()
+                        }
+                    }.findAll { tag -> tag }
 
-                    IRSO_TAGS = irsoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IRSO_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
+                    IRSO_TAGS = irsoReleaseBranches.collect { br ->
+                        withEnv([
+                            "IRSO_GOPROXY_LIST=${IRSO_GOPROXY_LIST}",
+                            "BRANCH=${br}",
+                            "EXCLUDE=${EXCLUDE}",
+                        ]) {
+                            sh(
+                                script: '''
+                                    jenkins/scripts/get_latest_tag.sh "$IRSO_GOPROXY_LIST" "$BRANCH" "$EXCLUDE" || true
+                                ''',
+                                returnStdout: true
+                            ).trim()
+                        }
+                    }.findAll { tag -> tag }
+
                     echo "CAPM3_TAGS=${CAPM3_TAGS}"
                     echo "BMO_TAGS=${BMO_TAGS}"
                     echo "IPAM_TAGS=${IPAM_TAGS}"
