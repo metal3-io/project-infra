@@ -1,0 +1,8 @@
+<network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0'>
+  <name>provisioning</name>
+  <forward mode='bridge'/>
+  <bridge name='provisioning'/>
+  <dnsmasq:options>
+    <dnsmasq:option value='cache-size=0'/>
+  </dnsmasq:options>
+</network>
