@@ -18,6 +18,7 @@
     "baremetal",
     "capi",
     "capm",
+    "checkconfig",
     "cherrypick",
     "cherrypicking",
     "cicd",
