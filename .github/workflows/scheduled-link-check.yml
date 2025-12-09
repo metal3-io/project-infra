@@ -25,12 +25,17 @@ jobs:
     - name: Link Checker
       id: linkcheck
       uses: lycheeverse/lychee-action@a8c4c7cb88f0c7386610c35eb25108e448569cb0 # v2.7.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         args: |
-          --user-agent "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0"
+          --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Brave/131"
           --root-dir "$(pwd)/"
           --fallback-extensions "md"
-          --github-token "${GITHUB_TOKEN}"
+          --github-token "${{ secrets.GITHUB_TOKEN }}"
+          --max-concurrency 8
+          --max-retries 5
+          --retry-wait-time 10
           --insecure
           --exclude-all-private
           --no-progress
