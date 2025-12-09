@@ -5,6 +5,11 @@ on:
     types: [ opened, edited, synchronize, reopened ]
   workflow_call:
     inputs:
+      ignore-paths:
+        required: false
+        description: "Comma-separated list of paths to ignore when extracting YAML snippets from Markdown files (e.g., './docs/examples/*,./test/*')"
+        type: string
+        default: ""
       ref:
         required: false
         description: "Git reference of the workflow's trigger"
@@ -26,6 +31,20 @@ jobs:
       run: |
         set -euo pipefail
         mkdir -p .yaml-snippet
+
+        # Build find command with ignore paths using array
+        FIND_ARGS=(. -name "*.md" -not -path "./.git/*")
+
+        # Add ignore paths if provided
+        if [[ -n "${{ inputs.ignore-paths || '' }}" ]]; then
+          IFS=',' read -ra IGNORE_PATHS <<< "${{ inputs.ignore-paths || '' }}"
+          for path in "${IGNORE_PATHS[@]}"; do
+            path=$(echo "${path}" | xargs)
+            if [[ -n "${path}" ]]; then
+              FIND_ARGS+=(-not -path "${path}")
+            fi
+          done
+        fi
 
         # Process each md file
         while IFS= read -r md_file; do
@@ -51,8 +70,7 @@ jobs:
             }
             in_block { block = (block == "" ? $0 : block "\n" $0) }
           ' "${md_file}"
-        done < <(find . -name "*.md" -not -path "./.git/*")
-
+        done < <(find "${FIND_ARGS[@]}")
         echo "Extracted $(ls -1 .yaml-snippet/*.yaml 2>/dev/null | wc -l) YAML snippet(s)"
 
     - name: yaml-lint
