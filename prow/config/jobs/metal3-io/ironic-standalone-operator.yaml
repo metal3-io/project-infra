@@ -16,6 +16,22 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.24
         imagePullPolicy: Always
+  - name: shellcheck
+    branches:
+    - main
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
+        imagePullPolicy: Always
   - name: markdownlint
     branches:
     - main
