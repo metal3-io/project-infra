@@ -2,15 +2,8 @@
 
 set -eux
 
-export BARE_METAL_PROVISIONER_IP=${BARE_METAL_PROVISIONER_IP:-"172.22.0.1"}
-export BARE_METAL_PROVISIONER_CIDR=${BARE_METAL_PROVISIONER_CIDR:-24}
-export EXTERNAL_SUBNET_V4_HOST=${EXTERNAL_SUBNET_V4_HOST:-"192.168.111.1"}
-export EXTERNAL_SUBNET_V4_PREFIX=${EXTERNAL_SUBNET_V4_PREFIX:-24}
-export CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-docker}
-export REGISTRY="${REGISTRY:-${EXTERNAL_SUBNET_V4_HOST}:5000}"
-export USER
-export IRONIC_DATA_DIR=${IRONIC_DATA_DIR:-"/opt/metal3-dev-env/ironic"}
-export IRONIC_BASIC_AUTH=${IRONIC_BASIC_AUTH:-"true"}
+# shellcheck disable=SC1091
+. lib/vars.sh
 
 USER="$(whoami)"
 sudo mkdir -p "${IRONIC_DATA_DIR}"
@@ -18,17 +11,24 @@ sudo chown -R "${USER}:${USER}" "${IRONIC_DATA_DIR}"
 
 
 # Download required images for ironic if not already present
-pushd "${IRONIC_DATA_DIR}/html/images"
-wget --no-verbose --no-check-certificate https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.34.1/CENTOS_10_NODE_IMAGE_K8S_v1.34.1.qcow2
-qemu-img convert -O raw CENTOS_10_NODE_IMAGE_K8S_v1.34.1.qcow2 CENTOS_10_NODE_IMAGE_K8S_v1.34.1-raw.img
-sha256sum "CENTOS_10_NODE_IMAGE_K8S_v1.34.1-raw.img" | awk '{print $1}' > "CENTOS_10_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum"
-wget https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/ipa-centos9-master.tar.gz
-popd
+# pushd "${IRONIC_DATA_DIR}/html/images"
+# wget --no-verbose --no-check-certificate https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.34.1/CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2
+# qemu-img convert -O raw CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2 CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
+# sha256sum "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img" | awk '{print $1}' > "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum"
+# wget https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib/ipa-centos9-master.tar.gz
+# popd
 
 # shellcheck disable=SC1091
 source lib/ironic_basic_auth.sh
 # shellcheck disable=SC1091
 source lib/ironic_tls_setup.sh
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# To bind this into the ironic-client container we need a directory
+mkdir -p "${SCRIPTDIR}"/lib/_clouds_yaml
+cp "${IRONIC_CACERT_FILE}" "${SCRIPTDIR}"/lib/_clouds_yaml/ironic-ca.crt
+yq eval -i '.clouds.metal3.auth.username = env(IRONIC_USERNAME) | .clouds.metal3.auth.password = env(IRONIC_PASSWORD)' lib/_clouds_yaml/clouds.yaml
 
 # Create Minikube VM and add correct interfaces
 #
@@ -79,8 +79,8 @@ init_minikube()
 
 # Crete libvirt networks
 
-sudo virsh net-define "${PWD}"/libvirt_network/provisioning.xml
-sudo virsh net-define "${PWD}"/libvirt_network/external.xml
+sudo virsh net-define "${PWD}"/lib/libvirt_network/provisioning.xml
+sudo virsh net-define "${PWD}"/lib/libvirt_network/external.xml
 
 sudo virsh net-start provisioning
 sudo virsh net-start external
@@ -103,6 +103,9 @@ sudo brctl addif provisioning ironic-peer
 sudo ip link set ironicendpoint up
 sudo ip link set ironic-peer up
 
+# Add physical interfaces to the bridges
+sudo brctl addif provisioning eno1
+sudo brctl addif external bmext
 
 # Create the external bridge
 if ! ip a show external &>/dev/null; then
