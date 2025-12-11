@@ -115,7 +115,7 @@ pipeline {
                       returnStdout: true
                     ).trim().split('\\n').findAll { it }
                     IRSO_BRANCHES = sh(
-                      script: "jenkins/scripts/get_last_n_release_branches.sh ${IRSO_GIT_URL} 3",
+                      script: "jenkins/scripts/get_last_n_release_branches.sh ${IRSO_GIT_URL} 2",
                       returnStdout: true
                     ).trim().split('\\n').findAll { it }
 
@@ -146,14 +146,13 @@ pipeline {
                     def ipamReleaseBranches = IPAM_BRANCHES.findAll { it != 'main' }
                     def irsoReleaseBranches = IRSO_BRANCHES.findAll { it != 'main' }
 
-                    CAPM3_TAGS = capm3ReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${CAPM3_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    CAPM3_TAGS = capm3ReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${CAPM3_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
 
-                    BMO_TAGS = bmoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${BMO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    BMO_TAGS = bmoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${BMO_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
 
-                    IPAM_TAGS = ipamReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IPAM_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
+                    IPAM_TAGS = ipamReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IPAM_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
 
-                    IRSO_TAGS = irsoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IRSO_GOPROXY}/@v/list ${br} 'beta|rc|alpha|pre'", returnStdout: true).trim()}.findAll { it }
-
+                    IRSO_TAGS = irsoReleaseBranches.collect { br -> sh(script: "jenkins/scripts/get_latest_tag.sh ${IRSO_GOPROXY}/@v/list ${br}", returnStdout: true).trim()}.findAll { it }
                     echo "CAPM3_TAGS=${CAPM3_TAGS}"
                     echo "BMO_TAGS=${BMO_TAGS}"
                     echo "IPAM_TAGS=${IPAM_TAGS}"
