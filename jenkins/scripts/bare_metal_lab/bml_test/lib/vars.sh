@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -x
+export BARE_METAL_PROVISIONER_IP=${BARE_METAL_PROVISIONER_IP:-"172.22.0.1"}
+export BARE_METAL_PROVISIONER_CIDR=${BARE_METAL_PROVISIONER_CIDR:-24}
+export EXTERNAL_SUBNET_V4_HOST=${EXTERNAL_SUBNET_V4_HOST:-"192.168.111.1"}
+export EXTERNAL_SUBNET_V4_PREFIX=${EXTERNAL_SUBNET_V4_PREFIX:-24}
+export CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-docker}
+export REGISTRY="${REGISTRY:-${EXTERNAL_SUBNET_V4_HOST}:5000}"
+export USER
+export IRONIC_DATA_DIR=${IRONIC_DATA_DIR:-"/opt/metal3-dev-env/ironic"}
+export IRONIC_BASIC_AUTH=${IRONIC_BASIC_AUTH:-"true"}
+export IRONIC_HOST="${IRONIC_HOST:-172.22.0.2}"
+export IRONIC_HOST_IP="${IRONIC_HOST_IP:-172.22.0.2}"
+
+export CAPIRELEASE="${CAPIRELEASE:-v1.11.2}"
+export CAPM3RELEASE="${CAPM3RELEASE:-v1.11.2}"
+export IPAMRELEASE="${IPAMRELEASE:-v1.11.2}"
+export IRONIC_DATA_DIR=${IRONIC_DATA_DIR:-"/opt/metal3-dev-env/ironic"}
+export BMOPATH=${BMOPATH:-"/home/${USER}/go/src/github.com/metal3-io/baremetal-operator"}
+export BMORELEASE=${BMORELEASE:-v0.11.2}
+export IRONIC_NAMESPACE="${IRONIC_NAMESPACE:-baremetal-operator-system}"
+export NAMEPREFIX=${NAMEPREFIX:-"baremetal-operator"}
+export IPA_BASEURI=https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib
