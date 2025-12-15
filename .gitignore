@@ -11,5 +11,8 @@
 .zed
 .zed_server
 
-vendor
+# ai stuff
 .claude
+
+# python stuff
+hack/__pycache__
