@@ -2,7 +2,6 @@
 def TIMEOUT = 1800, ci_git_url, ci_git_branch, ci_git_base, refspec
 def UPDATED_REPO, agent_label, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME
 
-
 script {
     UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
     echo "Test triggered from ${UPDATED_REPO}"
