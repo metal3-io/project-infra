@@ -27,6 +27,10 @@ the commands below. The job result will be posted as a comment.
   v1beta1 and branch main on Ubuntu
 * **/test-centos-integration-main** run integration tests with CAPM3 API version
   v1beta1 and branch main on CentOS
+* **/test-ubuntu-integration-release-1-12** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.12 on Ubuntu
+* **/test-centos-integration-release-1-12** run integration tests with CAPM3 API
+  version v1beta1 and branch release-1.12 on CentOS
 * **/test-ubuntu-integration-release-1-11** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.11 on Ubuntu
 * **/test-centos-integration-release-1-11** run integration tests with CAPM3 API
@@ -132,7 +136,7 @@ stored in
 [metal3-io/project-infra](https://github.com/metal3-io/project-infra/tree/main/jenkins/jobs)
 repository. In a nutshell, pipelines defines sequence of steps to be executed.
 Each step can run a script or perform something else. For example,
-[dev_env_integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/dev_env_integration_tests.pipeline)
+[dev_env_integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/dev_env_integration_tests.groovy)
 executes following scripts:
 
 1. [clones](https://github.com/metal3-io/project-infra/blob/1e8d2111a33dc95134b6f546d76f19be4a637e3d/jenkins/jobs/dev_env_integration_tests.pipeline#L56)
