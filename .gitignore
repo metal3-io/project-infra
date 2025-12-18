@@ -4,6 +4,17 @@
 .DS_Store
 *.swp
 
+# Quick start test temp files
+hack/quick-start-test/disk-images
+hack/quick-start-test/bmh-vm-01.xml
+hack/quick-start-test/bmo/ironic-username
+hack/quick-start-test/bmo/ironic-password
+hack/quick-start-test/ironic/ironic-username
+hack/quick-start-test/ironic/ironic-password
+hack/quick-start-test/irso/ssh_testkey
+hack/quick-start-test/irso/ssh_testkey.pub
+
+
 # Development containers
 .devcontainer
 
