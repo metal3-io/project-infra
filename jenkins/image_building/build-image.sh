@@ -94,7 +94,7 @@ if [[ "${IMAGE_TYPE}" == "node" ]]; then
 
   if [[ "${PRE_RELEASE:-}" == "true" ]]; then
     # Extract minor version (e.g., "1.34" from "v1.34.1")
-    KUBERNETES_MINOR_VERSION=$(echo "${KUBERNETES_VERSION:-"v1.34.1"}" | sed 's/^v//' | cut -d'.' -f1,2)
+    KUBERNETES_MINOR_VERSION=$(echo "${KUBERNETES_VERSION}" | sed 's/^v//' | cut -d'.' -f1,2)
 
     # Fetch the latest pre-release Kubernetes version for the minor version
     FETCHED_VERSION=$(curl -L -s "https://dl.k8s.io/release/latest-${KUBERNETES_MINOR_VERSION}.txt")
