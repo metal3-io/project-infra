@@ -26,7 +26,7 @@ spec:
         - --github-endpoint=https://api.github.com
         - --enable-controller=plank
         - --github-token-path=/etc/github/token
-        image: us-docker.pkg.dev/k8s-infra-prow/images/prow-controller-manager:v20251125-e3ae8cf22
+        image: us-docker.pkg.dev/k8s-infra-prow/images/prow-controller-manager:v20251223-f0341d7b5
         volumeMounts:
         - name: github-token
           mountPath: /etc/github
