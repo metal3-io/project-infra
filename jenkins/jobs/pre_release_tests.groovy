@@ -10,8 +10,9 @@ script {
     if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
         ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
         ci_git_base = (env.PULL_BASE_REF) ?: 'main'
-        // Fetch the base branch and the ci_git_branch when running on project-infra PR
-        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+        // Fetch the PR by number and base branch when running on project-infra PR
+        def prNumber = env.PULL_NUMBER ?: ''
+        refspec = '+refs/pull/' + prNumber + '/head:refs/remotes/origin/pull/' + prNumber + '/head +refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base
   } else {
         ci_git_branch = 'main'
         refspec = '+refs/heads/*:refs/remotes/origin/*'
