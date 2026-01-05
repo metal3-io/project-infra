@@ -102,7 +102,7 @@ if [[ "${IMAGE_TYPE}" == "node" ]]; then
   fi
 
   # TODO: Uplift crio to v1.35 when it's officially released
-  export CRIO_VERSION="${CRIO_VERSION:-"v1.34.3"}"
+  export CRIO_VERSION="${CRIO_VERSION:-"v1.35.0"}"
   export CRICTL_VERSION="${CRICTL_VERSION:-"v1.35.0"}"
   img_name="${IMAGE_OS^^}_${numeric_release}_NODE_IMAGE_K8S_${KUBERNETES_VERSION}"
   # enable predictable interface names
