@@ -132,10 +132,10 @@ stored in
 [metal3-io/project-infra](https://github.com/metal3-io/project-infra/tree/main/jenkins/jobs)
 repository. In a nutshell, pipelines defines sequence of steps to be executed.
 Each step can run a script or perform something else. For example,
-[dev_env_integration_tests.pipeline](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/dev_env_integration_tests.groovy)
+[dev_env_integration_tests.groovy](https://github.com/metal3-io/project-infra/blob/main/jenkins/jobs/dev_env_integration_tests.groovy)
 executes following scripts:
 
-1. [clones](https://github.com/metal3-io/project-infra/blob/1e8d2111a33dc95134b6f546d76f19be4a637e3d/jenkins/jobs/dev_env_integration_tests.pipeline#L56)
+1. [clones](https://github.com/metal3-io/project-infra/blob/622545934e95361ba4b0d99cf990d409d2fd604e/jenkins/jobs/dev_env_integration_tests.groovy#L59)
    git repository
 1. [jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/dynamic_worker_workflow/dev_env_integration_tests.sh)
 1. [jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh](https://github.com/metal3-io/project-infra/blob/main/jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh)
