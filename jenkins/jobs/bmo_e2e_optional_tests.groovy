@@ -15,17 +15,10 @@ pipeline {
         stage('Run Baremetal Operator optional e2e tests') {
             matrix {
                 agent { label 'metal3ci-8c16gb-ubuntu' }
-                // Skip redfish on PRs, test all for periodic jobs
-                when {
-                    anyOf {
-                        expression { env.BMC_PROTOCOL != 'redfish' }
-                        triggeredBy 'TimerTrigger'
-                    }
-                }
                 axes {
                     axis {
                         name 'BMC_PROTOCOL'
-                        values 'ipmi', 'redfish', 'redfish-virtualmedia'
+                        values 'ipmi', 'redfish-virtualmedia'
                     }
                 }
                 environment {
