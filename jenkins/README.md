@@ -1,9 +1,9 @@
 # Nordix Jenkins CI
 
-Integration tests are running in the [Nordix](https://www.nordix.org)
-infrastructure. Nordix provides a
+Integration tests are running in the [OpeninfraEurope](https://openinfraeurope.org/)
+infrastructure. OpenInfraEurope provides a
 [Jenkins](https://jenkins.nordix.org/view/Metal3/) instance and cloud resources
-on [CityCloud](https://www.citycloud.com/) for the Metal3 project. We use those
+on [Cleura](https://www.cleura.com/) for the Metal3 project. We use those
 resources to run integration tests for Metal3.
 
 ## Admins whitelist
@@ -73,7 +73,7 @@ branch to be able to open a PR against it in the future.
 
 There is a Jenkins
 [main job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3_periodic_resource_cleanup/)
-that cleans up all the leftover VMs from [CityCloud](https://www.citycloud.com/)
+that cleans up all the leftover VMs from [Cleura](https://www.cleura.com/)
 every 6 hours which has failed to be deleted at the end of v1alphaX/v1betaX
 integration tests.
 
@@ -111,8 +111,8 @@ Jenkins UI. Your YAML formatted job definition will create a Jenkins job, which
 in turn executes your specified jenkins pipeline. Check
 [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/attic/definition.html)
 to familiarize yourself with the JJB syntax. Our job definitions are stored in
-[Nordix Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd) instance under
-`cicd/jjb/metal3/` path. Please, note that
+[OpeninfraEurope Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd)
+instance under `cicd/jjb/metal3/` path. Please, note that
 [cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
 gerrit repository includes job definitions for other projects as well that share
 the same Jenkins environment.
@@ -190,12 +190,12 @@ cache.
 
 ### Job image
 
-We use raw images backed from Ceph in CityCloud to run all the jobs (nightly
+We use raw images backed from Ceph in Cleura to run all the jobs (nightly
 builds, on pull requests) in CI.
 
 ## Contact
 
 In case of issues or question on the Jenkins CI, please contact the maintainers
 by email to estjorvas \[at\] est.tech or by posting your message on the
-[\#cluster-api-baremetal](https://kubernetes.slack.com/messages/CHD49TLE7)
+[\#cluster-api-baremetal](https://kubernetes.slack.com/?redir=%2Fmessages%2FCHD49TLE7)
 channel on Kubernetes Slack.
