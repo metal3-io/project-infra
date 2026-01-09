@@ -249,6 +249,13 @@ presubmits:
     agent: jenkins
     always_run: false
     optional: true
+  # name: {job_prefix}-e2e-in-place-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-in-place-upgrade-test-main
+    branches:
+    - main
+    agent: jenkins
+    always_run: false
+    optional: true
   - name: metal3-ubuntu-e2e-capi-md-test-main
     branches:
     - main
