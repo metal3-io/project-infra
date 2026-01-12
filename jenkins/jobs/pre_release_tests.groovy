@@ -10,8 +10,9 @@ script {
     if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
         ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
         ci_git_base = (env.PULL_BASE_REF) ?: 'main'
-        // Fetch the base branch and the ci_git_branch when running on project-infra PR
-        refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
+        // Fetch the PR by number and base branch when running on project-infra PR
+        def prNumber = env.PULL_NUMBER ?: ''
+        refspec = '+refs/pull/' + prNumber + '/head:refs/remotes/origin/pull/' + prNumber + '/head +refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base
   } else {
         ci_git_branch = 'main'
         refspec = '+refs/heads/*:refs/remotes/origin/*'
@@ -20,7 +21,7 @@ script {
 
     if ( "${GINKGO_FOCUS}" == 'integration' ) {
         agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
-  } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
+    } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
         agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
     }
 }
@@ -38,7 +39,7 @@ pipeline {
         IMAGE_OS = "${IMAGE_OS}"
         PRE_RELEASE = 'true' // Affects the way k8s is installed in node image building
         IMAGE_TYPE = 'node'
-        KUBERNETES_VERSION = 'v1.34.1' // base version, the pre-release version will be fetched automatically
+        KUBERNETES_VERSION = 'v1.36.0' // base version, the pre-release version will be fetched automatically
         CRICTL_VERSION = "${CRICTL_VERSION}"
         CRIO_VERSION = "${CRIO_VERSION}"
         CAPM3RELEASEBRANCH = "${capm3_release_branch}"
