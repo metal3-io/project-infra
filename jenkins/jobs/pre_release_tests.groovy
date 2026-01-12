@@ -20,9 +20,9 @@ script {
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
     if ( "${GINKGO_FOCUS}" == 'integration' ) {
-        agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+        agent_label = 'metal3ci-8c16gb-ubuntu'
     } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        agent_label = 'metal3ci-8c24gb-ubuntu'
     }
 }
 
@@ -36,7 +36,7 @@ pipeline {
         UPDATED_BRANCH = "${env.PULL_PULL_SHA ?: capm3_release_branch}"
         BUILD_TAG = "${env.BUILD_TAG}"
         PR_ID = "${env.PULL_NUMBER ?: ''}"
-        IMAGE_OS = "${IMAGE_OS}"
+        IMAGE_OS = "${env.IMAGE_OS}"
         PRE_RELEASE = 'true' // Affects the way k8s is installed in node image building
         IMAGE_TYPE = 'node'
         KUBERNETES_VERSION = 'v1.36.0' // base version, the pre-release version will be fetched automatically
@@ -93,26 +93,24 @@ pipeline {
 
                     // Set image name and location and used k8s version as env variables
                     // to use the local image in the testing
-                    def imgName = readFile('image_name.txt').trim()
-                    def k8sVersion = imgName.split('_').last()
+                    def imageName = readFile('image_name.txt').trim()
+                    def k8sVersion = imageName.split('_').last()
 
-                    env.IMAGE_NAME = "${imgName}.qcow2"
+                    env.IMAGE_NAME = "${imageName}.qcow2"
                     env.IMAGE_LOCATION = env.WORKSPACE
+                    env.IMAGE_OS = IMAGE_OS
                     env.KUBERNETES_VERSION_UPGRADE_TO = k8sVersion
 
                     echo "Set IMAGE_NAME to: ${env.IMAGE_NAME}"
                     echo "Set IMAGE_LOCATION to: ${env.IMAGE_LOCATION}"
-                    echo "Set KUBERNETES_VERSION_UPGRADE_TO to: ${env.KUBERNETES_VERSION_UPGRADE_TO}"
-                }
-                echo "Testing with the new ${IMAGE_OS} node image"
-                withEnv(["KUBERNETES_VERSION=${readFile('image_name.txt').trim().split('_').last()}"]) {
-                    echo "Set KUBERNETES_VERSION to: ${env.KUBERNETES_VERSION}"
-                    withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
-                        ansiColor('xterm') {
-                            timestamps {
-                                sh './jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh'
-                            }
-                        }
+                    echo "Set IMAGE_OS to: ${env.IMAGE_OS}"
+                    echo "Set KUBERNETES_VERSION to: ${k8sVersion}"
+                    echo "Set KUBERNETES_VERSION_UPGRADE_TO to: ${k8sVersion}"
+                    withEnv(["KUBERNETES_VERSION=${k8sVersion}"]) {
+                        sh """
+                        echo "Testing ${imageName}"
+                        ./jenkins/image_building/verify-node-image.sh ${imageName}
+                        """
                     }
                 }
             }
@@ -127,13 +125,6 @@ pipeline {
                         timestamps {
                             sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
                             archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-                        }
-                    }
-                }
-                cleanup {
-                    script {
-                        timestamps {
-                            sh './jenkins/scripts/dynamic_worker_workflow/run_clean.sh'
                         }
                     }
                 }
