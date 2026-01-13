@@ -39,7 +39,7 @@ elif [[ "${AGENT_OS}" == "centos" ]]; then
   sudo yum install -y epel-release
 
   # Install required packages
-  sudo yum install -y python3-devel python3-pip qemu-kvm
+  sudo yum install -y python3-devel python3-pip qemu-kvm gdisk
   sudo pip3 install virtualenv
 
   python3 -m virtualenv venv
