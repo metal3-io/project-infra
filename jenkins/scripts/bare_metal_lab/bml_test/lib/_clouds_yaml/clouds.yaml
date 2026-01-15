@@ -1,0 +1,10 @@
+clouds:
+  metal3:
+    auth_type: http_basic
+    auth:
+      username: admin
+      password: admin
+    cacert: /etc/openstack/ironic-ca.crt
+    baremetal_endpoint_override: https://172.22.0.2:6385
+    baremetal_introspection_endpoint_override: https://172.22.0.2:5050
+    verify: false
