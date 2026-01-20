@@ -27,5 +27,5 @@ spec:
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: OpenStackMachineTemplate
-        name: prow-worker-v1-33-5
-      version: v1.33.5
+        name: prow-worker-v1-34-3
+      version: v1.34.3
