@@ -47,6 +47,20 @@ presubmits:
           value: "TRUE"
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
+  - name: groovylint
+    run_if_changed: '(\.groovy)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/groovylint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/nvuillam/npm-groovy-lint:v16.1.1@sha256:fd8cf44d1ea3103f8f589770257f6f5960e76124c05a7fe81051bbff4dd3df38
+        imagePullPolicy: Always
   - name: spellcheck
     run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
     decorate: true
