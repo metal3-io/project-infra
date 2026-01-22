@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "configMigration": true,
+  "baseBranchPatterns": ["main"],
+  "enabledManagers": ["custom.regex"],
+  "prCreation": "immediate",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "automerge": false,
+  "labels": ["ok-to-test"],
+  "commitMessagePrefix": ":seedling: ",
+  "semanticCommits": "disabled",
+  "packageRules": [
+    {
+      "matchBaseBranches": ["main"],
+      "description": "run at 6am on Mondays",
+      "schedule": ["after 6am on monday"]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["hack/groovylint\\.sh$"],
+      "matchStrings": [
+        "docker\\.io/(?<depName>[^:]+):(?<currentValue>[^@]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ]
+}
