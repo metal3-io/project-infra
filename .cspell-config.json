@@ -43,9 +43,11 @@
     "loadbalancer",
     "machinedeployment",
     "nordix",
+    "npx",
     "openinfra",
     "openstackmachinetemplate",
     "presubmits",
+    "renovate",
     "tmpfs",
     "xerces"
   ]

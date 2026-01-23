@@ -75,6 +75,20 @@ presubmits:
           value: "TRUE"
         image: ghcr.io/streetsidesoftware/cspell:8.13.3@sha256:03df0e485775a43531c9c0e829227f39b3380796e92faab4166137dc5712d40a
         imagePullPolicy: Always
+  - name: renovate-config-validator
+    run_if_changed: '(renovate\.json|renovate-validator\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/renovate-validator.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/node:24-alpine
+        imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
     agent: jenkins
