@@ -5,7 +5,7 @@
   "enabledManagers": ["custom.regex"],
   "prCreation": "immediate",
   "prHourlyLimit": 0,
-  "prConcurrentLimit": 0,
+  "prConcurrentLimit": 5,
   "automerge": false,
   "labels": ["ok-to-test"],
   "commitMessagePrefix": ":seedling: ",
