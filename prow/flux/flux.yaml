@@ -1,0 +1,40 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  distribution:
+    version: "2.7.5"
+    registry: "ghcr.io/fluxcd"
+    artifact: "oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests"
+  cluster:
+    type: kubernetes
+    size: medium
+  kustomize:
+    patches:
+    # Set tolerations and node selector for all controllers
+    - patch: |
+        - op: add
+          path: /spec/template/spec/tolerations
+          value: []
+        - op: add
+          path: /spec/template/spec/tolerations/-
+          value:
+            key: node-role.kubernetes.io/infra
+            operator: Exists
+            effect: NoSchedule
+        # We add the node selector for node-role.kubernetes.io/infra=""
+        # The key has to be included in the path or it would overwrite any existing nodeSelectors.
+        # We have to write the "/" as "~1" since it is the separator in the path field.
+        # See https://datatracker.ietf.org/doc/html/rfc6901#section-3
+        - op: add
+          path: /spec/template/spec/nodeSelector/node-role.kubernetes.io~1infra
+          value: ""
+      target:
+        kind: Deployment
+  sync:
+    kind: GitRepository
+    url: "https://github.com/metal3-io/project-infra.git"
+    ref: "refs/heads/main"
+    path: "prow/flux"

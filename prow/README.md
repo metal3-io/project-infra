@@ -480,6 +480,11 @@ Metal3 CI ssh key.
       --from-file=config/jobs
    ```
 
+### Enabling GitOps with Flux
+
+After the initial deployment, it is possible to use Flux to automatically apply
+changes. This is currently work-in-progress. See `flux` for more details.
+
 ## Enabling Metal3 prow for new org/repo
 
 Metal3 prow is currently working with two Github organizations(orgs):
