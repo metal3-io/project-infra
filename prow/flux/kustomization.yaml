@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
 - https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.40.0/install.yaml
 - flux.yaml
+- externalsecret.yaml
+- github-dispatch-provider.yaml
+- reconciliation-alert.yaml
 - ../capi
 
 patches:
