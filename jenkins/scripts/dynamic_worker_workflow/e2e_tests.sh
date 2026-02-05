@@ -31,7 +31,7 @@ export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 source "${CI_DIR}/test_env.sh"
 
 # Set KUBERNETES_VERSION and related variables for k8s-upgrade tests
-if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" ]]; then
+if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" || "${GINKGO_FOCUS}" == "in-place-upgrade" ]]; then
     export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
     export FROM_K8S_VERSION="${KUBERNETES_VERSION_UPGRADE_FROM}"
 fi
