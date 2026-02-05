@@ -1,0 +1,76 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+  - default_vars/vars.yaml
+  tasks:
+  - name: Deprovision cluster
+    kubernetes.core.k8s:
+      state: absent
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Cluster
+      namespace: metal3
+      name: test1
+    ignore_errors: true
+
+  - name: Check if cluster deprovisioning started.
+    kubernetes.core.k8s_info:
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Cluster
+      namespace: metal3
+    register: deprovision_cluster
+    retries: 2
+    delay: 20
+    until: (deprovision_cluster is succeeded) and ( (deprovision_cluster.resources | length == 0) or (deprovision_cluster.resources[0].status.phase | lower == "deleting"))
+
+  - name: Wait until 2 BMHs become available after deletion.
+    kubernetes.core.k8s_info:
+      api_version: metal3.io/v1alpha1
+      kind: BareMetalHost
+      namespace: metal3
+    register: bmh
+    retries: 200
+    delay: 30
+    vars:
+      query: "[? status.provisioning.state=='available']"
+    until: (bmh is succeeded) and (bmh.resources | length > 0) and (bmh.resources | json_query(query) | length == 2)
+
+  - name: Wait until no metal3machines are remaining
+    kubernetes.core.k8s_info:
+      api_version: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: Metal3Machine
+      namespace: metal3
+    register: deprovisioned_m3m
+    retries: 150
+    delay: 10
+    until: (deprovisioned_m3m is succeeded) and (deprovisioned_m3m.resources | length == 0)
+
+  - name: Wait until no machines are remaining
+    kubernetes.core.k8s_info:
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Machine
+      namespace: metal3
+    register: deprovisioned_machines
+    retries: 150
+    delay: 3
+    until: (deprovisioned_machines is succeeded) and (deprovisioned_machines.resources | length == 0)
+
+  - name: Wait until no metal3cluster is remaining
+    kubernetes.core.k8s_info:
+      api_version: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: Metal3Cluster
+      namespace: metal3
+    register: deprovisioned_metal3cluster
+    retries: 150
+    delay: 3
+    until: (deprovisioned_metal3cluster is succeeded) and (deprovisioned_metal3cluster.resources | length ==  0)
+
+  - name: Wait until no cluster is remaining
+    kubernetes.core.k8s_info:
+      api_version: cluster.x-k8s.io/v1beta2
+      kind: Cluster
+      namespace: metal3
+    register: deprovisioned_cluster
+    retries: 150
+    delay: 3
+    until: (deprovisioned_cluster is succeeded) and (deprovisioned_cluster.resources | length ==  0)

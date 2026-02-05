@@ -1,0 +1,252 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: KubeadmControlPlane
+metadata:
+  name: test1
+  namespace: metal3
+spec:
+  kubeadmConfigSpec:
+    files:
+    - content: |
+        #!/bin/bash
+        set -e
+        url="$1"
+        dst="$2"
+        filename="$(basename $url)"
+        tmpfile="/tmp/$filename"
+        curl -sSL -w "%{http_code}" "$url" | sed "s:/usr/bin:/usr/local/bin:g" > /tmp/"$filename"
+        http_status=$(cat "$tmpfile" | tail -n 1)
+        if [ "$http_status" != "200" ]; then
+          echo "Error: unable to retrieve $filename file";
+          exit 1;
+        else
+          cat "$tmpfile"| sed '$d' > "$dst";
+        fi
+      owner: root:root
+      path: /usr/local/bin/retrieve.configuration.files.sh
+      permissions: "0755"
+    - content: |
+        ! Configuration File for keepalived
+
+        script k8s_api_check {
+            script "curl -sk https://127.0.0.1:6443/healthz"
+            interval 5
+            timeout 5
+            rise 3
+            fall 3
+        }
+
+        vrrp_instance VI_1 {
+            state MASTER
+            interface eno1.3
+            virtual_router_id 1
+            priority 101
+            advert_int 1
+            virtual_ipaddress {
+                192.168.111.249
+            }
+            track_script {
+                k8s_api_check
+            }
+        }
+      path: /etc/keepalived/keepalived.conf
+    - content: |
+        [connection]
+        id=eno1
+        type=ethernet
+        interface-name=eno1
+        master=ironicendpoint
+        slave-type=bridge
+      owner: root:root
+      path: /etc/NetworkManager/system-connections/eno1.nmconnection
+      permissions: "0600"
+    - content: |
+        [connection]
+        id=ironicendpoint
+        interface-name=ironicendpoint
+        type=bridge
+        autoconnect=yes
+        autoconnect-priority=1
+        [bridge]
+        interface-name=ironicendpoint
+        stp=false
+        [ipv4]
+        address1={{ ds.meta_data.provisioningIP }}/{{ ds.meta_data.provisioningCIDR }}
+        method=manual
+        [ipv6]
+        addr-gen-mode=eui64
+        method=ignore
+      owner: root:root
+      path: /etc/NetworkManager/system-connections/ironicendpoint.nmconnection
+      permissions: "0600"
+    - content: |
+        [registries.search]
+        registries = ['docker.io']
+
+        [registries.insecure]
+        registries = ['192.168.111.1:5000']
+      path: /etc/containers/registries.conf
+    - content: |
+        [connection]
+        id=Vlan eno1.3
+        type=vlan
+        autoconnect-priority=999
+        interface-name=eno1.3
+
+        [vlan]
+        flags=1
+        id=3
+        parent=eno1
+
+        [ipv4]
+        method=auto
+
+        [ipv6]
+        addr-gen-mode=eui64
+        method=ignore
+      owner: root:root
+      path: /etc/NetworkManager/system-connections/eno1.3.nmconnection
+      permissions: "0600"
+    initConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+        - name: node-labels
+          value: metal3.io/uuid={{ ds.meta_data.uuid }}
+        - name: provider-id
+          value: metal3://{{ ds.meta_data.providerid }}
+        - name: feature-gates
+          value: AllAlpha=false
+        - name: cgroup-driver
+          value: systemd
+        - name: container-runtime-endpoint
+          value: unix:///var/run/crio/crio.sock
+        - name: runtime-request-timeout
+          value: 5m
+        name: '{{ ds.meta_data.name }}'
+    joinConfiguration:
+      controlPlane: {}
+      nodeRegistration:
+        kubeletExtraArgs:
+        - name: node-labels
+          value: metal3.io/uuid={{ ds.meta_data.uuid }}
+        - name: provider-id
+          value: metal3://{{ ds.meta_data.providerid }}
+        - name: feature-gates
+          value: AllAlpha=false
+        - name: cgroup-driver
+          value: systemd
+        - name: container-runtime-endpoint
+          value: unix:///var/run/crio/crio.sock
+        - name: runtime-request-timeout
+          value: 5m
+        name: '{{ ds.meta_data.name }}'
+    postKubeadmCommands:
+    - mkdir -p /home/metal3/.kube
+    - chown metal3:metal3 /home/metal3/.kube
+    - cp /etc/kubernetes/admin.conf /home/metal3/.kube/config
+    - chown metal3:metal3 /home/metal3/.kube/config
+    preKubeadmCommands:
+    - systemctl restart NetworkManager.service
+    - nmcli connection load /etc/NetworkManager/system-connections/ironicendpoint.nmconnection
+    - nmcli connection up ironicendpoint
+    - nmcli connection load /etc/NetworkManager/system-connections/eno1.nmconnection
+    - nmcli connection up eno1
+    - nmcli connection load /etc/NetworkManager/system-connections/eno1.3.nmconnection
+    - nmcli connection up /etc/NetworkManager/system-connections/eno1.3.nmconnection
+    - rm /etc/cni/net.d/*
+    - systemctl enable --now keepalived
+    - sleep 30
+    - systemctl enable --now crio
+    - sleep 30
+    - systemctl enable --now kubelet
+    - sleep 120
+    users:
+    - name: metal3
+      sshAuthorizedKeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0NpYlHF/Hobhx7raalkw6lzgExxJvhYCxlc6/8Ju2xH/TDqOXnKa/VaZDWBjOHJmP+NVgBj+vnUsA/CI+PVdCd1QkMMle4BBSfWiPrbVF+cYeUjx9P1kBQLPZ70n9pi291hqW8TwF3ZrYIgr3arCPmBrYQW2dNChhaLFe57DOIgMClmFirsl+pwNPiqudEzfmQd8QbP8qnGxzT+LR3yc6W1F4ismWpMWU0gKSy6EdPh37D0eq5xW8KK5h9jV22Y1spEJrYpmyNj/Ks5Z7d7h/LWLpmeUMNh2+9+UAHM8eemeCBT4ICKuBUK0qMfc7VpeqNmzwKsvyOE1/d1v/gQn7GtMr7oUazGpjlGOrafblIXQxpCzDayKmWNca1P6/SR4Qz2YcgkL0o4VwkyfP/MxvaNUteNj3ZqOjJrVDfOIwQEcMC6k1p1Gx3CLpalg6OQ/eXfOOZSTFvjrH3EU2cKjLRhbXjKP/bt/eaIk7m/DdUUs7kE7HD88mSxf/v9CYURM=
+        metal3ci@eselda13u31s02
+      sudo: ALL=(ALL) NOPASSWD:ALL
+  machineTemplate:
+    spec:
+      deletion:
+        nodeDrainTimeoutSeconds: 0
+      infrastructureRef:
+        apiGroup: infrastructure.cluster.x-k8s.io
+        kind: Metal3MachineTemplate
+        name: test1-controlplane
+  replicas: 1
+  rollout:
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+  version: v1.34.1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3MachineTemplate
+metadata:
+  name: test1-controlplane
+  namespace: metal3
+spec:
+  template:
+    spec:
+      hostSelector:
+        matchLabels:
+      dataTemplate:
+        name: test1-controlplane-template
+      image:
+        checksum: http://172.22.0.1/images/CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum
+        checksumType: sha256
+        format: raw
+        url: http://172.22.0.1/images/CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3DataTemplate
+metadata:
+  name: test1-controlplane-template
+  namespace: metal3
+spec:
+  clusterName: test1
+  metaData:
+    ipAddressesFromIPPool:
+    - key: provisioningIP
+      name: provisioning-pool
+    objectNames:
+    - key: name
+      object: machine
+    - key: local-hostname
+      object: machine
+    - key: local_hostname
+      object: machine
+    prefixesFromIPPool:
+    - key: provisioningCIDR
+      name: provisioning-pool
+  networkData:
+    links:
+      ethernets:
+      - id: eno1
+        macAddress:
+          fromHostInterface: eno1
+        type: phy
+      - id: eno2
+        macAddress:
+          fromHostInterface: eno2
+        type: phy
+      vlans:
+      - id: vlan3
+        macAddress:
+          fromHostInterface: eno1
+        mtu: 1500
+        vlanID: 3
+        vlanLink: eno1
+    networks:
+      ipv4:
+      - id: externalv4
+        ipAddressFromIPPool: externalv4-pool
+        link: vlan3
+        routes:
+        - gateway:
+            fromIPPool: externalv4-pool
+          network: 0.0.0.0
+          prefix: 0
+    services:
+      dns:
+      - 8.8.8.8
