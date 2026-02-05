@@ -90,7 +90,7 @@ approve:
   lgtm_acts_as_approve: false
 
 blunderbuss:
-  max_request_count: 2
+  max_request_count: 3
   use_status_availability: true
 
 external_plugins:
