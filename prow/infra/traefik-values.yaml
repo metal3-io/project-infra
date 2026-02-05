@@ -1,0 +1,47 @@
+providers:
+  kubernetesIngress:
+    enabled: false
+  kubernetesGateway:
+    enabled: true
+gateway:
+  listeners:
+    web:
+      port: 8000
+      hostname: "prow.apps.test.metal3.io"
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+    websecure:
+      port: 8443
+      hostname: "prow.apps.test.metal3.io"
+      protocol: HTTPS
+      namespacePolicy:
+        from: All
+      certificateRefs:
+      - name: metal3-io-tls
+        namespace: prow
+
+# Pod replicas for HA
+deployment:
+  replicas: 2
+
+# Tolerations for infra nodes
+tolerations:
+- key: node-role.kubernetes.io/infra
+  operator: Exists
+  effect: NoSchedule
+# Node selector for infra nodes
+nodeSelector:
+  node-role.kubernetes.io/infra: ""
+
+# Pod Disruption Budget for HA
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 129.192.83.117
+  externalTrafficPolicy: Cluster
+  annotations:
+    loadbalancer.openstack.org/keep-floatingip: "true"
