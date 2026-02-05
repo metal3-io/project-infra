@@ -1,0 +1,63 @@
+name: Flux reconcile commenter
+
+on:
+  repository_dispatch:
+    # See https://fluxoperator.dev/docs/crd/provider/#github-dispatch
+    types: [Kustomization/flux-system.flux-system]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.client_payload.metadata && github.event.client_payload.metadata.notifier == 'github-dispatch-workflow'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Annotate merged PR
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const dispatchEvent = context.payload;
+          const fluxEvent = dispatchEvent.client_payload;
+
+          const revision =
+            fluxEvent.metadata['kustomize.toolkit.fluxcd.io/revision'];
+
+          // Parse something like refs/heads/main@sha1:f4b16c3b8783953e4a634c4836e623fe3ee2a2bd
+          let commitSha = (revision.includes('/') ? revision.split('/').pop() : revision);
+          let commitSha = (revision.includes('@') ? revision.split('@').pop() : commitSha);
+          let commitSha = (revision.includes(':') ? revision.split(':').pop() : commitSha);
+
+          const { owner, repo } = context.repo;
+          const prs = await github.paginate(
+            github.rest.repos.listPullRequestsAssociatedWithCommit,
+            { owner, repo, commit_sha: commitSha }
+          );
+
+          const mergedPR = prs.find((pr) => pr.merged_at);
+          if (!mergedPR) {
+            core.info(`No merged PR found for commit ${commitSha}; skipping comment.`);
+            return;
+          }
+
+          const body = [
+            `Flux reconciliation from this PR at ${fluxEvent.timestamp}.`;,
+            '',
+            `- **Object**: ${JSON.stringify(fluxEvent.involvedObject)}`,
+            `- **Metadata**: ${fluxEvent.metadata}`,
+            `- **Severity**: ${fluxEvent.severity}`,
+            `- **Reason**: ${fluxEvent.reason}`,
+            `- **Controller**: ${fluxEvent.reportingController}`,
+            `- **Message**: ${fluxEvent.message}`,
+          ].join('\n');
+
+          await github.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: mergedPR.number,
+            body
+          });
+
+          core.info(`Posted comment for commit ${commitSha} on PR #${mergedPR.number}.`);
