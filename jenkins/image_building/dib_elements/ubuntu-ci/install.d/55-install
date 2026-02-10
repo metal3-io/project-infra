@@ -13,7 +13,8 @@ sudo apt-get install -y \
   python-is-python3 \
   chrony \
   qemu-system \
-  qemu-utils
+  qemu-utils \
+  python3.12-venv
 
 # Configure
 sudo chronyc -a 'burst 4/4' && sudo chronyc -a makestep
@@ -56,3 +57,6 @@ sudo -u metal3ci bash -c 'echo "export DOCKER_BUILDKIT=1" >> /home/metal3ci/.bas
 
 # Add metal3ci user to libvirt group
 sudo adduser metal3ci libvirt
+
+sudo -u metal3ci bash -c 'python3 -m venv /home/metal3ci/civenv'
+sudo -u metal3ci bash -c '. /home/metal3ci/civenv/bin/activate && pip install python-openstackclient==7.0.0 && echo "METAL3CI VENV PACKAGES:" && pip freeze'
