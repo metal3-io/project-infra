@@ -27,7 +27,7 @@ Run locally before PRs:
 | `./hack/shellcheck.sh` | Shell script linting |
 | `./hack/markdownlint.sh` | Markdown linting |
 | `./hack/spellcheck.sh` | Spell checking |
-| `make -C prow validate` | Validate Prow config |
+| `cd prow && make validate` | Validate Prow config |
 
 ## Code Conventions
 
@@ -46,7 +46,7 @@ Run locally before PRs:
 ### Modifying Prow Config
 
 1. Edit files in `prow/config/`
-1. Run `make -C prow validate`
+1. Run `cd prow && make validate`
 1. Changes apply on merge to main
 
 ## Code Review Guidelines
@@ -63,7 +63,7 @@ Focus on: `jenkins/jobs/`, `prow/config/`, `jenkins/scripts/`.
 ## AI Agent Guidelines
 
 1. Run linters before committing
-1. Validate Prow changes with `make -C prow validate`
+1. Validate Prow changes with `cd prow && make validate`
 1. Follow existing Groovy job patterns
 1. Update `.cspell-config.json` for new terms
 
