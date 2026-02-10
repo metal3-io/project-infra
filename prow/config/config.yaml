@@ -52,6 +52,9 @@ tide:
     Nordix/metal3-dev-tools: rebase
     Nordix/metal3-clusterapi-docs: rebase
     Nordix/sles-ironic-python-agent-builder: rebase
+  squash_label: tide/merge-method-squash
+  rebase_label: tide/merge-method-rebase
+  merge_label: tide/merge-method-merge
   queries:
   - repos:
     - metal3-io/.github
