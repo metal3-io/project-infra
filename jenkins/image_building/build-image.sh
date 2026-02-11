@@ -55,7 +55,7 @@ fi
 
 # shellcheck source=/dev/null
 . venv/bin/activate
-pip install --no-cache-dir diskimage-builder==3.33.0
+pip install --no-cache-dir "diskimage-builder==3.40.2"
 
 export ELEMENTS_PATH="${current_dir}/dib_elements"
 export DIB_DEV_USER_USERNAME="metal3ci"

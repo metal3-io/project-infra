@@ -43,18 +43,21 @@ cleanup() {
     done
 }
 
-sudo apt install -y python3.12-venv
+WORK_VENV="${HOME}/civenv"
+WORK_VENV_ACTIVATOR="${WORK_VENV}/bin/activate"
 
-rm -rf venv
-python3 -m venv venv
+if [[ ! -x "${WORK_VENV_ACTIVATOR}" ]]; then
+    sudo apt-get update
+    sudo apt-get install -y python3.12-venv
+    python3 -m venv "${WORK_VENV}"
+fi
 
 # shellcheck source=/dev/null
-. venv/bin/activate
+. "${WORK_VENV_ACTIVATOR}"
 # Install openstack client
 pip install python-openstackclient=="${CLIENT_VERSION}"
 # export openstackclient path
 export PATH="${PATH}:${HOME}/.local/bin"
-
 #unset openstack variables
 unset "${!OS_@}"
 
@@ -72,3 +75,5 @@ cleanup
 
 #unset openstack variables
 unset "${!OS_@}"
+# deactiveate the python venv (for non ci use)
+deactivate
