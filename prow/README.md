@@ -55,9 +55,11 @@ A webhook must be configured in GitHub to
 send events to Prow and a DNS record must be configured so that
 <https://prow.apps.test.metal3.io> points to the IP where Prow can be accessed.
 
-The DNS records are managed by CNCF for us. Any changes to them can be done
-through the
-[service desk](https://cncfservicedesk.atlassian.net/servicedesk/customer/user/login?destination=portals).
+The DNS records are managed through
+[Netlify](https://app.netlify.com/teams/cncf-projects/dns/metal3.io). CNCF
+controls the Netlify project. Maintainers can request access through the
+[service
+desk](https://cncfservicedesk.atlassian.net/servicedesk/customer/user/login?destination=portals).
 All project maintainers have (or can request) access. See
 [their FAQ](https://github.com/cncf/servicedesk#how-do-i-file-a-ticket-with-the-service-desk)
 for more details.
@@ -454,6 +456,12 @@ Metal3 CI ssh key.
    s3cmd --config .s3cfg mb s3://prow-logs
    s3cmd --config .s3cfg mb s3://tide
    s3cmd --config .s3cfg mb s3://status-reconciler
+   ```
+
+1. Create S3 Lifecycle rules to automatically delete old logs.
+
+   ```bash
+   s3cmd --config .s3cfg setlifecycle s3/lifecycle-policy.xml s3://prow-logs
    ```
 
 1. Deploy Prow
