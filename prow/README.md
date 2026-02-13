@@ -448,6 +448,21 @@ Metal3 CI ssh key.
    kubectl apply -k infra
    ```
 
+1. Add Gateway Api controller, ClusterIssuer and StorageClass
+
+   ```bash
+   helm repo add traefik https://traefik.github.io/charts
+   helm repo update
+   helm install traefik traefik/traefik -f prow/infra/traefik-values.yaml -n traefik
+   
+   # Make sure trafik sees the necessary resources in prow namespace
+   kubectl apply -f prow/infra/referencegrant.yaml
+
+   kubectl apply -f prow/infra/storageclass.yaml
+   kubectl apply -f prow/infra/cluster-issuer-http.yaml
+   ```
+
+
 1. Set up S3 object storage buckets
 
    ```bash
