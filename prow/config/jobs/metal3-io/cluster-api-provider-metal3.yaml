@@ -112,22 +112,22 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.6.7-alpine@sha256:824e0c248809e4b2da2a768b16b107cf17ada88a89ec6aa6050e566ba93ebbc6
         imagePullPolicy: Always
-  # - name: build
-  #   branches:
-  #   - main
-  #   run_if_changed: "^api|^test|^Makefile$|^hack/build.sh$"
-  #   decorate: true
-  #   spec:
-  #     containers:
-  #     - args:
-  #       - ./hack/build.sh
-  #       command:
-  #       - sh
-  #       env:
-  #       - name: IS_CONTAINER
-  #         value: "TRUE"
-  #       image: docker.io/golang:1.24
-  #       imagePullPolicy: Always
+  - name: build
+    branches:
+    - main
+    run_if_changed: "^api|^test|^Makefile$|^hack/build.sh$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/build.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.24
+        imagePullPolicy: Always
   - name: build-fkas
     branches:
     - main
