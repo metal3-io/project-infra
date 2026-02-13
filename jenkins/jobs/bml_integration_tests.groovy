@@ -1,10 +1,8 @@
 // Global variables
-def TIMEOUT = 10800, ci_git_url, ci_git_branch, ci_git_base, refspec
-def UPDATED_REPO, CURRENT_START_TIME, CURRENT_END_TIME
+def TIMEOUT = 14400, ci_git_url, ci_git_branch, ci_git_base, refspec
+def CURRENT_START_TIME, CURRENT_END_TIME
 
 script {
-    UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
-    echo "Test triggered from ${UPDATED_REPO}"
     ci_git_url = 'https://github.com/metal3-io/project-infra.git'
 
     if ("${env.REPO_OWNER}" == 'metal3-io' && "${env.REPO_NAME}" == 'project-infra') {
@@ -27,23 +25,8 @@ pipeline {
     agent { label 'metal3ci-bml-jenkins-worker' }
     environment {
         METAL3_CI_USER = 'metal3ci'
-        REPO_ORG = "${env.REPO_OWNER}"
-        REPO_NAME = "${env.REPO_NAME}"
-        UPDATED_REPO = "${UPDATED_REPO}"
-        REPO_BRANCH = "${env.PULL_BASE_REF}"
-        UPDATED_BRANCH = "${env.PULL_PULL_SHA}"
         BUILD_TAG = "${env.BUILD_TAG}"
-        PR_ID = "${env.PULL_NUMBER}"
         IMAGE_OS = "${IMAGE_OS}"
-        CAPM3RELEASEBRANCH = "${capm3_release_branch}"
-        BMORELEASEBRANCH = "${bmo_release_branch}"
-        NUM_NODES = "${NUM_NODES}"
-        WORKER_MACHINE_COUNT = 1
-        CONTROL_PLANE_MACHINE_COUNT = 1
-        CAPI_VERSION = "${CAPI_VERSION}"
-        CAPM3_VERSION = "${CAPM3_VERSION}"
-        BOOTSTRAP_CLUSTER = 'minikube'
-        EXTERNAL_VLAN_ID = '3'
     }
     stages {
         stage('SCM') {
@@ -71,7 +54,7 @@ pipeline {
                 }
             }
         }
-        stage('Run integration test') {
+        stage('Clean up lab before test') {
             options {
                 timeout(time: TIMEOUT, unit: 'SECONDS')
             }
@@ -81,7 +64,68 @@ pipeline {
                     usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
                     string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
                     timestamps {
-                        sh './jenkins/scripts/bare_metal_lab/bml_integration_test.sh'
+                        sh './jenkins/scripts/bare_metal_lab/bml_test.sh clean'
+                    }
+                }
+            }
+        }
+        stage('Set up management cluster') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
+                    usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
+                    string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    timestamps {
+                        sh './jenkins/scripts/bare_metal_lab/bml_test.sh deploy'
+                    }
+                }
+            }
+        }
+        stage('Provision target cluster') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
+                    usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
+                    string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    timestamps {
+                        sh './jenkins/scripts/bare_metal_lab/bml_test.sh run-test'
+                    }
+                }
+            }
+        }
+        stage('Run pod scaling tests') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
+                    usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
+                    string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    timestamps {
+                        sh 'echo "Pod scaling tests are currently disabled"'
+                        /* sh './jenkins/scripts/bare_metal_lab/bml_test.sh pod-scale' */
+                    }
+                }
+            }
+        }
+        stage('Teardown provisioned target cluster after test') {
+            options {
+                timeout(time: TIMEOUT, unit: 'SECONDS')
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
+                    usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
+                    string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                    timestamps {
+                        sh './jenkins/scripts/bare_metal_lab/bml_test.sh teardown'
                     }
                 }
             }
@@ -96,20 +140,13 @@ pipeline {
                     currentBuild.result = 'FAILURE'
                 }
             }
-            withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
-                usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD')]) {
-                timestamps {
-                    sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
-                    archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
-                }
-            }
         }
         success {
             withCredentials([sshUserPrivateKey(credentialsId: 'metal3ci_city_cloud_ssh_keypair', keyFileVariable: 'METAL3_CI_USER_KEY'),
                 usernamePassword(credentialsId: 'metal3-bml-ilo-credentials', usernameVariable: 'BML_ILO_USERNAME', passwordVariable: 'BML_ILO_PASSWORD'),
                 string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
                 timestamps {
-                    sh './jenkins/scripts/bare_metal_lab/bml_cleanup.sh'
+                    sh './jenkins/scripts/bare_metal_lab/bml_test.sh clean'
                 }
             }
         }
