@@ -115,7 +115,7 @@ presubmits:
   - name: build
     branches:
     - main
-    run_if_changed: "^api|^test|^Makefile$|^hack/build.sh$"
+    run_if_changed: "^api/.*|^test/.*|^Makefile$|^hack/build.sh$"
     decorate: true
     spec:
       containers:
