@@ -6,12 +6,13 @@ set -eu
 # Runs in main integration cleanup job defined in jjb.
 # Consumed by clean_resources.pipeline and cleans any leftover metal3ci vms
 # every 6 hours.
-#   Requires:
-#     - source openstack.rc file
+# Requires:
+#  - source openstack.rc file
 # Usage:
 #  clean_resources.sh
 #
 CLIENT_VERSION="7.0.0"
+JENKINS_INSTANCE="https://jenkins.nordix.org/"
 
 cleanup() {
     # Get the current date and time in seconds since the epoch
@@ -26,7 +27,7 @@ cleanup() {
         if [[ "${server_name}" == metal3ci-* ]]; then
             # Get the creation date of the server
             created_at=$(openstack server show "${server_id}" -f value -c created)
-
+            jenkins_ins="$(openstack server show "${server_id}" -f json -c properties | jq -r '.properties."jenkins-instance"')"
             # Convert server creation date to seconds since the epoch
             server_time=$(date --date="${created_at}" +%s)
 
@@ -34,8 +35,10 @@ cleanup() {
             server_age=$((current_time - server_time))
 
             # Check if the server is older than 6 hours
-            if [[ "${server_age}" -gt "${age_threshold}" ]]; then
-                echo "Deleting server: ${server_id} (Name: ${server_name}, Created at: ${created_at})"
+            if [[ "${server_age}" -gt "${age_threshold}" ]]  && \
+               [[ "${JENKINS_INSTANCE}" == "${jenkins_ins}" ]]; then
+                echo -n "Deleting server: ${server_id} (Name: ${server_name}, "
+                echo "Created at: ${created_at})"
                 # Delete the server
                 openstack server delete "${server_id}"
             fi
@@ -46,7 +49,7 @@ cleanup() {
 WORK_VENV="${HOME}/civenv"
 WORK_VENV_ACTIVATOR="${WORK_VENV}/bin/activate"
 
-if [[ ! -x "${WORK_VENV_ACTIVATOR}" ]]; then
+if [[ ! -r "${WORK_VENV_ACTIVATOR}" ]]; then
     sudo apt-get update
     sudo apt-get install -y python3.12-venv
     python3 -m venv "${WORK_VENV}"
