@@ -91,6 +91,7 @@ fetch_manifests()
       ippool
       ipclaim
       ipaddress
+      ironic
       m3data
       m3dataclaim
       m3datatemplate
