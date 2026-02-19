@@ -24,7 +24,7 @@ export TARGET_NODE_MEMORY="${TARGET_NODE_MEMORY:-4096}"
 export IRONIC_INSTALL_TYPE="${IRONIC_INSTALL_TYPE:-rpm}"
 export IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE:-false}"
 export BUILD_IRONIC_IMAGE_LOCALLY=""
-export USE_IRSO="${USE_IRSO:-false}"
+export USE_IRSO="${USE_IRSO:-true}"
 
 if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
     IRONIC_FROM_SOURCE="true"
