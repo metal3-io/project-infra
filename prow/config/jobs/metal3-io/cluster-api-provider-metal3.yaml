@@ -112,22 +112,25 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.6.7-alpine@sha256:824e0c248809e4b2da2a768b16b107cf17ada88a89ec6aa6050e566ba93ebbc6
         imagePullPolicy: Always
-  - name: build
-    branches:
-    - main
-    run_if_changed: "^api/.*|^test/.*|^Makefile$|^hack/build.sh$"
-    decorate: true
-    spec:
-      containers:
-      - args:
-        - ./hack/build.sh
-        command:
-        - sh
-        env:
-        - name: IS_CONTAINER
-          value: "TRUE"
-        image: docker.io/golang:1.24
-        imagePullPolicy: Always
+  ## NOTE: This job was constantly re-running on all open PRs.
+  ## We have not been able to determine the root cause. Removing it for now.
+  ## We can try to add it again after cutting v1.13 for example.
+  # - name: build
+  #   branches:
+  #   - main
+  #   run_if_changed: "^api/.*|^test/.*|^Makefile$|^hack/build.sh$"
+  #   decorate: true
+  #   spec:
+  #     containers:
+  #     - args:
+  #       - ./hack/build.sh
+  #       command:
+  #       - sh
+  #       env:
+  #       - name: IS_CONTAINER
+  #         value: "TRUE"
+  #       image: docker.io/golang:1.24
+  #       imagePullPolicy: Always
   - name: build-fkas
     branches:
     - main
