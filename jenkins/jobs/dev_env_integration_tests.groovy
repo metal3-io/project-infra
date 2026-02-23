@@ -16,7 +16,7 @@ script {
         ci_git_branch = 'main'
         refspec = '+refs/heads/*:refs/remotes/origin/*'
     }
-    agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+    agent_label = "metal3ci-4c16gb-${IMAGE_OS}-jnlp"
 }
 
 pipeline {

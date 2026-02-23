@@ -8,7 +8,7 @@ script {
 }
 
 pipeline {
-    agent { label 'metal3ci-8c16gb-ubuntu' }
+    agent { label 'metal3ci-4c16gb-ubuntu-jnlp' }
     environment {
         OS_USERNAME = 'metal3ci'
         OS_AUTH_URL = 'https://kna1.citycloud.com:5000'
