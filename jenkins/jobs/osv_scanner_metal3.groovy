@@ -74,7 +74,7 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
     }
 }
 
-script { agent_label = 'metal3ci-8c32gb-ubuntu' }
+script { agent_label = 'metal3ci-8c32gb-ubuntu-jnlp' }
 
 pipeline {
     agent { label agent_label }

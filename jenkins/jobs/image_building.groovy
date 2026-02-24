@@ -37,7 +37,7 @@ pipeline {
     stages {
         stage('SCM') {
             matrix {
-                agent { label 'metal3ci-8c16gb-ubuntu' }
+                agent { label 'metal3ci-4c16gb-ubuntu-jnlp' }
                 options { ansiColor('xterm') }
                 axes {
                     axis {
@@ -125,7 +125,7 @@ pipeline {
                         }
                     }
                     stage('Verify the new CI image') {
-                        agent { label "metal3ci-${IMAGE_OS}-staging" }
+                        agent { label "metal3ci-${IMAGE_OS}-staging-jnlp" }
                         options {
                             timeout(time: 2, unit: 'HOURS')
                         }

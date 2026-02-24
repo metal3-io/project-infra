@@ -20,30 +20,30 @@ script {
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
     if ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
-        agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+        agent_label = "metal3ci-4c16gb-${IMAGE_OS}-jnlp"
         TIMEOUT = 10800 // 3h
   } else if ( "${GINKGO_FOCUS}" == 'pivoting' ) {
         BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
         TIMEOUT = 18000 // 5h for node reuse
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
   } else if ( "${GINKGO_FOCUS}" == 'remediation' ) {
         BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
         TIMEOUT = 18000 // 5h for remediation
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
         TIMEOUT = 14400 // 4h
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade-n3' ) {
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
         TIMEOUT = 18000 // 5h
   } else if ( "${GINKGO_FOCUS}" == 'k8s-conformance' ) {
         TIMEOUT = 7200 // 2h
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
   } else if ( "${GINKGO_FOCUS}" == 'capi-md-tests'  || "${GINKGO_FOCUS}" == 'scalability') {
         TIMEOUT = 10800 // 3h
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
   } else {
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
         BUILD_TAG = "${env.BUILD_TAG}-other-features"
         GINKGO_SKIP = 'pivoting remediation' // Allow non pivoting features
     }

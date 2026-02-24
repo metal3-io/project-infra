@@ -20,9 +20,9 @@ script {
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
     if ( "${GINKGO_FOCUS}" == 'integration' ) {
-        agent_label = "metal3ci-8c16gb-${IMAGE_OS}"
+        agent_label = "metal3ci-4c16gb-${IMAGE_OS}-jnlp"
     } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}"
+        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
     }
 }
 
