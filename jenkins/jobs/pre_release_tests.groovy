@@ -50,7 +50,7 @@ pipeline {
         GINKGO_SKIP = "${GINKGO_SKIP}"
         NUM_NODES = "${NUM_NODES}"
         TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
-        KUBERNETES_VERSION_UPGRADE_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
+        KUBERNETES_VERSION_FROM = "${KUBERNETES_VERSION_UPGRADE_FROM}"
     }
     stages {
         stage('Checkout CI Repo') {
