@@ -16,3 +16,4 @@ ci-base element depends following elements.
 * [openssh-server](https://docs.openstack.org/diskimage-builder/latest/elements/openssh-server/README.html)
 * [pkg-map](https://docs.openstack.org/diskimage-builder/latest/elements/pkg-map/README.html)
 * [package-installs](https://docs.openstack.org/diskimage-builder/latest/elements/package-installs/README.html)
+* [cloud-init-datasources](https://opendev.org/openstack/diskimage-builder/src/branch/master/diskimage_builder/elements/cloud-init-datasources)

@@ -4,3 +4,4 @@ devuser
 openssh-server
 pkg-map
 package-installs
+cloud-init-datasources
