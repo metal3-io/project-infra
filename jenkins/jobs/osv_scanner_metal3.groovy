@@ -316,12 +316,11 @@ pipeline {
                     def tasks = [:]
 
                     REPO_BRANCH_MAP.each { entry ->
-                        // Branch scans
-                        entry.branches.each { br ->
-                            def label = "${entry.name}-branch-${br}"
-                            tasks[label] = {
+                        def repoEntry = entry
+                        tasks[repoEntry.name] = {
+                            repoEntry.branches.each { br ->
                                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                    runOsvScan(entry.name, 'branch', br, entry.url, GO_VERSION, 'branch_scan_failures.txt')
+                                    runOsvScan(repoEntry.name, 'branch', br, repoEntry.url, GO_VERSION, 'branch_scan_failures.txt')
                                 }
                             }
                         }
@@ -342,12 +341,11 @@ pipeline {
                     def tasks = [:]
 
                     REPO_BRANCH_MAP.each { entry ->
-                        // Tag scans
-                        entry.tags.each { tg ->
-                            def label = "${entry.name}-tag-${tg}".replace('/', '_')
-                            tasks[label] = {
+                        def repoEntry = entry
+                        tasks[repoEntry.name] = {
+                            repoEntry.tags.each { tg ->
                                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                    runOsvScan(entry.name, 'tag', tg, entry.url, GO_VERSION, 'tag_scan_failures.txt')
+                                    runOsvScan(repoEntry.name, 'tag', tg, repoEntry.url, GO_VERSION, 'tag_scan_failures.txt')
                                 }
                             }
                         }
