@@ -18,7 +18,7 @@ spec:
   bootMACAddress: {{ bmh.mac }}
   bootMode: legacy
   bmc:
-    address: ilo4://{{ bmh.ip }}
+    address: ipmi://{{ bmh.ip }}:623
     credentialsName: bml-ilo-login-secret-{{ bmh.id }}
     disableCertificateVerification: true
   rootDeviceHints:

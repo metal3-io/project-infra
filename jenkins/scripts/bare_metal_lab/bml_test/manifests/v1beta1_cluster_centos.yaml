@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1beta2
+kind: Cluster
+metadata:
+  name: test1
+  namespace: metal3
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/18
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneRef:
+    apiGroup: controlplane.cluster.x-k8s.io
+    kind: KubeadmControlPlane
+    name: test1
+  infrastructureRef:
+    apiGroup: infrastructure.cluster.x-k8s.io
+    kind: Metal3Cluster
+    name: test1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: Metal3Cluster
+metadata:
+  name: test1
+  namespace: metal3
+spec:
+  controlPlaneEndpoint:
+    host: 192.168.111.249
+    port: 6443
+  noCloudProvider: true
+---
+apiVersion: ipam.metal3.io/v1alpha1
+kind: IPPool
+metadata:
+  name: provisioning-pool
+  namespace: metal3
+spec:
+  clusterName: test1
+  namePrefix: test1-prov
+  pools:
+  - end: 172.22.0.200
+    start: 172.22.0.100
+  prefix: 24
+---
+apiVersion: ipam.metal3.io/v1alpha1
+kind: IPPool
+metadata:
+  name: externalv4-pool
+  namespace: metal3
+spec:
+  clusterName: test1
+  gateway: 192.168.111.1
+  namePrefix: test1-bmv4
+  pools:
+  - end: 192.168.111.200
+    start: 192.168.111.100
+  prefix: 24

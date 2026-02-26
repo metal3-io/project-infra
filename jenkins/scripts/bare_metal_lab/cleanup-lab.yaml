@@ -4,5 +4,39 @@
   vars_files:
   - default_vars/vars.yaml
   tasks:
-  - name: Cleanup Bare Metal Lab
-    include_tasks: tasks/cleanup-tasks.yaml
+
+  - name: Shrink size of syslog
+    become: true
+    become_user: root
+    shell:
+      cmd: truncate --size 10737418240 /var/log/syslog && truncate --size 10737418240 /var/log/syslog.1   2>/dev/null
+    ignore_errors: true
+
+  - name: Delete existing ssh connections to HPE CLI
+    shell:
+      cmd: |
+        killall ssh
+        exit 0
+        EOT
+
+  - name: Power off BMHs
+    community.general.hpilo_boot:
+      host: "{{ item.ip }}"
+      login: "{{ bml_ilo_username }}"
+      password: "{{ bml_ilo_password }}"
+      state: poweroff
+    with_items: "{{ bare_metal_hosts }}"
+    ignore_errors: true
+
+  - name: Run clean up script
+    shell:
+      cmd: "./bml_test/clean.sh"
+    ignore_errors: true
+
+  # - name: Prune docker containers, images and volumes
+  #   ansible.builtin.command: "{{ item }}"
+  #   loop:
+  #   - docker container prune --force
+  #   - docker image prune --force --all
+  #   - docker volume prune --force
+  #   - docker system prune --force --all
