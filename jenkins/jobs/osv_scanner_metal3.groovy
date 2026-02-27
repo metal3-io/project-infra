@@ -40,7 +40,7 @@ def IRSO_GIT_URL  = "${METAL3_GITHUB_BASE}/ironic-standalone-operator.git"
 
 def DEFAULT_SCAN_ARGS = '--recursive'
 def GO_VERSION = ''
-def OSV_SCANNER_COMMIT = '8b6727b2c439cdea8bc3a033bf7c76d76cbaee08'  // v2.2.4
+def OSV_SCANNER_COMMIT = 'b97d1de7d8c3c7de8c11308b3d9cb5bbf3f7a0e9'  // v2.3.3
 
 def runOsvScan = { String repoName, String refType, String ref, String repoUrl, String goVersion, String failuresFile ->
     def workDir = "work-${repoName}-${refType}-${ref}".replace('/', '_')
