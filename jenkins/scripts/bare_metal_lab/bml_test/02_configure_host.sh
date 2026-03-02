@@ -8,17 +8,17 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . "${SCRIPTDIR}"/lib/vars.sh
 
 USER="$(whoami)"
-sudo mkdir -p "${IRONIC_DATA_DIR}"
+sudo mkdir -p "${IRONIC_DATA_DIR}/html/images"
 sudo chown -R "${USER}:${USER}" "${IRONIC_DATA_DIR}"
 
 
 # Download required images for ironic if not already present
-# pushd "${IRONIC_DATA_DIR}/html/images"
-# wget --no-verbose --no-check-certificate https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.34.1/CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2
-# qemu-img convert -O raw CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2 CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
-# sha256sum "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img" | awk '{print $1}' > "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum"
-# wget https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib/ipa-centos9-master.tar.gz
-# popd
+pushd "${IRONIC_DATA_DIR}/html/images"
+wget --no-check-certificate https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.34.1/CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2
+qemu-img convert -O raw CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2 CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
+sha256sum "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img" | awk '{print $1}' > "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum"
+wget https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib/ipa-centos9-master.tar.gz
+popd
 
 # shellcheck disable=SC1091
 source "${SCRIPTDIR}"/lib/ironic_basic_auth.sh
@@ -120,7 +120,7 @@ minikube config set driver kvm2
 minikube config set memory 4096
 minikube config set container-runtime containerd
 minikube config set cpus 4
-minikube config set iso-url file://"${HOME}"/.minikube/cache/iso/minikube-v1.37.0-amd64.iso
+# minikube config set iso-url file://"${HOME}"/.minikube/cache/iso/minikube-v1.37.0-amd64.iso
 
 init_minikube
 

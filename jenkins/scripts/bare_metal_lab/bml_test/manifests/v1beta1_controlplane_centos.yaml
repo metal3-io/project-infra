@@ -209,6 +209,8 @@ spec:
     ipAddressesFromIPPool:
     - key: provisioningIP
       name: provisioning-pool
+      apiGroup: ""
+      kind: ""
     objectNames:
     - key: name
       object: machine
@@ -219,6 +221,8 @@ spec:
     prefixesFromIPPool:
     - key: provisioningCIDR
       name: provisioning-pool
+      apiGroup: ""
+      kind: ""
   networkData:
     links:
       ethernets:

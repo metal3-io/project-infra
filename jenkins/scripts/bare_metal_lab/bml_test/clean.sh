@@ -25,8 +25,8 @@ minikube delete
 docker ps -a -q | xargs -r docker stop
 docker ps -a -q | xargs -r docker rm
 
-# sudo rm -rf /opt/metal3-dev-env/ironic/*
+sudo rm -rf /opt/metal3-dev-env/ironic/*
 sudo rm -rf  /home/metal3ci/go/src/github.com/metal3-io/*
 
-#sudo rm -rf "${HOME}"/.minikube
+sudo rm -rf "${HOME}"/.minikube
 sudo rm -rf "${CAPI_CONFIG_DIR}"
