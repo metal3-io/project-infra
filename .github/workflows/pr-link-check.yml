@@ -29,9 +29,11 @@ jobs:
         repository: ${{github.event.pull_request.head.repo.full_name}}
 
     - name: Add upstream remote
+      env:
+        UPSTREAM_INPUT: ${{ inputs.upstream }}
       run: |
-        if [[ -n "${{ inputs.upstream }}" ]]; then
-          upstreamurl="${{ inputs.upstream }}"
+        if [[ -n "${UPSTREAM_INPUT}" ]]; then
+          upstreamurl="${UPSTREAM_INPUT}"
         else
           upstreamurl="https://github.com/metal3-io/project-infra.git"
         fi
@@ -39,12 +41,17 @@ jobs:
         git fetch upstream
 
     - name: Checkout base branch
-      run: git checkout "upstream/${{ github.event.pull_request.base.ref }}"
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: git checkout "upstream/${BASE_REF}"
 
     - name: Get list of changed Markdown files (without deletions)
       id: changed-files
+      env:
+        BASE_REF: ${{ github.event.pull_request.base.ref }}
+        HEAD_REF: ${{ github.head_ref }}
       run: |
-        git diff --name-only --diff-filter=d "upstream/${{ github.event.pull_request.base.ref }}...${{ github.head_ref }}" -- "*.md" > changed-files.txt
+        git diff --name-only --diff-filter=d "upstream/${BASE_REF}...${HEAD_REF}" -- "*.md" > changed-files.txt
         cat changed-files.txt
         if [[ -s "changed-files.txt" ]]; then
           echo "Changed md files found"
@@ -52,7 +59,9 @@ jobs:
         fi
 
     - name: Switch to PR branch
-      run: git checkout ${{ github.head_ref }}
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+      run: git checkout "${HEAD_REF}"
 
     - name: Check links in changed files
       if: env.foundFiles == 'true'
