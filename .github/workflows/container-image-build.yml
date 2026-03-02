@@ -87,8 +87,9 @@ jobs:
     steps:
     - name: Set GITHUB_REF and GITHUB_REFNAME to the inputs' ref, or default to github's ref
       id: set_ref
+      env:
+        REF: ${{ inputs.ref || github.ref }}
       run: |
-        REF="${{ inputs.ref || github.ref }}"
         echo "Using INPUT REF: ${REF}"
         REF_NAME="${REF#refs/heads/}"
         REF_NAME="${REF_NAME#refs/tags/}"
@@ -99,6 +100,7 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         ref: ${{ env.GITHUB_REF }}
+        persist-credentials: false
 
     - name: Set GITHUB_REFSHA to sha of the ref
       id: set_refsha
@@ -112,18 +114,21 @@ jobs:
 
     - name: Get image tags and set version label
       id: image_tags
+      env:
+        STEPS_DATE_OUTPUTS_CURRENT_DATE: ${{ steps.date.outputs.current_date }}
+        INPUTS_IMAGE_TAG: ${{ inputs.image-tag }}
       run: |
-        BASE_TAG=$(echo "${{ env.GITHUB_REFNAME }}" | sed 's/\//_/')
-        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${{ steps.date.outputs.current_date }}_${{ env.GITHUB_REFSHA }}"
+        BASE_TAG=$(echo "${GITHUB_REFNAME}" | sed 's/\//_/')
+        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${STEPS_DATE_OUTPUTS_CURRENT_DATE}_${GITHUB_REFSHA}"
 
-        if [[ -n "${{ inputs.image-tag }}" ]]; then
-          IMAGE_TAGS="${{ inputs.image-tag }}"
-          IMAGE_VERSION="${{ inputs.image-tag }}"
-        elif [[ "${{ env.GITHUB_REF }}" == "refs/heads/main" ]]; then
+        if [[ -n "${INPUTS_IMAGE_TAG}" ]]; then
+          IMAGE_TAGS="${INPUTS_IMAGE_TAG}"
+          IMAGE_VERSION="${INPUTS_IMAGE_TAG}"
+        elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
           IMAGE_VERSION="latest"
         else
-          IMAGE_VERSION="${{ env.GITHUB_REFNAME }}"
+          IMAGE_VERSION="${GITHUB_REFNAME}"
         fi
 
         echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
@@ -132,7 +137,7 @@ jobs:
     - name: Download artifact
       id: download-artifact
       if: ${{ inputs.artifact-name != '' }}
-      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
       with:
         name: ${{ inputs.artifact-name }}
         path: /tmp/build-${{ inputs.image-name }}
@@ -150,8 +155,8 @@ jobs:
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
         registry: quay.io
-        username: ${{ secrets.QUAY_USERNAME }}
-        password: ${{ secrets.QUAY_PASSWORD }}
+        username: ${{ secrets.QUAY_USERNAME }} # zizmor: ignore[secrets-outside-env]
+        password: ${{ secrets.QUAY_PASSWORD }} # zizmor: ignore[secrets-outside-env]
         pushImage: ${{ inputs.pushImage }}
         multiPlatform: ${{ inputs.multiPlatform }}
         platform: ${{ inputs.platform }}
@@ -159,11 +164,13 @@ jobs:
     - name: Get image digest
       id: get-digest
       if: ${{ inputs.pushImage }}
+      env:
+        INPUTS_IMAGE_NAME: ${{ inputs.image-name }}
       run: |
-        FIRST_TAG=$(echo "${{ env.IMAGE_TAGS }}" | cut -d',' -f1 | tr -d ' ')
-        DIGEST=$(docker buildx imagetools inspect "quay.io/metal3-io/${{ inputs.image-name }}:${FIRST_TAG}" --format "{{json .Manifest.Digest}}" | tr -d '"')
+        FIRST_TAG=$(echo "${IMAGE_TAGS}" | cut -d',' -f1 | tr -d ' ')
+        DIGEST=$(docker buildx imagetools inspect "quay.io/metal3-io/${INPUTS_IMAGE_NAME}:${FIRST_TAG}" --format "{{json .Manifest.Digest}}" | tr -d '"')
         echo "digest=${DIGEST}" >> "${GITHUB_OUTPUT}"
-        echo "IMAGE_REF=quay.io/metal3-io/${{ inputs.image-name }}@${DIGEST}" >> "${GITHUB_ENV}"
+        echo "IMAGE_REF=quay.io/metal3-io/${INPUTS_IMAGE_NAME}@${DIGEST}" >> "${GITHUB_ENV}"
         echo "Image digest: ${DIGEST}"
 
     # === SBOM Generation (when enabled) ===
@@ -179,14 +186,16 @@ jobs:
 
     - name: Generate Image SBOM
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      env:
+        INPUTS_IMAGE_NAME: ${{ inputs.image-name }}
       run: |
         bom generate \
           -i "${IMAGE_REF}" \
-          --output ${{ inputs.image-name }}-sbom.spdx.json \
+          --output ${INPUTS_IMAGE_NAME}-sbom.spdx.json \
           --format json \
-          --name "${{ inputs.image-name }}-${{ env.IMAGE_VERSION }}"
+          --name "${INPUTS_IMAGE_NAME}-${IMAGE_VERSION}"
         echo "Image SBOM generated for ${IMAGE_REF}"
-        echo "Package count: $(jq '.packages | length' ${{ inputs.image-name }}-sbom.spdx.json)"
+        echo "Package count: $(jq '.packages | length' ${INPUTS_IMAGE_NAME}-sbom.spdx.json)"
 
     - name: Install Cosign
       if: ${{ (inputs.generate-sbom || inputs.sign-image) && inputs.pushImage }}
@@ -200,9 +209,11 @@ jobs:
 
     - name: Attest SBOM to image
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
+      env:
+        INPUTS_IMAGE_NAME: ${{ inputs.image-name }}
       run: |
         cosign attest --yes \
-          --predicate ${{ inputs.image-name }}-sbom.spdx.json \
+          --predicate ${INPUTS_IMAGE_NAME}-sbom.spdx.json \
           --type spdxjson \
           "${IMAGE_REF}"
         echo "SBOM attestation attached to: ${IMAGE_REF}"
@@ -210,7 +221,7 @@ jobs:
     - name: Upload SBOM artifact
       id: upload-sbom
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
-      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: ${{ inputs.image-name }}-sbom
         path: ${{ inputs.image-name }}-sbom.spdx.json
@@ -222,6 +233,6 @@ jobs:
         SLACK_TITLE: "GitHub Action Failed in ${{ github.repository }}"
         SLACK_COLOR: "#FF0000"
         SLACK_MESSAGE: "The GitHub Action workflow failed for ${{ inputs.image-name }} image build."
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }} # zizmor: ignore[secrets-outside-env]
         SLACK_CHANNEL: metal3-github-actions-notify
         SLACK_USERNAME: metal3-github-actions-notify

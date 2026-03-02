@@ -26,8 +26,12 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y yamllint
 
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
 
     - name: Extract YAML snippets from md files
+      env:
+        IGNORE_PATHS: ${{ inputs.ignore-paths || '' }}
       run: |
         set -euo pipefail
         mkdir -p .yaml-snippet
@@ -36,9 +40,9 @@ jobs:
         FIND_ARGS=(. -name "*.md" -not -path "./.git/*")
 
         # Add ignore paths if provided
-        if [[ -n "${{ inputs.ignore-paths || '' }}" ]]; then
-          IFS=',' read -ra IGNORE_PATHS <<< "${{ inputs.ignore-paths || '' }}"
-          for path in "${IGNORE_PATHS[@]}"; do
+        if [[ -n "${IGNORE_PATHS}" ]]; then
+          IFS=',' read -ra IGNORE_PATHS_ARR <<< "${IGNORE_PATHS}"
+          for path in "${IGNORE_PATHS_ARR[@]}"; do
             path=$(echo "${path}" | xargs)
             if [[ -n "${path}" ]]; then
               FIND_ARGS+=(-not -path "${path}")
