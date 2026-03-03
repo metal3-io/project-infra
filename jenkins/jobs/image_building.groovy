@@ -126,6 +126,9 @@ pipeline {
                     }
                     stage('Verify the new CI image') {
                         agent { label "metal3ci-${IMAGE_OS}-staging-jnlp" }
+                        environment {
+                          PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${env.PATH}"
+                        }
                         options {
                             timeout(time: 2, unit: 'HOURS')
                         }
