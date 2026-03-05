@@ -15,6 +15,12 @@
       "matchBaseBranches": ["main"],
       "description": "run at 6am on Mondays",
       "schedule": ["after 6am on monday"]
+    },
+    {
+      "matchPackageNames": ["kubernetes/kubernetes"],
+      "description": "Allow pre-release (alpha/beta/rc) Kubernetes versions for pre-release test tracking",
+      "ignoreUnstable": false,
+      "respectLatest": false
     }
   ],
   "customManagers": [
@@ -25,6 +31,17 @@
         "docker\\.io/(?<depName>[^:]+):(?<currentValue>[^@]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the target Kubernetes minor version for pre-release testing",
+      "managerFilePatterns": ["jenkins/jobs/pre_release_tests\\.groovy$"],
+      "matchStrings": [
+        "KUBERNETES_VERSION = '(?<currentValue>[^']+)'"
+      ],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "kubernetes/kubernetes",
+      "versioningTemplate": "semver"
     }
   ]
 }
