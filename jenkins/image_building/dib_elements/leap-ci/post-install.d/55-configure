@@ -40,3 +40,7 @@ sudo systemctl enable atop.service cron.service sysstat.service
 
 # Change default to shell to bash
 sudo usermod --shell /bin/bash metal3ci
+
+## Add /usr/local/bin/
+sed -i -e "/secure_path/ s@\([\'\"]\?\)\$@:/usr/local/bin/\1@" /etc/sudoers
+visudo -c
