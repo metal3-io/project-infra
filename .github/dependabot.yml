@@ -18,6 +18,8 @@ updates:
   # Ignore major bumps in main, as it breaks the group bump process
   - dependency-name: "*"
     update-types: ["version-update:semver-major"]
+  cooldown:
+    default-days: 7
   labels:
   - "ok-to-test"
 
