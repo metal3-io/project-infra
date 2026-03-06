@@ -177,6 +177,36 @@ pipeline {
                             }
                         }
                     }
+                    stage('Upload the new CI Image to OCI') {
+                        options {
+                            timeout(time: 30, unit: 'MINUTES')
+                        }
+                        when {
+                            // Don't upload from PR tests
+                            expression { ci_git_branch == 'main' }
+                            beforeAgent true
+                            expression { env.IMAGE_TYPE == 'ci' }
+                        }
+                        steps {
+                            withCredentials([
+                              file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'ENV_FILE'),
+                              file(credentialsId: 'metal3-oracle-cloud-api-private-key', variable: 'OCI_KEY_FILE')
+                              ]) {
+                                script {
+                                    def imageName = readFile('image_name.txt').trim()
+                                    echo "Uploading ${imageName} to OCI"
+
+                                    sh """
+                                    set +x
+                                    cp "${OCI_KEY_FILE}" "/tmp/oci_key.pem"
+                                    chmod 600 "/tmp/oci_key.pem"
+                                    source "${ENV_FILE}"
+                                    ./jenkins/image_building/upload-ci-image-oci.sh ${imageName}
+                                    """
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
