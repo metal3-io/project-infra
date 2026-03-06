@@ -79,7 +79,14 @@ pipeline {
             steps {
                 echo "Building ${IMAGE_OS} node image"
                 script {
-                    sh './jenkins/image_building/build-image.sh'
+                    sh '''#!/usr/bin/env bash
+                      if [ "${IMAGE_OS}" == "centos" ]; then
+                        ./jenkins/image_building/selinux_centos_img_build.sh
+                        ./jenkins/image_building/build-image.sh
+                     else
+                        ./jenkins/image_building/build-image.sh
+                     fi
+                    '''
                 }
             }
         }
