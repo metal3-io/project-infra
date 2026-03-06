@@ -43,6 +43,10 @@ elif [[ "${AGENT_OS}" == "centos" ]]; then
   sudo pip3 install virtualenv
 
   python3 -m virtualenv venv
+
+  # configure SELinux on the Jenkins agent OS
+  # shellcheck disable=SC1091
+  "${current_dir}/selinux_centos_img_build.sh"
 elif [[ "${AGENT_OS}" == "opensuse-leap" ]]; then
   sudo zypper refresh
   sudo zypper -n in python3-devel python3-pip qemu
