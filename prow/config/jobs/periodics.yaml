@@ -4,7 +4,7 @@ periodics:
   decorate: true
   spec:
     containers:
-    - image: gcr.io/k8s-staging-test-infra/commenter:v20251212-3f863f26d7
+    - image: gcr.io/k8s-staging-test-infra/commenter:v20260226-ccc15f6c33
       command:
       - commenter
       args:
@@ -37,7 +37,7 @@ periodics:
   decorate: true
   spec:
     containers:
-    - image: gcr.io/k8s-staging-test-infra/commenter:v20251212-3f863f26d7
+    - image: gcr.io/k8s-staging-test-infra/commenter:v20260226-ccc15f6c33
       command:
       - commenter
       args:
@@ -71,7 +71,7 @@ periodics:
     base_ref: main
   spec:
     containers:
-    - image: us-docker.pkg.dev/k8s-infra-prow/images/generic-autobumper:v20260126-ced54ae87
+    - image: us-docker.pkg.dev/k8s-infra-prow/images/generic-autobumper:v20260227-937f24a5d
       command:
       - generic-autobumper
       args:
