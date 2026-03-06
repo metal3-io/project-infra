@@ -24,14 +24,14 @@ export GINKGO_FOCUS="${GINKGO_FOCUS:-}"
 export GINKGO_SKIP="${GINKGO_SKIP:-}"
 export REPO_BRANCH="${REPO_BRANCH}"
 export PR_ID="${PR_ID:-}"
-export KUBERNETES_VERSION_FROM="${KUBERNETES_VERSION_FROM:-}"
+export KUBERNETES_VERSION_UPGRADE_FROM="${KUBERNETES_VERSION_UPGRADE_FROM:-}"
 export KUBERNETES_VERSION_UPGRADE_TO="${KUBERNETES_VERSION_UPGRADE_TO:-}"
 
 # shellcheck disable=SC1091
 source "${CI_DIR}/test_env.sh"
 
 # Set KUBERNETES_VERSION for k8s-upgrade tests.
-# KUBERNETES_VERSION_FROM is passed directly from the pipeline.
+# KUBERNETES_VERSION_UPGRADE_FROM is passed directly from the pipeline.
 if [[ "${GINKGO_FOCUS}" == "k8s-upgrade" || "${GINKGO_FOCUS}" == "in-place-upgrade" ]]; then
     export KUBERNETES_VERSION="${KUBERNETES_VERSION_UPGRADE_TO}"
 fi
@@ -58,8 +58,8 @@ if [[ -z "${GINKGO_SKIP:-}" ]] || [[ "${GINKGO_SKIP}" == "null" ]]; then
     unset GINKGO_SKIP
 fi
 
-if [[ -z "${KUBERNETES_VERSION_FROM:-}" ]] || [[ "${KUBERNETES_VERSION_FROM}" == "null" ]]; then
-    unset KUBERNETES_VERSION_FROM
+if [[ -z "${KUBERNETES_VERSION_UPGRADE_FROM:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_FROM}" == "null" ]]; then
+    unset KUBERNETES_VERSION_UPGRADE_FROM
 fi
 
 if [[ -z "${KUBERNETES_VERSION_UPGRADE_TO:-}" ]] || [[ "${KUBERNETES_VERSION_UPGRADE_TO}" == "null" ]]; then
