@@ -1,0 +1,16 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: prow-flux-reconciliation
+  namespace: flux-system
+spec:
+  summary: "Flux reconciliation updates for Metal3 Prow"
+  providerRef:
+    name: github-dispatch
+  eventSeverity: info
+  eventSources:
+  - kind: Kustomization
+    name: '*'
+    namespace: flux-system
+  eventMetadata:
+    notifier: github-dispatch-workflow
