@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-http-prod
+  name: letsencrypt-http-staging
   # ClusterIssuers are non-namespaced resources
 spec:
   acme:
@@ -9,10 +9,10 @@ spec:
     # Let's Encrypt will use this to contact you about expiring
     # certificates, and issues related to your account.
     email: estjorvas@est.tech
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       # Name of a secret used to store the ACME account private key
-      name: letsencrypt-http-prod
+      name: letsencrypt-http-staging
     solvers:
     - http01:
         gatewayHTTPRoute:
