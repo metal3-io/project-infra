@@ -11,6 +11,15 @@ resources:
 - infrastructure.yaml
 
 patches:
+# Enable Gateway API support for cert-manager controller
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --enable-gateway-api
+  target:
+    kind: Deployment
+    name: cert-manager
+    namespace: cert-manager
 # Cert-manager does not set any toleration so we have to first create
 # the array/map before we can add values to them...
 - patch: |-
