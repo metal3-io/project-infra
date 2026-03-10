@@ -205,7 +205,7 @@ presubmits:
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
-  - name: metal3-e2e-1-33-1-34-upgrade-test-release-1-12
+  - name: metal3-e2e-1-34-1-35-upgrade-test-release-1-12
     branches:
     - release-1.12
     agent: jenkins
