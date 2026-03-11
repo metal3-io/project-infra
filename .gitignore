@@ -16,3 +16,8 @@
 
 # python stuff
 hack/__pycache__
+
+# SELinux policy build artifacts
+*.pp
+*.mod
+*.te
