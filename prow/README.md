@@ -195,7 +195,7 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 1. Create a personal access token for the GitHub bot account. This should be
    done from the [metal3-io-bot](https://github.com/metal3-io-bot) GitHub bot
    account. You can follow this
-   [link](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens)
+   [link](https://github.com/settings/tokens)
    to create the token. When generating the token, make sure you have only the
    following scopes checked in.
 
@@ -208,7 +208,7 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
 1. Create a personal access token for the cherry-picker bot. This should be done
    from the [metal3-io-bot](https://github.com/metal3-io-bot)
    GitHub bot account. You can follow this
-   [link](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens)
+   [link](https://github.com/settings/tokens)
    to create the token. When generating the token, make sure you have only the
    following scopes checked in.
 
@@ -219,7 +219,7 @@ PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
    The token will be referred to as `${CHERRYPICK_TOKEN}`.
 
 1. Create a [GitHub webhook in the Metal3-io
-   organization](https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Forganizations%2Fmetal3-io%2Fsettings%2Fhooks)
+   organization](https://github.com/organizations/metal3-io/settings/hooks)
    for <https://prow.apps.test.metal3.io/hook> using the HMAC token generated
    earlier. Add the URL and token as below. Select **"Send me everything"**, and
    for Content type: **application/json**.
