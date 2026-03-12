@@ -50,6 +50,7 @@
     "presubmits",
     "renovate",
     "tmpfs",
+    "traefik",
     "xerces"
   ]
 }

@@ -4,7 +4,6 @@ kind: Kustomization
 # namespace: prow
 resources:
 - ../../base
-- ingress.yaml
 - httproutes.yaml
 - external-plugins/cherrypicker_deployment.yaml
 - external-plugins/cherrypicker_service.yaml

@@ -85,7 +85,7 @@ There are multiple folders with kustomizations:
 - `capo-cluster`: Configuration for the Kubernetes cluster where Prow runs.
 - `cluster-resources`: Cloud provider for OpenStack, Cinder CSI and
   cluster-autoscaler.
-- `infra`: Configuration and add-ons: ingress controller, ClusterIssuer,
+- `infra`: Configuration and add-ons: gateway API controller, ClusterIssuer,
   StorageClass, etc.
 - `manifests`: Prow deployment manifests.
 
@@ -102,11 +102,10 @@ GitHub app, but Prow actually supports
 [many authentication methods](https://github.com/kubernetes/test-infra/blob/441b5000ef79491d08bd5f393de8f69650b85355/prow/flagutil/github.go#L137).
 We use API tokens created from GitHub bot accounts.
 
-We use [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) as ingress
-controller. It is fronted by a LoadBalancer Service, i.e. a loadbalancer in
-Xerces. The Service is configured to grab the correct IP automatically and to
-avoid deleting it even if the Service is deleted. See
-[infra/service.yaml](infra/service.yaml). For securing it with TLS we rely on
+We use [traefik](https://traefik.io/) as gateway API controller. It is fronted
+by a LoadBalancer Service, i.e. a loadbalancer in Xerces. The Service is
+configured to grab the correct IP automatically and to avoid deleting it even if
+the Service is deleted. For securing it with TLS we rely on
 [cert-manager](https://cert-manager.io/) and the Let's Encrypt HTTP01 challenge,
 as seen in [infra/cluster-issuer-http.yaml](infra/cluster-issuer-http.yaml).
 
@@ -444,24 +443,14 @@ Metal3 CI ssh key.
    kind cluster delete
    ```
 
-1. Add ingress-controller, ClusterIssuer and StorageClass
-
-   ```bash
-   kubectl apply -k infra
-   ```
-
 1. Add Gateway Api controller, ClusterIssuer and StorageClass
 
    ```bash
    helm repo add traefik https://traefik.github.io/charts
    helm repo update
-   helm install traefik traefik/traefik -f prow/infra/traefik-values.yaml -n traefik
+   helm install traefik traefik/traefik -f infra/traefik-values.yaml -n traefik
    
-   # Make sure traefik sees the necessary resources in prow namespace
-   kubectl apply -f prow/infra/referencegrant.yaml
-
-   kubectl apply -f prow/infra/storageclass.yaml
-   kubectl apply -f prow/infra/cluster-issuer-http.yaml
+   kubectl apply -k infra
    ```
 
 1. Set up S3 object storage buckets

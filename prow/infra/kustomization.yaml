@@ -1,21 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- https://github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud?ref=controller-v1.13.7
+- staging-cluster-issuer-http.yaml
 - cluster-issuer-http.yaml
+- certificate.yaml
 - storageclass.yaml
-- ingress-controller-pdb.yaml
-
-patches:
-- path: service.yaml
-# Patch the ingress controller jobs with TTL to avoid issues when upgrading.
-- path: ingress-controller-job-patch.yaml
-  target:
-    # Target all jobs in the namespace (overrides name/namespace in the patch file)
-    kind: Job
-    namespace: ingress-nginx
-- path: ingress-controller-deployment-patch.yaml
-# Run on infra nodes
-- path: toleration-node-selector-patch.yaml
-  target:
-    kind: Deployment|Job
+- referencegrant.yaml
