@@ -10,6 +10,11 @@ sudo dnf install epel-release -y
 # Install podman
 sudo dnf install podman -y
 
+# Install GitHub CLI
+sudo dnf install -y 'dnf-command(config-manager)'
+sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+sudo dnf install -y gh --repo gh-cli
+
 # Without this minikube cannot start properly kvm and fails.
 # As a simple workaround, this will create an empty file which can
 # disable the new firmware, more details here [1], look for firmware description.
