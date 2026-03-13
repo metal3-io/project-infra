@@ -1,3 +1,6 @@
 https://jenkins.nordix.org/log/GHPRB/
 https://jenkins.nordix.org/ghprbhook/
 https://prow.apps.test.metal3.io/hook
+# GitHub settings pages require authentication and redirect to login when unauthenticated.
+https://github.com/settings/.*
+https://github.com/organizations/.*/settings/.*

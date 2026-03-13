@@ -197,5 +197,5 @@ builds, on pull requests) in CI.
 
 In case of issues or question on the Jenkins CI, please contact the maintainers
 by email to estjorvas \[at\] est.tech or by posting your message on the
-[\#cluster-api-baremetal](https://kubernetes.slack.com/?redir=%2Fmessages%2FCHD49TLE7)
+[\#cluster-api-baremetal](https://kubernetes.slack.com/archives/CHD49TLE7)
 channel on Kubernetes Slack.
