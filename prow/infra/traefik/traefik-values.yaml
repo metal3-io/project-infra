@@ -41,7 +41,8 @@ podDisruptionBudget:
 
 service:
   type: LoadBalancer
-  loadBalancerIP: 129.192.68.144
-  externalTrafficPolicy: Cluster
+  spec:
+    loadBalancerIP: 129.192.68.144
+    externalTrafficPolicy: Cluster
   annotations:
     loadbalancer.openstack.org/keep-floatingip: "true"

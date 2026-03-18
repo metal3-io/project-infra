@@ -446,10 +446,9 @@ Metal3 CI ssh key.
 1. Add Gateway Api controller, ClusterIssuer and StorageClass
 
    ```bash
-   helm repo add traefik https://traefik.github.io/charts
-   helm repo update
-   helm install traefik traefik/traefik -f infra/traefik-values.yaml -n traefik
-   
+   # NOTE! You WILL need to apply the following command multiple times before it is successful.
+   # This is because CRDs and webhooks must be in place before other
+   # resources can be added.
    kubectl apply -k infra
    ```
 
