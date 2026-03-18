@@ -1,0 +1,134 @@
+---
+name: Fuzz Testing
+
+on:
+  workflow_call:
+    inputs:
+      fuzz_time:
+        description: 'Fuzzing duration per test (e.g., 30s, 1m, 1h)'
+        required: false
+        default: '1m'
+        type: string
+      create_issue:
+        description: 'Create GitHub issue on failure'
+        required: false
+        default: true
+        type: boolean
+
+permissions: {}
+
+jobs:
+  fuzz-tests:
+    name: Run Fuzz Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
+
+    - name: Calculate go version
+      id: vars
+      run: echo "go_version=$(make go-version)" >> "${GITHUB_OUTPUT}"
+
+    - name: Set up Go
+      uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+      with:
+        go-version: ${{ steps.vars.outputs.go_version }}
+        cache: false
+
+    - name: Validate inputs
+      env:
+        FUZZ_TIME: ${{ inputs.fuzz_time }}
+      run: |
+        if [[ ! "${FUZZ_TIME}" =~ ^[0-9]+[smh]$ ]]; then
+          echo "Invalid fuzz_time format: '${FUZZ_TIME}'" >&2
+          exit 1
+        fi
+
+    - name: Run fuzz tests
+      env:
+        FUZZ_TIME: ${{ inputs.fuzz_time }}
+      run: |
+        set -euo pipefail
+        echo "Running fuzz tests for ${FUZZ_TIME} per test..."
+        make fuzz-run FUZZ_TIME="${FUZZ_TIME}"
+
+    - name: Upload fuzz artifacts
+      if: failure()
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      with:
+        name: fuzz-failures-${{ github.run_number }}
+        path: 'test/fuzz/testdata/fuzz/'
+        if-no-files-found: ignore
+        retention-days: 30
+
+    - name: Create issue on failure
+      if: failure() && inputs.create_issue != false
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+      env:
+        FUZZ_DURATION: ${{ inputs.fuzz_time }}
+        WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        TRIGGER_EVENT: ${{ github.event_name }}
+        # Maintained by workflow owners - not user-configurable
+        ISSUE_LABELS: 'kind/bug'
+      with:
+        script: |
+          const title = '🐛 Scheduled Fuzz Testing Failed';
+          const body = [
+             '## Fuzz Testing Failure',
+             '',
+             'The scheduled fuzz testing workflow has detected failures.',
+             '',
+             `**Workflow Run:** ${process.env.WORKFLOW_URL}`,
+             `**Fuzz Duration:** ${process.env.FUZZ_DURATION} per test`,
+             `**Triggered:** ${process.env.TRIGGER_EVENT}`,
+             '',
+             'Please review the workflow logs and any uploaded artifacts for crash details.',
+             '',
+             'The failing inputs have been saved as workflow artifacts. You can download them from this run and check them into `test/fuzz/testdata/fuzz` to turn them into regression tests for future runs.'
+           ].join('\n');
+
+          // Check if an issue already exists
+          const rawLabels = process.env.ISSUE_LABELS || '';
+          const normalizedLabels = rawLabels
+            .split(',')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+          const labelsFilter = normalizedLabels.join(',');
+
+          const issues = await github.paginate(
+            github.rest.issues.listForRepo,
+            {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: labelsFilter,
+              creator: 'github-actions[bot]',
+              per_page: 100,
+            }
+           );
+
+          const existingIssue = issues.find(issue => issue.title === title);
+
+          if (existingIssue) {
+            // Add a comment to existing issue
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existingIssue.number,
+              body: `Another fuzz testing failure occurred:\n${body}`
+            });
+          } else {
+            // Create new issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: normalizedLabels
+            });
+          }
