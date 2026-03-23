@@ -20,7 +20,7 @@ script {
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 
     if ( "${GINKGO_FOCUS}" == 'integration' || "${GINKGO_FOCUS}" == 'basic' ) {
-        agent_label = "metal3ci-4c16gb-${IMAGE_OS}-jnlp"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
         TIMEOUT = 10800 // 3h
   } else if ( "${GINKGO_FOCUS}" == 'pivoting' ) {
         BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
