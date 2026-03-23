@@ -34,7 +34,6 @@ pipeline {
         CAPM3_VERSION = "${params.CAPM3_VERSION}"
         CAPM3RELEASEBRANCH = "${params.capm3_release_branch}"
         BMORELEASEBRANCH = "${params.bmo_release_branch}"
-        TARGET_NODE_MEMORY = "${params.TARGET_NODE_MEMORY}"
         NUM_NODES = 2
         IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
         IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
