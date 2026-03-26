@@ -25,11 +25,11 @@ script {
   } else if ( "${GINKGO_FOCUS}" == 'pivoting' ) {
         BUILD_TAG = "${env.BUILD_TAG}-pivoting-based"
         TIMEOUT = 18000 // 5h for node reuse
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
   } else if ( "${GINKGO_FOCUS}" == 'remediation' ) {
         BUILD_TAG = "${env.BUILD_TAG}-remediation-based"
         TIMEOUT = 18000 // 5h for remediation
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
         agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
         TIMEOUT = 14400 // 4h
