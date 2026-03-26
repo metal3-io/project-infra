@@ -62,7 +62,6 @@ pipeline {
         IMAGE_OS = "${IMAGE_OS}"
         CAPM3RELEASEBRANCH = "${capm3_release_branch}"
         BMORELEASEBRANCH = "${bmo_release_branch}"
-        TARGET_NODE_MEMORY = "${TARGET_NODE_MEMORY}"
         GINKGO_FOCUS = "${GINKGO_FOCUS}"
         GINKGO_SKIP = "${GINKGO_SKIP}"
         NUM_NODES = "${NUM_NODES}"
