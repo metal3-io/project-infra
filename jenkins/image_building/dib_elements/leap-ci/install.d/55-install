@@ -6,5 +6,10 @@ set -eux
 sudo zypper refresh
 sudo zypper -n in atop sysstat
 
+# Switch from wicked to NetworkManager.
+sudo zypper -n in NetworkManager
+sudo systemctl disable wicked wickedd
+sudo systemctl enable NetworkManager
+
 # Add metal3ci user to libvirt group
 sudo usermod -aG libvirt metal3ci

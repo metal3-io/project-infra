@@ -6,6 +6,17 @@
 # root filesystem and this cannot be modified. If we don't change the kernel
 # command line parameters, the image will try to look for nonexistent label
 # ROOT during boot and the boot will fail.
+#
+# We add serial console parameters (console=tty0 console=ttyS0,115200)
+# to ensure the image boots properly on platforms that use serial consoles
+# (Oracle Cloud).
 
-sed -i 's/GRUB_CMDLINE_LINUX.*/GRUB_CMDLINE_LINUX="root=LABEL=cloudimg-rootfs"/' /etc/default/grub
+GRUB_ARGS="root=LABEL=cloudimg-rootfs console=tty0 console=ttyS0,115200"
+
+# DIB_BOOTLOADER_DEFAULT_CMDLINE if set (e.g., net.ifnames=1 for node images)
+if [[ -n "${DIB_BOOTLOADER_DEFAULT_CMDLINE:-}" ]]; then
+  GRUB_ARGS="${GRUB_ARGS} ${DIB_BOOTLOADER_DEFAULT_CMDLINE}"
+fi
+
+sed -i "s/GRUB_CMDLINE_LINUX.*/GRUB_CMDLINE_LINUX=\"${GRUB_ARGS}\"/" /etc/default/grub
 grub2-mkconfig --output=/boot/grub2/grub.cfg
