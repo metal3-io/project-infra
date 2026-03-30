@@ -31,7 +31,7 @@ script {
         TIMEOUT = 18000 // 5h for remediation
         agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade' ) {
-        agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
         TIMEOUT = 14400 // 4h
   } else if ( "${GINKGO_FOCUS}" == 'k8s-upgrade-n3' ) {
         agent_label = "metal3ci-8c24gb-${IMAGE_OS}-jnlp"
@@ -43,7 +43,7 @@ script {
         TIMEOUT = 10800 // 3h
         agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
   } else {
-        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-jnlp"
+        agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
         BUILD_TAG = "${env.BUILD_TAG}-other-features"
         GINKGO_SKIP = 'pivoting remediation' // Allow non pivoting features
     }
