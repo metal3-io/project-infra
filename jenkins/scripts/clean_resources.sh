@@ -61,22 +61,13 @@ fi
 pip install python-openstackclient=="${CLIENT_VERSION}"
 # export openstackclient path
 export PATH="${PATH}:${HOME}/.local/bin"
-#unset openstack variables
-unset "${!OS_@}"
 
-# Cleaning up Private cloud resources
 export OS_USERNAME="${OPENSTACK_USERNAME_XERCES}"
 export OS_PASSWORD="${OPENSTACK_PASSWORD_XERCES}"
-export OS_AUTH_URL="https://xerces.ericsson.net:5000"
-export OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
-export OS_INTERFACE="public"
-export OS_PROJECT_NAME="EST_Metal3_CI"
-export OS_USER_DOMAIN_NAME="xerces"
-export OS_IDENTITY_API_VERSION=3
+
+# Cleaning up Private cloud resources
 echo "Cleaning up Private Cloud"
 cleanup
 
-#unset openstack variables
-unset "${!OS_@}"
 # deactiveate the python venv (for non ci use)
 deactivate
