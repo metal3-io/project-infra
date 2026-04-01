@@ -11,12 +11,11 @@ pipeline {
     agent { label 'metal3ci-4c16gb-ubuntu-jnlp' }
     environment {
         OS_USERNAME = 'metal3ci'
-        OS_AUTH_URL = 'https://kna1.citycloud.com:5000'
-        OS_USER_DOMAIN_NAME = 'CCP_Domain_37137'
-        OS_PROJECT_DOMAIN_NAME = 'CCP_Domain_37137'
-        OS_REGION_NAME = 'Kna1'
-        OS_PROJECT_NAME = 'Default Project 37137'
-        OS_TENANT_NAME = 'Default Project 37137'
+        OS_AUTH_URL = "https://xerces.ericsson.net:5000"
+        OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
+        OS_INTERFACE = " public"
+        OS_PROJECT_NAME = "EST_Metal3_CI"
+        OS_USER_DOMAIN_NAME = "xerces"
         OS_AUTH_VERSION = 3
         OS_IDENTITY_API_VERSION = 3
     }
