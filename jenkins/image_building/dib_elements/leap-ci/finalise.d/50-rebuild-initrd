@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Rebuild initrd with drivers required for cloud environments.
+
+set -eux
+
+mkdir -p /etc/dracut.conf.d
+
+# Force dracut to include virtio and other drivers
+cat > /etc/dracut.conf.d/99-cloud-drivers.conf <<EOF
+# Ensure virtio and cloud-essential drivers are included in the initrd
+add_drivers+=" virtio_blk virtio_net virtio_pci virtio_scsi virtio_console "
+add_drivers+=" nvme "
+# Do not use hostonly mode — build a generic initrd suitable for any cloud
+hostonly=no
+EOF
+
+# Rebuild initrd for all installed kernels
+for kernel_version in /lib/modules/*/; do
+  kernel_version=$(basename "${kernel_version}")
+  dracut --force "/boot/initrd-${kernel_version}" "${kernel_version}"
+done
