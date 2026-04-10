@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Run Baremetal Operator optional e2e tests') {
             matrix {
-                agent { label 'metal3ci-4c16gb-ubuntu-jnlp' }
+                agent { label 'metal3ci-4c16gb-ubuntu-oci' }
                 axes {
                     axis {
                         name 'BMC_PROTOCOL'
