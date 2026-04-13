@@ -20,7 +20,7 @@ script {
 }
 
 pipeline {
-    agent { label 'metal3ci-8c32gb-ubuntu-jnlp' }
+    agent { label 'metal3ci-8c32gb-ubuntu-oci' }
     environment {
         // supplied by prow
         REPO_ORG = "${env.REPO_OWNER}"
