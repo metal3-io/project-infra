@@ -62,6 +62,22 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
         try { gv = sh(script: 'make go-version', returnStdout: true).trim() } catch (e) { echo "make go-version failed: ${e}" }
         gv = gv ?: goVersion
         sh "echo 'GoVersionOverride = \"${gv}\"' > config.toml"
+        // GHSA-hfvc-g4fc-pqhx: BSD/Solaris-only PATH hijack in otel kenv; fix requires otel v1.43.0 (Go 1.25).
+        // Only affects release branches where otel cannot be bumped due to Go version constraint.
+        def ignoredBranches = [
+            'CAPM3': ~/^release-1\.(1[0-2]|[0-9])$/,
+            'IPAM':  ~/^release-1\.(1[0-2]|[0-9])$/,
+            'BMO':   ~/^release-0\.(1[0-2]|[0-9])$/,
+            'IRSO':  ~/^release-0\.([0-8])$/,
+        ]
+        if (ignoredBranches[repoName]?.matcher(ref)?.matches()) {
+            sh '''
+                echo '' >> config.toml
+                echo '[[IgnoredVulns]]' >> config.toml
+                echo 'id = "GHSA-hfvc-g4fc-pqhx"' >> config.toml
+                echo 'reason = "BSD/Solaris-only PATH hijack via kenv; not applicable to Linux deployments. Fix requires otel v1.43.0 which needs Go 1.25."' >> config.toml
+            '''
+        }
 
         def label   = "${repoName}-${refType}-${ref}".replace('/', '_')
         def outFile = "${WORKSPACE}/results/${repoName}_${refType}_${ref}.txt".replace('/', '_')
