@@ -36,11 +36,41 @@
       "customType": "regex",
       "description": "Bump the target Kubernetes minor version for pre-release testing",
       "managerFilePatterns": ["jenkins/jobs/pre_release_tests\\.groovy$"],
-      "matchStrings": [
-        "KUBERNETES_VERSION = '(?<currentValue>[^']+)'"
-      ],
+      "matchStrings": ["KUBERNETES_VERSION = '(?<currentValue>[^']+)'"],
       "datasourceTemplate": "github-releases",
       "packageNameTemplate": "kubernetes/kubernetes",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump GitHub release versions in CAPI kustomization",
+      "managerFilePatterns": ["prow/capi/kustomization\\.yaml$"],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump CAPI core/bootstrap/control-plane provider versions",
+      "managerFilePatterns": [
+        "prow/capi/core\\.yaml$",
+        "prow/capi/bootstrap\\.yaml$",
+        "prow/capi/control-plane\\.yaml$"
+      ],
+      "matchStrings": ["version: (?<currentValue>v[^\\s]+)"],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "kubernetes-sigs/cluster-api",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump CAPO infrastructure provider version",
+      "managerFilePatterns": ["prow/capi/infrastructure\\.yaml$"],
+      "matchStrings": ["version: (?<currentValue>v[^\\s]+)"],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "kubernetes-sigs/cluster-api-provider-openstack",
       "versioningTemplate": "semver"
     }
   ]
