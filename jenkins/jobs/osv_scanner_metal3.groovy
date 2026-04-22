@@ -62,6 +62,18 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
         try { gv = sh(script: 'make go-version', returnStdout: true).trim() } catch (e) { echo "make go-version failed: ${e}" }
         gv = gv ?: goVersion
         sh "echo 'GoVersionOverride = \"${gv}\"' > config.toml"
+        // GHSA-pxq6-2prw-chj9 (GO-2026-4883) and GHSA-x744-4wpc-v9h2 (GO-2026-4887):
+        // docker/docker CVEs with no fix available; only affects test/go.mod.
+        sh '''
+            echo '' >> config.toml
+            echo '[[IgnoredVulns]]' >> config.toml
+            echo 'id = "GHSA-pxq6-2prw-chj9"' >> config.toml
+            echo 'reason = "docker/docker vulnerability with no fix available; only affects test dependencies."' >> config.toml
+            echo '' >> config.toml
+            echo '[[IgnoredVulns]]' >> config.toml
+            echo 'id = "GHSA-x744-4wpc-v9h2"' >> config.toml
+            echo 'reason = "docker/docker vulnerability with no fix available; only affects test dependencies."' >> config.toml
+        '''
         // GHSA-hfvc-g4fc-pqhx: BSD/Solaris-only PATH hijack in otel kenv; fix requires otel v1.43.0 (Go 1.25).
         // Only affects release branches where otel cannot be bumped due to Go version constraint.
         def ignoredBranches = [
