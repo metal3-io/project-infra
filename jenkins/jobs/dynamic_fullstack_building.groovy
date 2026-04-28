@@ -92,5 +92,12 @@ pipeline {
                 archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
             }
         }
+        cleanup {
+            script {
+                timestamps {
+                    sh './jenkins/scripts/dynamic_worker_workflow/run_clean.sh'
+                }
+            }
+        }
     }
 }
