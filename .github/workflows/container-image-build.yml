@@ -143,7 +143,7 @@ jobs:
         path: /tmp/build-${{ inputs.image-name }}
 
     - name: Build ${{ inputs.image-name }} image
-      uses: mr-smithers-excellent/docker-build-push@19d2beefef6bcdc202195fdcb9deb79a4fab5c1f # v6.8
+      uses: mr-smithers-excellent/docker-build-push@ecb733becfd984bea20b92a4a6af55d5926fa38b # v6.10
       env:
         BUILDX_NO_DEFAULT_ATTESTATIONS: 1
       with:
@@ -199,7 +199,7 @@ jobs:
 
     - name: Install Cosign
       if: ${{ (inputs.generate-sbom || inputs.sign-image) && inputs.pushImage }}
-      uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+      uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003 # v4.1.1
 
     - name: Sign container image
       if: ${{ inputs.sign-image && inputs.pushImage }}
@@ -221,7 +221,7 @@ jobs:
     - name: Upload SBOM artifact
       id: upload-sbom
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: ${{ inputs.image-name }}-sbom
         path: ${{ inputs.image-name }}-sbom.spdx.json
