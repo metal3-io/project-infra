@@ -178,17 +178,20 @@ triggers:
 
 milestone_applier:
   metal3-io/cluster-api-provider-metal3:
-    main: "CAPM3 - v1.13"
+    main: "CAPM3 - v1.14"
+    release-1.13: "CAPM3 - v1.13"
     release-1.12: "CAPM3 - v1.12"
     release-1.11: "CAPM3 - v1.11"
     release-1.10: "CAPM3 - v1.10"
   metal3-io/baremetal-operator:
-    main: "BMO - v0.13"
+    main: "BMO - v0.14"
+    release-0.13: "BMO - v0.13"
     release-0.12: "BMO - v0.12"
     release-0.11: "BMO - v0.11"
     release-0.10: "BMO - v0.10"
   metal3-io/ip-address-manager:
-    main: "IPAM - v1.13"
+    main: "IPAM - v1.14"
+    release-1.13: "IPAM - v1.13"
     release-1.12: "IPAM - v1.12"
     release-1.11: "IPAM - v1.11"
     release-1.10: "IPAM - v1.10"
