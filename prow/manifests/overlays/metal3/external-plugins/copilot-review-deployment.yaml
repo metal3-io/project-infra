@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: copilot-review
+  labels:
+    app: copilot-review
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: copilot-review
+  template:
+    metadata:
+      labels:
+        app: copilot-review
+    spec:
+      serviceAccountName: ""
+      serviceAccount: ""
+      terminationGracePeriodSeconds: 180
+      containers:
+      - name: copilot-review
+        image: quay.io/metal3-io/copilot-review-prow-plugin:main_2026-05-27_bb9e4a9a3422eb9a7b5ed78b0190a0f46f7d2a95
+        imagePullPolicy: Always
+        args:
+        - --hmac-secret-file=/etc/webhook/hmac
+        - --github-token-path=/etc/github/token
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --github-graphql-endpoint=http://ghproxy/graphql
+        - --dry-run=false
+        env:
+        # This is token for requesting review
+        # This token is separate from github token meant for adding comments to PR
+        - name: COPILOT_REVIEW_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: copilot-review-github-token
+              key: token
+        ports:
+        - name: http
+          containerPort: 8888
+        volumeMounts:
+        - name: hmac
+          mountPath: /etc/webhook
+          readOnly: true
+        - name: github-token
+          mountPath: /etc/github
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: hmac
+        secret:
+          secretName: hmac-token
+      - name: github-token
+      # This is the BOT token for adding comments to PR,
+      # this is separate from token used for requesting review.
+        secret:
+          secretName: github-token

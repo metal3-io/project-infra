@@ -11,6 +11,8 @@ resources:
 - external-plugins/needs-rebase_service.yaml
 - external-plugins/labels_cronjob.yaml
 - external-plugins/jenkins-operator.yaml
+- external-plugins/copilot-review-deployment.yaml
+- external-plugins/copilot-review-service.yaml
 - pdb.yaml
 - limitrange.yaml
 - prow-externalsecrets.yaml
@@ -30,6 +32,7 @@ patches:
 - path: patches/cherrypicker.yaml
 - path: patches/needs-rebase.yaml
 - path: patches/jenkins-operator.yaml
+- path: patches/copilot-review.yaml
 # Run on infra nodes
 - path: toleration-node-selector-patch.yaml
   target:
