@@ -37,6 +37,19 @@ patches:
   target:
     kind: Deployment
     name: csi-cinder-controllerplugin|calico-kube-controllers
+# Fix node-selector for openstack cloud controller manager
+# Upstream selects nodes with "node-role.kubernetes.io/control-plane=true" but we want to use the kubeadm default
+# which is empty value for the same key.
+# This is only needed for v1.34, so we can remove this when we update to v1.35.
+# See https://github.com/kubernetes/cloud-provider-openstack/blob/a031201ff26f3df433192b91df2be0e7d50acb70/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml#L31
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/nodeSelector
+      value:
+        node-role.kubernetes.io/control-plane: ""
+  target:
+    kind: DaemonSet
+    name: openstack-cloud-controller-manager
 
 ## If there is ever a need to deploy without ESO, the following can be used to create the secret directly.
 # generatorOptions:
