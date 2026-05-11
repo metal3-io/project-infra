@@ -190,15 +190,16 @@ pipeline {
                         steps {
                             withCredentials([
                               file(credentialsId: 'metal3-oracle-cloud-api-private-key', variable: 'OCI_KEY_FILE'),
-                              string(credentialsId: 'metal3-oracle-oci-cli-user', variable: 'OCI_CLI_USER'),
-                              string(credentialsId: 'metal3-oracle-oci-cli-tenancy', variable: 'OCI_CLI_TENANCY'),
-                              string(credentialsId: 'metal3-oracle-oci-cli-fingerprint', variable: 'OCI_CLI_FINGERPRINT')
+                              file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'OCI_CLI_ENV_FILE'),
                               ]) {
                                 script {
                                     def imageName = readFile('image_name.txt').trim()
                                     echo "Uploading ${imageName} to OCI"
 
                                     sh """
+                                    set -a +x
+                                    . "${OCI_CLI_ENV_FILE}"
+                                    set +a -x
                                     ./jenkins/image_building/upload-ci-image-oci.sh ${imageName}
                                     """
                                 }
