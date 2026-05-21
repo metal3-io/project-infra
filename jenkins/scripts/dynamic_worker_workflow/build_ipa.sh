@@ -185,7 +185,7 @@ fi
 # Test whether the newly built IPA is compatible with the choosen Ironic version and with
 # the Metal3 dev-env
 if $ENABLE_BOOTSTRAP_TEST; then
-    git clone --single-branch --branch "${METAL3_DEV_ENV_BRANCH}" "${METAL3_DEV_ENV_REPO}"
+    git clone --single-branch --branch "${METAL3_DEV_ENV_BRANCH}" "${METAL3_DEV_ENV_REPO}" "${DEV_ENV_REPO_LOCATION}"
     if $TEST_IN_CI; then
         # shellcheck source=/dev/null
         source "/tmp/vars.sh"
@@ -285,4 +285,3 @@ if ! $DISABLE_UPLOAD ; then
         rt_upload_artifact  "${IPA_IMAGE_TAR}" "${REVIEW_ARTIFACTORY_PATH}" "0"
     fi
 fi
-
