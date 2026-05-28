@@ -38,6 +38,11 @@ pipeline {
                      ).trim()
         // jenkins job auto generates
         BUILD_TAG = "${env.BUILD_TAG}"
+        // set dev environment directory for the fullstack script
+        DEV_ENV_REPO_LOCATION = sh(
+                                script: 'echo $HOME/metal3',
+                                returnStdout: true
+                               ).trim()
     }
     stages {
         stage('Building and testing full Metal3 stack') {

@@ -2,6 +2,8 @@
 
 set -eux
 
+IMAGE_OS="${IMAGE_OS:-ubuntu}"
+
 if [[ "${IMAGE_OS}" == "ubuntu" ]]; then
     export CONTAINER_RUNTIME="docker"
     export BOOTSTRAP_CLUSTER="kind"
