@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: copilot-review
+spec:
+  template:
+    spec:
+      containers:
+      - name: copilot-review
+        resources:
+          requests:
+            cpu: 50m
+            memory: 20Mi
