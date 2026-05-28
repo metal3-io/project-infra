@@ -90,6 +90,23 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
                 echo 'reason = "BSD/Solaris-only PATH hijack via kenv; not applicable to Linux deployments. Fix requires otel v1.43.0 which needs Go 1.25."' >> config.toml
             '''
         }
+        // x/net vulnerability; we do not want to bump go version for older versions
+        def xnetIgnoredBranches = [
+            'CAPM3': ~/^release-1\.12$/,
+            'IPAM':  ~/^release-1\.12$/,
+            'BMO':   ~/^release-0\.12$/,
+            'IRSO':  ~/^release-0\.[78]$/,
+        ]
+        if (xnetIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
+            ['GO-2026-5026', 'GO-2026-4918'].each { vulnId ->
+                sh """
+                    echo '' >> config.toml
+                    echo '[[IgnoredVulns]]' >> config.toml
+                    echo 'id = "${vulnId}"' >> config.toml
+                    echo 'reason = "x/net bump would require Go 1.25."' >> config.toml
+                """
+            }
+        }
 
         def label   = "${repoName}-${refType}-${ref}".replace('/', '_')
         def outFile = "${WORKSPACE}/results/${repoName}_${refType}_${ref}.txt".replace('/', '_')
