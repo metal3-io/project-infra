@@ -2,20 +2,44 @@
 
 set -ex
 
+# How long curl waits for the initial connection/handshake to succeed (in seconds)
+CURL_CONNECT_TIMEOUT="${CURL_CONNECT_TIMEOUT:-60}"
+
+# Aborts the transfer if the speed drops below this limit (in bytes) for the specified duration (in seconds)
+CURL_SPEED_LIMIT="${CURL_SPEED_LIMIT:-104857600}"
+CURL_SPEED_TIME="${CURL_SPEED_TIME:-30}"
+
+# How long curl waits before launching a new retry attempt (in seconds)
+CURL_RETRY_DELAY="${CURL_RETRY_DELAY:-30}"
+
+# Specify the maximum number of retries if the transfer encounters a transient error (like a timeout)
+CURL_RETRY="${CURL_RETRY:-999}"
+
+# Set common curl options
+CURL_COMMON_OPTS=(
+    --connect-timeout "${CURL_CONNECT_TIMEOUT}"
+    --speed-limit "${CURL_SPEED_LIMIT}"
+    --speed-time "${CURL_SPEED_TIME}"
+    --retry-delay "${CURL_RETRY_DELAY}"
+    --retry "${CURL_RETRY}"
+    --user "${RT_USER:?}:${RT_TOKEN:?}"
+    --continue-at -
+)
+
 rt_delete_artifact() {
     local dst_path="${1:?}"
-    curl -s -XDELETE -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/${dst_path}"
+    curl -s -XDELETE "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}"
 }
 
 rt_upload_artifact() {
     local src_path="${1:?}"
     local dst_path="${2:?}"
-    curl -s --fail-with-body -XPUT -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/${dst_path}" -T "${src_path}"
+    curl -s --fail-with-body -XPUT "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}" -T "${src_path}"
 }
 
 rt_list_directory() {
     local dst_path="${1:?}"
-    curl -s -XGET -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/api/storage/${dst_path}"
+    curl -s -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/api/storage/${dst_path}"
 }
 
 backup_old_image() {
@@ -25,7 +49,7 @@ backup_old_image() {
     local tmp_image_name="test.qcow2"
 
     set +e
-    curl -s -f -XGET -u"${RT_USER:?}:${RT_TOKEN:?}" "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
+    curl -s -f -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
     does_file_exist=$?
     set -e
 
@@ -61,7 +85,7 @@ upload_node_image() {
     jq '.children | .[] | .uri' | \
     sort -r |\
     grep "${img_name}_20" | \
-    sed -e 's/\"\/\([^"]*\)"/\1/g') 
+    sed -e 's/\"\/\([^"]*\)"/\1/g')
 
     for ((i="${retention_num}"; i<${#MAPFILE[@]}; i++)); do
         rt_delete_artifact "${rt_folder}/${MAPFILE[i]}"
