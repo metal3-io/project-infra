@@ -5,12 +5,13 @@ set -ex
 # How long curl waits for the initial connection/handshake to succeed (in seconds)
 CURL_CONNECT_TIMEOUT="${CURL_CONNECT_TIMEOUT:-60}"
 
-# Aborts the transfer if the speed drops below this limit (in bytes) for the specified duration (in seconds)
-CURL_SPEED_LIMIT="${CURL_SPEED_LIMIT:-104857600}"
+# Aborts the transfer if the speed drops below this limit (in bytes) for the specified duration (in seconds).
+# Default speed limit is 1 MiB/s and time is 30 seconds.
+CURL_SPEED_LIMIT=$(parse_speed_limit "${CURL_SPEED_LIMIT:-1M}")
 CURL_SPEED_TIME="${CURL_SPEED_TIME:-30}"
 
 # How long curl waits before launching a new retry attempt (in seconds)
-CURL_RETRY_DELAY="${CURL_RETRY_DELAY:-30}"
+CURL_RETRY_DELAY="${CURL_RETRY_DELAY:-10}"
 
 # Specify the maximum number of retries if the transfer encounters a transient error (like a timeout)
 CURL_RETRY="${CURL_RETRY:-999}"
@@ -24,32 +25,73 @@ CURL_COMMON_OPTS=(
     --retry "${CURL_RETRY}"
     --user "${RT_USER:?}:${RT_TOKEN:?}"
     --continue-at -
+    --silent
+    --show-error
 )
+
+# Convert a human-readable size (e.g. 1M, 500K) to bytes using IEC binary units.
+# Accepts plain integers or suffixed values (K/M/G/T). Uses numfmt when available.
+# Falls back to 1048576 (1 MiB) on invalid input.
+parse_speed_limit() {
+    local value="${1}"
+    local default="$(( 1 * 1024 ** 2 ))"
+
+    # Plain integer: use as-is
+    if [[ "${value}" =~ ^[0-9]+$ ]]; then
+        echo "${value}"
+        return
+    fi
+
+    # Use numfmt if available (handles IEC suffixes: K/M/G/T)
+    if command -v numfmt >/dev/null 2>&1; then
+        local result
+        if result=$(numfmt --from=iec "${value}" 2>/dev/null); then
+            echo "${result}"
+            return
+        fi
+    else
+        # Manual fallback: integer with K/M/G/T suffix (IEC binary)
+        if [[ "${value}" =~ ^([0-9]+)([KkMmGgTt])$ ]]; then
+            local num="${BASH_REMATCH[1]}"
+            local suffix="${BASH_REMATCH[2]}"
+            case "${suffix}" in
+                k|K) echo $(( num * 1024 )) ; return ;;
+                m|M) echo $(( num * 1024 ** 2 )) ; return ;;
+                g|G) echo $(( num * 1024 ** 3 )) ; return ;;
+                t|T) echo $(( num * 1024 ** 4 )) ; return ;;
+            esac
+        fi
+    fi
+
+    echo "${default}"
+}
 
 rt_delete_artifact() {
     local dst_path="${1:?}"
-    curl -s -XDELETE "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}"
+
+    curl -XDELETE "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}"
 }
 
 rt_upload_artifact() {
     local src_path="${1:?}"
     local dst_path="${2:?}"
-    curl -s --fail-with-body -XPUT "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}" -T "${src_path}"
+
+    curl --fail-with-body -XPUT "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}" -T "${src_path}"
 }
 
 rt_list_directory() {
     local dst_path="${1:?}"
-    curl -s -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/api/storage/${dst_path}"
+
+    curl -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/api/storage/${dst_path}"
 }
 
 backup_old_image() {
     local dst_path="${1:?}"
     local img_name="${2:?}"
-
     local tmp_image_name="test.qcow2"
 
     set +e
-    curl -s -f -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
+    curl -f -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
     does_file_exist=$?
     set -e
 
@@ -67,9 +109,7 @@ backup_old_image() {
 }
 
 upload_node_image() {
-
     local img_name="${1:?}"
-
     local rt_folder="metal3/images/k8s_${KUBERNETES_VERSION}"
     local retention_num=5
 
