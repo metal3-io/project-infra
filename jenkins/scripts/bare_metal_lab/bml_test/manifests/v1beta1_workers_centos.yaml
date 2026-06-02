@@ -79,21 +79,21 @@ spec:
   networkData:
     links:
       ethernets:
-      - id: eno1
+      - id: eno49
         macAddress:
-          fromHostInterface: eno1
+          fromHostInterface: eno49
         type: phy
-      - id: eno2
+      - id: eno50
         macAddress:
-          fromHostInterface: eno2
+          fromHostInterface: eno50
         type: phy
       vlans:
       - id: vlan3
         macAddress:
-          fromHostInterface: eno1
+          fromHostInterface: eno49
         mtu: 1500
         vlanID: 3
-        vlanLink: eno1
+        vlanLink: eno49
     networks:
       ipv4:
       - id: externalv4
@@ -137,9 +137,9 @@ spec:
         permissions: "0755"
       - content: |
           [connection]
-          id=eno1
+          id=eno49
           type=ethernet
-          interface-name=eno1
+          interface-name=eno49
           master=ironicendpoint
           slave-type=bridge
           autoconnect=yes
@@ -177,15 +177,15 @@ spec:
         permissions: "0644"
       - content: |
           [connection]
-          id=Vlan eno1.3
+          id=Vlan eno49.3
           type=vlan
           autoconnect-priority=999
-          interface-name=eno1.3
+          interface-name=eno49.3
 
           [vlan]
           flags=1
           id=3
-          parent=eno1
+          parent=eno49
 
           [ipv4]
           method=auto
