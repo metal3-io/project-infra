@@ -7,7 +7,7 @@ sudo sed -i "0,/.*PermitRootLogin.*/s//PermitRootLogin yes/" /etc/ssh/sshd_confi
 
 # SETUP MONITORING
 ## Install atop and sysstat
-sudo dnf install sysstat atop --enablerepo=epel -y 
+sudo dnf install sysstat atop --enablerepo=epel -y
 
 ## Collect all metrics every minute
 sudo sed -i 's/^LOGINTERVAL=600.*/LOGINTERVAL=60/' /etc/sysconfig/atop
@@ -28,3 +28,7 @@ sudo systemctl enable atop.service crond.service sysstat.service
 
 # Change default to shell to bash
 sudo usermod --shell /bin/bash metal3ci
+
+# Hold JDK packages to prevent unintended upgrades
+sudo dnf install python3-dnf-plugin-versionlock -y
+sudo dnf versionlock add java-21-openjdk java-21-openjdk-headless
