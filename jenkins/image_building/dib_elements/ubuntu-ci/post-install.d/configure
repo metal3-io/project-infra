@@ -154,3 +154,6 @@ sudo systemctl enable atop.service cron.service sysstat.service
 
 # Change default to shell to bash
 sudo usermod --shell /bin/bash metal3ci
+
+# Hold JDK packages to prevent unintended upgrades
+sudo apt-mark hold openjdk-21-jre-headless openjdk-21-jre

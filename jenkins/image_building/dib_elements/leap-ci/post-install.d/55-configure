@@ -44,3 +44,6 @@ sudo usermod --shell /bin/bash metal3ci
 ## Add /usr/local/bin/
 sed -i -e "/secure_path/ s@\([\'\"]\?\)\$@:/usr/local/bin/\1@" /etc/sudoers
 visudo -c
+
+# Hold JDK packages to prevent unintended upgrades
+sudo zypper addlock java-21-openjdk*
