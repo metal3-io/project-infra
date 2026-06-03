@@ -2,33 +2,6 @@
 
 set -ex
 
-# How long curl waits for the initial connection/handshake to succeed (in seconds)
-CURL_CONNECT_TIMEOUT="${CURL_CONNECT_TIMEOUT:-60}"
-
-# Aborts the transfer if the speed drops below this limit (in bytes) for the specified duration (in seconds).
-# Default speed limit is 1 MiB/s and time is 30 seconds.
-CURL_SPEED_LIMIT=$(parse_speed_limit "${CURL_SPEED_LIMIT:-1M}")
-CURL_SPEED_TIME="${CURL_SPEED_TIME:-30}"
-
-# How long curl waits before launching a new retry attempt (in seconds)
-CURL_RETRY_DELAY="${CURL_RETRY_DELAY:-10}"
-
-# Specify the maximum number of retries if the transfer encounters a transient error (like a timeout)
-CURL_RETRY="${CURL_RETRY:-999}"
-
-# Set common curl options
-CURL_COMMON_OPTS=(
-    --connect-timeout "${CURL_CONNECT_TIMEOUT}"
-    --speed-limit "${CURL_SPEED_LIMIT}"
-    --speed-time "${CURL_SPEED_TIME}"
-    --retry-delay "${CURL_RETRY_DELAY}"
-    --retry "${CURL_RETRY}"
-    --user "${RT_USER:?}:${RT_TOKEN:?}"
-    --continue-at -
-    --silent
-    --show-error
-)
-
 # Convert a human-readable size (e.g. 1M, 500K) to bytes using IEC binary units.
 # Accepts plain integers or suffixed values (K/M/G/T). Uses numfmt when available.
 # Falls back to 1048576 (1 MiB) on invalid input.
@@ -65,6 +38,33 @@ parse_speed_limit() {
 
     echo "${default}"
 }
+
+# How long curl waits for the initial connection/handshake to succeed (in seconds)
+CURL_CONNECT_TIMEOUT="${CURL_CONNECT_TIMEOUT:-60}"
+
+# Aborts the transfer if the speed drops below this limit (in bytes) for the specified duration (in seconds).
+# Default speed limit is 1 MiB/s and time is 30 seconds.
+CURL_SPEED_LIMIT=$(parse_speed_limit "${CURL_SPEED_LIMIT:-1M}")
+CURL_SPEED_TIME="${CURL_SPEED_TIME:-30}"
+
+# How long curl waits before launching a new retry attempt (in seconds)
+CURL_RETRY_DELAY="${CURL_RETRY_DELAY:-10}"
+
+# Specify the maximum number of retries if the transfer encounters a transient error (like a timeout)
+CURL_RETRY="${CURL_RETRY:-999}"
+
+# Set common curl options
+CURL_COMMON_OPTS=(
+    --connect-timeout "${CURL_CONNECT_TIMEOUT}"
+    --speed-limit "${CURL_SPEED_LIMIT}"
+    --speed-time "${CURL_SPEED_TIME}"
+    --retry-delay "${CURL_RETRY_DELAY}"
+    --retry "${CURL_RETRY}"
+    --user "${RT_USER:?}:${RT_TOKEN:?}"
+    --continue-at -
+    --silent
+    --show-error
+)
 
 rt_delete_artifact() {
     local dst_path="${1:?}"
