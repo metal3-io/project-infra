@@ -116,34 +116,16 @@ Please see [infra/kube-prometheus](infra/kube-prometheus).
 ## Building node images
 
 The Kubernetes cluster where Prow runs needs pre-built images for the Nodes. We
-use [image-builder](https://github.com/kubernetes-sigs/image-builder) for this.
+use the same node images as in CI for this. You can find them in
+[Artifactory](https://artifactory.nordix.org/ui/native/metal3/images/).
 
-Here is how to build a node image directly in Xerces. See the
-[image-builder book](https://image-builder.sigs.k8s.io/capi/providers/openstack-remote.html)
-for more details. Start by creating a JSON file with relevant parameters for the
-image. Here is an example:
-
-```json
-{
-  "source_image": "19e017ae-2759-479c-90ac-a400a3f64678",
-  "networks": "29fd620e-8145-43a2-8140-5cec6a69f344",
-  "flavor": "c4m12-est",
-  "floating_ip_network": "internet",
-  "ssh_username": "ubuntu",
-  "volume_type": "",
-  "image_disk_format": "raw",
-  "kubernetes_deb_version": "1.33.5-1.1",
-  "kubernetes_rpm_version": "1.33.5",
-  "kubernetes_semver": "v1.33.5",
-  "kubernetes_series": "v1.33"
-}
-```
-
-Then build the image like this:
+In order to use them for the cluster in Xerces, we need to download them from Artifactory,
+convert them to raw and then upload to Xerces. Like this:
 
 ```bash
-cd images/capi
-PACKER_VAR_FILES=var_file.json make build-openstack-ubuntu-2404
+curl -O https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.35.4/UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.qcow2
+qemu-img convert -f qcow2 -O raw UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.qcow2 UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.img.raw
+openstack image create --file UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.img.raw ubuntu-2404-node-k8s-v1.35.4
 ```
 
 ## Create credentials
