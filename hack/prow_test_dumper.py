@@ -6,7 +6,9 @@ Also validates that release branches have proper protections and lock status.
 """
 
 from argparse import ArgumentParser
+import base64
 from collections import defaultdict
+import json
 import os
 import re
 import sys
@@ -21,6 +23,7 @@ VERSION_SUPPORT_URL = (
     "docs/user-guide/src/version_support.md"
 )
 MAX_UNLOCKED_RELEASE_BRANCHES = 3
+MAX_DEPENDENCY_BOT_BRANCHES = 2
 RELEASE_BRANCH_PATTERN = re.compile(r"^release-(\d+)\.(\d+)(?:\.(\d+))?$")
 
 
@@ -195,8 +198,17 @@ def get_release_branches(branches: List[Dict]) -> List[str]:
     return [name for name, _ in releases]
 
 
-def fetch_ironic_version_support() -> Dict[str, str]:
-    """Fetch ironic-image version support table from metal3-docs."""
+VERSION_SUPPORT_SECTIONS = {
+    "Cluster API Provider Metal3": "cluster-api-provider-metal3",
+    "IP Address Manager": "ip-address-manager",
+    "Baremetal Operator": "baremetal-operator",
+    "Ironic-image": "ironic-image",
+    "Ironic Standalone Operator": "ironic-standalone-operator",
+}
+
+
+def fetch_version_support() -> Dict[str, Dict[str, str]]:
+    """Fetch version support tables from metal3-docs. Returns {repo: {version: status}}."""
     try:
         response = requests.get(VERSION_SUPPORT_URL, timeout=30)
         response.raise_for_status()
@@ -204,18 +216,36 @@ def fetch_ironic_version_support() -> Dict[str, str]:
         print(f"Warning: Could not fetch version support table: {e}")
         return {}
 
-    result = {}
-    in_ironic_section = False
+    result: Dict[str, Dict[str, str]] = {}
+    current_repo = None
     for line in response.text.split("\n"):
-        if "## Ironic-image" in line:
-            in_ironic_section = True
-        elif in_ironic_section and line.startswith("##"):
-            break
-        elif in_ironic_section and line.startswith("|"):
+        # Detect section by heading or plain text line matching known names
+        if line.startswith("#") or line.strip() in VERSION_SUPPORT_SECTIONS:
+            current_repo = None
+            for section_title, repo_name in VERSION_SUPPORT_SECTIONS.items():
+                if section_title in line:
+                    current_repo = repo_name
+                    result[repo_name] = {}
+                    break
+        elif current_repo and line.startswith("|"):
             parts = [p.strip() for p in line.split("|")]
-            if len(parts) >= 4 and parts[1].startswith("v"):
-                result[parts[1]] = parts[2]
+            if len(parts) >= 4 and re.match(r"^v?\d+\.\d+", parts[1]):
+                version = parts[1] if parts[1].startswith("v") else f"v{parts[1]}"
+                # Find the status column (contains Supported/Tested/EOL)
+                status = next((p for p in parts if p in ("Supported", "Tested", "EOL")), "")
+                if status:
+                    result[current_repo][version] = status
     return result
+
+
+def version_to_branch(version: str) -> str:
+    """Convert version to branch name (e.g., 'v1.13' -> 'release-1.13', 'v0.9.0' -> 'release-0.9')."""
+    v = version.lstrip("v")
+    # Strip patch version if present (e.g., 0.9.0 -> 0.9)
+    parts = v.split(".")
+    if len(parts) == 3:
+        v = f"{parts[0]}.{parts[1]}"
+    return f"release-{v}"
 
 
 def ironic_branch_to_version(branch: str) -> Optional[str]:
@@ -312,6 +342,119 @@ def check_branch(
     return issues, is_locked
 
 
+def get_repo_file_content(owner: str, repo: str, path: str, token: str) -> Optional[str]:
+    """Fetch a file from a repo's default branch. Returns None if not found."""
+    try:
+        response = requests.get(
+            f"https://api.github.com/repos/{owner}/{repo}/contents/{path}",
+            headers=gh_headers(token), timeout=30
+        )
+        if response.status_code == 404:
+            return None
+        response.raise_for_status()
+        return base64.b64decode(response.json()["content"]).decode("utf-8")
+    except requests.exceptions.RequestException:
+        return None
+
+
+def get_dependabot_branches(content: str) -> Set[str]:
+    """Extract target-branch values from dependabot.yml, excluding default branches."""
+    data = yaml.safe_load(content)
+    branches = set()
+    for update in data.get("updates", []):
+        branch = update.get("target-branch", "")
+        if branch and branch not in ("main", "master", "source"):
+            branches.add(branch)
+    return branches
+
+
+def get_renovate_branches(content: str) -> Set[str]:
+    """Extract baseBranchPatterns from renovate.json, excluding default branches."""
+    data = json.loads(content)
+    branches = set()
+    for branch in data.get("baseBranchPatterns", []):
+        if branch not in ("main", "master"):
+            branches.add(branch)
+    return branches
+
+
+def check_dependency_bot_branches(
+    owner: str, repo: str, token: str,
+    locked_branches: Set[str], unlocked_branches: Set[str]
+) -> List[str]:
+    """Check dependabot/renovate configs for stale or missing branch entries."""
+    issues = []
+    prefix = f"{owner}/{repo}"
+
+    for tool, path, parser in [
+        ("dependabot", ".github/dependabot.yml", get_dependabot_branches),
+        ("renovate", "renovate.json", get_renovate_branches),
+    ]:
+        content = get_repo_file_content(owner, repo, path, token)
+        if not content:
+            continue
+        try:
+            tracked = parser(content)
+        except (yaml.YAMLError, json.JSONDecodeError, TypeError, AttributeError) as e:
+            msg = f"{prefix}: failed to parse {path}: {e}"
+            issues.append(msg)
+            print(f"- Warning: failed to parse {path}: {e}")
+            continue
+        if not tracked:
+            continue  # only targets main, skip
+
+        for branch in tracked:
+            if branch in locked_branches:
+                msg = f"{prefix}/{branch}: LOCKED branch monitored by {tool}"
+                issues.append(msg)
+                print(f"- {branch}: LOCKED branch monitored by {tool}")
+
+        for branch in unlocked_branches:
+            if branch not in tracked:
+                msg = f"{prefix}/{branch}: unlocked branch MISSING from {tool}"
+                issues.append(msg)
+                print(f"- {branch}: unlocked branch MISSING from {tool}")
+
+    return issues
+
+
+def check_milestone_applier(
+    owner: str, repo: str, milestone_config: Dict[str, str],
+    unlocked_branches: List[str]
+) -> List[str]:
+    """Check milestone_applier config for correctness."""
+    issues = []
+    prefix = f"{owner}/{repo}"
+
+    if not milestone_config or not unlocked_branches:
+        return issues
+
+    # Check main points to next version (latest release + 1)
+    newest_branch = unlocked_branches[0]  # already sorted newest-first
+    match = RELEASE_BRANCH_PATTERN.match(newest_branch)
+    if match and "main" in milestone_config:
+        major, minor = int(match.group(1)), int(match.group(2))
+        # Determine versioning scheme: if minor is 0, increment major; else minor
+        if minor == 0:
+            expected_next = f"{major + 1}.{minor}"
+        else:
+            expected_next = f"{major}.{minor + 1}"
+        main_milestone = milestone_config["main"]
+        if expected_next not in main_milestone:
+            msg = f"{prefix}/main: milestone is '{main_milestone}' but should reference v{expected_next}"
+            issues.append(msg)
+            print(f"- main: milestone should reference v{expected_next}, got '{main_milestone}'")
+
+    # Check all unlocked release branches have entries
+    for branch in unlocked_branches:
+        if branch not in milestone_config:
+            msg = f"{prefix}/{branch}: unlocked branch MISSING from milestone_applier"
+            issues.append(msg)
+            print(f"- {branch}: MISSING from milestone_applier")
+
+    return issues
+
+
 def parse_args():
     """parse arguments"""
     parser = ArgumentParser(
@@ -365,6 +508,14 @@ def main():
     with open(args.config, "r", encoding="utf-8") as fh:
         parsed_data = yaml.safe_load(fh)
 
+    # Load milestone_applier from plugins.yaml
+    plugins_path = os.path.join(os.path.dirname(args.config), "plugins.yaml")
+    milestone_applier: Dict[str, Dict[str, str]] = {}
+    if os.path.exists(plugins_path):
+        with open(plugins_path, "r", encoding="utf-8") as fh:
+            plugins_data = yaml.safe_load(fh)
+        milestone_applier = plugins_data.get("milestone_applier", {})
+
     # protection can come from two places: branch-protection and presubmits
     branchprotection = parsed_data.get("branch-protection", {})
     required = get_external_branchprotection(branchprotection)
@@ -414,7 +565,8 @@ def main():
             print()
         return
 
-    ironic_versions = fetch_ironic_version_support()
+    all_version_support = fetch_version_support()
+    ironic_versions = all_version_support.get("ironic-image", {})
     all_issues: List[str] = []
 
     for orgrepo in sorted(all_prow_branches.keys()):
@@ -447,6 +599,8 @@ def main():
         # Check release branches (newest to oldest), stop after 2 consecutive locked
         ironic_support = ironic_versions if repo == "ironic-image" else None
         consecutive_locked = 0
+        locked_branches: Set[str] = set()
+        unlocked_branches: List[str] = []  # ordered newest-first
 
         for i, branch_name in enumerate(get_release_branches(branches)):
             branch_info = next((b for b in branches if b["name"] == branch_name), None)
@@ -461,9 +615,33 @@ def main():
             )
             all_issues.extend(issues)
 
+            if is_locked:
+                locked_branches.add(branch_name)
+            else:
+                unlocked_branches.append(branch_name)
+
             consecutive_locked = consecutive_locked + 1 if is_locked else 0
             if consecutive_locked >= 2:
                 break
+
+        # Check dependabot/renovate branch coverage
+        repo_support = all_version_support.get(repo)
+        if repo_support:
+            # Use version_support table: expect only Supported branches
+            expected = {version_to_branch(v) for v, s in repo_support.items()
+                        if s == "Supported"}
+        else:
+            # Fallback: expect only newest N unlocked branches
+            expected = set(unlocked_branches[:MAX_DEPENDENCY_BOT_BRANCHES])
+        all_issues.extend(check_dependency_bot_branches(
+            owner, repo, github_token, locked_branches, expected
+        ))
+
+        # Check milestone_applier config
+        repo_milestones = milestone_applier.get(f"{owner}/{repo}", {})
+        all_issues.extend(check_milestone_applier(
+            owner, repo, repo_milestones, unlocked_branches
+        ))
 
         print()
 
