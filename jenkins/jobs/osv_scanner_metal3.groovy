@@ -108,6 +108,36 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
             }
         }
 
+        // x/crypto vulnerabilities; do not want to bump go version for older versions
+        // Will be removed once version 1.12 support stops
+        def xcryptoIgnoredBranches = [
+            'CAPM3': ~/^release-1\.12$/,
+        ]
+        if (xcryptoIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
+            ['GO-2026-5013', 'GO-2026-5017', 'GO-2026-5018', 'GO-2026-5019', 'GO-2026-5020'].each { vulnId ->
+                sh """
+                    echo '' >> config.toml
+                    echo '[[IgnoredVulns]]' >> config.toml
+                    echo 'id = "${vulnId}"' >> config.toml
+                    echo 'reason = "x/crypto bump would require a newer Go version;"' >> config.toml
+                """
+            }
+        }
+
+        def helmIgnoredBranches = [
+            'CAPM3': ~/^release-1\.12$/,
+        ]
+        if (helmIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
+            ['GHSA-hr2v-4r36-88hr'].each { vulnId ->
+                sh """
+                    echo '' >> config.toml
+                    echo '[[IgnoredVulns]]' >> config.toml
+                    echo 'id = "${vulnId}"' >> config.toml
+                    echo 'reason = "helm/v3 vulnerability; bump would require a newer Go version"' >> config.toml
+                """
+            }
+        }
+
         def label   = "${repoName}-${refType}-${ref}".replace('/', '_')
         def outFile = "${WORKSPACE}/results/${repoName}_${refType}_${ref}.txt".replace('/', '_')
         sh """
