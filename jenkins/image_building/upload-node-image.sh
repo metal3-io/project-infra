@@ -61,7 +61,6 @@ CURL_COMMON_OPTS=(
     --retry-delay "${CURL_RETRY_DELAY}"
     --retry "${CURL_RETRY}"
     --user "${RT_USER:?}:${RT_TOKEN:?}"
-    --continue-at -
     --silent
     --show-error
 )
@@ -91,7 +90,7 @@ backup_old_image() {
     local tmp_image_name="test.qcow2"
 
     set +e
-    curl -f -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
+    curl -f -XGET "${CURL_COMMON_OPTS[@]}" --continue-at - "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
     does_file_exist=$?
     set -e
 
