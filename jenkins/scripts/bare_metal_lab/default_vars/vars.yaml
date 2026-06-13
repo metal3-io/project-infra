@@ -9,34 +9,42 @@ bare_metal_hosts:
 - id: "03"
   mac: b4:b5:2f:6d:89:d8
   ip: "192.168.1.24"
+  bootMode: "legacy"
   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:1"
-# - id: "04"
-#   mac: 80:c1:6e:7a:e8:10
-#   ip: "192.168.1.13"
+- id: "04"
+  mac: 6c:c2:17:40:7e:b0
+  ip: "192.168.1.13"
+  bootMode: "UEFI"
+  rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
+# - id: "05"
+#   mac: 80:c1:6e:7a:5a:a8
+#   ip: "192.168.1.14"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-- id: "05"
-  mac: 80:c1:6e:7a:5a:a8
-  ip: "192.168.1.14"
-  rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 # - id: "06"
 #   mac: b4:b5:2f:6d:68:10
 #   ip: "192.168.1.15"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 # - id: "07"
 #   mac: b4:b5:2f:6d:a9:d8
 #   ip: "192.168.1.16"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 # - id: "14"
 #   mac: 6c:3b:e5:b5:03:c8
 #   ip: "192.168.1.32"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 # - id: "15"
 #   mac: 10:60:4b:b4:be:00
 #   ip: "192.168.1.37"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 # - id: "16"
 #   mac: b4:b5:2f:6f:01:40
 #   ip: "192.168.1.33"
+#   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
 DHCP_HOSTS: "{{ bare_metal_hosts | map(attribute='mac') | join(';') }}"
 DHCP_IGNORE: "tag:!known"
