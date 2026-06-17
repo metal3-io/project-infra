@@ -40,9 +40,6 @@ elif [[ "${REPO_NAME}" == "ironic-image" ]]; then
     export SUSHY_TOOLS_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/sushy-tools"
     export VBMC_LOCAL_IMAGE="${IRONIC_LOCAL_IMAGE}/resources/vbmc"
 
-elif [[ "${REPO_NAME}" == "mariadb-image" ]]; then
-    export MARIADB_LOCAL_IMAGE="${HOME}/tested_repo"
-
 elif [[ "${REPO_NAME}" == "ironic-ipa-downloader" ]]; then
     export IPA_DOWNLOADER_LOCAL_IMAGE="${HOME}/tested_repo"
 
