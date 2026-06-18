@@ -3,7 +3,7 @@
 # Generate like this:
 # helm repo add traefik https://traefik.github.io/charts
 # helm repo update
-# helm template traefik traefik/traefik --version 39.0.9 \
+# helm template traefik traefik/traefik --version 41.0.0 \
 #   --namespace traefik \
 #   --api-versions policy/v1/PodDisruptionBudget \
 #   --values infra/traefik/traefik-values.yaml > infra/traefik/resources.yaml
@@ -16,7 +16,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -34,7 +34,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 automountServiceAccountToken: false
@@ -47,7 +47,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:
@@ -111,10 +111,7 @@ rules:
   - ""
   resources:
   - namespaces
-  - secrets
-  - configmaps
   verbs:
-  - get
   - list
   - watch
 - apiGroups:
@@ -153,7 +150,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -173,14 +170,14 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
   annotations:
     loadbalancer.openstack.org/keep-floatingip: "true"
 spec:
-  type: LoadBalancer
   externalTrafficPolicy: Cluster
   loadBalancerIP: 129.192.68.144
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
@@ -203,7 +200,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
@@ -229,7 +226,7 @@ spec:
         app.kubernetes.io/instance: traefik-traefik
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: traefik
-        helm.sh/chart: traefik-39.0.9
+        helm.sh/chart: traefik-41.0.0
     spec:
       automountServiceAccountToken: true
       containers:
@@ -260,7 +257,7 @@ spec:
               fieldPath: metadata.namespace
         - name: USER
           value: traefik
-        image: docker.io/traefik:v3.6.17
+        image: docker.io/traefik:v3.7.5
         imagePullPolicy: IfNotPresent
         lifecycle: null
         livenessProbe:
@@ -339,7 +336,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
   name: traefik
 spec:
@@ -354,7 +351,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
 spec:
   gatewayClassName: traefik
@@ -392,7 +389,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-traefik
-    helm.sh/chart: traefik-39.0.9
+    helm.sh/chart: traefik-41.0.0
     app.kubernetes.io/managed-by: Helm
 spec:
   controllerName: traefik.io/gateway-controller
