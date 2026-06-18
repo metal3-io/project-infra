@@ -12,11 +12,6 @@
   "semanticCommits": "disabled",
   "packageRules": [
     {
-      "matchBaseBranches": ["main"],
-      "description": "run at 6am on Mondays",
-      "schedule": ["after 6am on monday"]
-    },
-    {
       "matchPackageNames": ["kubernetes/kubernetes"],
       "description": "Allow pre-release (alpha/beta/rc) Kubernetes versions for pre-release test tracking",
       "ignoreUnstable": false,
