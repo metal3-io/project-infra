@@ -35,7 +35,7 @@ pipeline {
         IMAGE_OS = "${IMAGE_OS}"
         PRE_RELEASE = 'true' // Affects the way k8s is installed in node image building
         IMAGE_TYPE = 'node'
-        KUBERNETES_VERSION = 'v1.36.0' // base version, the pre-release version will be fetched automatically
+        KUBERNETES_VERSION = 'v1.37.0-alpha.1' // base version, the pre-release version will be fetched automatically
         CRICTL_VERSION = "${CRICTL_VERSION}"
         CRIO_VERSION = "${CRIO_VERSION}"
         CAPM3RELEASEBRANCH = "${capm3_release_branch}"
