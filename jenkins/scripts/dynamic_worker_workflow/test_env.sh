@@ -70,4 +70,4 @@ export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"registry.nordix.org/quay-io-pro
 export DOCKER_HUB_PROXY=${DOCKER_HUB_PROXY:-"registry.nordix.org/docker-hub-proxy"}
 
 # Proxy IPA's base URI value to override the default value in m3-dev-env
-export IPA_BASEURI="https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib"
+export IPA_BASEURI="https://artifactory.nordix.org/artifactory/openstack-remote/ironic-python-agent/dib"
