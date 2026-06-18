@@ -12,11 +12,6 @@
   "semanticCommits": "disabled",
   "packageRules": [
     {
-      "matchBaseBranches": ["main"],
-      "description": "run at 6am on Mondays",
-      "schedule": ["after 6am on monday"]
-    },
-    {
       "matchPackageNames": ["kubernetes/kubernetes"],
       "description": "Allow pre-release (alpha/beta/rc) Kubernetes versions for pre-release test tracking",
       "ignoreUnstable": false,
@@ -26,7 +21,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["hack/groovylint\\.sh$"],
+      "managerFilePatterns": ["hack/groovylint.sh"],
       "matchStrings": [
         "docker\\.io/(?<depName>[^:]+):(?<currentValue>[^@]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
@@ -35,7 +30,7 @@
     {
       "customType": "regex",
       "description": "Bump the target Kubernetes minor version for pre-release testing",
-      "managerFilePatterns": ["jenkins/jobs/pre_release_tests\\.groovy$"],
+      "managerFilePatterns": ["jenkins/jobs/pre_release_tests.groovy"],
       "matchStrings": ["KUBERNETES_VERSION = '(?<currentValue>[^']+)'"],
       "datasourceTemplate": "github-releases",
       "packageNameTemplate": "kubernetes/kubernetes",
@@ -44,7 +39,7 @@
     {
       "customType": "regex",
       "description": "Bump GitHub release versions in CAPI kustomization",
-      "managerFilePatterns": ["prow/capi/kustomization\\.yaml$"],
+      "managerFilePatterns": ["prow/capi/kustomization.yaml"],
       "matchStrings": [
         "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
       ],
@@ -55,9 +50,9 @@
       "customType": "regex",
       "description": "Bump CAPI core/bootstrap/control-plane provider versions",
       "managerFilePatterns": [
-        "prow/capi/core\\.yaml$",
-        "prow/capi/bootstrap\\.yaml$",
-        "prow/capi/control-plane\\.yaml$"
+        "prow/capi/core.yaml",
+        "prow/capi/bootstrap.yaml",
+        "prow/capi/control-plane.yaml"
       ],
       "matchStrings": ["version: (?<currentValue>v[^\\s]+)"],
       "datasourceTemplate": "github-releases",
@@ -67,7 +62,7 @@
     {
       "customType": "regex",
       "description": "Bump CAPO infrastructure provider version",
-      "managerFilePatterns": ["prow/capi/infrastructure\\.yaml$"],
+      "managerFilePatterns": ["prow/capi/infrastructure.yaml"],
       "matchStrings": ["version: (?<currentValue>v[^\\s]+)"],
       "datasourceTemplate": "github-releases",
       "packageNameTemplate": "kubernetes-sigs/cluster-api-provider-openstack",
