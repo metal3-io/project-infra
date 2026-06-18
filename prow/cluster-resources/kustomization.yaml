@@ -2,14 +2,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 # Check available versions at https://github.com/kubernetes/cloud-provider-openstack/releases
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/controller-manager/cloud-controller-manager-roles.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/controller-manager/cloud-controller-manager-role-bindings.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/cinder-csi-plugin/cinder-csi-controllerplugin-rbac.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/cinder-csi-plugin/cinder-csi-controllerplugin.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/cinder-csi-plugin/cinder-csi-nodeplugin-rbac.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/cinder-csi-plugin/cinder-csi-nodeplugin.yaml
-- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.34.1/manifests/cinder-csi-plugin/csi-cinder-driver.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/controller-manager/cloud-controller-manager-roles.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/controller-manager/cloud-controller-manager-role-bindings.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/cinder-csi-plugin/cinder-csi-controllerplugin-rbac.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/cinder-csi-plugin/cinder-csi-controllerplugin.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/cinder-csi-plugin/cinder-csi-nodeplugin-rbac.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/cinder-csi-plugin/cinder-csi-nodeplugin.yaml
+- https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/v1.35.0/manifests/cinder-csi-plugin/csi-cinder-driver.yaml
 - autoscaler.yaml
 - coredns-pdb.yaml
 - externalsecret.yaml
@@ -17,7 +17,7 @@ resources:
 images:
 # Check available tags at https://github.com/kubernetes/autoscaler/tags
 - name: registry.k8s.io/autoscaling/cluster-autoscaler
-  newTag: v1.34.3
+  newTag: v1.35.0
 
 patches:
 # CSI Cinder does not set any toleration or nodeSelector so we have to first create
@@ -37,19 +37,6 @@ patches:
   target:
     kind: Deployment
     name: csi-cinder-controllerplugin|calico-kube-controllers
-# Fix node-selector for openstack cloud controller manager
-# Upstream selects nodes with "node-role.kubernetes.io/control-plane=true" but we want to use the kubeadm default
-# which is empty value for the same key.
-# This is only needed for v1.34, so we can remove this when we update to v1.35.
-# See https://github.com/kubernetes/cloud-provider-openstack/blob/a031201ff26f3df433192b91df2be0e7d50acb70/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml#L31
-- patch: |-
-    - op: replace
-      path: /spec/template/spec/nodeSelector
-      value:
-        node-role.kubernetes.io/control-plane: ""
-  target:
-    kind: DaemonSet
-    name: openstack-cloud-controller-manager
 
 ## If there is ever a need to deploy without ESO, the following can be used to create the secret directly.
 # generatorOptions:
