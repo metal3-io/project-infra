@@ -23,9 +23,14 @@ on:
         default: ""
       dockerfile-directory:
         required: false
-        description: "The directory where the dockerfile locates, as relative to the repo root"
+        description: "Sets the build context in the specified directory, relative to root repo. This is where a Dockerfile is located. If directory doesn't have a Dockerfile, dockerfile-path input must be set to the location of the Dockerfile."
         type: string
         default: .
+      dockerfile-path:
+        required: false
+        description: "Path to the Dockerfile, relative to the repo root. When artifact-name is empty, this overrides dockerfile-directory for Dockerfile location while keeping dockerfile-directory as the build context."
+        type: string
+        default: ""
       pushImage:
         required: false
         description: "Whether to push the image afterwards"
@@ -150,7 +155,7 @@ jobs:
         image: metal3-io/${{ inputs.image-name }}
         tags: ${{ env.IMAGE_TAGS }}
         directory: ${{ inputs.artifact-name != '' && steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}
-        dockerfile: ${{ inputs.artifact-name != '' && steps.download-artifact.outputs.download-path || inputs.dockerfile-directory }}/Dockerfile
+        dockerfile: ${{ inputs.artifact-name != '' && format('{0}/Dockerfile', steps.download-artifact.outputs.download-path) || inputs.dockerfile-path || format('{0}/Dockerfile', inputs.dockerfile-directory) }}
         buildArgs: ${{ inputs.image-build-args || '' }}
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
