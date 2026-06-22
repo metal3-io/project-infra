@@ -24,3 +24,5 @@ sudo zypper -n in --repo CRI-O cri-o="${CRIO_SLES_VERSION}" cri-tools="${CRICTL_
 sudo zypper -n in keepalived
 # Install NM and enable it.
 sudo zypper -n in NetworkManager
+sudo systemctl disable wicked wickedd
+sudo systemctl enable NetworkManager
