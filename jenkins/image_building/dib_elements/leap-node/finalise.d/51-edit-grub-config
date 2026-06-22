@@ -11,17 +11,18 @@
 # to ensure the image boots properly on platforms that use serial consoles
 # (Oracle Cloud), as well as that we get serial console output which eases
 # debugging.
+#
+# NOTE: We intentionally do NOT apply DIB_BOOTLOADER_DEFAULT_CMDLINE
+# (net.ifnames=1) on Leap. The openSUSE Leap kubeadm config in
+# cluster-api-provider-metal3 references legacy interface names (eth0/eth1).
+# Enabling predictable naming renames the NICs to enp1s0/enp2s0, which breaks
+# kubeadm init on the control plane (no default route -> API server cannot bind).
+# Keep predictable naming disabled here so the image matches the kubeadm config.
 
 GRUB_ARGS="root=LABEL=cloudimg-rootfs console=tty0 console=ttyS0,115200"
 
-# DIB_BOOTLOADER_DEFAULT_CMDLINE if set (e.g., net.ifnames=1 for node images)
-if [[ -n "${DIB_BOOTLOADER_DEFAULT_CMDLINE:-}" ]]; then
-  GRUB_ARGS="${DIB_BOOTLOADER_DEFAULT_CMDLINE} ${GRUB_ARGS}"
-fi
-
 # Replace only the GRUB_CMDLINE_LINUX line (anchored to avoid matching
-# GRUB_CMDLINE_LINUX_DEFAULT). Use | as delimiter so any / in GRUB_ARGS
-# (e.g. from DIB_BOOTLOADER_DEFAULT_CMDLINE) does not break the expression.
-# Then regenerate the GRUB config to apply the updated kernel parameters.
+# GRUB_CMDLINE_LINUX_DEFAULT). Then regenerate the GRUB config to apply the
+# updated kernel parameters.
 sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"${GRUB_ARGS}\"|" /etc/default/grub
 grub2-mkconfig --output=/boot/grub2/grub.cfg
