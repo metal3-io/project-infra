@@ -85,7 +85,7 @@ jobs:
       sbom-artifact: ${{ inputs.generate-sbom && inputs.pushImage && format('{0}-sbom', inputs.image-name) || '' }}
 
     steps:
-    - name: Set GITHUB_REF and GITHUB_REFNAME to the inputs' ref, or default to github's ref
+    - name: Set resolved ref variables from inputs or github context
       id: set_ref
       env:
         REF: ${{ inputs.ref || github.ref }}
@@ -93,20 +93,20 @@ jobs:
         echo "Using INPUT REF: ${REF}"
         REF_NAME="${REF#refs/heads/}"
         REF_NAME="${REF_NAME#refs/tags/}"
-        echo "GITHUB_REF=${REF}" >> "${GITHUB_ENV}"
-        echo "GITHUB_REFNAME=${REF_NAME}" >> "${GITHUB_ENV}"
-        echo "Using GITHUB REFNAME: ${REF_NAME}"
+        echo "RESOLVED_REF=${REF}" >> "${GITHUB_ENV}"
+        echo "RESOLVED_REFNAME=${REF_NAME}" >> "${GITHUB_ENV}"
+        echo "Using RESOLVED REFNAME: ${REF_NAME}"
 
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
-        ref: ${{ env.GITHUB_REF }}
+        ref: ${{ env.RESOLVED_REF }}
         persist-credentials: false
 
-    - name: Set GITHUB_REFSHA to sha of the ref
+    - name: Set resolved ref SHA after checkout
       id: set_refsha
       run: |
         REF_SHA=$(git rev-parse HEAD)
-        echo "GITHUB_REFSHA=${REF_SHA}" >> "${GITHUB_ENV}"
+        echo "RESOLVED_REFSHA=${REF_SHA}" >> "${GITHUB_ENV}"
 
     - name: Get current date
       id: date
@@ -118,17 +118,17 @@ jobs:
         STEPS_DATE_OUTPUTS_CURRENT_DATE: ${{ steps.date.outputs.current_date }}
         INPUTS_IMAGE_TAG: ${{ inputs.image-tag }}
       run: |
-        BASE_TAG=$(echo "${GITHUB_REFNAME}" | sed 's/\//_/')
-        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${STEPS_DATE_OUTPUTS_CURRENT_DATE}_${GITHUB_REFSHA}"
+        BASE_TAG=$(echo "${RESOLVED_REFNAME}" | sed 's/\//_/')
+        IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${STEPS_DATE_OUTPUTS_CURRENT_DATE}_${RESOLVED_REFSHA}"
 
         if [[ -n "${INPUTS_IMAGE_TAG}" ]]; then
           IMAGE_TAGS="${INPUTS_IMAGE_TAG}"
           IMAGE_VERSION="${INPUTS_IMAGE_TAG}"
-        elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+        elif [[ "${RESOLVED_REF}" == "refs/heads/main" ]]; then
           IMAGE_TAGS="${IMAGE_TAGS}, latest"
           IMAGE_VERSION="latest"
         else
-          IMAGE_VERSION="${GITHUB_REFNAME}"
+          IMAGE_VERSION="${RESOLVED_REFNAME}"
         fi
 
         echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
