@@ -180,7 +180,7 @@ spec:
         maxSurge: 1
   version: v1.34.1
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: Metal3MachineTemplate
 metadata:
   name: test1-controlplane
@@ -195,10 +195,10 @@ spec:
       image:
         checksum: http://172.22.0.1/images/CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum
         checksumType: sha256
-        format: raw
+        diskFormat: raw
         url: http://172.22.0.1/images/CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: Metal3DataTemplate
 metadata:
   name: test1-controlplane-template
@@ -206,11 +206,11 @@ metadata:
 spec:
   clusterName: test1
   metaData:
-    ipAddressesFromIPPool:
+    ipAddressesFromPool:
     - key: provisioningIP
       name: provisioning-pool
-      apiGroup: ""
-      kind: ""
+      apiGroup: "ipam.metal3.io"
+      kind: "IPPool"
     objectNames:
     - key: name
       object: machine
@@ -218,11 +218,11 @@ spec:
       object: machine
     - key: local_hostname
       object: machine
-    prefixesFromIPPool:
+    prefixesFromPool:
     - key: provisioningCIDR
       name: provisioning-pool
-      apiGroup: ""
-      kind: ""
+      apiGroup: "ipam.metal3.io"
+      kind: "IPPool"
   networkData:
     links:
       ethernets:
