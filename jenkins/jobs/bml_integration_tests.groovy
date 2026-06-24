@@ -139,6 +139,10 @@ pipeline {
                     echo 'Failed due to timeout'
                     currentBuild.result = 'FAILURE'
                 }
+                timestamps {
+                    sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
+                    archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                }
             }
         }
         success {
