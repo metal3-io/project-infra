@@ -13,7 +13,7 @@ pipeline {
         OS_USERNAME = 'metal3ci'
         OS_AUTH_URL = "https://xerces.ericsson.net:5000"
         OS_PROJECT_ID="b62dc8622f87407589de9f7dcec13d25"
-        OS_INTERFACE = " public"
+        OS_INTERFACE = "public"
         OS_PROJECT_NAME = "EST_Metal3_CI"
         OS_USER_DOMAIN_NAME = "xerces"
         OS_AUTH_VERSION = 3
