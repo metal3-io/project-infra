@@ -37,7 +37,7 @@ spec:
 
         vrrp_instance VI_1 {
             state MASTER
-            interface eno1.3
+            interface eno49.3
             virtual_router_id 1
             priority 101
             advert_int 1
@@ -51,13 +51,13 @@ spec:
       path: /etc/keepalived/keepalived.conf
     - content: |
         [connection]
-        id=eno1
+        id=eno49
         type=ethernet
-        interface-name=eno1
+        interface-name=eno49
         master=ironicendpoint
         slave-type=bridge
       owner: root:root
-      path: /etc/NetworkManager/system-connections/eno1.nmconnection
+      path: /etc/NetworkManager/system-connections/eno49.nmconnection
       permissions: "0600"
     - content: |
         [connection]
@@ -87,15 +87,15 @@ spec:
       path: /etc/containers/registries.conf
     - content: |
         [connection]
-        id=Vlan eno1.3
+        id=Vlan eno49.3
         type=vlan
         autoconnect-priority=999
-        interface-name=eno1.3
+        interface-name=eno49.3
 
         [vlan]
         flags=1
         id=3
-        parent=eno1
+        parent=eno49
 
         [ipv4]
         method=auto
@@ -104,7 +104,7 @@ spec:
         addr-gen-mode=eui64
         method=ignore
       owner: root:root
-      path: /etc/NetworkManager/system-connections/eno1.3.nmconnection
+      path: /etc/NetworkManager/system-connections/eno49.3.nmconnection
       permissions: "0600"
     initConfiguration:
       nodeRegistration:
@@ -148,10 +148,10 @@ spec:
     - systemctl restart NetworkManager.service
     - nmcli connection load /etc/NetworkManager/system-connections/ironicendpoint.nmconnection
     - nmcli connection up ironicendpoint
-    - nmcli connection load /etc/NetworkManager/system-connections/eno1.nmconnection
-    - nmcli connection up eno1
-    - nmcli connection load /etc/NetworkManager/system-connections/eno1.3.nmconnection
-    - nmcli connection up /etc/NetworkManager/system-connections/eno1.3.nmconnection
+    - nmcli connection load /etc/NetworkManager/system-connections/eno49.nmconnection
+    - nmcli connection up eno49
+    - nmcli connection load /etc/NetworkManager/system-connections/eno49.3.nmconnection
+    - nmcli connection up /etc/NetworkManager/system-connections/eno49.3.nmconnection
     - rm /etc/cni/net.d/*
     - systemctl enable --now keepalived
     - sleep 30
@@ -226,21 +226,21 @@ spec:
   networkData:
     links:
       ethernets:
-      - id: eno1
+      - id: eno49
         macAddress:
-          fromHostInterface: eno1
+          fromHostInterface: eno49
         type: phy
-      - id: eno2
+      - id: eno50
         macAddress:
-          fromHostInterface: eno2
+          fromHostInterface: eno50
         type: phy
       vlans:
       - id: vlan3
         macAddress:
-          fromHostInterface: eno1
+          fromHostInterface: eno49
         mtu: 1500
         vlanID: 3
-        vlanLink: eno1
+        vlanLink: eno49
     networks:
       ipv4:
       - id: externalv4
