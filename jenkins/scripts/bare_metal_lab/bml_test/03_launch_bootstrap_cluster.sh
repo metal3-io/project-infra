@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set +x
+set -o pipefail
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1091
@@ -152,9 +153,14 @@ launch_ironic_standalone_operator()
         -n ironic-standalone-operator-system deployment/ironic-standalone-operator-controller-manager
 }
 
+render_dhcp_hosts_list()
+{
+    local vars_yaml="${SCRIPTDIR}/../default_vars/vars.yaml"
+    yq eval '.bare_metal_hosts[].mac' "${vars_yaml}" | sed 's/^/        - /'
+}
+
 launch_ironic_via_irso()
 {
-
     kubectl create secret generic ironic-auth -n "${IRONIC_NAMESPACE}" \
         --from-file=username="${IRONIC_AUTH_DIR}ironic-username"  \
         --from-file=password="${IRONIC_AUTH_DIR}ironic-password"
@@ -182,6 +188,10 @@ spec:
       rangeBegin: "172.22.0.10"
       rangeEnd: "172.22.0.100"
       networkCIDR: "172.22.0.0/24"
+      hosts:
+$(render_dhcp_hosts_list)
+      ignore:
+        - "tag:!known"
     interface: "ironicendpoint"
     ipAddress: "172.22.0.2"
     ipAddressManager: keepalived
