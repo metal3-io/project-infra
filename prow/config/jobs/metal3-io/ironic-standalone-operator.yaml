@@ -14,7 +14,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/golang:1.25
+        image: docker.io/golang:1.26
         imagePullPolicy: Always
   - name: shellcheck
     branches:
