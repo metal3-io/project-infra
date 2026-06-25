@@ -53,12 +53,12 @@ pipeline {
                 timeout(time: 5, unit: 'MINUTES')
             }
             steps {
+                deleteDir()
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: ci_git_branch]],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [
-                        [$class: 'WipeWorkspace'],
                         [$class: 'CleanCheckout'],
                         [$class: 'CleanBeforeCheckout']
                     ],

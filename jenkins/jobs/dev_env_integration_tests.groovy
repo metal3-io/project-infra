@@ -55,13 +55,13 @@ pipeline {
                     CURRENT_START_TIME = System.currentTimeMillis()
                 }
                 /* Checkout CI Repo */
+                deleteDir()
                 checkout([$class: 'GitSCM',
                   branches: [
                     [name: ci_git_branch]
                   ],
                   doGenerateSubmoduleConfigurations: false,
                   extensions: [
-                    [$class: 'WipeWorkspace'],
                     [$class: 'CleanCheckout'],
                     [$class: 'CleanBeforeCheckout']
                   ],
