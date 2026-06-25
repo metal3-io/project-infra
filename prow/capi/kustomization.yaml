@@ -4,7 +4,7 @@ resources:
 - https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.yaml
 - https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.25.0/operator-components.yaml
 # ORC is needed for CAPO
-- https://github.com/k-orc/openstack-resource-controller/releases/download/v2.2.0/install.yaml
+- https://github.com/k-orc/openstack-resource-controller/releases/download/v2.6.0/install.yaml
 - core.yaml
 - control-plane.yaml
 - bootstrap.yaml
