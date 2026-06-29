@@ -35,6 +35,7 @@ pipeline {
             }
             steps {
             /* Checkout CI Repo */
+                deleteDir()
                 checkout([
                     $class: 'GitSCM',
                     branches: [
@@ -42,7 +43,6 @@ pipeline {
                         ],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [
-                        [$class: 'WipeWorkspace'],
                         [$class: 'CleanCheckout'],
                         [$class: 'CleanBeforeCheckout']
                         ],

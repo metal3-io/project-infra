@@ -27,11 +27,11 @@ pipeline {
                 stages {
                     stage('Checkout source code') {
                         steps {
+                            deleteDir()
                             checkout scmGit(
                   branches: [[name: pullSha]],
                   userRemoteConfigs: [[url: repoUrl, refspec: refspec]],
-                  extensions: [[$class: 'WipeWorkspace'],
-                  [$class: 'CleanCheckout'],
+                  extensions: [[$class: 'CleanCheckout'],
                   [$class: 'CleanBeforeCheckout'],
                   [$class: 'PreBuildMerge', options: [mergeTarget: pullBase, mergeRemote: 'origin']],
                   [$class: 'UserIdentity', name: 'Test', email: 'test@test.test'],
