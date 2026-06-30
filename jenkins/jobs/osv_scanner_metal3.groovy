@@ -124,6 +124,16 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
             }
         }
 
+        // containerd CVEs with no fix available; only affects test/go.mod
+        ['GO-2026-5064', 'GO-2026-5338', 'GO-2026-5622'].each { vulnId ->
+            sh """
+                echo '' >> config.toml
+                echo '[[IgnoredVulns]]' >> config.toml
+                echo 'id = "${vulnId}"' >> config.toml
+                echo 'reason = "containerd vulnerability with no fix available. Only affects tests."' >> config.toml
+            """
+        }
+
         def helmIgnoredBranches = [
             'CAPM3': ~/^release-1\.12$/,
         ]
