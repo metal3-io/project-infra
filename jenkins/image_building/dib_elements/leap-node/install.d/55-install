@@ -18,8 +18,8 @@ net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
-sudo zypper -n in --repo kubernetes kubelet="${KUBERNETES_SLES_VERSION}" kubeadm="${KUBERNETES_SLES_VERSION}" kubectl="${KUBERNETES_SLES_VERSION}"
-sudo zypper -n in --repo CRI-O cri-o="${CRIO_SLES_VERSION}" cri-tools="${CRICTL_SLES_VERSION}"
+sudo zypper -n in --repo kubernetes kubelet="${KUBERNETES_SLES_VERSION}" kubeadm="${KUBERNETES_SLES_VERSION}" kubectl="${KUBERNETES_SLES_VERSION}" cri-tools="${CRICTL_SLES_VERSION}"
+sudo zypper -n in --repo CRI-O cri-o="${CRIO_SLES_VERSION}"
 # keepalived is in the external oss repo, hence install it here.
 sudo zypper -n in keepalived
 # Install NM and enable it.
