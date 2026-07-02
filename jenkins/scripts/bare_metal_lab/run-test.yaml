@@ -6,7 +6,10 @@
   tasks:
   - name: Apply cluster, control-plane and worker manifests
     shell:
-      cmd: kubectl apply -f bml_test/manifests/ -n metal3
+      cmd: for f in bml_test/manifests/*.yaml; do envsubst '${K8S_VERSION} ${IMAGE_OS}' < "$f"; done | kubectl apply -f - -n metal3
+    environment:
+      K8S_VERSION: "{{ k8s_version }}"
+      IMAGE_OS: "{{ image_os }}"
     tags: kubectl_apply
 
   - name: Wait until cluster becomes provisioned.

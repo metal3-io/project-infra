@@ -7,6 +7,9 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1091
 . "${SCRIPTDIR}"/lib/vars.sh
 
+K8S_VERSION="${K8S_VERSION:-v1.36.0}"
+IMAGE_OS="${IMAGE_OS:-CENTOS_10}"
+
 USER="$(whoami)"
 sudo mkdir -p "${IRONIC_DATA_DIR}/html/images"
 sudo chown -R "${USER}:${USER}" "${IRONIC_DATA_DIR}"
@@ -14,9 +17,9 @@ sudo chown -R "${USER}:${USER}" "${IRONIC_DATA_DIR}"
 
 # Download required images for ironic if not already present
 pushd "${IRONIC_DATA_DIR}/html/images"
-wget --no-check-certificate -q https://artifactory.nordix.org/artifactory/metal3/images/k8s_v1.34.1/CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2
-qemu-img convert -O raw CENTOS_9_NODE_IMAGE_K8S_v1.34.1.qcow2 CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img
-sha256sum "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img" | awk '{print $1}' > "CENTOS_9_NODE_IMAGE_K8S_v1.34.1-raw.img.sha256sum"
+wget --no-check-certificate -q "https://artifactory.nordix.org/artifactory/metal3/images/k8s_${K8S_VERSION}/${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}.qcow2"
+qemu-img convert -O raw "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}.qcow2" "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img"
+sha256sum "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img" | awk '{print $1}' > "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img.sha256sum"
 wget -q https://artifactory.nordix.org/artifactory/openstack-remote/ironic-python-agent/dib/ipa-centos9-master.tar.gz
 popd
 
