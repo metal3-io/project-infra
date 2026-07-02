@@ -21,9 +21,19 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["hack/groovylint.sh"],
+      "description": "Bump container images in Prow job configs",
+      "managerFilePatterns": ["prow/config/jobs/**/*.yaml"],
       "matchStrings": [
-        "docker\\.io/(?<depName>[^:]+):(?<currentValue>[^@]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+        "image: (?<depName>[^:@\\s]+):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump container images in hack scripts",
+      "managerFilePatterns": ["hack/*.sh"],
+      "matchStrings": [
+        "(?<depName>(?:[a-z0-9.-]+\\.)+[a-z]{2,}/[^:\\s]+):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
       "datasourceTemplate": "docker"
     },

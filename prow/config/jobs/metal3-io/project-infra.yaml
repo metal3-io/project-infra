@@ -48,7 +48,7 @@ presubmits:
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
   - name: groovylint
-    run_if_changed: '(\.groovy)$'
+    run_if_changed: '(\.groovy|groovylint\.sh)$'
     decorate: true
     spec:
       containers:
