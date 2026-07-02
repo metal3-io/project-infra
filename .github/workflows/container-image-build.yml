@@ -63,11 +63,14 @@ on:
         default: false
     secrets:
       QUAY_USERNAME:
-        required: true
+        # Required for release/push jobs. PR build jobs that set pushImage: false can omit this.
+        required: false
       QUAY_PASSWORD:
-        required: true
+        # Required for release/push jobs. PR build jobs that set pushImage: false can omit this.
+        required: false
       SLACK_WEBHOOK:
-        required: true
+        # Required for release/push jobs to get failure notifications. PR build jobs can omit this.
+        required: false
     outputs:
       image-digest:
         description: "The digest of the built image"
@@ -90,6 +93,23 @@ jobs:
       sbom-artifact: ${{ inputs.generate-sbom && inputs.pushImage && format('{0}-sbom', inputs.image-name) || '' }}
 
     steps:
+    - name: Validate required secrets for push
+      if: ${{ inputs.pushImage }}
+      env:
+        QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+        QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      run: |
+        set -eu
+        missing=""
+        if [[ -z "${QUAY_USERNAME}" ]]; then missing="${missing} QUAY_USERNAME"; fi
+        if [[ -z "${QUAY_PASSWORD}" ]]; then missing="${missing} QUAY_PASSWORD"; fi
+        if [[ -z "${SLACK_WEBHOOK}" ]]; then missing="${missing} SLACK_WEBHOOK"; fi
+        if [[ -n "${missing}" ]]; then
+          echo "::error::pushImage is true but required secrets are missing:${missing}"
+          exit 1
+        fi
+
     - name: Set resolved ref variables from inputs or github context
       id: set_ref
       env:
@@ -232,7 +252,7 @@ jobs:
         path: ${{ inputs.image-name }}-sbom.spdx.json
 
     - name: Slack Notification on Failure
-      if: ${{ failure() }}
+      if: ${{ failure() && secrets.SLACK_WEBHOOK != '' }}
       uses: rtCamp/action-slack-notify@33ca3be66c6f378fe1610fd1d5258632dbed5e58 # v2.4.0
       env:
         SLACK_TITLE: "GitHub Action Failed in ${{ github.repository }}"
