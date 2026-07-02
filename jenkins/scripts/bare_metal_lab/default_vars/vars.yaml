@@ -21,16 +21,16 @@ bare_metal_hosts:
 #   ip: "192.168.1.14"
 #   bootMode: "legacy"
 #   rootDeviceHint: "/dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0"
-# - id: "06"
-#   mac: e4:11:5b:95:7e:98
-#   ip: "192.168.1.23"
-#   bootMode: "UEFI"
-#   rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
-- id: "07"
-  mac: 5c:b9:01:98:6d:6c
-  ip: "192.168.1.16"
+- id: "06"
+  mac: e4:11:5b:95:7e:98
+  ip: "192.168.1.23"
   bootMode: "UEFI"
   rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
+# - id: "07"
+#   mac: 5c:b9:01:98:6d:6c
+#   ip: "192.168.1.16"
+#   bootMode: "UEFI"
+#   rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
 # - id: "14"
 #   mac: 6c:3b:e5:b5:03:c8
 #   ip: "192.168.1.32"
