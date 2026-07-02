@@ -10,6 +10,8 @@
     "DuplicateNumberLiteral": { "enabled": false },
     "UnusedVariable": { "enabled": false },
     "VariableTypeRequired": { "enabled": false },
-    "NoDef": { "enabled": false }
+    "NoDef": { "enabled": false },
+    "UnnecessaryGString": { "enabled": true, "severity": "warning" },
+    "SpaceAroundOperator": { "enabled": true, "severity": "warning" }
   }
 }
