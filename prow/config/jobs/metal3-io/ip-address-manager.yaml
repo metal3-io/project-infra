@@ -62,6 +62,22 @@ presubmits:
           value: "TRUE"
         image: docker.io/koalaman/shellcheck-alpine:v0.10.0@sha256:5921d946dac740cbeec2fb1c898747b6105e585130cc7f0602eec9a10f7ddb63
         imagePullPolicy: Always
+  - name: renovate-config-validator
+    branches:
+    - main
+    run_if_changed: '(renovate\.json|renovate-validator\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/renovate-validator.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/node:24-alpine
+        imagePullPolicy: Always
   - name: unit
     branches:
     - main
