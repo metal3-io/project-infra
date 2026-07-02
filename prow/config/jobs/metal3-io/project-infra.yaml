@@ -59,7 +59,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/nvuillam/npm-groovy-lint:v16.1.1@sha256:fd8cf44d1ea3103f8f589770257f6f5960e76124c05a7fe81051bbff4dd3df38
+        image: docker.io/nvuillam/npm-groovy-lint:v18.0.0@sha256:317deacf076dddf4329ac28cc73033aa137c781bfb035b2fb606edce8106836d
         imagePullPolicy: Always
   - name: spellcheck
     run_if_changed: '(\.md|spellcheck\.sh|.cspell-config.json)$'
