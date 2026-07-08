@@ -64,7 +64,7 @@ presubmits:
           value: "TRUE"
         - name: KUBECONFORM_PATH
           value: "/"
-        image: ghcr.io/yannh/kubeconform:v0.6.7-alpine@sha256:824e0c248809e4b2da2a768b16b107cf17ada88a89ec6aa6050e566ba93ebbc6
+        image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
         imagePullPolicy: Always
   #NOTE(elfosardo): commented out until metal3-dev-env starts using IrSO
   # name: metal3-dev-env-integration-test-{image_os}-release-1-11
