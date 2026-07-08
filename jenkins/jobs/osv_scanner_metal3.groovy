@@ -108,6 +108,29 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
             }
         }
 
+        // oras-go/v2 vulnerabilities since bump would require a newer Go version
+        // Will be removed once version 1.12 support stops
+        def orasIgnoredBranches = [
+            'CAPM3': ~/^release-1\.12$/,
+        ]
+
+        if (orasIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
+            [
+                'GHSA-8xwf-rjm4-xvhv',
+                'GHSA-fxhp-mv3v-67qp',
+                'GHSA-jxpm-75mh-9fp7',
+                'GHSA-vh4v-2xq2-g5cg',
+                'GHSA-xf85-363p-868w',
+            ].each { vulnId ->
+                sh """
+                    echo '' >> config.toml
+                    echo '[[IgnoredVulns]]' >> config.toml
+                    echo 'id = "${vulnId}"' >> config.toml
+                    echo 'reason = "oras-go/v2 bump would require a newer Go version."' >> config.toml
+                """
+            }
+        }
+
         // x/crypto vulnerabilities; do not want to bump go version for older versions
         // Will be removed once version 1.12 support stops
         def xcryptoIgnoredBranches = [
