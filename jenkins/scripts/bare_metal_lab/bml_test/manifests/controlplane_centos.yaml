@@ -254,4 +254,4 @@ spec:
           prefix: 0
     services:
       dns:
-      - 8.8.8.8
+      - ${EXTERNAL_DNS_V4}

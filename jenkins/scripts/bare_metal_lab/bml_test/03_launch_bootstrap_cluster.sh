@@ -11,6 +11,9 @@ set -eux
 
 USER="$(whoami)"
 export PATH=/usr/local/go/bin:$PATH
+KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-bml}"
+KIND_NODE_NAME="${KIND_CLUSTER_NAME}-control-plane"
+IRONIC_PROVISIONING_INTERFACE="${IRONIC_PROVISIONING_INTERFACE:-}"
 
 # Configure git for slow networks
 # if network goes down  to less than 0.5 Mbps for 120 seconds, git will abort
@@ -104,22 +107,27 @@ patch_ipam()
 #
 # Create a management cluster
 #
+discover_kind_provisioning_interface()
+{
+    sudo docker exec "${KIND_NODE_NAME}" sh -c "ip -o -4 addr show | awk '/172\\.22\\.0\\./ {print \$2; exit}'"
+}
+
 start_management_cluster()
 {
-    local minikube_error
+    if ! sudo su -l -c "kind get clusters | grep -Fxq '${KIND_CLUSTER_NAME}'" "${USER}"; then
+        sudo su -l -c "kind create cluster --name '${KIND_CLUSTER_NAME}'" "${USER}"
+    fi
 
-    while /bin/true; do
-        minikube_error=0
-        sudo su -l -c 'minikube start' "${USER}" || minikube_error=1
-        if [[ "${minikube_error}" -eq 0 ]]; then
-            break
-        fi
-    done
+    sudo su -l -c "kubectl config use-context 'kind-${KIND_CLUSTER_NAME}'" "${USER}"
 
-    sudo su -l -c "minikube ssh -- sudo brctl addbr ironicendpoint" "${USER}"
-    sudo su -l -c "minikube ssh -- sudo ip link set ironicendpoint up" "${USER}"
-    sudo su -l -c "minikube ssh -- sudo brctl addif ironicendpoint eth2" "${USER}"
-    sudo su -l -c "minikube ssh -- sudo ip addr add 172.22.0.9/24 dev ironicendpoint" "${USER}"
+    if [[ -z "${IRONIC_PROVISIONING_INTERFACE}" ]]; then
+        IRONIC_PROVISIONING_INTERFACE="$(discover_kind_provisioning_interface)"
+    fi
+
+    if [[ -z "${IRONIC_PROVISIONING_INTERFACE}" ]]; then
+        echo "Failed to discover provisioning interface in ${KIND_NODE_NAME}" >&2
+        exit 1
+    fi
 
 }
 
@@ -192,7 +200,7 @@ spec:
 $(render_dhcp_hosts_list)
       ignore:
         - "tag:!known"
-    interface: "ironicendpoint"
+    interface: "${IRONIC_PROVISIONING_INTERFACE}"
     ipAddress: "172.22.0.2"
     ipAddressManager: keepalived
   deployRamdisk:
@@ -215,8 +223,6 @@ EOF
 # Start management cluster
 start_management_cluster
 
-# Preload images into minikube
-"${SCRIPTDIR}"/preload_images_minikube.sh
 kubectl create namespace metal3
 
 kubectl create namespace "${IRONIC_NAMESPACE}"
