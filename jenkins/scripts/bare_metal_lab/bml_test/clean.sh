@@ -5,21 +5,21 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1091
 . "${SCRIPTDIR}"/lib/vars.sh
 
+KIND_PROVISIONING_NETWORK="${KIND_PROVISIONING_NETWORK:-bml-provisioning}"
+KIND_EXTERNAL_NETWORK="${KIND_EXTERNAL_NETWORK:-bml-external}"
+
 set -x
 
-sudo ip link delete external
-sudo ip link delete ironic-peer
-sudo ip link delete ironicendpoint
-sudo ip link delete provisioning
+sudo ip link delete external || true
+sudo ip link delete ironic-peer || true
+sudo ip link delete ironicendpoint || true
+sudo ip link delete provisioning || true
 
-# Destroy and undefine the libvirt networks
-sudo virsh net-destroy provisioning
-sudo virsh net-destroy external
+kind delete cluster --name "${KIND_CLUSTER_NAME:-bml}" || true
+minikube delete || true
 
-sudo virsh net-undefine provisioning
-sudo virsh net-undefine external
-
-minikube delete
+sudo docker network rm "${KIND_PROVISIONING_NETWORK}" || true
+sudo docker network rm "${KIND_EXTERNAL_NETWORK}" || true
 
 # Clean up Docker containers safely
 docker ps -a -q | xargs -r docker stop
