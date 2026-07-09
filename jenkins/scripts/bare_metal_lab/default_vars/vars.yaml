@@ -1,6 +1,8 @@
 # Ensure provisioning host accepts all variables passed through ssh.
 # Check /etc/ssh/sshd_config file has following line:
 #   AcceptEnv LANG LC_* BML_* GITHUB_TOKEN REPO_NAME PR_*
+k8s_version: "v1.36.0"
+image_os: "CENTOS_10"
 bml_ilo_username: "{{ lookup('env', 'BML_ILO_USERNAME') }}"
 bml_ilo_password: "{{ lookup('env', 'BML_ILO_PASSWORD') }}"
 github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"

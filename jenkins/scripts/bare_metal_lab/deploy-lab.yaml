@@ -15,6 +15,9 @@
   - name: Configure host
     shell:
       cmd: "./bml_test/02_configure_host.sh"
+    environment:
+      K8S_VERSION: "{{ k8s_version }}"
+      IMAGE_OS: "{{ image_os }}"
 
   - name: Deploy bmhosts
     template:
