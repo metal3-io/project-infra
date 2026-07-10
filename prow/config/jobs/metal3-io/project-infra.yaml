@@ -73,7 +73,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: ghcr.io/streetsidesoftware/cspell:8.19.4@sha256:820c4a163be5412783619dfa635f89629217177b8de9a5c411fbee4429745c91
+        image: ghcr.io/streetsidesoftware/cspell:10.0.1@sha256:ec3c20bf274834311cbe72705689e5a21ae8dc6a29ceee5b2248c424b4783ce3
         imagePullPolicy: Always
   - name: renovate-config-validator
     run_if_changed: '(renovate\.json|renovate-validator\.sh)$'
