@@ -106,6 +106,7 @@ jobs:
       with:
         ref: ${{ env.RESOLVED_REF }}
         persist-credentials: false
+        fetch-depth: ${{ inputs.image-tag != '' && 1 || 0 }}
 
     - name: Set resolved ref SHA after checkout
       id: set_refsha
@@ -123,21 +124,26 @@ jobs:
         STEPS_DATE_OUTPUTS_CURRENT_DATE: ${{ steps.date.outputs.current_date }}
         INPUTS_IMAGE_TAG: ${{ inputs.image-tag }}
       run: |
-        BASE_TAG=$(echo "${RESOLVED_REFNAME}" | sed 's/\//_/')
+        set -euo pipefail
+
+        # Image tag generation
+        BASE_TAG="${RESOLVED_REFNAME//\//_}"
         IMAGE_TAGS="${BASE_TAG}, ${BASE_TAG}_${STEPS_DATE_OUTPUTS_CURRENT_DATE}_${RESOLVED_REFSHA}"
 
         if [[ -n "${INPUTS_IMAGE_TAG}" ]]; then
+          # Tag and version are coming from the caller
           IMAGE_TAGS="${INPUTS_IMAGE_TAG}"
           IMAGE_VERSION="${INPUTS_IMAGE_TAG}"
-        elif [[ "${RESOLVED_REF}" == "refs/heads/main" ]]; then
-          IMAGE_TAGS="${IMAGE_TAGS}, latest"
-          IMAGE_VERSION="latest"
         else
-          IMAGE_VERSION="${RESOLVED_REFNAME}"
+          if [[ "${RESOLVED_REF}" == "refs/heads/main" ]]; then
+            IMAGE_TAGS="${IMAGE_TAGS}, latest"
+          fi
+          IMAGE_VERSION="$(./hack/versioncheck.sh --resolved_refname="${RESOLVED_REFNAME}" --resolved_ref="${RESOLVED_REFSHA}")"
         fi
 
         echo "IMAGE_TAGS=${IMAGE_TAGS}" >> "${GITHUB_ENV}"
         echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
+        echo "IMAGE_REVISION=${RESOLVED_REFSHA}" >> "${GITHUB_ENV}"
 
     - name: Download artifact
       id: download-artifact
@@ -159,6 +165,7 @@ jobs:
         buildArgs: ${{ inputs.image-build-args || '' }}
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+          org.opencontainers.image.revision=${{ env.IMAGE_REVISION }}
         registry: quay.io
         username: ${{ secrets.QUAY_USERNAME }} # zizmor: ignore[secrets-outside-env]
         password: ${{ secrets.QUAY_PASSWORD }} # zizmor: ignore[secrets-outside-env]
