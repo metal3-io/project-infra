@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins-operator
+  name: oci-jenkins-operator
   namespace: prow
 spec:
   selector:
-    app: jenkins-operator
+    jenkins_operator: oci
   ports:
   - port: 80
     targetPort: 8080
@@ -15,9 +15,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: prow
-  name: jenkins-operator
+  name: oci-jenkins-operator
   labels:
-    app: jenkins-operator
+    jenkins_operator: oci
 spec:
   replicas: 1
   strategy:
@@ -27,26 +27,26 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: jenkins-operator
+      jenkins_operator: oci
   template:
     metadata:
       labels:
-        app: jenkins-operator
+        jenkins_operator: oci
     spec:
-      serviceAccountName: jenkins-operator
+      serviceAccountName: oci-jenkins-operator
       containers:
-      - name: jenkins-operator
+      - name: oci-jenkins-operator
         image: us-docker.pkg.dev/k8s-infra-prow/images/jenkins-operator:v20260531-24f6b2904
         args:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
-        - --jenkins-url=https://jenkins.nordix.org
-        - --jenkins-user=metal3.bot@gmail.com
+        - --jenkins-url=https://jenkins.apps.test.metal3.io
+        - --jenkins-user=prow
         - --jenkins-token-file=/etc/jenkins/token
         - --github-token-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
-        - --label-selector=!jenkins_operator
+        - --label-selector=jenkins_operator=oci
         - --skip-report=false
         - --dry-run=false
         ports:
@@ -57,7 +57,7 @@ spec:
         - name: github-token
           mountPath: /etc/github
           readOnly: true
-        - name: jenkins-token
+        - name: oci-jenkins-token
           mountPath: /etc/jenkins
           readOnly: true
         - name: config
@@ -70,9 +70,9 @@ spec:
       - name: github-token
         secret:
           secretName: github-token
-      - name: jenkins-token
+      - name: oci-jenkins-token
         secret:
-          secretName: jenkins-token
+          secretName: oci-jenkins-token
       - name: config
         configMap:
           name: config
@@ -84,13 +84,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: prow
-  name: jenkins-operator
+  name: oci-jenkins-operator
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: prow
-  name: jenkins-operator
+  name: oci-jenkins-operator
 rules:
 - apiGroups:
   - "prow.k8s.io"
@@ -107,11 +107,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: prow
-  name: jenkins-operator
+  name: oci-jenkins-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: jenkins-operator
+  name: oci-jenkins-operator
 subjects:
 - kind: ServiceAccount
-  name: jenkins-operator
+  name: oci-jenkins-operator
