@@ -109,12 +109,16 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
@@ -122,12 +126,16 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_job}
@@ -135,36 +143,48 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-main-remediation
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-main-features
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-pivoting
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-remediation
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-features
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
@@ -172,18 +192,24 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-bmo-e2e-test-optional-pull
@@ -197,11 +223,15 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-k8s-pre-release-test-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true

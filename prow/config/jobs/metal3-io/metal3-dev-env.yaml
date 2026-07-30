@@ -45,6 +45,8 @@ presubmits:
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-basic-test-release-1-13
@@ -65,6 +67,8 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-13
@@ -86,6 +90,8 @@ presubmits:
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-13
@@ -106,6 +112,8 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-13
@@ -127,6 +135,8 @@ presubmits:
   # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_job}
   - name: metal3-centos-e2e-feature-test-main-pivoting
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-pivoting
@@ -147,6 +157,8 @@ presubmits:
     optional: true
   - name: metal3-centos-e2e-feature-test-main-remediation
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-remediation
@@ -167,6 +179,8 @@ presubmits:
     optional: true
   - name: metal3-centos-e2e-feature-test-main-features
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-features
@@ -187,6 +201,8 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-pivoting
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-pivoting
@@ -207,6 +223,8 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-remediation
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-remediation
@@ -227,6 +245,8 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-main-features
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-features
@@ -248,6 +268,8 @@ presubmits:
   # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-clusterctl-upgrade-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-13
@@ -269,6 +291,8 @@ presubmits:
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-35-1-36-upgrade-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-e2e-1-35-1-36-upgrade-test-release-1-13
@@ -285,6 +309,8 @@ presubmits:
     optional: true
   - name: metal3-dev-env-integration-test-centos-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-13
@@ -305,6 +331,8 @@ presubmits:
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: false
   - name: metal3-dev-env-integration-test-ubuntu-release-1-13
@@ -330,23 +358,33 @@ presubmits:
     optional: true
   - name: metal3-ubuntu-e2e-capi-md-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-capi-md-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-e2e-conformance-test-{capm3_target_branch}
   - name: metal3-e2e-conformance-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-k8s-pre-release-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-k8s-pre-release-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-k8s-pre-release-test-main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true

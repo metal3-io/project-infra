@@ -53,23 +53,31 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: false
   - name: metal3-dev-env-integration-test-centos-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
