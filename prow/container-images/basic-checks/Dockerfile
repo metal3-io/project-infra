@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.25.7@sha256:85c0ab0b73087fda36bf8692efe2cf67c54a06d7ca3b49c489bbff98c9954d64
+ARG GO_VERSION=1.26.5@sha256:3aff6657219a4d9c14e27fb1d8976c49c29fddb70ba835014f477e1c70636647
 FROM docker.io/golang:${GO_VERSION}
 
 # Install additional packages not present in regular golang image
