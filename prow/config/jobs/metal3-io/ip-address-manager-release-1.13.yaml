@@ -116,72 +116,96 @@ presubmits:
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-basic-test-release-1-13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-integration-test-release-1-13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-pivoting
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-remediation
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-centos-e2e-feature-test-release-1-13-features
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-pivoting
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-remediation
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-feature-test-release-1-13-features
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-e2e-clusterctl-upgrade-test-release-1-13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-e2e-1-35-1-36-upgrade-test-release-1-13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-k8s-pre-release-test-{capm3_target_branch}
@@ -189,11 +213,15 @@ presubmits:
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-integration-k8s-pre-release-test-release-1.13
     branches:
     - release-1.13
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
