@@ -138,6 +138,12 @@ jobs:
           if [[ "${RESOLVED_REF}" == "refs/heads/main" ]]; then
             IMAGE_TAGS="${IMAGE_TAGS}, latest"
           fi
+          if [[ ! -f ./hack/versioncheck.sh ]]; then
+            mkdir -p hack
+            curl -fsSL https://raw.githubusercontent.com/metal3-io/project-infra/main/hack/versioncheck.sh \
+              -o hack/versioncheck.sh
+            chmod +x hack/versioncheck.sh
+          fi
           IMAGE_VERSION="$(./hack/versioncheck.sh --resolved_refname="${RESOLVED_REFNAME}" --resolved_ref="${RESOLVED_REFSHA}")"
         fi
 
@@ -165,7 +171,6 @@ jobs:
         buildArgs: ${{ inputs.image-build-args || '' }}
         labels: |
           org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
-          org.opencontainers.image.revision=${{ env.IMAGE_REVISION }}
         registry: quay.io
         username: ${{ secrets.QUAY_USERNAME }} # zizmor: ignore[secrets-outside-env]
         password: ${{ secrets.QUAY_PASSWORD }} # zizmor: ignore[secrets-outside-env]
