@@ -36,8 +36,6 @@ pipeline {
         BMORELEASEBRANCH = "${params.bmo_release_branch}"
         NUM_NODES = 2
         IRONIC_INSTALL_TYPE = "${params.IRONIC_INSTALL_TYPE}"
-        IRONIC_USE_MARIADB = "${params.IRONIC_USE_MARIADB}"
-        BUILD_MARIADB_IMAGE_LOCALLY = "${params.BUILD_MARIADB_IMAGE_LOCALLY}"
         USE_IRSO = "${params.USE_IRSO}"
         CNI_NAME = "${params.CNI_NAME}"
     }
