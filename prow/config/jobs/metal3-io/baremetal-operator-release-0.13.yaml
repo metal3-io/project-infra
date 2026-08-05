@@ -120,6 +120,23 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
         imagePullPolicy: Always
+  - name: golangci-lint
+    branches:
+    - release-0.13
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - lint
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/basic-checks:golang-1.25
+        imagePullPolicy: Always
   - name: pr-verifier
     branches:
     - release-0.13
