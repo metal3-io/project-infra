@@ -111,6 +111,23 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
         imagePullPolicy: Always
+  - name: golangci-lint
+    branches:
+    - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - lint
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.26
+        imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-main
     branches:
