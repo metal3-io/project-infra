@@ -181,19 +181,22 @@ triggers:
 
 milestone_applier:
   metal3-io/cluster-api-provider-metal3:
-    main: "CAPM3 - v1.14"
+    main: "CAPM3 - v1.15"
+    release-1.14: "CAPM3 - v1.14"
     release-1.13: "CAPM3 - v1.13"
     release-1.12: "CAPM3 - v1.12"
     release-1.11: "CAPM3 - v1.11"
     release-1.10: "CAPM3 - v1.10"
   metal3-io/baremetal-operator:
-    main: "BMO - v0.14"
+    main: "BMO - v0.15"
+    release-0.14: "BMO - v0.14"
     release-0.13: "BMO - v0.13"
     release-0.12: "BMO - v0.12"
     release-0.11: "BMO - v0.11"
     release-0.10: "BMO - v0.10"
   metal3-io/ip-address-manager:
-    main: "IPAM - v1.14"
+    main: "IPAM - v1.15"
+    release-1.14: "IPAM - v1.14"
     release-1.13: "IPAM - v1.13"
     release-1.12: "IPAM - v1.12"
     release-1.11: "IPAM - v1.11"
@@ -209,13 +212,9 @@ milestone_applier:
     release-31.0: "ironic-image - v31.0"
     release-30.0: "ironic-image - v30.0"
     release-29.0: "ironic-image - v29.0"
-    release-28.0: "ironic-image - v28.0"
   metal3-io/ironic-standalone-operator:
     main: "IrSO - v0.11"
     release-0.10: "IrSO - v0.10"
     release-0.9: "IrSO - v0.9"
     release-0.8: "IrSO - v0.8"
     release-0.7: "IrSO - v0.7"
-    release-0.6: "IrSO - v0.6"
-    release-0.5: "IrSO - v0.5"
-    release-0.4: "IrSO - v0.4"
