@@ -24,10 +24,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: us-docker.pkg.dev/k8s-infra-prow/images/clonerefs:v20260630-ae8e2d879
-        entrypoint: us-docker.pkg.dev/k8s-infra-prow/images/entrypoint:v20260630-ae8e2d879
-        initupload: us-docker.pkg.dev/k8s-infra-prow/images/initupload:v20260630-ae8e2d879
-        sidecar: us-docker.pkg.dev/k8s-infra-prow/images/sidecar:v20260630-ae8e2d879
+        clonerefs: us-docker.pkg.dev/k8s-infra-prow/images/clonerefs:v20260729-7f8580d8d
+        entrypoint: us-docker.pkg.dev/k8s-infra-prow/images/entrypoint:v20260729-7f8580d8d
+        initupload: us-docker.pkg.dev/k8s-infra-prow/images/initupload:v20260729-7f8580d8d
+        sidecar: us-docker.pkg.dev/k8s-infra-prow/images/sidecar:v20260729-7f8580d8d
       resources:
         clonerefs:
           requests:
