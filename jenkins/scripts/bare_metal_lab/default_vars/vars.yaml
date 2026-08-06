@@ -17,7 +17,7 @@ bare_metal_hosts:
   mac: 6c:c2:17:40:7e:b0
   ip: "192.168.1.13"
   bootMode: "UEFI"
-  rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
+  rootDeviceHint: "/dev/sda"
 # - id: "05"
 #   mac: 80:c1:6e:7a:5a:a8
 #   ip: "192.168.1.14"
@@ -32,7 +32,7 @@ bare_metal_hosts:
   mac: 5c:b9:01:98:6d:6c
   ip: "192.168.1.16"
   bootMode: "UEFI"
-  rootDeviceHint: "/dev/disk/by-path/pci-0000:07:00.0-scsi-0:1:0:0"
+  rootDeviceHint: "/dev/sda"
 # - id: "14"
 #   mac: 6c:3b:e5:b5:03:c8
 #   ip: "192.168.1.32"
