@@ -13,9 +13,15 @@
   "packageRules": [
     {
       "matchPackageNames": ["kubernetes/kubernetes"],
+      "matchFileNames": ["jenkins/jobs/pre_release_tests.groovy"],
       "description": "Allow pre-release (alpha/beta/rc) Kubernetes versions for pre-release test tracking",
       "ignoreUnstable": false,
       "respectLatest": false
+    },
+    {
+      "description": "Group Traefik chart, app and Gateway API into a single PR",
+      "matchFileNames": ["prow/infra/traefik/**"],
+      "groupName": "traefik stack"
     }
   ],
   "customManagers": [
@@ -54,6 +60,90 @@
         "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
       ],
       "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump Calico version in bootstrap kustomization",
+      "managerFilePatterns": ["prow/bootstrap/calico/kustomization.yaml"],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/(?<depName>[^/]+/[^/]+)/(?<currentValue>v[^/]+)/manifests/calico\\.yaml"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the External Secrets Operator Helm chart version",
+      "managerFilePatterns": [
+        "prow/bootstrap/external-secrets-operator/kustomization.yaml"
+      ],
+      "matchStrings": ["version: (?<currentValue>[0-9.]+)"],
+      "datasourceTemplate": "helm",
+      "packageNameTemplate": "external-secrets",
+      "registryUrlTemplate": "https://charts.external-secrets.io"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Flux Operator version in flux kustomization",
+      "managerFilePatterns": ["prow/flux/kustomization.yaml"],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Gateway API version",
+      "managerFilePatterns": ["prow/infra/traefik/kustomization.yaml"],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Traefik helm chart version (CRD ref)",
+      "managerFilePatterns": ["prow/infra/traefik/kustomization.yaml"],
+      "matchStrings": [
+        "traefik-helm-chart/traefik/crds\\?ref=v(?<currentValue>[0-9.]+)"
+      ],
+      "datasourceTemplate": "helm",
+      "packageNameTemplate": "traefik",
+      "registryUrlTemplate": "https://traefik.github.io/charts",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Traefik app version (image tag)",
+      "managerFilePatterns": ["prow/infra/traefik/traefik-values.yaml"],
+      "matchStrings": ["tag: (?<currentValue>v[0-9.]+)"],
+      "datasourceTemplate": "docker",
+      "packageNameTemplate": "traefik",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Flux distribution version in FluxInstance",
+      "managerFilePatterns": ["prow/flux/flux.yaml"],
+      "matchStrings": ["version: \"(?<currentValue>[^\"]+)\""],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "fluxcd/flux2",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Notify about new Kubernetes versions for the prow cluster. Not mergeable",
+      "managerFilePatterns": [
+        "prow/capo-cluster/kubeadmcontrolplane.yaml",
+        "prow/capo-cluster/machinedeployment.yaml",
+        "prow/capo-cluster/infra-md.yaml"
+      ],
+      "matchStrings": ["version: (?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)"],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "kubernetes/kubernetes",
       "versioningTemplate": "semver"
     },
     {
