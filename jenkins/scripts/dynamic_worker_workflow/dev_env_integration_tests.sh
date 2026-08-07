@@ -23,7 +23,7 @@ export NUM_NODES="${NUM_NODES:-1}"
 export IRONIC_INSTALL_TYPE="${IRONIC_INSTALL_TYPE:-rpm}"
 export IRONIC_FROM_SOURCE="${IRONIC_FROM_SOURCE:-false}"
 export BUILD_IRONIC_IMAGE_LOCALLY=""
-export USE_IRSO="${USE_IRSO:-false}"
+export USE_IRSO="${USE_IRSO:-true}"
 
 if [[ "${IRONIC_INSTALL_TYPE}" == "source" ]]; then
     IRONIC_FROM_SOURCE="true"
