@@ -264,7 +264,7 @@ jobs:
         path: ${{ inputs.image-name }}-sbom.spdx.json
 
     - name: Slack Notification on Failure
-      if: ${{ failure() && secrets.SLACK_WEBHOOK != '' }}
+      if: ${{ failure() && inputs.pushImage }}
       uses: rtCamp/action-slack-notify@33ca3be66c6f378fe1610fd1d5258632dbed5e58 # v2.4.0
       env:
         SLACK_TITLE: "GitHub Action Failed in ${{ github.repository }}"
