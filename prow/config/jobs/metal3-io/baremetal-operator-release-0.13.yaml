@@ -104,6 +104,24 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
         imagePullPolicy: Always
+  - name: pr-verifier
+    branches:
+    - release-0.13
+    always_run: true
+    decorate: true
+    optional: true
+    extra_refs:
+    - org: metal3-io
+      repo: project-infra
+      base_ref: main
+    spec:
+      containers:
+      - args:
+        - /home/prow/go/src/github.com/metal3-io/project-infra/hack/verify-pr-title.sh
+        command:
+        - sh
+        image: quay.io/metal3-io/basic-checks:golang-1.25
+        imagePullPolicy: Always
   - name: metal3-centos-e2e-basic-test-release-1-13
     branches:
     - release-0.13
