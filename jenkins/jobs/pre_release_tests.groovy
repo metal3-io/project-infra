@@ -1,6 +1,7 @@
 // Global variables
 def TIMEOUT = 1800, ci_git_url, ci_git_branch, ci_git_base, refspec
-def UPDATED_REPO, agent_label, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME
+def UPDATED_REPO, agent_label, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
 
 script {
     UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
@@ -21,6 +22,10 @@ script {
 
     agent_label = "metal3ci-8c32gb-${IMAGE_OS}-oci"
 }
+
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
 
 pipeline {
     agent { label agent_label }
@@ -132,6 +137,16 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                // Dynamic build info generation
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
             }
         }
     }

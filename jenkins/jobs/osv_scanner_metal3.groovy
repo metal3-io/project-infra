@@ -2,6 +2,8 @@
 
 // Global variables
 def ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
+def CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
 
 script {
     ci_git_branch = (env.PULL_PULL_SHA) ?: 'main'
@@ -176,6 +178,10 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
 }
 
 script { agent_label = 'metal3ci-8c32gb-ubuntu-oci' }
+
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
 
 pipeline {
     agent { label agent_label }
@@ -476,6 +482,9 @@ pipeline {
     post {
         always {
             script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
                 archiveArtifacts artifacts: 'results/*.txt', allowEmptyArchive: true
             }
         }

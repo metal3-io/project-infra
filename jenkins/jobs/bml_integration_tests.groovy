@@ -1,6 +1,7 @@
 // Global variables
 def TIMEOUT = 14400, ci_git_url, ci_git_branch, ci_git_base, refspec
-def CURRENT_START_TIME, CURRENT_END_TIME
+def CURRENT_START_TIME, CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.staging.metal3.io/view/?orgId=1&timezone=browser&kiosk'
 
 script {
     ci_git_url = 'https://github.com/metal3-io/project-infra.git'
@@ -16,6 +17,10 @@ script {
     }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 }
+
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
 
 pipeline {
   /* In the BML we always run on the same machine so concurrency must be disabled */
@@ -139,10 +144,17 @@ pipeline {
                     echo 'Failed due to timeout'
                     currentBuild.result = 'FAILURE'
                 }
+                // Dynamic build info generation if logfetching would fail
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
                 timestamps {
                     sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
                     archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
                 }
+                CURRENT_END_TIME = System.currentTimeMillis()
+                // Dynamic build info generation, adjust log window if log fetching succeeds
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
             }
         }
         success {
