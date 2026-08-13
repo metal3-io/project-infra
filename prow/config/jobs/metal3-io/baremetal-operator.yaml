@@ -86,6 +86,24 @@ presubmits:
         - make
         image: quay.io/metal3-io/basic-checks:golang-1.26
         imagePullPolicy: Always
+  - name: unit
+    branches:
+    - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ironic-plugin
+        - demo-plugin
+        - unit-cover
+        - unit-vbmctl
+        - TEST_FLAGS=-v
+        command:
+        - make
+        image: quay.io/metal3-io/basic-checks:golang-1.26
+        imagePullPolicy: Always
   - name: manifestlint
     branches:
     - main
