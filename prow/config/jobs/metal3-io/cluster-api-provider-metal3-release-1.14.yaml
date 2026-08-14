@@ -1,0 +1,273 @@
+presubmits:
+  metal3-io/cluster-api-provider-metal3:
+  - name: gomod
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/gomod.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  # NOTE: The test jobs are for verifying Makefile and hack/* script changes only
+  - name: test
+    branches:
+    - release-1.14
+    run_if_changed: "^(Makefile|hack/.*)$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  - name: markdownlint
+    branches:
+    - release-1.14
+    run_if_changed: '(\.md|markdownlint\.sh)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/markdownlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
+        imagePullPolicy: Always
+  - name: shellcheck
+    branches:
+    - release-1.14
+    run_if_changed: '((\.sh)|^Makefile)$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/shellcheck.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/koalaman/shellcheck-alpine:v0.11.0@sha256:9955be09ea7f0dbf7ae942ac1f2094355bb30d96fffba0ec09f5432207544002
+        imagePullPolicy: Always
+  - name: generate
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/codegen.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  - name: unit
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/unit.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  - name: manifestlint
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/manifestlint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        - name: KUBECONFORM_PATH
+          value: "/"
+        image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
+        imagePullPolicy: Always
+  - name: build
+    branches:
+    - release-1.14
+    run_if_changed: "^api|^test|^Makefile$"
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - ./hack/build.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-basic-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-basic-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
+  - name: metal3-centos-e2e-integration-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: false
+  - name: metal3-ubuntu-e2e-integration-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-{image_os}-e2e-feature-test-{capm3_target_job}
+  - name: metal3-centos-e2e-feature-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-14-remediation
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-14-features
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-14-pivoting
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-14-remediation
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-feature-test-release-1-14-features
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-feature-test-release-1-14-scalability
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-clusterctl-upgrade-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-1-35-1-36-upgrade-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-in-place-upgrade-test-{capm3_target_branch}
+  - name: metal3-e2e-in-place-upgrade-test-release-1-14
+    branches:
+    - release-1-14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-ubuntu-e2e-capi-md-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  - name: metal3-centos-e2e-capi-md-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
+  # name: {job_prefix}-e2e-conformance-test-{capm3_target_branch}
+  - name: metal3-e2e-conformance-test-release-1-14
+    branches:
+    - release-1.14
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true

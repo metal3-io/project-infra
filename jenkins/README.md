@@ -24,13 +24,17 @@ ip-address-manager and cluster-api-provider-metal3 repositories by commenting
 the commands below. The job result will be posted as a comment.
 
 * **/test-ubuntu-integration-main** run integration tests with CAPM3 API version
-  v1beta1 and branch main on Ubuntu
+  v1beta2 and branch main on Ubuntu
 * **/test-centos-integration-main** run integration tests with CAPM3 API version
-  v1beta1 and branch main on CentOS
+  v1beta2 and branch main on CentOS
+* **/test-ubuntu-integration-release-1-14** run integration tests with CAPM3 API
+  version v1beta2 and branch release-1.14 on Ubuntu
+* **/test-centos-integration-release-1-14** run integration tests with CAPM3 API
+  version v1beta2 and branch release-1.14 on CentOS
 * **/test-ubuntu-integration-release-1-13** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.13 on Ubuntu
+  version v1beta2 and branch release-1.13 on Ubuntu
 * **/test-centos-integration-release-1-13** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.13 on CentOS
+  version v1beta2 and branch release-1.13 on CentOS
 * **/test-ubuntu-integration-release-1-12** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.12 on Ubuntu
 * **/test-centos-integration-release-1-12** run integration tests with CAPM3 API
@@ -39,10 +43,6 @@ the commands below. The job result will be posted as a comment.
   version v1beta1 and branch release-1.11 on Ubuntu
 * **/test-centos-integration-release-1-11** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.11 on CentOS
-* **/test-ubuntu-integration-release-1-10** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.10 on Ubuntu
-* **/test-centos-integration-release-1-10** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.10 on CentOS
 
 ### E2E tests
 
