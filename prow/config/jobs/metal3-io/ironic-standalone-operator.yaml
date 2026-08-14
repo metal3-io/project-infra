@@ -82,6 +82,24 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.26
         imagePullPolicy: Always
+  - name: pr-verifier
+    branches:
+    - main
+    always_run: true
+    decorate: true
+    optional: true
+    extra_refs:
+    - org: metal3-io
+      repo: project-infra
+      base_ref: main
+    spec:
+      containers:
+      - args:
+        - /home/prow/go/src/github.com/metal3-io/project-infra/hack/verify-pr-title.sh
+        command:
+        - sh
+        image: docker.io/golang:1.26
+        imagePullPolicy: Always
   # name: metal3-dev-env-integration-test-{image_os}-main
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
