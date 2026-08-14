@@ -1,5 +1,7 @@
 // Global variables
 def ci_git_url, ci_git_branch, ci_git_base, refspec
+def CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
 
 script {
     ci_git_url   = 'https://github.com/metal3-io/project-infra.git'
@@ -7,6 +9,10 @@ script {
     ci_git_base = (env.PULL_BASE_REF) ?: 'main'
     refspec = '+refs/heads/' + ci_git_base + ':refs/remotes/origin/' + ci_git_base + ' ' + ci_git_branch
 }
+
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
 
 pipeline {
     options {
@@ -207,6 +213,15 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
             }
         }
     }

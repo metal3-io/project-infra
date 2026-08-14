@@ -1,6 +1,7 @@
 // Global variables
 def TIMEOUT = 5400, ci_git_url, ci_git_branch, ci_git_base, refspec, agent_label
-def UPDATED_REPO, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME
+def UPDATED_REPO, BUILD_TAG, GINKGO_SKIP, CURRENT_START_TIME, CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
 
 script {
     UPDATED_REPO = "https://github.com/${env.REPO_OWNER}/${env.REPO_NAME}.git"
@@ -18,6 +19,10 @@ script {
     }
     echo "Checkout ${ci_git_url} branch ${ci_git_branch}"
 }
+
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
 
 pipeline {
     agent { label 'metal3ci-8c32gb-ubuntu-oci' }
@@ -90,11 +95,18 @@ pipeline {
                     echo 'Failed due to timeout'
                     currentBuild.result = 'FAILURE'
                 }
-            }
-            timestamps {
-                /* Collect the logs */
-                sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
-                archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                // Dynamic build info generation if logfetching would fail
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
+                timestamps {
+                    /* Collect the logs */
+                    sh './jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh'
+                    archiveArtifacts "logs-${env.BUILD_TAG}.tgz"
+                }
+                CURRENT_END_TIME = System.currentTimeMillis()
+                // Dynamic build info generation, adjust log window if log fetching succeeds
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
             }
         }
         cleanup {
