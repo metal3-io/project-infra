@@ -127,6 +127,24 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.25
         imagePullPolicy: Always
+  - name: pr-verifier
+    branches:
+    - release-1.12
+    always_run: true
+    decorate: true
+    optional: true
+    extra_refs:
+    - org: metal3-io
+      repo: project-infra
+      base_ref: main
+    spec:
+      containers:
+      - args:
+        - /home/prow/go/src/github.com/metal3-io/project-infra/hack/verify-pr-title.sh
+        command:
+        - sh
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
   # name: {job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}
   - name: metal3-centos-e2e-basic-test-release-1-12
     branches:
