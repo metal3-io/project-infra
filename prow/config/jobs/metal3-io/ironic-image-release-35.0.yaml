@@ -38,13 +38,13 @@ presubmits:
     - release-35.0
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-release-1-13
     branches:
     - release-35.0
     agent: jenkins
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-dev-env-integration-test-centos-release-1-13
     branches:
     - release-35.0

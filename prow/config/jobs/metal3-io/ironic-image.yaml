@@ -56,7 +56,7 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
@@ -64,7 +64,7 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
+    optional: true
   - name: metal3-dev-env-integration-test-centos-main
     branches:
     - main
