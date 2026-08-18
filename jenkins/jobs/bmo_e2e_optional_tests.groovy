@@ -9,6 +9,7 @@ def refspec = '+refs/heads/' + pullBase + ':refs/remotes/origin/' + pullBase + '
 pipeline {
     environment {
         GINKGO_FOCUS = "${GINKGO_FOCUS}"
+        LOKI_URL = 'https://log.apps.staging.metal3.io/store/api/v1/push'
     }
     agent none
     stages {
@@ -48,7 +49,11 @@ pipeline {
                             ansiColor('xterm')
                         }
                         steps {
-                            withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                            withCredentials(
+                                [string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN'),
+                                usernamePassword(credentialsId: 'metal3-ci-log-collector-push',
+                                usernameVariable: 'LOKI_USERNAME', passwordVariable: 'LOKI_PASSWORD'),
+                            ]) {
                                 timestamps {
                                     sh './hack/ci-e2e.sh'
                                 }
