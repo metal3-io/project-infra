@@ -48,6 +48,20 @@ presubmits:
           value: "TRUE"
         image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
         imagePullPolicy: Always
+  - name: unit
+    branches:
+    - release-0.9
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - test
+        command:
+        - make
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
   - name: manifestlint
     branches:
     - release-0.9
