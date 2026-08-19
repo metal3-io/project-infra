@@ -133,7 +133,6 @@ presubmits:
     - release-1.13
     always_run: true
     decorate: true
-    optional: true
     extra_refs:
     - org: metal3-io
       repo: project-infra
