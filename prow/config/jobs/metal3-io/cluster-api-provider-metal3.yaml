@@ -112,6 +112,23 @@ presubmits:
           value: "/"
         image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
         imagePullPolicy: Always
+  - name: golangci-lint
+    branches:
+    - main
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - lint
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.26
+        imagePullPolicy: Always
   ## NOTE: This job was constantly re-running on all open PRs.
   ## We have not been able to determine the root cause. Removing it for now.
   ## We can try to add it again after cutting v1.13 for example.
