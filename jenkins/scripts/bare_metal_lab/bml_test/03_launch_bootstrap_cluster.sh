@@ -107,13 +107,22 @@ patch_ipam()
 start_management_cluster()
 {
     local minikube_error
+    local attempt=1
+    local max_attempts=5
 
     while /bin/true; do
         minikube_error=0
-        sudo su -l -c 'minikube start' "${USER}" || minikube_error=1
+        # Cap a single start attempt so a hung minikube can't block the job for hours.
+        sudo su -l -c 'timeout 600 minikube start' "${USER}" || minikube_error=1
         if [[ "${minikube_error}" -eq 0 ]]; then
             break
         fi
+        if [[ "${attempt}" -ge "${max_attempts}" ]]; then
+            echo "minikube start failed after ${max_attempts} attempts" >&2
+            exit 1
+        fi
+        attempt=$((attempt + 1))
+        sleep 10
     done
 
     sudo su -l -c "minikube ssh -- sudo brctl addbr ironicendpoint" "${USER}"
@@ -202,7 +211,14 @@ $(render_dhcp_hosts_list)
 EOF
 
     # NOTE(dtantsur): the webhook may not be ready immediately, retry if needed
+    local ironic_attempt=1
+    local ironic_max_attempts=10
     while ! kubectl create -f "${ironic}"; do
+        if [[ "${ironic_attempt}" -ge "${ironic_max_attempts}" ]]; then
+            echo "Failed to create ironic resource after ${ironic_max_attempts} attempts" >&2
+            exit 1
+        fi
+        ironic_attempt=$((ironic_attempt + 1))
         sleep 3
     done
 
