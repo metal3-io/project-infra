@@ -113,6 +113,23 @@ presubmits:
         - sh
         image: docker.io/golang:1.26
         imagePullPolicy: Always
+  - name: yamllint
+    branches:
+    - main
+    run_if_changed: '((\.ya?ml)|(\.md)|(hack/yamllint\.sh))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - ./hack/yamllint.sh
+        command:
+        - sh
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/pipelinecomponents/yamllint:0.35.13@sha256:5ab5eb7da0ed5e606b07c1723fc8b275e925189f70ac259b26b7329cb5f8f44d
+        imagePullPolicy: Always
   # name: metal3-dev-env-integration-test-{image_os}-main
   - name: metal3-dev-env-integration-test-ubuntu-main
     branches:
