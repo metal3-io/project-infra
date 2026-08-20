@@ -2,6 +2,12 @@
 
 set -eu
 
+# Batch jobs test multiple PRs together and have no single PULL_TITLE to verify.
+if [ "${JOB_TYPE:-}" = "batch" ]; then
+    echo "Skipping PR title verification for batch job."
+    exit 0
+fi
+
 WIP_REGEX='^\W?WIP\W'
 TAG_REGEX='^\[[[:alnum:]\._-]*\]'
 
