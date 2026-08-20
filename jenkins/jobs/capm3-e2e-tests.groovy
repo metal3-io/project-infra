@@ -105,7 +105,8 @@ pipeline {
                   submoduleCfg: [],
                   userRemoteConfigs: [[url: ci_git_url, refspec: refspec]]
                   ])
-                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN'),
+                    usernamePassword(credentialsId: 'metal3-ci-log-collector-push', usernameVariable: 'LOKI_USERNAME', passwordVariable: 'LOKI_PASSWORD')]) {
                     ansiColor('xterm') {
                         timestamps {
                             sh './jenkins/scripts/dynamic_worker_workflow/e2e_tests.sh'
