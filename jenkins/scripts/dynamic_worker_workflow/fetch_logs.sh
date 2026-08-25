@@ -3,6 +3,16 @@
 # Do not fail on error (for example k8s cluster not available)
 set -ux
 
+# Use sudo only when not already running as root. This keeps the script
+# working whether the worker runs as root or as a non-root user with sudo.
+# An array is used so that the empty (root) case expands to nothing and the
+# call sites remain shellcheck-clean (no SC2086 word-splitting).
+if (( EUID == 0 )); then
+    SUDO=()
+else
+    SUDO=(sudo)
+fi
+
 LOGS_TARBALL="logs-${BUILD_TAG}.tgz"
 LOGS_DIR="logs-${BUILD_TAG}"
 IMAGE_OS="${IMAGE_OS:-ubuntu}"
@@ -129,7 +139,7 @@ if [[ -d /tmp/"${CONTAINER_RUNTIME}" ]] && [[ -n "$(ls /tmp/"${CONTAINER_RUNTIME
 fi
 
 # Fetch k8s logs form target cluster
-target_config=$(sudo find /tmp/ -type f -name "kubeconfig*")
+target_config=$("${SUDO[@]}" find /tmp/ -type f -name "kubeconfig*")
 if [[ -n "${target_config}" ]]; then
     # fetch target cluster k8s logs
     fetch_k8s_logs "target_cluster" "${target_config}"
@@ -138,30 +148,30 @@ fi
 # Fetch Ironic containers logs after pivoting back to the source cluster
 CONTAINER_LOGS_DIR="${LOGS_DIR}/${CONTAINER_RUNTIME}/final_logs"
 mkdir -p "${CONTAINER_LOGS_DIR}"
-LOCAL_CONTAINERS="$(sudo "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
+LOCAL_CONTAINERS="$("${SUDO[@]}" "${CONTAINER_RUNTIME}" ps -a --format "{{.Names}}")"
 for LOCAL_CONTAINER in ${LOCAL_CONTAINERS}; do
     mkdir -p "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}"
     # shellcheck disable=SC2024
-    sudo "${CONTAINER_RUNTIME}" logs "${LOCAL_CONTAINER}" > "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stdout.log" \
+    "${SUDO[@]}" "${CONTAINER_RUNTIME}" logs "${LOCAL_CONTAINER}" > "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stdout.log" \
         2> "${CONTAINER_LOGS_DIR}/${LOCAL_CONTAINER}/stderr.log"
 done
 
 mkdir -p "${LOGS_DIR}/qemu"
-sudo sh -c "cp -r /var/log/libvirt/qemu/* ${LOGS_DIR}/qemu/"
-sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/qemu"
+"${SUDO[@]}" sh -c "cp -r /var/log/libvirt/qemu/* ${LOGS_DIR}/qemu/"
+"${SUDO[@]}" chown -R "${USER}:${USER}" "${LOGS_DIR}/qemu"
 
 # Fetch atop and sysstat metrics
 mkdir -p "${LOGS_DIR}/metrics/atop"
 mkdir -p "${LOGS_DIR}/metrics/sysstat"
-sudo sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
-sudo sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
-sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
+"${SUDO[@]}" sh -c "cp -r /var/log/atop/* ${LOGS_DIR}/metrics/atop/"
+"${SUDO[@]}" sh -c "cp -r /var/log/sysstat/* ${LOGS_DIR}/metrics/sysstat/"
+"${SUDO[@]}" chown -R "${USER}:${USER}" "${LOGS_DIR}/metrics"
 
 # Fetch host network interface information
 mkdir -p "${LOGS_DIR}/hostinfo/network"
 ip address > "${LOGS_DIR}/hostinfo/network/interfaces.txt"
 host -v "artifactory.nordix.org" > "${LOGS_DIR}/hostinfo/network/nordixresolve.txt"
-sudo chown -R "${USER}:${USER}" "${LOGS_DIR}/hostinfo"
+"${SUDO[@]}" chown -R "${USER}:${USER}" "${LOGS_DIR}/hostinfo"
 
 # Fetch BML log if exists
 BML_LOG_LOCATION="/tmp/BMLlog"

@@ -80,15 +80,27 @@ else
     git checkout "${METAL3BRANCH}"
 fi
 
+# Newer metal3-dev-env versions set METAL3_RUN_AS_ROOT=true in lib/common.sh
+# because they no longer use passwordless sudo internally and must run as root.
+# We must NOT source common.sh to read this: on those versions it performs a
+# hard root check and exits, plus it overrides HOME/USER and mutates the system.
+# Instead, statically check for the flag (we are already inside the dev-env
+# repo here). Older versions do not set it, so we keep the non-root behavior.
+if grep -qE '^\s*export\s+METAL3_RUN_AS_ROOT=true' lib/common.sh 2>/dev/null; then
+    SUDO=(sudo -E)
+else
+    SUDO=()
+fi
+
 echo "Running the tests"
 
 cleanup() {
     if [[ "${CLEANUP_AFTERWARDS:-}" == "true" ]]; then
         echo "Cleaning up the environment"
-        make clean
+        "${SUDO[@]}" make clean
     fi
 }
 trap cleanup EXIT
 
-make
-make test
+"${SUDO[@]}" make
+"${SUDO[@]}" make test
