@@ -288,6 +288,15 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
+  - name: metal3-bmo-e2e-fixture-test-optional-pull
+    branches:
+    - main
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    run_if_changed: '(test/e2e/.*|pkg/.*|internal/.*|cmd/.*|config/overlays/fixture/.*|Makefile|go\.(mod|sum))$'
+    always_run: false
+    optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-k8s-pre-release-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-k8s-pre-release-test-main
     branches:
