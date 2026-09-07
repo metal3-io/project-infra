@@ -98,11 +98,6 @@ pipeline {
                     [name: ci_git_branch]
                     ],
                   doGenerateSubmoduleConfigurations: false,
-                  extensions: [
-                      [$class: 'CleanCheckout'],
-                      [$class: 'CleanBeforeCheckout']
-                      ],
-                  submoduleCfg: [],
                   userRemoteConfigs: [[url: ci_git_url, refspec: refspec, credentialsId: 'metal3-clusterctl-github-token']]
                   ])
                 withCredentials([string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN'),

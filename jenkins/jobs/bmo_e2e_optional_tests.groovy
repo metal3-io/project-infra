@@ -40,12 +40,10 @@ pipeline {
                             checkout scmGit(
                   branches: [[name: pullSha]],
                   userRemoteConfigs: [[url: repoUrl, refspec: refspec, credentialsId: 'metal3-clusterctl-github-token']],
-                  extensions: [[$class: 'CleanCheckout'],
-                  [$class: 'CleanBeforeCheckout'],
+                  extensions: [
                   [$class: 'PreBuildMerge', options: [mergeTarget: pullBase, mergeRemote: 'origin']],
                   [$class: 'UserIdentity', name: 'Test', email: 'test@test.test'],
-                  cloneOption(honorRefspec: true)],
-                  submoduleCfg: [],)
+                  cloneOption(honorRefspec: true)])
                             script {
                                 CURRENT_START_TIME = System.currentTimeMillis()
                             }
