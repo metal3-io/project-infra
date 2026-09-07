@@ -134,17 +134,33 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
         }
 
         // x/crypto vulnerabilities; do not want to bump go version for older versions
-        // Will be removed once version 1.12 support stops
+        // Will be removed once version 1.12 & 1.13 support stops
         def xcryptoIgnoredBranches = [
-            'CAPM3': ~/^release-1\.12$/,
+            'CAPM3': ~/^release-1\.1[23]$/,
         ]
         if (xcryptoIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
-            ['GO-2026-5013', 'GO-2026-5017', 'GO-2026-5018', 'GO-2026-5019', 'GO-2026-5020'].each { vulnId ->
+            ['GO-2026-5013', 'GO-2026-5017', 'GO-2026-5018', 'GO-2026-5019', 'GO-2026-5020', 'GO-2026-5932', 'GO-2026-6354', 'GO-2026-6355'].each { vulnId ->
                 sh """
                     echo '' >> config.toml
                     echo '[[IgnoredVulns]]' >> config.toml
                     echo 'id = "${vulnId}"' >> config.toml
                     echo 'reason = "x/crypto bump would require a newer Go version;"' >> config.toml
+                """
+            }
+        }
+
+        // containerd/containerd; no fix available, only valid for the test
+        // framework anyway
+        def containerdIgnoredBranches = [
+            'CAPM3': ~/^release-1\.13$/,
+        ]
+        if (containerdIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
+            ['GO-2026-5064', 'GO-2026-5338', 'GO-2026-5622'].each { vulnId ->
+                sh """
+                    echo '' >> config.toml
+                    echo '[[IgnoredVulns]]' >> config.toml
+                    echo 'id = "${vulnId}"' >> config.toml
+                    echo 'reason = "containerd only used by tests and there is no fix."' >> config.toml
                 """
             }
         }
