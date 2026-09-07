@@ -40,5 +40,5 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: ghcr.io/streetsidesoftware/cspell:10.1.1@sha256:14f0c074898869c3f8060787d4c7eb86e43f8de9e3aaca0c4323741f9bd6cbff
+        image: ghcr.io/streetsidesoftware/cspell:10.2.2@sha256:927835516e284e4eaf24d1ab8ed5c3cfcdeaa9ce975b24c843c36432db239752
         imagePullPolicy: Always
