@@ -15,6 +15,62 @@ local kp =
       common+: {
         namespace: 'monitoring',
       },
+      alertmanager+: {
+        config: {
+          global: {
+            resolve_timeout: '5m',
+          },
+          inhibit_rules: [
+            {
+              source_matchers: ['severity = critical'],
+              target_matchers: ['severity =~ warning|info'],
+              equal: ['namespace', 'alertname'],
+            },
+            {
+              source_matchers: ['severity = warning'],
+              target_matchers: ['severity = info'],
+              equal: ['namespace', 'alertname'],
+            },
+            {
+              source_matchers: ['alertname = InfoInhibitor'],
+              target_matchers: ['severity = info'],
+              equal: ['namespace'],
+            },
+          ],
+          route: {
+            group_by: ['namespace'],
+            group_wait: '30s',
+            group_interval: '5m',
+            repeat_interval: '12h',
+            receiver: 'Default',
+            routes: [
+              { receiver: 'Watchdog', matchers: ['alertname = Watchdog'] },
+              { receiver: 'null', matchers: ['alertname = InfoInhibitor'] },
+              { receiver: 'Critical', matchers: ['severity = critical'] },
+            ],
+          },
+          receivers: [
+            {
+              name: 'Default',
+              slack_configs: [{
+                api_url_file: '/etc/alertmanager/secrets/alertmanager-slack-webhook/url',
+                channel: '#cluster-api-baremetal',
+                send_resolved: true,
+              }],
+            },
+            { name: 'Watchdog' },
+            {
+              name: 'Critical',
+              slack_configs: [{
+                api_url_file: '/etc/alertmanager/secrets/alertmanager-slack-webhook/url',
+                channel: '#cluster-api-baremetal',
+                send_resolved: true,
+              }],
+            },
+            { name: 'null' },
+          ],
+        },
+      },
       grafana+: {
         dashboards+:: {  // use this method to import your dashboards to Grafana
           'jobs.json': (import 'jobs.json'),
@@ -132,6 +188,7 @@ local kp =
           nodeSelector+: {
             "node-role.kubernetes.io/infra": "",
           },
+          secrets: ['alertmanager-slack-webhook'],
         },
       },
     },
