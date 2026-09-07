@@ -2,7 +2,7 @@
 
 The BML test deploys and validates Metal3 on real bare metal servers. It
 automates the full lifecycle: bootstrapping a management cluster
-(using Minikube), provisioning bare metal hosts, deploying a CNI,
+(using kind), provisioning bare metal hosts, deploying a CNI,
 verifying node readiness, and then deprovisioning and cleaning up all
 resources.
 
@@ -47,8 +47,9 @@ Ansible playbooks based on the action argument(`clean`, `deploy`, `run-test`,
 
 ### Deploy Stage Scripts
 
-- `02_configure_host.sh`: Installs Minikube, configures networking, and
-    generates Ironic certificates.
+- `02_configure_host.sh`: Creates the kind bootstrap cluster, configures
+    Docker-backed provisioning and external networks on top of Linux bridges,
+    and generates Ironic certificates.
 - `03_launch_bootstrap_cluster.sh`: Launches the bootstrap cluster and deploys
     CAPM3, CAPI, IRSO, IPAM, and BMO.
 - `04_verify.sh`: Verifies that all pods are running.
@@ -59,6 +60,9 @@ Ansible playbooks based on the action argument(`clean`, `deploy`, `run-test`,
     the main branches of CAPM3, IPAM, BMO, and IRSO.
 - Due to networking limitations, container and OS images are not downloaded
     from upstream during the test. Instead, pre-downloaded images are used. The
-    `preload_images_minikube.sh` script loads container images from the host
-    into Minikube.
+    target node OS image is served from the host by `httpd-infra` on
+    `172.22.0.1`, and the bootstrap registry is exposed on port `5000` of the
+    BML host.
+- The bootstrap cluster and host networking topology are documented in
+    `kind-network-topology.md`.
 - The `clean` script does **not** remove container or OS images.
