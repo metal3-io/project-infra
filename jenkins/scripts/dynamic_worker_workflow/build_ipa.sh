@@ -59,7 +59,7 @@ IPA_BASE_OS="${IPA_BASE_OS:-centos}"
 IPA_BASE_OS_RELEASE="${IPA_BASE_OS_RELEASE:-9-stream}"
 
 if [[ "${IPA_BASE_OS}" == "centos" ]]; then
-  centos_upstream_img="CentOS-Stream-GenericCloud-9-20250812.1.x86_64.qcow2"
+  centos_upstream_img="CentOS-Stream-GenericCloud-9-20260902.0.x86_64.qcow2"
 
   if [[ ! -f "${centos_upstream_img}" ]]; then
     wget -O "${centos_upstream_img}" \
