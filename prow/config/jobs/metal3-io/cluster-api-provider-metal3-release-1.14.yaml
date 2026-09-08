@@ -128,6 +128,40 @@ presubmits:
           value: "TRUE"
         image: docker.io/golang:1.26
         imagePullPolicy: Always
+  - name: golangci-lint
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - golangci
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.26
+        imagePullPolicy: Always
+  - name: kube-api-lint
+    branches:
+    - release-1.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - kube-api-lint
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.26
+        imagePullPolicy: Always
   - name: yamllint
     branches:
     - release-1.14
