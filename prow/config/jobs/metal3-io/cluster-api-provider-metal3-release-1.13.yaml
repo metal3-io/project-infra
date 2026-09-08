@@ -117,10 +117,28 @@ presubmits:
     - release-1.13
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
+    optional: true
     spec:
       containers:
       - args:
-        - lint
+        - golangci
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: docker.io/golang:1.25
+        imagePullPolicy: Always
+  - name: kube-api-lint
+    branches:
+    - release-1.13
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    optional: true
+    spec:
+      containers:
+      - args:
+        - kube-api-lint
         command:
         - make
         env:
