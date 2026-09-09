@@ -76,67 +76,10 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
             echo 'id = "GHSA-x744-4wpc-v9h2"' >> config.toml
             echo 'reason = "docker/docker vulnerability with no fix available; only affects test dependencies."' >> config.toml
         '''
-        // GHSA-hfvc-g4fc-pqhx: BSD/Solaris-only PATH hijack in otel kenv; fix requires otel v1.43.0 (Go 1.25).
-        // Only affects release branches where otel cannot be bumped due to Go version constraint.
-        def ignoredBranches = [
-            'CAPM3': ~/^release-1\.(1[0-2]|[0-9])$/,
-            'IPAM':  ~/^release-1\.(1[0-2]|[0-9])$/,
-            'BMO':   ~/^release-0\.(1[0-2]|[0-9])$/,
-            'IRSO':  ~/^release-0\.([0-8])$/,
-        ]
-        if (ignoredBranches[repoName]?.matcher(ref)?.matches()) {
-            sh '''
-                echo '' >> config.toml
-                echo '[[IgnoredVulns]]' >> config.toml
-                echo 'id = "GHSA-hfvc-g4fc-pqhx"' >> config.toml
-                echo 'reason = "BSD/Solaris-only PATH hijack via kenv; not applicable to Linux deployments. Fix requires otel v1.43.0 which needs Go 1.25."' >> config.toml
-            '''
-        }
-        // x/net vulnerability; we do not want to bump go version for older versions
-        def xnetIgnoredBranches = [
-            'CAPM3': ~/^release-1\.12$/,
-            'IPAM':  ~/^release-1\.12$/,
-            'BMO':   ~/^release-0\.12$/,
-            'IRSO':  ~/^release-0\.[78]$/,
-        ]
-        if (xnetIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
-            ['GO-2026-5026', 'GO-2026-4918'].each { vulnId ->
-                sh """
-                    echo '' >> config.toml
-                    echo '[[IgnoredVulns]]' >> config.toml
-                    echo 'id = "${vulnId}"' >> config.toml
-                    echo 'reason = "x/net bump would require Go 1.25."' >> config.toml
-                """
-            }
-        }
-
-        // oras-go/v2 vulnerabilities since bump would require a newer Go version
-        // Will be removed once version 1.12 support stops
-        def orasIgnoredBranches = [
-            'CAPM3': ~/^release-1\.12$/,
-        ]
-
-        if (orasIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
-            [
-                'GHSA-8xwf-rjm4-xvhv',
-                'GHSA-fxhp-mv3v-67qp',
-                'GHSA-jxpm-75mh-9fp7',
-                'GHSA-vh4v-2xq2-g5cg',
-                'GHSA-xf85-363p-868w',
-            ].each { vulnId ->
-                sh """
-                    echo '' >> config.toml
-                    echo '[[IgnoredVulns]]' >> config.toml
-                    echo 'id = "${vulnId}"' >> config.toml
-                    echo 'reason = "oras-go/v2 bump would require a newer Go version."' >> config.toml
-                """
-            }
-        }
-
-        // x/crypto vulnerabilities; do not want to bump go version for older versions
-        // Will be removed once version 1.12 & 1.13 support stops
+        // x/crypto vulnerabilities; do not want to bump go version for the current
+        // active CAPM3 release line.
         def xcryptoIgnoredBranches = [
-            'CAPM3': ~/^release-1\.1[23]$/,
+            'CAPM3': ~/^release-1\.13$/,
         ]
         if (xcryptoIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
             ['GO-2026-5013', 'GO-2026-5017', 'GO-2026-5018', 'GO-2026-5019', 'GO-2026-5020', 'GO-2026-5932', 'GO-2026-6354', 'GO-2026-6355'].each { vulnId ->
@@ -150,7 +93,7 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
         }
 
         // containerd/containerd; no fix available, only valid for the test
-        // framework anyway
+        // framework anyway on the active CAPM3 release branch.
         def containerdIgnoredBranches = [
             'CAPM3': ~/^release-1\.13$/,
         ]
@@ -161,20 +104,6 @@ def runOsvScan = { String repoName, String refType, String ref, String repoUrl, 
                     echo '[[IgnoredVulns]]' >> config.toml
                     echo 'id = "${vulnId}"' >> config.toml
                     echo 'reason = "containerd only used by tests and there is no fix."' >> config.toml
-                """
-            }
-        }
-
-        def helmIgnoredBranches = [
-            'CAPM3': ~/^release-1\.12$/,
-        ]
-        if (helmIgnoredBranches[repoName]?.matcher(ref)?.matches()) {
-            ['GHSA-hr2v-4r36-88hr'].each { vulnId ->
-                sh """
-                    echo '' >> config.toml
-                    echo '[[IgnoredVulns]]' >> config.toml
-                    echo 'id = "${vulnId}"' >> config.toml
-                    echo 'reason = "helm/v3 vulnerability; bump would require a newer Go version"' >> config.toml
                 """
             }
         }
