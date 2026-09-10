@@ -39,10 +39,6 @@ the commands below. The job result will be posted as a comment.
   version v1beta1 and branch release-1.12 on Ubuntu
 * **/test-centos-integration-release-1-12** run integration tests with CAPM3 API
   version v1beta1 and branch release-1.12 on CentOS
-* **/test-ubuntu-integration-release-1-11** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.11 on Ubuntu
-* **/test-centos-integration-release-1-11** run integration tests with CAPM3 API
-  version v1beta1 and branch release-1.11 on CentOS
 
 ### E2E tests
 
@@ -200,6 +196,5 @@ builds, on pull requests) in CI.
 ## Contact
 
 In case of issues or question on the Jenkins CI, please contact the maintainers
-by email to estjorvas \[at\] est.tech or by posting your message on the
-[\#cluster-api-baremetal](https://kubernetes.slack.com/archives/CHD49TLE7)
-channel on Kubernetes Slack.
+by email to **estjorvas \[at\] est.tech** or by posting your message on the
+**#cluster-api-baremetal** channel in the Kubernetes Slack workspace.
