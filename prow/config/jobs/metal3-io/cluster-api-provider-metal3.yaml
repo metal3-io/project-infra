@@ -333,6 +333,15 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
+  # name: {job_prefix}-e2e-clusterctl-upgrade-test-{capm3_target_branch}-capi-nightly-build
+  - name: metal3-e2e-clusterctl-upgrade-test-main-capi-nightly-build
+    branches:
+    - main
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
   # name: {job_prefix}-e2e-{k8s_versions}-upgrade-test-{capm3_target_branch}
   - name: metal3-e2e-1-35-1-36-upgrade-test-main
     branches:
