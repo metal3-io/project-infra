@@ -10,6 +10,7 @@ This is how you apply it in the cluster:
 ```bash
 kubectl apply -f manifests/setup
 kubectl apply -f manifests
+kubectl apply -f alertmanager-slack-webhook-externalsecret.yaml
 kubectl apply -f prow-rules.yaml
 ```
 
