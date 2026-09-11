@@ -182,14 +182,20 @@ presubmits:
     branches:
     - main
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ci-image-building
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-node-image-building
     agent: jenkins
+    labels:
+      jenkins_operator: oci
     always_run: false
     optional: true
   - name: metal3-ubuntu-e2e-capi-md-test-main
