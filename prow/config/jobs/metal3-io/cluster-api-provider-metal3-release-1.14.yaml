@@ -133,7 +133,6 @@ presubmits:
     - release-1.14
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
