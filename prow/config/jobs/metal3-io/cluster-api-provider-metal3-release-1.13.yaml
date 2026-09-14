@@ -213,6 +213,14 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
+  - name: metal3-leap-e2e-basic-test-release-1-13
+    branches:
+    - release-1.13
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}
   - name: metal3-centos-e2e-integration-test-release-1-13
     branches:
