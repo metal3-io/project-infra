@@ -33,17 +33,11 @@ pipeline {
         BMORELEASEBRANCH = "${env.bmo_release_branch}"
         CAPI_VERSION = "${env.CAPI_VERSION}"
         CAPM3_VERSION = "${env.CAPM3_VERSION}"
-        OS_AUTH_URL = 'https://xerces.ericsson.net:5000'
-        OS_PROJECT_ID = 'b62dc8622f87407589de9f7dcec13d25'
-        OS_INTERFACE = 'public'
-        OS_PROJECT_NAME = 'EST_Metal3_CI'
-        OS_USER_DOMAIN_NAME = 'xerces'
-        OS_IDENTITY_API_VERSION = 3
     }
     stages {
         stage('SCM') {
             matrix {
-                agent { label 'metal3ci-4c16gb-ubuntu-jnlp' }
+                agent { label 'metal3ci-8c32gb-ubuntu-oci' }
                 options { ansiColor('xterm') }
                 axes {
                     axis {
@@ -80,7 +74,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Upload the new CI image with -staging suffix') {
+                    stage('Upload the new CI Image to OCI candidate') {
                         options {
                             timeout(time: 30, unit: 'MINUTES')
                         }
@@ -88,21 +82,16 @@ pipeline {
                             expression { env.IMAGE_TYPE == 'ci' }
                         }
                         steps {
-                            // NOTE: We delete any existing *-staging images before uploading the new one.
-                            // This is important because the images cannot be separated from the older "latest" images
-                            // if they are renamed to their "original" names (which they would be when the next image is uploaded).
-                            script {
-                                def imageName = readFile('image_name.txt').trim()
-                                withCredentials([
-                  usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')
-                                ]) {
-                                    sh """#!/bin/bash
-                                    source ./jenkins/image_building/upload-ci-image.sh
-                                    install_openstack_client
-                                    delete_if_exists "metal3-ci-${IMAGE_OS}-staging"
-                                    upload_ci_image_xerces ${imageName} "metal3-ci-${IMAGE_OS}-staging"
-                                    """
-                                }
+                            withCredentials([
+                  file(credentialsId: 'metal3-oracle-cloud-api-private-key', variable: 'OCI_KEY_FILE'),
+                  file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'OCI_CLI_ENV_FILE')
+                            ]) {
+                                sh '''
+                                set -a +x
+                                . "$OCI_CLI_ENV_FILE"
+                                set +a -x
+                                ./jenkins/image_building/upload-ci-image-oci.sh upload-candidate "$(cat image_name.txt)"
+                                '''
                             }
                         }
                     }
@@ -128,7 +117,7 @@ pipeline {
                         }
                     }
                     stage('Verify the new CI image') {
-                        agent { label "metal3ci-${IMAGE_OS}-staging-jnlp" }
+                        agent { label "metal3ci-${IMAGE_OS}-staging" }
                         options {
                             timeout(time: 2, unit: 'HOURS')
                         }
@@ -154,35 +143,24 @@ pipeline {
                         when {
                             // Don't upload from PR tests
                             expression { ci_git_branch == 'main' }
+                            expression { env.IMAGE_TYPE == 'node' }
                         }
                         steps {
                             withCredentials([
-                              usernamePassword(credentialsId: 'xerces-est-metal3ci', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'),
                               usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
                               ]) {
                                 script {
                                     def imageName = readFile('image_name.txt').trim()
                                     echo "Uploading ${imageName}"
 
-                                    if (env.IMAGE_TYPE == 'node') {
-                                        sh """
-                                        ./jenkins/image_building/upload-node-image.sh ${imageName}
-                                        """
-                                    } else {
-                                        // The CI image is already uploaded with a different name so we just need to rename it.
-                                        // Also clean up old images (keeping the last 5)
-                                        sh """#!/bin/bash
-                                        source ./jenkins/image_building/upload-ci-image.sh
-                                        install_openstack_client
-                                        rename_image_common "metal3-ci-${IMAGE_OS}-staging"
-                                        delete_old_images
-                                        """
-                                    }
+                                    sh """
+                                    ./jenkins/image_building/upload-node-image.sh ${imageName}
+                                    """
                                 }
                             }
                         }
                     }
-                    stage('Upload the new CI Image to OCI') {
+                    stage('Promote OCI candidate to latest') {
                         options {
                             timeout(time: 30, unit: 'MINUTES')
                         }
@@ -197,17 +175,13 @@ pipeline {
                               file(credentialsId: 'metal3-oracle-cloud-api-private-key', variable: 'OCI_KEY_FILE'),
                               file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'OCI_CLI_ENV_FILE'),
                               ]) {
-                                script {
-                                    def imageName = readFile('image_name.txt').trim()
-                                    echo "Uploading ${imageName} to OCI"
-
-                                    sh """
-                                    set -a +x
-                                    . "${OCI_CLI_ENV_FILE}"
-                                    set +a -x
-                                    ./jenkins/image_building/upload-ci-image-oci.sh ${imageName}
-                                    """
-                                }
+                                echo 'Promoting OCI candidate image to latest'
+                                sh '''
+                                set -a +x
+                                . "$OCI_CLI_ENV_FILE"
+                                set +a -x
+                                ./jenkins/image_building/upload-ci-image-oci.sh promote-candidate
+                                '''
                             }
                         }
                     }
