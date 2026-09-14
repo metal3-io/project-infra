@@ -137,6 +137,21 @@ presubmits:
         command:
         - sh
         image: docker.io/golang:1.26
+  - name: golangci-lint
+    branches:
+    - release-0.14
+    skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
+    decorate: true
+    spec:
+      containers:
+      - args:
+        - lint
+        command:
+        - make
+        env:
+        - name: IS_CONTAINER
+          value: "TRUE"
+        image: quay.io/metal3-io/basic-checks:golang-1.26
         imagePullPolicy: Always
   - name: metal3-centos-e2e-basic-test-release-1-14
     branches:
