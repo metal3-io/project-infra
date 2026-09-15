@@ -90,7 +90,7 @@ fi
 if [[ "${IMAGE_TYPE}" == "node" ]]; then
   # Set the default data source for cloud-init
   export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive,OpenStack,Oracle"
-  export KUBERNETES_VERSION="${KUBERNETES_VERSION:-"v1.37.0"}"
+  export KUBERNETES_VERSION="${KUBERNETES_VERSION:?KUBERNETES_VERSION must be set}"
 
   if [[ "${PRE_RELEASE:-}" == "true" ]]; then
     # Extract minor version (e.g., "1.34" from "v1.34.1")
@@ -101,9 +101,9 @@ if [[ "${IMAGE_TYPE}" == "node" ]]; then
     export KUBERNETES_VERSION="${FETCHED_VERSION}"
   fi
 
-  # TODO: Uplift crio to v1.37 when it's officially released
-  export CRIO_VERSION="${CRIO_VERSION:-"v1.36.4"}"
-  export CRICTL_VERSION="${CRICTL_VERSION:-"v1.36.0"}"
+
+  export CRIO_VERSION="${CRIO_VERSION:?CRIO_VERSION must be set}"
+  export CRICTL_VERSION="${CRICTL_VERSION:?CRICTL_VERSION must be set}"
   img_name="${IMAGE_OS^^}_${numeric_release}_NODE_IMAGE_K8S_${KUBERNETES_VERSION}"
   # enable predictable interface names
   export DIB_BOOTLOADER_DEFAULT_CMDLINE="net.ifnames=1"
