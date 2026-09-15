@@ -16,6 +16,20 @@
       "description": "Allow pre-release (alpha/beta/rc) Kubernetes versions for pre-release test tracking",
       "ignoreUnstable": false,
       "respectLatest": false
+    },
+    {
+      "matchPackageNames": ["kubernetes-sigs/cluster-api"],
+      "groupName": "cluster-api providers"
+    },
+    {
+      "matchPackageNames": ["kubernetes-sigs/cluster-api-provider-openstack"],
+      "groupName": "cluster-api-provider-openstack"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchFileNames": ["prow/config/jobs/**/*.yaml"],
+      "groupName": "prow container images",
+      "schedule": ["monthly"]
     }
   ],
   "customManagers": [
