@@ -132,7 +132,7 @@ openstack image create --file UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.img.raw ubuntu
 
 1. Create a 1Password service account with access to the vault we use
    (Prow_GitOps). You can follow the instructions
-   [here](https://developer.1password.com/docs/sdks/#get-started).
+   [1Password SDK getting-started guide](https://developer.1password.com/docs/sdks/#get-started).
 
 1. Create application credentials for use by the OpenStack cloud provider.
 
@@ -176,8 +176,8 @@ openstack image create --file UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.img.raw ubuntu
 
 1. Create a personal access token for the GitHub bot account. This should be
    done from the [metal3-io-bot](https://github.com/metal3-io-bot) GitHub bot
-   account. You can follow this
-   [link](https://github.com/settings/tokens)
+   account. You can follow
+   [GitHub's personal access token settings](https://github.com/settings/tokens)
    to create the token. When generating the token, make sure you have only the
    following scopes checked in.
 
@@ -189,8 +189,8 @@ openstack image create --file UBUNTU_24.04_NODE_IMAGE_K8S_v1.35.4.img.raw ubuntu
 
 1. Create a personal access token for the cherry-picker bot. This should be done
    from the [metal3-io-bot](https://github.com/metal3-io-bot)
-   GitHub bot account. You can follow this
-   [link](https://github.com/settings/tokens)
+   GitHub bot account. You can follow
+   [GitHub's personal access token settings](https://github.com/settings/tokens)
    to create the token. When generating the token, make sure you have only the
    following scopes checked in.
 
@@ -515,7 +515,7 @@ case we should follow the steps below to enable prow:
 1. Add the repository entry and related configurations in the files
    `prow/config/config.yaml` and `prow/config/plugins.yaml` in
    `metal3-io/project-infra` repository. An example PR is
-   [here](https://github.com/metal3-io/project-infra/pull/473/).
+   [PR #473](https://github.com/metal3-io/project-infra/pull/473/).
 
 1. One small tweak might still be needed. We have experienced the default
    `merge_method` of prow which is `merge` didn't work for Nordix repos. The
