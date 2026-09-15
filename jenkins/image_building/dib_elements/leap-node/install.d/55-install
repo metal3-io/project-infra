@@ -26,3 +26,16 @@ sudo zypper -n in keepalived
 sudo zypper -n in NetworkManager
 sudo systemctl disable wicked wickedd
 sudo systemctl enable NetworkManager
+
+# cloud-init on openSUSE defaults to the sysconfig (wicked ifcfg) renderer, which
+# NetworkManager does not read, so config-drive network settings (static IP and
+# default route) are written but never applied and the node DHCPs with no default
+# route. Pin cloud-init to the NetworkManager renderer/activator so it writes NM
+# keyfiles that NM applies.
+sudo mkdir -p /etc/cloud/cloud.cfg.d
+sudo tee /etc/cloud/cloud.cfg.d/99-network-renderer.cfg <<EOF
+system_info:
+  network:
+    renderers: ['network-manager']
+    activators: ['network-manager']
+EOF
