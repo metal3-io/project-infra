@@ -28,7 +28,7 @@ pushd "${IRONIC_DATA_DIR}/html/images"
 wget --no-check-certificate -q "https://artifactory.nordix.org/artifactory/metal3/images/k8s_${K8S_VERSION}/${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}.qcow2"
 qemu-img convert -O raw "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}.qcow2" "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img"
 sha256sum "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img" | awk '{print $1}' > "${IMAGE_OS}_NODE_IMAGE_K8S_${K8S_VERSION}-raw.img.sha256sum"
-wget -q https://artifactory.nordix.org/artifactory/openstack-remote/ironic-python-agent/dib/ipa-centos9-master.tar.gz
+wget -q https://tarballs.opendev.org/openstack/ironic-python-agent/dib/ipa-centos9-master.tar.gz
 popd
 
 # shellcheck disable=SC1091
