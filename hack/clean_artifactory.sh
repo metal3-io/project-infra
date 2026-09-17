@@ -4,9 +4,9 @@ set -eu
 
 RT_TOKEN_FILE="${RT_TOKEN_FILE:-/etc/artifactory/token}"
 # Used to clean a cached artifact
-CACHE_URL="${CACHE_URL:-https://artifactory.nordix.org/artifactory/openstack-remote-cache/ironic-python-agent/dib/ipa-centos9-master.tar.gz}"
+CACHE_URL="${CACHE_URL:-}"
 # User facing proxy endpoint that is backed by the content of the cache, users should pull from here
-PROXY_URL="${PROXY_URL:-https://artifactory.nordix.org/artifactory/openstack-remote/ironic-python-agent/dib/ipa-centos9-master.tar.gz}"
+PROXY_URL="${PROXY_URL:-}"
 
 if [ ! -r "${RT_TOKEN_FILE}" ]; then
   echo "ERROR: Token file '${RT_TOKEN_FILE}' does not exist or is not readable" >&2

@@ -16,7 +16,7 @@ export CAPIRELEASE="v1.13.3"
 export CAPM3RELEASE="v1.14.99"
 export IPAMRELEASE="v1.14.99"
 export NAMEPREFIX="baremetal-operator"
-export IPA_BASEURI=https://artifactory.nordix.org/artifactory/openstack-remote/ironic-python-agent/dib
+export IPA_BASEURI=https://tarballs.opendev.org/openstack/ironic-python-agent/dib
 
 export CONTAINER_REGISTRY="registry.nordix.org/quay-io-proxy"
 export CAPM3_IMAGE="${CONTAINER_REGISTRY}/metal3-io/cluster-api-provider-metal3:main"
