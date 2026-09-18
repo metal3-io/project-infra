@@ -43,3 +43,5 @@ sudo mv kubelet.service /usr/lib/systemd/system/kubelet.service
 
 sudo apt-get install -y cri-o="${CRIO_DEB_VERSION}"
 sudo apt-mark hold cri-o
+
+sudo systemctl enable crio
