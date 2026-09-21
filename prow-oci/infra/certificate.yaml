@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: metal3-io-tls
+  namespace: prow
+spec:
+  dnsNames:
+  # Parallel OCI instance hostname. Switch to prow.apps.test.metal3.io at
+  # cutover (Phase 8) and re-issue.
+  - prow-oci.apps.test.metal3.io
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-http-prod
+  secretName: metal3-io-tls

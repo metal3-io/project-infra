@@ -1,0 +1,83 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# OCI (parallel-run) overlay of the Prow application. Mirrors the metal3 overlay
+# but tuned for a NON-AUTHORITATIVE "dark standby":
+#   - tide removed (see remove-tide.yaml) - it would act on shared config.yaml.
+#   - jenkins-operators omitted - they would trigger builds on the shared OCI
+#     Jenkins. Add both back at go-live (Phase 8).
+#   - hostname prow-oci.apps.test.metal3.io (no GitHub webhook points here).
+#   - s3-credentials sourced from the OCI 1Password item (see the externalsecrets).
+resources:
+- ../../base
+- httproutes.yaml
+# External plugins (cloud-agnostic). Copied from the metal3 overlay; the
+# jenkins-operator files are intentionally NOT included (see header).
+- external-plugins/cherrypicker_deployment.yaml
+- external-plugins/cherrypicker_service.yaml
+- external-plugins/needs-rebase_deployment.yaml
+- external-plugins/needs-rebase_service.yaml
+- external-plugins/labels_cronjob.yaml
+- external-plugins/copilot-review-deployment.yaml
+- external-plugins/copilot-review-service.yaml
+- pdb.yaml
+- limitrange.yaml
+- prow-externalsecrets.yaml
+- test-pods-externalsecrets.yaml
+
+patches:
+# Remove tide (dark standby - see header). $patch: delete per tide object.
+- patch: |
+    $patch: delete
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: tide
+      namespace: prow
+- patch: |
+    $patch: delete
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: tide
+      namespace: prow
+- patch: |
+    $patch: delete
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: tide
+      namespace: prow
+- patch: |
+    $patch: delete
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: tide
+      namespace: prow
+- patch: |
+    $patch: delete
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: tide
+      namespace: prow
+# Run all Prow Deployments on infra nodes.
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/instance: prow-oci
+    app.kubernetes.io/part-of: prow
+
+# OCI: pin the k8s-infra-prow external plugins to the same late-2024 tag as the
+# core components (see ../../base/kustomization.yaml) - they hit GitHub/S3 and
+# would 501 on OCI Object Storage with a newer aws-sdk. copilot-review and
+# label_sync are separate images (not k8s-infra-prow) and are left as-is.
+images:
+- name: us-docker.pkg.dev/k8s-infra-prow/images/cherrypicker
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/needs-rebase
+  newTag: v20241202-687763763

@@ -1,0 +1,2 @@
+# Ignore helm charts folder created by kustomize
+charts
