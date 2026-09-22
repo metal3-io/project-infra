@@ -93,6 +93,13 @@ else
     export BOOTSTRAP_CLUSTER="minikube"
 fi
 
+# CAPM3 main always uses docker and kind regardless of image OS
+if [[ "${REPO_BRANCH}" == "main" ]] &&
+   [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]]; then
+    export CONTAINER_RUNTIME="docker"
+    export BOOTSTRAP_CLUSTER="kind"
+fi
+
 # Clone the source repository
 git clone "https://github.com/${REPO_ORG}/${REPO_NAME}.git" "${HOME}/tested_repo"
 cd "${HOME}/tested_repo"

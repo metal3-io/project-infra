@@ -12,6 +12,13 @@ else
     export CONTAINER_RUNTIME="podman"
 fi
 
+# CAPM3 main always uses docker and kind regardless of image OS
+if [[ "${REPO_BRANCH}" == "main" ]] &&
+   [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]]; then
+    export CONTAINER_RUNTIME="docker"
+    export BOOTSTRAP_CLUSTER="kind"
+fi
+
 if [[ "${REPO_NAME}" == "metal3-dev-env" ]] ||
    [[ "${REPO_NAME}" == "cluster-api-provider-metal3" ]] \
     ; then
