@@ -36,7 +36,10 @@ RETURN_VAL="${RESOLVED_REF:0:7}_${RESOLVED_REFNAME//\//-}"
 
 if [[ "${IGNORE_GTAGS}" == false ]]; then
     # Determine the Git tag with the highest version number in the repo
-    LATEST_GTAG=$(git tag --sort=-version:refname | head -1)
+    # Use for-each-ref with --count so git limits output itself; piping
+    # `git tag` into `head` triggers SIGPIPE (exit 141) under pipefail.
+    LATEST_GTAG=$(git for-each-ref --sort=-version:refname \
+        --format='%(refname:short)' --count=1 refs/tags)
     if [[ -z "${LATEST_GTAG}" ]]; then
         echo "ERROR: No tags found in repository" >&2
         exit 1
@@ -111,4 +114,3 @@ fi
 # --nogtag was used but there were no local tags on target branch
 # repo has no tags at all
 echo "${RETURN_VAL}"
-
