@@ -149,7 +149,6 @@ presubmits:
     - main
     run_if_changed: '((\.ya?ml)|(\.md)|(hack/yamllint\.sh))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
