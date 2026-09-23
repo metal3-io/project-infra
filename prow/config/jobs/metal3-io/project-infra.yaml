@@ -156,7 +156,7 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
-  - name: metal3-e2e-1-35-1-36-upgrade-test-main
+  - name: metal3-e2e-1-36-1-37-upgrade-test-main
     agent: jenkins
     labels:
       jenkins_operator: oci
