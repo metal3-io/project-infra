@@ -249,7 +249,7 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
-  - name: metal3-e2e-1-35-1-36-upgrade-test-release-1-14
+  - name: metal3-e2e-1-36-1-37-upgrade-test-release-1-14
     branches:
     - release-1.14
     agent: jenkins
