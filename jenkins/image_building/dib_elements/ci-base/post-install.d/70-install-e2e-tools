@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Pre-install the CAPM3 e2e tooling (Go, kind, kubectl, vbmctl) into the CI
+# image so the e2e run finds them already present and skips downloading them at
+# test time.
+# Versions can be overridden at build time via the matching *_VERSION variables.
+
+set -euxo pipefail
+
+GO_VERSION="${GO_VERSION:-1.26.4}"
+KIND_VERSION="${KIND_VERSION:-v0.20.0}"
+KUBERNETES_VERSION="${KUBERNETES_VERSION:-v1.37.0}"
+VBMCTL_VERSION="${VBMCTL_VERSION:-v0.14.0}"
+
+os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+arch="$(uname -m)"
+case "${arch}" in
+  x86_64) arch="amd64" ;;
+  aarch64) arch="arm64" ;;
+esac
+
+# Go -> /usr/local/go, exposed on PATH for login shells and via symlinks so
+# non-login shells (Jenkins) resolve it too. Go derives GOROOT from the resolved
+# binary path, so the symlink keeps standard-library builds working.
+tmp="$(mktemp -d)"
+curl -fsSL "https://dl.google.com/go/go${GO_VERSION}.${os}-${arch}.tar.gz" -o "${tmp}/go.tgz"
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "${tmp}/go.tgz"
+rm -rf "${tmp}"
+# Intentionally write the literal ${PATH} so it expands at login, not build time.
+# shellcheck disable=SC2016
+echo 'export PATH=/usr/local/go/bin:${PATH}' | sudo tee /etc/profile.d/go.sh > /dev/null
+sudo ln -sf /usr/local/go/bin/go /usr/local/bin/go
+sudo ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+
+# kind -> /usr/local/bin
+curl -fsSL "https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-${os}-${arch}" -o "/tmp/kind"
+sudo install -o root -g root -m 0755 "/tmp/kind" /usr/local/bin/kind
+rm -f "/tmp/kind"
+
+# kubectl -> /usr/local/bin
+curl -fsSL "https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/${os}/${arch}/kubectl" -o "/tmp/kubectl"
+sudo install -o root -g root -m 0755 "/tmp/kubectl" /usr/local/bin/kubectl
+rm -f "/tmp/kubectl"
+
+# vbmctl -> /usr/local/bin (published as a baremetal-operator release artifact)
+curl -fsSL "https://github.com/metal3-io/baremetal-operator/releases/download/${VBMCTL_VERSION}/vbmctl-linux-${arch}" -o "/tmp/vbmctl"
+sudo install -o root -g root -m 0755 "/tmp/vbmctl" /usr/local/bin/vbmctl
+rm -f "/tmp/vbmctl"
