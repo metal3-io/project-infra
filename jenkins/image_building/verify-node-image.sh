@@ -31,6 +31,10 @@ verify_node_image() {
 
     export IRONIC_INSTALL_TYPE="rpm"
 
+    export KUBERNETES_VERSION="${KUBERNETES_VERSION}"
+    export CRIO_VERSION="${CRIO_VERSION}"
+    export CRICTL_VERSION="${CRICTL_VERSION}"
+
     "${current_dir}/../scripts/dynamic_worker_workflow/dev_env_integration_tests.sh"
 }
 
