@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# Pre-install the CAPM3 e2e tooling (Go, kind, kubectl, vbmctl) into the CI
+# image so the e2e run finds them already present and skips downloading them at
+# test time.
+# Versions can be overridden at build time via the matching *_VERSION variables.
+# Go, kind and kubectl are verified against upstream's published SHA-256 before
+# being installed; vbmctl is not, because upstream publishes no checksum for it.
+
+set -euxo pipefail
+
+# The image building pipeline maps KUBERNETES_VERSION in unconditionally, and
+# Jenkins renders an unset value as the literal string "null". ${VAR:-default}
+# only substitutes on unset/empty, so drop "null" first or it ends up in the
+# download URLs below.
+if [[ "${KUBERNETES_VERSION:-}" == "null" ]]; then
+  unset KUBERNETES_VERSION
+fi
+
+GO_VERSION="${GO_VERSION:-1.26.4}"
+KIND_VERSION="${KIND_VERSION:-v0.20.0}"
+KUBERNETES_VERSION="${KUBERNETES_VERSION:-v1.37.0}"
+VBMCTL_VERSION="${VBMCTL_VERSION:-v0.14.0}"
+
+os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+arch="$(uname -m)"
+case "${arch}" in
+  x86_64) arch="amd64" ;;
+  aarch64) arch="arm64" ;;
+esac
+platform="${os}-${arch}"
+
+# The download URLs are versioned but not content-addressed, so they do not pin
+# the bytes. Artifacts are therefore compared against the SHA-256 that upstream
+# publishes for that exact version and architecture, before anything is unpacked
+# or installed as root. See the vbmctl note at the end for the one exception.
+#
+# Scope of this check: it reliably catches truncated, corrupted or
+# mismatched-architecture downloads. It cannot detect an upstream or CDN that
+# has been compromised, since the digest is served from the same channel as the
+# artifact. Closing that gap needs an anchor outside the channel (a digest
+# pinned in this repo, or signature/provenance verification).
+
+# Read a published digest and normalise it. Upstream uses two shapes: a bare
+# digest (Go, kubectl) and the `sha256sum` two-column "<digest>  <file>" form
+# (kind). Taking the first whitespace-separated field handles both. Neither Go
+# nor kubectl terminate the file with a newline, so do not rely on one.
+fetch_published_sha256() {
+  local sha_url="${1}"
+  local published
+
+  published="$(curl -fsSL "${sha_url}" | tr -d '\r' | awk 'NR == 1 { print $1 }')"
+
+  if [[ ! "${published}" =~ ^[0-9a-f]{64}$ ]]; then
+    echo "ERROR: ${sha_url} did not return a SHA-256 digest (got: '${published}')." >&2
+    return 1
+  fi
+
+  echo "${published}"
+}
+
+# Abort unless the file on disk matches the expected digest.
+verify_sha256() {
+  local file="${1}" expected="${2}"
+
+  echo "${expected}  ${file}" | sha256sum --check --strict -
+}
+
+# Download an artifact plus its published digest, then verify before use.
+download_and_verify() {
+  local url="${1}" sha_url="${2}" dest="${3}"
+  local expected
+
+  # Resolve the digest first: on a bad or missing checksum file this fails
+  # before the artifact is written anywhere.
+  expected="$(fetch_published_sha256 "${sha_url}")"
+  curl -fsSL "${url}" -o "${dest}"
+  verify_sha256 "${dest}" "${expected}"
+}
+
+# Go -> /usr/local/go, exposed on PATH for login shells and via symlinks so
+# non-login shells (Jenkins) resolve it too. Go derives GOROOT from the resolved
+# binary path, so the symlink keeps standard-library builds working.
+go_url="https://dl.google.com/go/go${GO_VERSION}.${platform}.tar.gz"
+tmp="$(mktemp -d)"
+download_and_verify "${go_url}" "${go_url}.sha256" "${tmp}/go.tgz"
+# Only now is it safe to replace the existing install: a failed verification
+# above must not leave the image without a Go toolchain.
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "${tmp}/go.tgz"
+rm -rf "${tmp}"
+# Intentionally write the literal ${PATH} so it expands at login, not build time.
+# shellcheck disable=SC2016
+echo 'export PATH=/usr/local/go/bin:${PATH}' | sudo tee /etc/profile.d/go.sh > /dev/null
+sudo ln -sf /usr/local/go/bin/go /usr/local/bin/go
+sudo ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+
+# kind -> /usr/local/bin
+kind_url="https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-${platform}"
+download_and_verify "${kind_url}" "${kind_url}.sha256sum" "/tmp/kind"
+sudo install -o root -g root -m 0755 "/tmp/kind" /usr/local/bin/kind
+rm -f "/tmp/kind"
+
+# kubectl -> /usr/local/bin
+kubectl_url="https://dl.k8s.io/release/${KUBERNETES_VERSION}/bin/${os}/${arch}/kubectl"
+download_and_verify "${kubectl_url}" "${kubectl_url}.sha256" "/tmp/kubectl"
+sudo install -o root -g root -m 0755 "/tmp/kubectl" /usr/local/bin/kubectl
+rm -f "/tmp/kubectl"
+
+# vbmctl -> /usr/local/bin (published as a baremetal-operator release artifact)
+#
+# NOT integrity checked. The baremetal-operator release publishes no checksum
+# for vbmctl in any form, so there is nothing to fetch and compare against, and
+# we deliberately do not carry an expected digest here for now. This download is
+# therefore trusted on the strength of HTTPS alone, unlike the tools above.
+# Once upstream publishes a checksum, route this through download_and_verify.
+curl -fsSL "https://github.com/metal3-io/baremetal-operator/releases/download/${VBMCTL_VERSION}/vbmctl-linux-${arch}" -o "/tmp/vbmctl"
+sudo install -o root -g root -m 0755 "/tmp/vbmctl" /usr/local/bin/vbmctl
+rm -f "/tmp/vbmctl"
