@@ -116,6 +116,6 @@ fi
 
 export HOSTNAME="${img_name}"
 
-disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-efi
+disk-image-create --no-tmpfs -a amd64 -o "${img_name}".qcow2 "${IMAGE_OS}"-"${IMAGE_TYPE}" block-device-encryption
 
 echo "${img_name}" > "${REPO_ROOT}/image_name.txt"

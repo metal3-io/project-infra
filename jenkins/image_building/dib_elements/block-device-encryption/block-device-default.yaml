@@ -1,0 +1,50 @@
+- local_loop:
+    name: image0
+    size: 10GiB
+
+- partitioning:
+    base: image0
+    label: gpt
+    partitions:
+    # 1 - EFI System Partition, mounted under /boot
+    - name: ESP
+      type: "EF00"
+      size: 550MiB
+      mkfs:
+        type: vfat
+        mount:
+          mount_point: /boot/efi
+          fstab:
+            options: "defaults"
+            fsck-passno: 2
+
+    # 2 - Empty partition for BIOS compatibility
+    - name: BSP
+      type: "EF02"
+      size: 8MiB
+
+    # 3 - /boot (unencrypted, holds kernel + initramfs)
+    - name: boot
+      type: "8300"
+      size: 1GiB
+      mkfs:
+        type: ext4
+        mount:
+          mount_point: /boot
+          fstab:
+            options: "defaults"
+            fsck-passno: 2
+
+    # 4 - root filesystem (to be encrypted with LUKS)
+    - name: root
+      type: "4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709"
+      size: 8 GiB
+      mkfs:
+        type: ext4
+        mount:
+          mount_point: /
+          fstab:
+            options: "defaults"
+            fsck-passno: 1
+            # Remaining ~400MiB is unallocated - available for
+            # detached LUKS headers outside the partition table.
