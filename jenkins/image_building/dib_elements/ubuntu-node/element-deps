@@ -3,3 +3,4 @@ base
 vm
 openssh-server
 package-installs
+oci-storage
