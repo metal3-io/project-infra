@@ -2,20 +2,12 @@
 
 set -eux
 
-OCI_KEY_TMP="/tmp/oci_key.pem"
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/oci-common.sh"
 
-set +x
-
-cp "${OCI_KEY_FILE}" "${OCI_KEY_TMP}"
-chmod 600 "${OCI_KEY_TMP}"
-
-export OCI_CLI_KEY_FILE="${OCI_KEY_TMP}"
-export OCI_CLI_USER="${OCI_CLI_USER}"
-export OCI_CLI_TENANCY="${OCI_CLI_TENANCY}"
-export OCI_CLI_FINGERPRINT="${OCI_CLI_FINGERPRINT}"
-
-set -x
-
+# "Target object" related env vars specific to ci image upload/promotion
+# These are specifically related to the bucket ci-images are stored in
 export OCI_CLI_REGION="eu-paris-1"
 export COMPARTMENT_OCID=ocid1.tenancy.oc1..aaaaaaaalbjclmsqx5zyjbqgtywhfxns4qavoppuhp6peixiqmm6vu3qyn7a
 export BUCKET_NAME=ImageStorage
@@ -24,34 +16,9 @@ export IMAGE_OS="${IMAGE_OS}"
 
 COMMON_IMAGE_NAME="metal3ci-${IMAGE_OS}-latest"
 CANDIDATE_IMAGE_NAME="metal3ci-${IMAGE_OS}-staging"
-
-cleanup() {
-    rm -f "${OCI_KEY_TMP}"
-}
-trap cleanup EXIT
-
 action="${1:-}"
 img_name="${2:-}"
 
-install_oci_client() {
-  rm -rf venv
-  python3 -m venv venv
-
-  # shellcheck source=/dev/null
-  . venv/bin/activate
-  # Install OCI CLI
-  pip install oci-cli==3.76.0
-}
-
-# Upload image to object storage
-upload_image_to_bucket() {
-
-  oci os object put \
-      --namespace-name "${NAMESPACE_OCID}" \
-      --bucket-name "${BUCKET_NAME}" \
-      --name "${img_name}".qcow2 \
-      --file "${img_name}".qcow2
-}
 
 # Delete image by display name if present
 delete_image_from_compute_by_name() {
@@ -211,7 +178,7 @@ case "${action}" in
       exit 1
     fi
     echo "==> [upload-candidate] START for ${img_name} (os=${IMAGE_OS})"
-    upload_image_to_bucket
+    upload_object_to_bucket "${NAMESPACE_OCID}" "${BUCKET_NAME}" "${img_name}.qcow2"
     echo "==> [upload-candidate] deleting existing candidate image '${CANDIDATE_IMAGE_NAME}' if present"
     delete_image_from_compute_by_name "${CANDIDATE_IMAGE_NAME}" || true
     echo "==> [upload-candidate] importing candidate image '${CANDIDATE_IMAGE_NAME}'"
