@@ -143,6 +143,7 @@ pipeline {
                 GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
                 currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
             }
+            retire_agent()
         }
     }
 }

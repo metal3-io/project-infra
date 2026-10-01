@@ -435,6 +435,7 @@ pipeline {
                 currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
                 archiveArtifacts artifacts: 'results/*.txt', allowEmptyArchive: true
             }
+            retire_agent()
         }
     }
 }
