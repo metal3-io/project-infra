@@ -50,4 +50,6 @@ sudo mv kubelet.service /usr/lib/systemd/system/kubelet.service
 
 sudo yum install -y cri-o-"${CRIO_BINARIES_VERSION//v}"
 
+sudo systemctl enable crio
+
 sudo pip install kubernetes
