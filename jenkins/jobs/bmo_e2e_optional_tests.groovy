@@ -1,5 +1,7 @@
 def TIMEOUT = 10800, CURRENT_START_TIME, CURRENT_END_TIME, GRAFANA_VIEW
 def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
+// Matrix cells to run. Fallback keeps the job working before JJB adds the param.
+def BMC_PROTOCOLS = (params.BMC_PROTOCOLS ?: 'ipmi,redfish-virtualmedia').tokenize(', ')
 // Set defaults for non-PR jobs
 def pullSha = (env.PULL_PULL_SHA) ?: 'main'
 def pullBase = (env.PULL_BASE_REF) ?: 'main'
@@ -24,10 +26,14 @@ pipeline {
         stage('Run Baremetal Operator optional e2e tests') {
             matrix {
                 agent { label 'metal3ci-8c32gb-ubuntu-oci' }
+                when {
+                    beforeAgent true
+                    expression { env.BMC_PROTOCOL in BMC_PROTOCOLS }
+                }
                 axes {
                     axis {
                         name 'BMC_PROTOCOL'
-                        values 'ipmi', 'redfish-virtualmedia'
+                        values 'ipmi', 'redfish-virtualmedia', 'fixture'
                     }
                 }
                 environment {
@@ -61,7 +67,23 @@ pipeline {
                                 usernameVariable: 'LOKI_USERNAME', passwordVariable: 'LOKI_PASSWORD'),
                             ]) {
                                 timestamps {
-                                    sh './hack/ci-e2e.sh'
+                                    script {
+                                        if (env.BMC_PROTOCOL == 'fixture') {
+                                            // Mirrors BMO's .github/workflows/e2e-fixture-test.yml
+                                            sh '''
+                                                export PATH=/usr/local/go/bin:$PATH
+                                                ./hack/e2e/ensure_go.sh
+                                                ./hack/e2e/ensure_kubectl.sh
+                                                IMG=quay.io/metal3-io/baremetal-operator IMG_TAG=e2e make docker
+                                                rc=0
+                                                GINKGO_NODES=1 make test-e2e || rc=$?
+                                                tar -C test/e2e -czf artifacts-fixture.tar.gz _artifacts
+                                                exit $rc
+                                            '''
+                                        } else {
+                                            sh './hack/ci-e2e.sh'
+                                        }
+                                    }
                                 }
                             }
                         }
