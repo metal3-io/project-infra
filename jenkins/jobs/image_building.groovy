@@ -135,6 +135,11 @@ pipeline {
                                 }
                             }
                         }
+                        post {
+                            always {
+                                retire_agent()
+                            }
+                        }
                     }
                     stage('Upload the new Image') {
                         options {
@@ -185,6 +190,12 @@ pipeline {
                             }
                         }
                     }
+                }
+                post {
+                    always {
+                        retire_agent()
+                    }
+
                 }
             }
         }
