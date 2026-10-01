@@ -42,3 +42,9 @@ presubmits:
           value: "TRUE"
         image: ghcr.io/streetsidesoftware/cspell:10.2.2@sha256:927835516e284e4eaf24d1ab8ed5c3cfcdeaa9ce975b24c843c36432db239752
         imagePullPolicy: Always
+  - name: metal3-quick-start-test
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    run_if_changed: '(^docs/user-guide/src/quick-start\.md$|^hack/quick-start/)'
+    optional: true
