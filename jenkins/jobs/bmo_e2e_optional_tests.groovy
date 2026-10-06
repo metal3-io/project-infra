@@ -83,6 +83,11 @@ pipeline {
                         }
                     }
                 }
+                post {
+                    always {
+                        retire_agent()
+                    }
+                }
             }
         }
     }
