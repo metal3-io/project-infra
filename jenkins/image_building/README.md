@@ -35,7 +35,7 @@ We use the following command to build an image:
 
 ```bash
 disk-image-create --no-tmpfs -a amd64 ubuntu-ci ubuntu -o "${CI_IMG_NAME}"
-block-device-efi
+block-device-encryption
 ```
 
 * **--no-tmpfs**: This flag specifies that the temporary file system (tmpfs)
@@ -54,9 +54,11 @@ specified, likely including the base configuration for an Ubuntu-based image.
 * **-o** **"${CI_IMG_NAME}"**: This option specifies the output file or
 image name. The value is provided through the variable ${CI_IMG_NAME}.
 
-* **block-device-efi**: This is an additional element specified for image
-creation. It likely includes configurations or tasks related to block devices
-and EFI (Extensible Firmware Interface), commonly used in modern systems for booting.
+* **block-device-encryption**: This is an additional element specified for image
+creation. It includes block device layout compatible with EFI firmware and with
+separate boot/ESP/root partitions. The root partition has
+`4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709` as partition GUID, which enables IPA to
+automatically detect it as suitable to be encrypted root partition.
 
 More information on building and image via Diskimage Builder can be found [here](https://docs.openstack.org/diskimage-builder/latest/user_guide/building_an_image.html).
 
