@@ -144,6 +144,26 @@ presubmits:
         - sh
         image: docker.io/golang:1.26
         imagePullPolicy: Always
+  - name: pr-link-check
+    branches:
+    - release-1.14
+    run_if_changed: '\.md$'
+    decorate: true
+    optional: true
+    extra_refs:
+    - org: metal3-io
+      repo: project-infra
+      base_ref: main
+    spec:
+      containers:
+      - args:
+        - /home/prow/go/src/github.com/metal3-io/project-infra/hack/pr-link-check.sh
+        command:
+        - sh
+        image: docker.io/lycheeverse/lychee:0.24.2-alpine@sha256:2255c0b916cc8fc4193f59a4549358a6bae0f7d4ea16b5e1dd4c3b2733c35504
+        imagePullPolicy: Always
+        securityContext:
+          runAsUser: 0
   - name: golangci-lint
     branches:
     - release-1.14
