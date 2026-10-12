@@ -215,11 +215,11 @@ jobs:
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
       uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
       with:
-        go-version: '1.25'
+        go-version: '1.26'
 
     - name: Install bom tool
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
-      run: go install sigs.k8s.io/bom/cmd/bom@1ab6284ac5e118267414f2ac3874bb08a701e9ad # v0.7.1
+      run: go install sigs.k8s.io/bom/cmd/bom@576491b717affa0137b9c02a667755b174a7c4a9 # v0.8.0
 
     - name: Generate Image SBOM
       if: ${{ inputs.generate-sbom && inputs.pushImage }}
