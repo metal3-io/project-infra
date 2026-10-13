@@ -1,0 +1,87 @@
+def TIMEOUT = 10800, CURRENT_START_TIME, CURRENT_END_TIME, GRAFANA_VIEW
+def LOG_URL = 'https://log.apps.test.metal3.io/view/?orgId=1&timezone=browser&kiosk'
+// Set defaults for non-PR jobs
+def pullSha = (env.PULL_PULL_SHA) ?: 'main'
+def pullBase = (env.PULL_BASE_REF) ?: 'main'
+def repoUrl = 'https://github.com/metal3-io/metal3-docs.git'
+// Fetch the base branch and the pullSha, nothing else
+def refspec = '+refs/heads/' + pullBase + ':refs/remotes/origin/' + pullBase + ' ' + pullSha
+// Dynamic build info generation
+// In matrix jobs "axis" have their individual start and finish times.
+// Global "build" start time has to be determined before the matrix is
+// constructed
+def START_TIME = currentBuild.getStartTimeInMillis()
+GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=now&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
+
+pipeline {
+    environment {
+        LOKI_URL = 'https://log.apps.staging.metal3.io/store/api/v1/push'
+    }
+    agent none
+    stages {
+        stage('Run quick start guide test') {
+            agent { label 'metal3ci-8c32gb-ubuntu-oci' }
+            stages {
+                stage('Checkout source code') {
+                    steps {
+                        deleteDir()
+                        checkout scmGit(
+                  branches: [[name: pullSha]],
+                  userRemoteConfigs: [[url: repoUrl, refspec: refspec, credentialsId: 'metal3-clusterctl-github-token']],
+                  extensions: [
+                  [$class: 'PreBuildMerge', options: [mergeTarget: pullBase, mergeRemote: 'origin']],
+                  [$class: 'UserIdentity', name: 'Test', email: 'test@test.test'],
+                  cloneOption(honorRefspec: true)])
+                        script {
+                            CURRENT_START_TIME = System.currentTimeMillis()
+                        }
+                    }
+                }
+                stage('Run quick start guide test') {
+                    options {
+                        timeout(time: TIMEOUT, unit: 'SECONDS')
+                        ansiColor('xterm')
+                    }
+                    steps {
+                        withCredentials(
+                            [string(credentialsId: 'metal3-clusterctl-github-token', variable: 'GITHUB_TOKEN'),
+                            usernamePassword(credentialsId: 'metal3-ci-log-collector-push',
+                            usernameVariable: 'LOKI_USERNAME', passwordVariable: 'LOKI_PASSWORD'),
+                        ]) {
+                            timestamps {
+                                sh './hack/quick-start/quick-start-test.sh'
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            script {
+                                CURRENT_END_TIME = System.currentTimeMillis()
+                                if ((((CURRENT_END_TIME - CURRENT_START_TIME) / 1000) - TIMEOUT) > 0) {
+                                    echo 'Failed due to timeout'
+                                    currentBuild.result = 'FAILURE'
+                                }
+                            }
+                            archiveArtifacts artifacts: 'hack/quick-start/_artifacts/**', allowEmptyArchive: true
+                            timestamps {
+                                /* Clean up */
+                                sh './hack/quick-start/cleanup.sh'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                CURRENT_END_TIME = System.currentTimeMillis()
+                // Dynamic build info generation
+                GRAFANA_VIEW = """${LOG_URL}&from=${START_TIME}&to=${CURRENT_END_TIME}&var-pipeline=${env.JOB_NAME}&var-build=${BUILD_NUMBER}"""
+                currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a>"""
+            }
+        }
+    }
+}
