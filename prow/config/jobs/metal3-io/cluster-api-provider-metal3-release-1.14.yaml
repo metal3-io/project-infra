@@ -199,7 +199,6 @@ presubmits:
     - release-1.14
     run_if_changed: '\.md$'
     decorate: true
-    optional: true
     extra_refs:
     - org: metal3-io
       repo: project-infra
