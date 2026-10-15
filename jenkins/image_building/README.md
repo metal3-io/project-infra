@@ -27,7 +27,7 @@ ci-base, ubuntu-ci, and centos-ci elements. The ci-base element is for
 installing common packages and configurations for both Ubuntu and CentOS. The
 ubuntu-ci and centos-ci elements are for installing packages and configuring
 the respective operating system images. More information on developing custom
-elements can be found [here](https://docs.openstack.org/diskimage-builder/latest/developer/developing_elements.html).
+elements can be found in the [Diskimage Builder element development guide](https://docs.openstack.org/diskimage-builder/latest/developer/developing_elements.html).
 
 ## Building an Image with Diskimage Builder
 
@@ -58,7 +58,8 @@ image name. The value is provided through the variable ${CI_IMG_NAME}.
 creation. It likely includes configurations or tasks related to block devices
 and EFI (Extensible Firmware Interface), commonly used in modern systems for booting.
 
-More information on building and image via Diskimage Builder can be found [here](https://docs.openstack.org/diskimage-builder/latest/user_guide/building_an_image.html).
+More information on building an image via Diskimage Builder can be found in
+the [Diskimage Builder user guide](https://docs.openstack.org/diskimage-builder/latest/user_guide/building_an_image.html).
 
 ## Debugging
 
