@@ -24,10 +24,15 @@ pipeline {
         stage('Run Baremetal Operator optional e2e tests') {
             matrix {
                 agent { label 'metal3ci-8c32gb-ubuntu-oci' }
+                when {
+                    beforeAgent true
+                    // release branches' ci-e2e.sh rejects fixture; drop the pullBase check once backported
+                    expression { env.BMC_PROTOCOL != 'fixture' || pullBase == 'main' }
+                }
                 axes {
                     axis {
                         name 'BMC_PROTOCOL'
-                        values 'ipmi', 'redfish-virtualmedia'
+                        values 'ipmi', 'redfish-virtualmedia', 'fixture'
                     }
                 }
                 environment {
