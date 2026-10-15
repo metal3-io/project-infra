@@ -51,6 +51,7 @@
     "renovate",
     "tmpfs",
     "traefik",
+    "vbmctl",
     "xerces"
   ]
 }
