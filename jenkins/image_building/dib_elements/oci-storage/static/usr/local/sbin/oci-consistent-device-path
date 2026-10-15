@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#
+# oci-consistent-device-path
+#
+# Creates the OCI "consistent device path" symlinks under /dev/oracleoci/ for a
+# block device. These symlinks (/dev/oracleoci/oraclevda, oraclevdb, ...) are
+# what the OCI Block Volume CSI driver waits for before mounting a
+# PersistentVolume. On Oracle-provided images they are created automatically;
+# on custom images (such as this diskimage-builder node image) we recreate them
+# here.
+#
+# Invoked by udev (see 70-oci-consistent-device-paths.rules) with the kernel
+# device name as $1, e.g. "sda", "sdb", "sda1".
+#
+# It only computes the symlink name and prints it as an environment assignment:
+#
+#     OCI_SYMLINK=oracleoci/oraclevdb1
+#
+# udev imports that value (IMPORT{program}) and owns the symlink itself via
+# SYMLINK+=. Letting udev manage the link means it is removed automatically on
+# device removal, so a detached volume never leaves a stale /dev/oracleoci/*
+# path that could later point at the wrong volume.
+
+set -eu
+
+DEVNAME="${1:-}"
+if [[ -z "${DEVNAME}" ]]; then
+  exit 0
+fi
+
+# Split a kernel name like "sdb3" into disk ("sdb") and partition suffix ("3").
+partition=""
+disk="${DEVNAME}"
+if [[ "${DEVNAME}" =~ ^([a-z]+)([0-9]+)$ ]]; then
+  disk="${BASH_REMATCH[1]}"
+  partition="${BASH_REMATCH[2]}"
+fi
+
+# The OCI attachment order is reflected by the PCI/SCSI address, which udev
+# exposes as the /dev/disk/by-path/ symlinks. Sorting those paths gives us a
+# stable ordering: the boot volume (lowest address) is slot 0 -> "a", the first
+# attached data volume is slot 1 -> "b", and so on.
+by_path_dir="/dev/disk/by-path"
+[[ -d "${by_path_dir}" ]] || exit 0
+
+# Build the ordered list of whole disks (skip partition entries, which end in
+# "-partN"). Resolve each by-path symlink to its target kernel disk name.
+declare -a ordered_disks=()
+while IFS= read -r link; do
+  link="$(basename "${link}")"
+  case "${link}" in
+    *-part*) continue ;;
+  esac
+  target="$(readlink -f "${by_path_dir}/${link}" 2>/dev/null || true)"
+  [[ -n "${target}" ]] || continue
+  ordered_disks+=("$(basename "${target}")")
+done < <(find "${by_path_dir}" -mindepth 1 -maxdepth 1 2>/dev/null | sort)
+
+# Find the slot of our disk in the ordered list.
+slot=-1
+for i in "${!ordered_disks[@]}"; do
+  if [[ "${ordered_disks[${i}]}" == "${disk}" ]]; then
+    slot="${i}"
+    break
+  fi
+done
+
+# Disk not in by-path (e.g. loopback, not an OCI volume): nothing to do.
+[[ "${slot}" -ge 0 ]] || exit 0
+
+# Slot index -> letter suffix (0 -> a, 1 -> b, ...). OCI does not go past 'z'
+# for a single instance, so a single letter is sufficient.
+octal="$(printf '%03o' $((97 + slot)))"
+letter="$(printf '%b' "\\${octal}")"
+
+# Print the symlink name relative to /dev for udev to consume. udev creates and
+# tears down the actual /dev/oracleoci/oraclevd* link.
+echo "OCI_SYMLINK=oracleoci/oraclevd${letter}${partition}"
+
+exit 0
