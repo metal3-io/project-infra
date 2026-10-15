@@ -30,6 +30,39 @@
       "matchFileNames": ["prow/config/jobs/**/*.yaml"],
       "groupName": "prow container images",
       "schedule": ["monthly"]
+    },
+    {
+      "matchDatasources": [
+        "custom.centos-9-stream-genericcloud",
+        "custom.centos-10-stream-genericcloud"
+      ],
+      "description": "Group both CentOS Stream GenericCloud image bumps into a single PR",
+      "groupName": "CentOS Stream GenericCloud images"
+    },
+    {
+      "matchDatasources": ["custom.centos-9-stream-genericcloud"],
+      "description": "Only track dated GenericCloud 9 qcow2 images, not latest/checksums/other variants",
+      "extractVersion": "^CentOS-Stream-GenericCloud-9-(?<version>[0-9]{8}\\.[0-9]+)\\.x86_64\\.qcow2$"
+    },
+    {
+      "matchDatasources": ["custom.centos-10-stream-genericcloud"],
+      "description": "Only track dated GenericCloud 10 qcow2 images, not latest/checksums/other variants",
+      "extractVersion": "^CentOS-Stream-GenericCloud-10-(?<version>[0-9]{8}\\.[0-9]+)\\.x86_64\\.qcow2$"
+    },
+    {
+      "matchDatasources": ["custom.ubuntu-noble-cloud-images"],
+      "description": "Only track dated Ubuntu Noble release directories, not the floating release/ alias",
+      "extractVersion": "^release-(?<version>[0-9]{8}(?:\\.[0-9]+)?)/$",
+      "groupName": "Ubuntu Noble cloud base image"
+    },
+    {
+      "matchDatasources": [
+        "custom.centos-9-stream-genericcloud",
+        "custom.centos-10-stream-genericcloud",
+        "custom.ubuntu-noble-cloud-images"
+      ],
+      "description": "Base images only: open update PRs once a month",
+      "schedule": ["* 0-3 15 * *"]
     }
   ],
   "customManagers": [
@@ -91,6 +124,55 @@
       "datasourceTemplate": "github-releases",
       "packageNameTemplate": "kubernetes-sigs/cluster-api-provider-openstack",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the dated CentOS Stream 9 GenericCloud image used for IPA builds",
+      "managerFilePatterns": [
+        "jenkins/scripts/dynamic_worker_workflow/build_ipa.sh"
+      ],
+      "matchStrings": [
+        "centos_upstream_img=\"CentOS-Stream-GenericCloud-9-(?<currentValue>[0-9]{8}\\.[0-9]+)\\.x86_64\\.qcow2\""
+      ],
+      "depNameTemplate": "CentOS-Stream-GenericCloud-9",
+      "datasourceTemplate": "custom.centos-9-stream-genericcloud",
+      "versioningTemplate": "regex:^(?<major>\\d{4})(?<minor>\\d{2})(?<patch>\\d{2})\\.(?<build>\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the dated CentOS Stream 10 GenericCloud image used for CI image builds",
+      "managerFilePatterns": ["jenkins/image_building/build-image.sh"],
+      "matchStrings": [
+        "centos_upstream_img=\"CentOS-Stream-GenericCloud-10-(?<currentValue>[0-9]{8}\\.[0-9]+)\\.x86_64\\.qcow2\""
+      ],
+      "depNameTemplate": "CentOS-Stream-GenericCloud-10",
+      "datasourceTemplate": "custom.centos-10-stream-genericcloud",
+      "versioningTemplate": "regex:^(?<major>\\d{4})(?<minor>\\d{2})(?<patch>\\d{2})\\.(?<build>\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the dated Ubuntu Noble cloud image release used for CI image builds",
+      "managerFilePatterns": ["jenkins/image_building/build-image.sh"],
+      "matchStrings": [
+        "build_number=(?<currentValue>[0-9]{8}(?:\\.[0-9]+)?)"
+      ],
+      "depNameTemplate": "ubuntu-noble-cloud-image",
+      "datasourceTemplate": "custom.ubuntu-noble-cloud-images",
+      "versioningTemplate": "regex:^(?<major>\\d{4})(?<minor>\\d{2})(?<patch>\\d{2})(?:\\.(?<build>\\d+))?$"
     }
-  ]
+  ],
+  "customDatasources": {
+    "centos-9-stream-genericcloud": {
+      "defaultRegistryUrlTemplate": "https://cloud.centos.org/centos/9-stream/x86_64/images/",
+      "format": "html"
+    },
+    "centos-10-stream-genericcloud": {
+      "defaultRegistryUrlTemplate": "https://cloud.centos.org/centos/10-stream/x86_64/images/",
+      "format": "html"
+    },
+    "ubuntu-noble-cloud-images": {
+      "defaultRegistryUrlTemplate": "https://cloud-images.ubuntu.com/releases/noble/",
+      "format": "html"
+    }
+  }
 }
