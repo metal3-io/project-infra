@@ -17,7 +17,7 @@ currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a
 pipeline {
     environment {
         GINKGO_FOCUS = "${GINKGO_FOCUS}"
-        LOKI_URL = 'https://log.apps.staging.metal3.io/store/api/v1/push'
+        LOKI_URL = 'https://log.apps.test.metal3.io/store/api/v1/push'
     }
     agent none
     stages {
