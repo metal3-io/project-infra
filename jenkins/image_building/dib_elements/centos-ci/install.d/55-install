@@ -15,6 +15,28 @@ sudo dnf install -y 'dnf-command(config-manager)'
 sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 sudo dnf install -y gh --repo gh-cli
 
+# Install Docker alongside podman (for capm3 e2e).
+# Remove fake docker provided by podman and prevent it form appearing again.
+sudo dnf remove -y podman-docker || true
+grep -q '^exclude=.*podman-docker' /etc/dnf/dnf.conf || echo "exclude=podman-docker" | sudo tee -a /etc/dnf/dnf.conf
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf install -y docker-ce docker-ce-cli containerd.io \
+docker-buildx-plugin docker-compose-plugin
+rpm -q podman docker-ce        # fail the build if either is missing
+sudo groupadd docker || true
+sudo usermod -aG docker metal3ci || true
+sudo systemctl enable docker
+
+# Configure Docker daemon with BuildKit support.
+sudo tee /etc/docker/daemon.json <<EOF
+{
+  "features": {
+    "buildkit": true
+  },
+  "ip-forward-no-drop": true
+}
+
+
 # Without this minikube cannot start properly kvm and fails.
 # As a simple workaround, this will create an empty file which can
 # disable the new firmware, more details here [1], look for firmware description.
