@@ -55,6 +55,8 @@ tide:
   squash_label: tide/merge-method-squash
   rebase_label: tide/merge-method-rebase
   merge_label: tide/merge-method-merge
+  github_merge_blocks_policy:
+    '*': block
   queries:
   - repos:
     - metal3-io/.github
