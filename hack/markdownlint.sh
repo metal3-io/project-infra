@@ -15,6 +15,6 @@ else
         --volume "${PWD}:/workdir:ro,z" \
         --entrypoint sh \
         --workdir /workdir \
-        docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0 \
+        docker.io/pipelinecomponents/markdownlint-cli2:0.14.41@sha256:60785c4a4ec97442f8986f1ce3cbea347f0097a05fc5f48c128714a120078716 \
         /workdir/hack/markdownlint.sh "$@"
 fi
