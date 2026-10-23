@@ -47,3 +47,17 @@ visudo -c
 
 # Hold JDK packages to prevent unintended upgrades
 sudo zypper addlock java-21-openjdk*
+
+# Mitigate eMudhra CA issues
+denylist="/etc/pki/trust/blocklist"
+if [[ ! -d "${denylist}" ]]; then
+    denylist="/etc/pki/trust/blacklist"
+fi
+
+trust extract --format=pem-bundle \
+  --filter='pkcs11:object=Comodo%20AAA%20Services%20root;type=cert' \
+  "${denylist}/Comodo_AAA_Services_root.pem"
+trust extract --format=pem-bundle \
+  --filter='pkcs11:object=emSign%20ECC%20Root%20CA%20-%20G3;type=cert' \
+  "${denylist}/emSign_ECC_Root_CA_-_G3.pem"
+update-ca-certificates
