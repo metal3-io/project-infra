@@ -108,3 +108,13 @@ periodics:
     - name: artifactory-token
       secret:
         secretName: artifactory-token
+- name: metal3-periodic-e2e-clusterctl-upgrade-test-main-capi-nightly-build
+  # At 02:00 AM every day
+  cron: 0 2 * * *
+  agent: jenkins
+  labels:
+    jenkins_operator: oci
+  extra_refs:
+  - org: metal3-io
+    repo: cluster-api-provider-metal3
+    base_ref: main
