@@ -1,0 +1,12 @@
+# The `traefik` namespace. The upstream/CAPO setup does not codify this (the
+# traefik resources.yaml just references `namespace: traefik` and it was created
+# out-of-band, e.g. helm --create-namespace), so we make it declarative here.
+#
+# The `prow` namespace is intentionally NOT created here: it is owned by the
+# Prow application layer (manifests/base/namespace.yaml), exactly as on the
+# OpenStack instance. Apply the Prow app (or at least that namespace) before the
+# `prow`-scoped infra objects (certificate.yaml, referencegrant.yaml).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik

@@ -1,0 +1,15 @@
+- op: add
+  path: /spec/template/spec/tolerations
+  value: []
+- op: add
+  path: /spec/template/spec/tolerations/-
+  value:
+    key: node-role.kubernetes.io/infra
+    operator: Exists
+    effect: NoSchedule
+- op: add
+  path: /spec/template/spec/nodeSelector
+  value: {}
+- op: add
+  path: /spec/template/spec/nodeSelector/node-role.kubernetes.io~1infra
+  value: ""

@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# OCI equivalent of ../../capo-cluster. Defines the workload cluster that Prow
+# runs on, using CAPOCI instead of CAPO. CAPOCI authenticates via the
+# provider-level credentials wired in ../capi (configSecret), so there is no
+# per-cluster cloud-config ExternalSecret here.
+resources:
+- cluster.yaml
+- kubeadmconfigtemplate.yaml
+- kubeadmcontrolplane.yaml
+- machinedeployment.yaml
+- ocicluster.yaml
+- ocimachinetemplates.yaml
+- infra-kct.yaml
+- infra-md.yaml
