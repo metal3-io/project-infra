@@ -1,5 +1,5 @@
 image:
-  tag: v3.7.9
+  tag: v3.7.16
 
 providers:
   kubernetesIngress:
