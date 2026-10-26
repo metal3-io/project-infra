@@ -7,5 +7,5 @@ build:
 		--volume "${PWD}:/workdir:rw,z" \
 		--workdir /workdir \
 		--entrypoint /workdir/build.sh \
-		docker.io/golang:1.23 \
+		docker.io/golang:1.26 \
 		metal3-kube-prometheus.jsonnet
