@@ -140,7 +140,6 @@ presubmits:
     - release-0.13
     skip_if_only_changed: '(((^|/)OWNERS)|((^|/)OWNERS_ALIASES)|(\.md))$'
     decorate: true
-    optional: true
     spec:
       containers:
       - args:
@@ -196,4 +195,3 @@ presubmits:
       jenkins_operator: oci
     always_run: false
     optional: true
-
