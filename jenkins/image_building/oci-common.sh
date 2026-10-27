@@ -19,12 +19,12 @@ export OCI_CLI_FINGERPRINT="${OCI_CLI_FINGERPRINT:?}"
 set -x
 
 install_oci_client() {
-  rm -rf venv
-  python3 -m venv venv
+  # if oci_venv exists, it will just refresh the pyvenv.cfg
+  python3 -m venv oci_venv
 
   # shellcheck source=/dev/null
-  . venv/bin/activate
-  # Install OCI CLI
+  . oci_venv/bin/activate
+  # Install OCI CLI if it is missing
   pip install oci-cli==3.76.0
 }
 
@@ -34,6 +34,7 @@ upload_object_to_bucket() {
   local bucket_name="${2:?}"
   local object_name="${3:?}"
   oci os object put \
+      --force \
       --namespace-name "${namespace_ocid}" \
       --bucket-name "${bucket_name}" \
       --name "${object_name}" \

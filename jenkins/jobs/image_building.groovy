@@ -86,12 +86,14 @@ pipeline {
                   file(credentialsId: 'metal3-oracle-cloud-api-private-key', variable: 'OCI_KEY_FILE'),
                   file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'OCI_CLI_ENV_FILE')
                             ]) {
-                                sh '''
-                                set -a +x
-                                . "$OCI_CLI_ENV_FILE"
-                                set +a -x
-                                ./jenkins/image_building/upload-ci-image-oci.sh upload-candidate "$(cat image_name.txt)"
-                                '''
+                                script {
+                                    sh '''
+                                    set -a +x
+                                    . "$OCI_CLI_ENV_FILE"
+                                    set +a -x
+                                    ./jenkins/image_building/upload-ci-image-oci.sh upload-candidate "$(cat image_name.txt)"
+                                    '''
+                                }
                             }
                         }
                     }
@@ -141,7 +143,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Upload the new Image') {
+                    stage('Upload the new node image') {
                         options {
                             timeout(time: 30, unit: 'MINUTES')
                         }
@@ -152,15 +154,41 @@ pipeline {
                         }
                         steps {
                             withCredentials([
-                              usernamePassword(credentialsId: 'infra-nordix-artifactory-api-key', usernameVariable: 'RT_USER', passwordVariable: 'RT_TOKEN')
+                              file(credentialsId: 'metal3-oracle-cloud-api-private-key-node-image-uploader', variable: 'OCI_KEY_FILE'),
+                              file(credentialsId: 'metal3-oracle-paris-env-vars-node-image-uploader', variable: 'OCI_CLI_ENV_FILE'),
                               ]) {
                                 script {
-                                    def imageName = readFile('image_name.txt').trim()
-                                    echo "Uploading ${imageName}"
-
-                                    sh """
-                                    ./jenkins/image_building/upload-node-image.sh ${imageName}
-                                    """
+                                    sh '''
+                                    set -a +x
+                                    . "$OCI_CLI_ENV_FILE"
+                                    set +a -x
+                                    ./jenkins/image_building/upload-node-image-oci.sh upload-image "$(cat image_name.txt)"
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                    stage('Generate node image PARs') {
+                        options {
+                            timeout(time: 30, unit: 'MINUTES')
+                        }
+                        when {
+                            // Don't upload from PR tests
+                            expression { ci_git_branch == 'main' }
+                            expression { env.IMAGE_TYPE == 'node' }
+                        }
+                        steps {
+                            withCredentials([
+                              file(credentialsId: 'metal3-oracle-cloud-api-private-key-node-image-par-generator', variable: 'OCI_KEY_FILE'),
+                              file(credentialsId: 'metal3-oracle-paris-env-vars-node-image-par-generator', variable: 'OCI_CLI_ENV_FILE'),
+                              ]) {
+                                script {
+                                    sh '''
+                                    set -a +x
+                                    . "$OCI_CLI_ENV_FILE"
+                                    set +a -x
+                                    ./jenkins/image_building/upload-node-image-oci.sh generate-node-image-pars-if-missing "$(cat image_name.txt)"
+                                    '''
                                 }
                             }
                         }
@@ -181,12 +209,14 @@ pipeline {
                               file(credentialsId: 'metal3-oracle-paris-env-vars', variable: 'OCI_CLI_ENV_FILE'),
                               ]) {
                                 echo 'Promoting OCI candidate image to latest'
-                                sh '''
-                                set -a +x
-                                . "$OCI_CLI_ENV_FILE"
-                                set +a -x
-                                ./jenkins/image_building/upload-ci-image-oci.sh promote-candidate
-                                '''
+                                script {
+                                    sh '''
+                                    set -a +x
+                                    . "$OCI_CLI_ENV_FILE"
+                                    set +a -x
+                                    ./jenkins/image_building/upload-ci-image-oci.sh promote-candidate
+                                    '''
+                                }
                             }
                         }
                     }

@@ -65,6 +65,8 @@ generate_par_for_bucket_object_if_missing() {
     generate_par_for_bucket_object "${object_name}" "${par_name}"
 }
 
+install_oci_client
+
 # Image uploading and PAR management is done by separate users usually,
 # thus the two different processes are not combined.
 case "${action}" in
@@ -95,6 +97,12 @@ case "${action}" in
     generate_par_for_bucket_object_if_missing "${QCOW_IMG_NAME}" "${img_name}_qcow2_PAR"
     ;;
   generate-image-sha-par-if-missing)
+    echo "==> [generate-image-sha-par-if-missing] for node image ${img_name} (os=${IMAGE_OS})"
+    generate_par_for_bucket_object_if_missing "${SHA_IMG_NAME}" "${img_name}_qcow2_sha_PAR"
+    ;;
+  generate-node-image-pars-if-missing)
+    echo "==> [generate-image-par-if-missing] for node image ${img_name} (os=${IMAGE_OS})"
+    generate_par_for_bucket_object_if_missing "${QCOW_IMG_NAME}" "${img_name}_qcow2_PAR"
     echo "==> [generate-image-sha-par-if-missing] for node image ${img_name} (os=${IMAGE_OS})"
     generate_par_for_bucket_object_if_missing "${SHA_IMG_NAME}" "${img_name}_qcow2_sha_PAR"
     ;;
