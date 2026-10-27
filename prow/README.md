@@ -393,7 +393,7 @@ Metal3 CI ssh key.
 
    ```bash
     # Install Calico CNI
-   kubectl apply -k bootstrap/calico
+   kubectl apply --server-side --force-conflicts -k bootstrap/calico
    # Install External Secrets Operator and setup ClusterSecretStores
    kustomize build --enable-helm bootstrap/external-secrets-operator |
      kubectl apply --server-side -f -
@@ -433,7 +433,7 @@ Metal3 CI ssh key.
    # NOTE! You WILL need to apply the following command multiple times before it is successful.
    # This is because CRDs and webhooks must be in place before other
    # resources can be added.
-   kubectl apply -k infra
+   kubectl apply --server-side --force-conflicts -k infra
    ```
 
 1. Set up S3 object storage buckets
