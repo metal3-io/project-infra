@@ -1,0 +1,13 @@
+# OCI consistent device paths.
+#
+# Creates /dev/oracleoci/oraclevd* symlinks for OCI block volumes so the OCI
+# Block Volume CSI driver can find attached PersistentVolumes. On Oracle images
+# this is provided by oci-utils; on this custom node image it is provided by the
+# oci-storage diskimage-builder element.
+#
+# Fire for whole disks and partitions of virtio/SCSI block devices. The helper
+# computes the OCI slot name and prints OCI_SYMLINK=oracleoci/oraclevd*; udev
+# owns the symlink via SYMLINK+=, so it is created on add and removed on the
+# device's remove event. No stale links survive a detach.
+ACTION=="add|change", SUBSYSTEM=="block", KERNEL=="sd*|vd*", IMPORT{program}="/usr/local/sbin/oci-consistent-device-path %k"
+ACTION=="add|change", SUBSYSTEM=="block", KERNEL=="sd*|vd*", ENV{OCI_SYMLINK}=="oracleoci/*", SYMLINK+="$env{OCI_SYMLINK}"
