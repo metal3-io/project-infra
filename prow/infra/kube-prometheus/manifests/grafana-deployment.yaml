@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 11.2.0
+    app.kubernetes.io/version: 13.2.2
   name: grafana
   namespace: monitoring
 spec:
@@ -18,19 +18,19 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/grafana-config: 09db38aed7e979c3caca214af7a13665
-        checksum/grafana-dashboardproviders: b66e063b0e9d7b9e152e066f0ab965ee
-        checksum/grafana-datasources: 495c78a90b81354c8feeece92f6f5466
+        checksum/grafana-config: 10f3a114de11023d541b2e544e8ef06d
+        checksum/grafana-dashboardproviders: dc34404855692e073ced02dbf5e11dbe
+        checksum/grafana-datasources: b3b99b0b24338f349eb684a19fd169b5
       labels:
         app.kubernetes.io/component: grafana
         app.kubernetes.io/name: grafana
         app.kubernetes.io/part-of: kube-prometheus
-        app.kubernetes.io/version: 11.2.0
+        app.kubernetes.io/version: 13.2.2
     spec:
       automountServiceAccountToken: false
       containers:
       - env: []
-        image: grafana/grafana:11.2.0
+        image: grafana/grafana:13.2.2
         name: grafana
         ports:
         - containerPort: 3000
@@ -42,10 +42,10 @@ spec:
         resources:
           limits:
             cpu: 200m
-            memory: 200Mi
+            memory: 512Mi
           requests:
             cpu: 100m
-            memory: 100Mi
+            memory: 200Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -97,14 +97,32 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-node
           name: grafana-dashboard-k8s-resources-node
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-nodes-overview
+          name: grafana-dashboard-k8s-resources-nodes-overview
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-pod
           name: grafana-dashboard-k8s-resources-pod
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-cluster
+          name: grafana-dashboard-k8s-resources-windows-cluster
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-namespace
+          name: grafana-dashboard-k8s-resources-windows-namespace
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-resources-windows-pod
+          name: grafana-dashboard-k8s-resources-windows-pod
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workload
           name: grafana-dashboard-k8s-resources-workload
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workloads-namespace
           name: grafana-dashboard-k8s-resources-workloads-namespace
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-windows-cluster-rsrc-use
+          name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/k8s-windows-node-rsrc-use
+          name: grafana-dashboard-k8s-windows-node-rsrc-use
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/kubelet
           name: grafana-dashboard-kubelet
@@ -120,6 +138,9 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/node-rsrc-use
           name: grafana-dashboard-node-rsrc-use
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/nodes-aix
+          name: grafana-dashboard-nodes-aix
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/nodes-darwin
           name: grafana-dashboard-nodes-darwin
@@ -192,9 +213,6 @@ spec:
           name: grafana-dashboard-grafana-overview
         name: grafana-dashboard-grafana-overview
       - configMap:
-          name: grafana-dashboard-jobs
-        name: grafana-dashboard-jobs
-      - configMap:
           name: grafana-dashboard-k8s-resources-cluster
         name: grafana-dashboard-k8s-resources-cluster
       - configMap:
@@ -207,14 +225,32 @@ spec:
           name: grafana-dashboard-k8s-resources-node
         name: grafana-dashboard-k8s-resources-node
       - configMap:
+          name: grafana-dashboard-k8s-resources-nodes-overview
+        name: grafana-dashboard-k8s-resources-nodes-overview
+      - configMap:
           name: grafana-dashboard-k8s-resources-pod
         name: grafana-dashboard-k8s-resources-pod
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-cluster
+        name: grafana-dashboard-k8s-resources-windows-cluster
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-namespace
+        name: grafana-dashboard-k8s-resources-windows-namespace
+      - configMap:
+          name: grafana-dashboard-k8s-resources-windows-pod
+        name: grafana-dashboard-k8s-resources-windows-pod
       - configMap:
           name: grafana-dashboard-k8s-resources-workload
         name: grafana-dashboard-k8s-resources-workload
       - configMap:
           name: grafana-dashboard-k8s-resources-workloads-namespace
         name: grafana-dashboard-k8s-resources-workloads-namespace
+      - configMap:
+          name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+        name: grafana-dashboard-k8s-windows-cluster-rsrc-use
+      - configMap:
+          name: grafana-dashboard-k8s-windows-node-rsrc-use
+        name: grafana-dashboard-k8s-windows-node-rsrc-use
       - configMap:
           name: grafana-dashboard-kubelet
         name: grafana-dashboard-kubelet
@@ -230,6 +266,9 @@ spec:
       - configMap:
           name: grafana-dashboard-node-rsrc-use
         name: grafana-dashboard-node-rsrc-use
+      - configMap:
+          name: grafana-dashboard-nodes-aix
+        name: grafana-dashboard-nodes-aix
       - configMap:
           name: grafana-dashboard-nodes-darwin
         name: grafana-dashboard-nodes-darwin

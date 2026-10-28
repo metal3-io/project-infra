@@ -1,0 +1,2 @@
+# Rendered by `make build` in prow/infra/kube-prometheus (includes manifests/setup).
+prow/infra/kube-prometheus/manifests/** linguist-generated=true
