@@ -1,6 +1,38 @@
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
+  name: prow-control-plane-v1-36-5
+spec:
+  template:
+    spec:
+      flavor: c4m12-est
+      identityRef:
+        cloudName: prow
+        name: prow-cloud-config
+      image:
+        filter:
+          name: ubuntu-2404-node-k8s-v1.36.5
+      sshKeyName: prow
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
+  name: prow-worker-v1-36-5
+spec:
+  template:
+    spec:
+      flavor: c8m24-est
+      identityRef:
+        cloudName: prow
+        name: prow-cloud-config
+      image:
+        filter:
+          name: ubuntu-2404-node-k8s-v1.36.5
+      sshKeyName: prow
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
   name: prow-control-plane-v1-35-4
 spec:
   template:
@@ -28,36 +60,4 @@ spec:
       image:
         filter:
           name: ubuntu-2404-node-k8s-v1.35.4
-      sshKeyName: prow
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-control-plane-v1-34-3
-spec:
-  template:
-    spec:
-      flavor: c4m12-est
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2404-kube-v1.34.3
-      sshKeyName: prow
----
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: OpenStackMachineTemplate
-metadata:
-  name: prow-worker-v1-34-3
-spec:
-  template:
-    spec:
-      flavor: c8m24-est
-      identityRef:
-        cloudName: prow
-        name: prow-cloud-config
-      image:
-        filter:
-          name: ubuntu-2404-kube-v1.34.3
       sshKeyName: prow
