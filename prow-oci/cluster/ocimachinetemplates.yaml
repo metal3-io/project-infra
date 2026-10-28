@@ -1,0 +1,43 @@
+# OCIMachineTemplate replaces OpenStackMachineTemplate
+# (../../capo-cluster/openstackmachinetemplates.yaml).
+#
+# Flavor -> shape mapping (flexible shapes match ocpus/memory exactly):
+#   control plane -> 4 ocpus / 12 GB
+#   worker        -> 8 ocpus / 24 GB
+#
+# Values filled for the eu-paris-1 deployment: imageId, compartmentId, ssh key.
+# NOTE: do NOT set isPvEncryptionInTransitEnabled - VM.Standard.E4.Flex here
+# does not support PV encryption in-transit and the LaunchInstance fails.
+# The image OCID must live in the same compartment as compartmentId below (or an
+# IAM policy must allow cross-compartment image use).
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: OCIMachineTemplate
+metadata:
+  name: prow-control-plane-v1-37-1
+spec:
+  template:
+    spec:
+      imageId: "ocid1.image.oc1.eu-paris-1.aaaaaaaal4b5a552iei467gcra43fjbwjrvkzhqdmlmkohae2iamyyjaiuja"
+      compartmentId: "ocid1.compartment.oc1..aaaaaaaarfgj34vubf272dhpvnklt63gr5xsxk5ajvjxurialhzduzcexevq"
+      shape: VM.Standard.E4.Flex
+      shapeConfig:
+        ocpus: "4"
+        memoryInGBs: "12"
+      metadata:
+        ssh_authorized_keys: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAHIcNWjiBf0FaEMl6668hurboOMIKpt2C8MUGWS74lD"
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: OCIMachineTemplate
+metadata:
+  name: prow-worker-v1-37-1
+spec:
+  template:
+    spec:
+      imageId: "ocid1.image.oc1.eu-paris-1.aaaaaaaal4b5a552iei467gcra43fjbwjrvkzhqdmlmkohae2iamyyjaiuja"
+      compartmentId: "ocid1.compartment.oc1..aaaaaaaarfgj34vubf272dhpvnklt63gr5xsxk5ajvjxurialhzduzcexevq"
+      shape: VM.Standard.E4.Flex
+      shapeConfig:
+        ocpus: "8"
+        memoryInGBs: "24"
+      metadata:
+        ssh_authorized_keys: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAHIcNWjiBf0FaEMl6668hurboOMIKpt2C8MUGWS74lD"

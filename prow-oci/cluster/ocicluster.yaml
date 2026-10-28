@@ -1,0 +1,74 @@
+# OCICluster replaces OpenStackCluster (../../capo-cluster/openstackcluster.yaml).
+#
+# BYO (bring-your-own) NETWORK - MAINTAINER-MANAGED.
+# spec.networkSpec.skipNetworkManagement: true tells CAPOCI to treat the VCN,
+# subnets, NSGs, gateways and route tables as READ-ONLY: it never creates,
+# updates, or deletes them, and it never touches NSG rules. The maintainer owns
+# the network lifecycle (VCN + subnets + NSG rules) directly in OCI.
+#
+# Consequences of this mode:
+#   - The VCN/subnets/NSGs below are referenced by OCID and are PERSISTENT: they
+#     survive `kubectl delete cluster` (CAPOCI only deletes the API-server NLB it
+#     creates). Reuse them across cluster rebuilds.
+#   - NSG rules are NOT declared here. They live on the live NSGs and are managed
+#     out-of-band. The required rules (6443 to the API endpoint, VXLAN UDP 4789,
+#     etcd, kubelet 10250, NodePort, service-lb 80/443) MUST be kept correct on
+#     those NSGs by the maintainer - CAPOCI will not reconcile them.
+#   - The API-server NLB is STILL created/deleted by CAPOCI. Its privacy is taken
+#     from the control-plane-endpoint subnet `type` below (public here), NOT from
+#     the actual subnet - keep `type` consistent with the real subnet.
+#
+# The referenced VCN/subnets/NSGs were originally created by CAPOCI (managed
+# mode) and are now adopted read-only.
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: OCICluster
+metadata:
+  name: prow
+  labels:
+    cluster.x-k8s.io/cluster-name: prow
+spec:
+  compartmentId: "ocid1.compartment.oc1..aaaaaaaarfgj34vubf272dhpvnklt63gr5xsxk5ajvjxurialhzduzcexevq"
+  networkSpec:
+    skipNetworkManagement: true
+    vcn:
+      name: prow
+      id: "ocid1.vcn.oc1.eu-paris-1.amaaaaaacuw4mniacsguaip5viqxeucdkfomgslsvvklcbpevngsybvvvpeq"
+      subnets:
+      # Exactly one control-plane-endpoint subnet - CAPOCI reads its id (for the
+      # API-server NLB) and its type (public/private -> NLB privacy).
+      # PRIVATE endpoint: CAPOCI reads this `type` (not the real subnet) to make
+      # the API-server NLB private (gets a 10.0.x.x IP, no public IP). Requires the
+      # management cluster to be IN the VCN (the prow-mgmt VM runs kind in-VCN);
+      # an external kind cannot reach a private endpoint to provision/pivot.
+      - name: control-plane-endpoint
+        role: control-plane-endpoint
+        id: "ocid1.subnet.oc1.eu-paris-1.aaaaaaaaluyorxsu6b2cnykco6vd4mrq65k7u5yipqfi7bpiot6tzxaugo7q"
+        type: private
+      - name: service-lb
+        role: service-lb
+        id: "ocid1.subnet.oc1.eu-paris-1.aaaaaaaag5env2g5m3snkhzwwmw4rr4baotldfmbislootpv5tx4lzvdy6va"
+        type: public
+      - name: control-plane
+        role: control-plane
+        id: "ocid1.subnet.oc1.eu-paris-1.aaaaaaaanernef6ab2xwjl3aguhozucqdqmtoch5ayrjivjlwsrgj4peekla"
+        type: private
+      - name: worker
+        role: worker
+        id: "ocid1.subnet.oc1.eu-paris-1.aaaaaaaa4fefcuaxncjc3i3mzkv6uopc4exrekaa4u324ik74d5mw2caaj5q"
+        type: private
+      networkSecurityGroup:
+        # NSGs adopted by OCID. Rules are NOT managed here (skipNetworkManagement).
+        # The control-plane-endpoint NSG is attached to the API-server NLB.
+        list:
+        - name: control-plane-endpoint
+          role: control-plane-endpoint
+          id: "ocid1.networksecuritygroup.oc1.eu-paris-1.aaaaaaaa6qqqzw2ksqssxyf2l42ytmeohxmsonjnns77zqqa3n4dffxww5cq"
+        - name: service-lb
+          role: service-lb
+          id: "ocid1.networksecuritygroup.oc1.eu-paris-1.aaaaaaaaowd3u6bpjxhgwjoewndomekzmfcllwdghl3boajola4vf3tnkana"
+        - name: control-plane
+          role: control-plane
+          id: "ocid1.networksecuritygroup.oc1.eu-paris-1.aaaaaaaareebdrxlayjujgpscfn6ybqgj2naf7gv3gec4kbxgezecy6wyvna"
+        - name: worker
+          role: worker
+          id: "ocid1.networksecuritygroup.oc1.eu-paris-1.aaaaaaaasjoppsp3jnlecmf4ztrnlr37xgzh3yuazrbo26jqts5is73mdvda"

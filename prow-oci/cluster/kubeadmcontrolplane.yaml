@@ -1,0 +1,55 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: KubeadmControlPlane
+metadata:
+  name: prow-control-plane
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      dns:
+        imageTag: v1.14.6
+      # NOTE: CAPOCI adds the API-server NLB VIP to the cert SANs on its own, so
+      # no certSANs entry is needed for the endpoint. The NLB VIP is dynamic (it
+      # differs per cluster recreation), so do NOT hardcode it. For a durable
+      # bastion target, reserve a static IP for the NLB and add THAT IP here.
+      controllerManager:
+        # v1beta2: extraArgs is a list of {name, value}, not a map.
+        extraArgs:
+        - name: cloud-provider
+          value: external
+    initConfiguration:
+      nodeRegistration:
+        # v1beta2: kubeletExtraArgs is a list of {name, value}, not a map.
+        kubeletExtraArgs:
+        - name: cloud-provider
+          value: external
+        # Set providerID at boot. {{ v1.instance_id }} is the OCI instance OCID
+        # (renders on this image; ds.meta_data.* does not). Without it the CCM
+        # cannot map the node and never clears the "uninitialized" taint.
+        - name: provider-id
+          value: 'oci://{{ v1.instance_id }}'
+        - name: kube-reserved
+          value: cpu=200m,memory=100Mi
+        - name: system-reserved
+          value: cpu=100m,memory=100Mi
+        # v1.local_hostname is cloud-init's datasource-agnostic hostname.
+        name: '{{ v1.local_hostname }}'
+    joinConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+        - name: cloud-provider
+          value: external
+        - name: provider-id
+          value: 'oci://{{ v1.instance_id }}'
+        - name: kube-reserved
+          value: cpu=200m,memory=100Mi
+        - name: system-reserved
+          value: cpu=100m,memory=100Mi
+        name: '{{ v1.local_hostname }}'
+  machineTemplate:
+    spec:
+      infrastructureRef:
+        apiGroup: infrastructure.cluster.x-k8s.io
+        kind: OCIMachineTemplate
+        name: prow-control-plane-v1-37-1
+  replicas: 1
+  version: v1.37.0

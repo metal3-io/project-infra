@@ -1,0 +1,32 @@
+apiVersion: cluster.x-k8s.io/v1beta2
+kind: MachineDeployment
+metadata:
+  name: infra-0
+spec:
+  clusterName: prow
+  replicas: 1
+  rollout:
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+  selector:
+    matchLabels: null
+  template:
+    metadata:
+      labels:
+        # Propagated to the Machine and Node
+        node-role.kubernetes.io/infra: ""
+    spec:
+      bootstrap:
+        configRef:
+          apiGroup: bootstrap.cluster.x-k8s.io
+          kind: KubeadmConfigTemplate
+          name: infra-0
+      clusterName: prow
+      failureDomain: "1"
+      infrastructureRef:
+        apiGroup: infrastructure.cluster.x-k8s.io
+        kind: OCIMachineTemplate
+        name: prow-worker-v1-37-1
+      version: v1.37.0
