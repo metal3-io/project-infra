@@ -16,7 +16,14 @@ currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a
 
 pipeline {
     environment {
-        GINKGO_FOCUS = "${GINKGO_FOCUS}"
+        // Selects the optional tier of the BMO e2e suite. See
+        // test/e2e/README.md in the baremetal-operator repository.
+        GINKGO_LABEL_FILTER = 'optional'
+        // Release branches ignore GINKGO_LABEL_FILTER and select the upgrade
+        // specs via GINKGO_FOCUS. On main an unset focus is required, or the
+        // script maps it onto the upgrade tier and overrides the filter above.
+        // TODO: drop once the release branches carry the tier split.
+        GINKGO_FOCUS = "${(env.PULL_BASE_REF ?: 'main') == 'main' ? '' : 'upgrade'}"
         LOKI_URL = 'https://log.apps.test.metal3.io/store/api/v1/push'
     }
     agent none
