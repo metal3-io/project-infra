@@ -16,7 +16,9 @@ currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a
 
 pipeline {
     environment {
-        GINKGO_FOCUS = "${GINKGO_FOCUS}"
+        // Selects the optional tier of the BMO e2e suite. See
+        // test/e2e/README.md in the baremetal-operator repository.
+        GINKGO_LABEL_FILTER = 'optional'
         LOKI_URL = 'https://log.apps.test.metal3.io/store/api/v1/push'
     }
     agent none
