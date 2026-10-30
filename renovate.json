@@ -105,6 +105,46 @@
     },
     {
       "customType": "regex",
+      "description": "Bump Calico version in bootstrap kustomization",
+      "managerFilePatterns": ["prow/bootstrap/calico/kustomization.yaml"],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/(?<depName>[^/]+/[^/]+)/(?<currentValue>v[^/]+)/manifests/calico\\.yaml"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the External Secrets Operator Helm chart version",
+      "managerFilePatterns": [
+        "prow/bootstrap/external-secrets-operator/kustomization.yaml"
+      ],
+      "matchStrings": ["version: (?<currentValue>[0-9.]+)"],
+      "datasourceTemplate": "helm",
+      "packageNameTemplate": "external-secrets",
+      "registryUrlTemplate": "https://charts.external-secrets.io"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Flux Operator version in flux kustomization",
+      "managerFilePatterns": ["prow/flux/kustomization.yaml"],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the Flux distribution version in FluxInstance",
+      "managerFilePatterns": ["prow/flux/flux.yaml"],
+      "matchStrings": ["version: \"(?<currentValue>[^\"]+)\""],
+      "datasourceTemplate": "github-releases",
+      "packageNameTemplate": "fluxcd/flux2",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
       "description": "Bump CAPI core/bootstrap/control-plane provider versions",
       "managerFilePatterns": [
         "prow/capi/core.yaml",
