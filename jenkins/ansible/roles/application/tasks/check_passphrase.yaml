@@ -1,0 +1,10 @@
+---
+- name: check cached passphrase
+  shell: "/bin/gpg-connect-agent 'keyinfo --list' /bye | awk '/^S/{print $7}'"
+  changed_when: false
+  check_mode: false
+  register: gpg_agent_keyinfo
+
+- name: mark cache status
+  set_fact:
+    unlocked: "{{ '1' in gpg_agent_keyinfo.stdout_lines }}"

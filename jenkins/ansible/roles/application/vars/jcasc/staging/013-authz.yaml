@@ -1,0 +1,46 @@
+---
+jenkins:
+  authorizationStrategy:
+    globalMatrix:
+      entries:
+      - user:
+          name: "{{ auto_user }}"
+          permissions:
+          - Overall/Administer
+      - user:
+          name: "{{ prow_user }}"
+          permissions:
+          - Overall/Read
+          - Job/Read
+          - Job/Build
+          - Job/Cancel
+          - View/Read
+      - user:
+          name: "{{ jjb_user }}"
+          permissions:
+          - Overall/Read
+          - Job/Configure
+          - Job/Create
+          - Job/Delete
+      - user:
+          name: tgerczei
+          permissions:
+          - Overall/Administer
+      - user:
+          name: rozzii
+          permissions:
+          - Overall/Administer
+      - user:
+          name: Sunnatillo
+          permissions:
+          - Overall/Administer
+      - group:
+          name: metal3-io
+          permissions:
+          - Overall/Read
+          - Job/ExtendedRead
+          - Job/Read
+          - Job/Build
+          - Job/Cancel
+          - Run/Update
+          - View/Read

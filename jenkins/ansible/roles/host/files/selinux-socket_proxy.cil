@@ -1,0 +1,8 @@
+(block socket-proxy
+    ; these will contain what most containers need for basic functionality
+    (blockinherit container)
+    (blockinherit net_container)
+    ; these allow using the container runtime socket
+    (allow process container_runtime_t (unix_stream_socket (connectto)))
+    (allow process var_run_t (sock_file (write)))
+)

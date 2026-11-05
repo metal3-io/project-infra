@@ -21,3 +21,6 @@ hack/__pycache__
 *.pp
 *.mod
 *.te
+
+# IaC environment setup scripts
+jenkins/.setup-*

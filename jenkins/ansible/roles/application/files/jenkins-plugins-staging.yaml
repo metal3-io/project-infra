@@ -1,0 +1,343 @@
+---
+ansicolor:
+  checksum: sha256:f9fb00322722a492b01458db0e18ffd2fc5bcb41ff9860abd78e3ff5a5be7de8
+  version: 542.v03d235fee02d
+antisamy-markup-formatter:
+  checksum: sha256:29b4765797f26c44574a2732ddf9d7d98ea0283295352497dd9eef84aed0102f
+  version: 173.v680e3a_b_69ff3
+apache-httpcomponents-client-4-api:
+  checksum: sha256:cea2f61cc72890b962fd4b767c31778c6cb30015b4a8758b4c26b62e51ca9533
+  version: 4.5.14-269.vfa_2321039a_83
+apache-httpcomponents-client-5-api:
+  checksum: sha256:913c22ceb5afcec65790f71f37e3ed44aac3b63d2fc5e64301c3f3fcb833c09f
+  version: 5.6.5-209.vd1010d57ee17
+asm-api:
+  checksum: sha256:ba315fe727be0311cd5115205a09a2abb550b73287cc4ee07af5f7ef6502f1f8
+  version: 9.11.1-226.vff833a_e4c58e
+bootstrap5-api:
+  checksum: sha256:4027b4cecbdb400c4cdf6beed351cb27a2e0ef4c39d27618e342fad76a4490df
+  version: 5.3.8-1048.va_c299057e35c
+bouncycastle-api:
+  checksum: sha256:57cc5cf1585f9a8f29c5a1e3985f07dace5d5359545d788e72ecaa3636515a58
+  version: 2.30.1.86.2-310.v4655f6742752
+branch-api:
+  checksum: sha256:6ecfc3d335cec791008a2d06ca933c6ccc97db1c14a4aee5030affebb97482e0
+  version: 2.1303.v9f3b_95dc329d
+built-on-column:
+  checksum: sha256:68b53430766cbf26789b8252ac21fa006b85e6bd5ab31ad901d539a74a8c227d
+  version: '1.5'
+caffeine-api:
+  checksum: sha256:768ed05774f12d85bf8ecff5d509f037810d1359de8b4fb1385624f6f547c90b
+  version: 3.3.1-214.v18eb_56b_34920
+checks-api:
+  checksum: sha256:2ec59ec4ec34c6a69d08388f36a71ca6432444eb97bcdaa2bb92dd35736bb8c1
+  version: 434.va_a_3dd79d7723
+cloud-stats:
+  checksum: sha256:65adaf856cea8fdd88bcf624c362625f2d7f4b825e84ae947047b31a8474288d
+  version: 423.v63f017a_f582c
+cloudbees-folder:
+  checksum: sha256:e420a2a6f15e8b2e16d38c79a4f2fdeca70cec2dff835e8ea337f3085b723f48
+  version: 6.1107.v31f8955765c8
+command-launcher:
+  checksum: sha256:1dfc3874b606d251961e3b0715a7de3015845a48c6628db9f47ff1837d34c347
+  version: 144.vb_6cb_566c6c04
+commons-lang3-api:
+  checksum: sha256:4d6194f8d3b3f2b69264f0403fe5a51846236a41f4e363f6aae45f82f7761657
+  version: 3.21.0-122.v6a_ea_4fd34049
+commons-text-api:
+  checksum: sha256:ae2abdf957694f4aa39b9ba0b539edabc384f3da277551879e34ffb22fb13764
+  version: 1.15.0-218.va_61573470393
+config-file-provider:
+  checksum: sha256:82807ddf80599b2b7aaf24dc5c16cd7652fc5a6f83f5237114af01aca0818021
+  version: 1013.v73c323e52b_1f
+configuration-as-code:
+  checksum: sha256:d84318da9ceee043736415a9af5814f9c0324fb269905e2e2bd42237830263ff
+  version: 2147.v8a_8d38668c72
+configuration-as-code-groovy:
+  checksum: sha256:3c2ab4a45b3b0232243669c4400f31715285d5f5e20accd0f228d863fc43e866
+  version: '1.1'
+credentials:
+  checksum: sha256:b6e0a05d107fe492bb57baea75fb585fb65dd90c2456a6432b90b87226997457
+  version: 1514.vb_01eb_014e7d4
+credentials-binding:
+  checksum: sha256:bd7d1a187e35c8e2b6619cd50f2f8c5d28aafc4ef8fd9de572fb2cfa464f466d
+  version: 728.v902a_273b_8947
+dark-theme:
+  checksum: sha256:b3db4cd02ab68e939d2315aea6dd511445a06defe00dde6177cf5d3ce4e28e49
+  version: 652.vea_da_dfea_e769
+display-url-api:
+  checksum: sha256:07eeaae738b451bade4756900b48561c6c493a42c7ba07a45b22a2dce71ac0ca
+  version: 2.217.va_6b_de84cc74b_
+durable-task:
+  checksum: sha256:1f5bb92ee5784ee01a4e4e0307e806fa1e260db8aceba56fe8d277e939278dfa
+  version: 686.v80ff80875b_82
+echarts-api:
+  checksum: sha256:280663806fd6538a16284fc61668a42af4272b7e96b66f48ec82409975cff51b
+  version: 6.1.0-1321.v86c4c5114494
+eddsa-api:
+  checksum: sha256:edaefd759bda946e5c123141bc928b6c0a5d9c8f44b4d0389335376ee1d196a3
+  version: 0.3.0.1-29.v67e9a_1c969b_b_
+extended-read-permission:
+  checksum: sha256:0880db1d859be3f6cf038740201602ee63f3c2dfee7a5d1d866ca121901485a6
+  version: 92.v1b_f0c20b_75db_
+favorite:
+  checksum: sha256:68c8c94405564462d56fab706465935f74e547e8df5e1acacc24219c6d0ef315
+  version: 2.267.vb_90d08408081
+font-awesome-api:
+  checksum: sha256:7ee382c678545f5fd5b022e5dbb75d129a97db2b0180fb42f17edcebdfdbbf5a
+  version: 7.3.1-1013.v0835a_879ec6d
+git:
+  checksum: sha256:bf4639abb65e6ca210bd0d7cb9b6570e93717894bdcd008b2e7e5a916dd818f6
+  version: 5.11.0
+git-client:
+  checksum: sha256:69ab80e3bd51e2e4e676a18722c02c7b163eb11a758b52ecf179d58e1ca1738f
+  version: 6.6.1
+github:
+  checksum: sha256:b9f040a3280977f2012c0057b48db712959c665e685b74e79fa1cf43833878da
+  version: 1.47.0
+github-api:
+  checksum: sha256:1f815342410006bbfc65adb4a027be91bfb4d7ea7460d59ac3278f67819261ba
+  version: 1.330-492.v3941a_032db_2a_
+github-branch-source:
+  checksum: sha256:95a744eaf52377db89e74ecf8ecae49b3c030c1f3dd472602556a9d751760bc8
+  version: 1986.v801e40614d00
+github-oauth:
+  checksum: sha256:95861afee63d45776820d7c9ad2a89d419c9201a74087af81b1711d0717666d3
+  version: 685.v53b_070455063
+gson-api:
+  checksum: sha256:db390356191cd010beccf9f775c78b206b5a5d132d5c2ceda6a49dfab82dd631
+  version: 2.15.0-212.v085f60a_8093b_
+instance-identity:
+  checksum: sha256:df2b3205a6177248f12b294650a60405f65ba2cd503ca9599b2dcb72c1de5018
+  version: 203.v15e81a_1b_7a_38
+ionicons-api:
+  checksum: sha256:95f3504375d628d887425ccdf32d5606a230261ee42dc683f13958d8e973ac3f
+  version: 94.vcc3065403257
+jackson-annotations2-api:
+  checksum: sha256:f13d0a17af6f8c8939a6edd30952006b77dca4760b1f40e0289c363918b7d17d
+  version: 2.22-19.v10a_a_582ea_26e
+jackson2-api:
+  checksum: sha256:3333380ef2117532473792dbdd1c206d68e8a2c1b534c5a5a48d1fa5920503ae
+  version: 2.22.4-449.v4ee9f4ec4123
+jackson3-api:
+  checksum: sha256:4397f73c11ba5085a40280555b519c9427cf8d69d63d5d60f4f623f72f953fe2
+  version: 3.2.4-103.vf5a_b_3f4ea_cec
+jakarta-activation-api:
+  checksum: sha256:e62298341742f14b374045387ba641ad8a19376793c76bdafebb4a05b5099712
+  version: 2.1.4-1
+jakarta-mail-api:
+  checksum: sha256:244735ea85a51332c079d235a5713e70d3810bea62332894002acc39914ce11b
+  version: 2.1.5-1
+jakarta-xml-bind-api:
+  checksum: sha256:2f59227936687ec00f7ea62b550e7a6e9c86cda3423f3567ffe66bbdf235ffb5
+  version: 4.0.9-19.v2b_a_5b_44d9a_1c
+javax-activation-api:
+  checksum: sha256:e96e88c52edf07ba00fb45b26cc411a7a95fa3d4491aaa1a5d36637665880560
+  version: 1.2.0-8
+javax-mail-api:
+  checksum: sha256:59db5e1d1bc70dee92f06fe1de4982b90a678c5ad775fa84c501120717015424
+  version: 1.6.2-11
+jaxb:
+  checksum: sha256:38ddf4cf5db61a591044130c2f7ccb2b7aa9abebc8fcd8a6953f8da550d002ed
+  version: 2.3.9-143.v5979df3304e6
+jdk-tool:
+  checksum: sha256:3f056620342e1a9f97dff41e635970d98a1a33987ed9c9f6c39be7deea341b50
+  version: 83.v417146707a_3d
+jersey2-api:
+  checksum: sha256:37e3c585d60bc65224a1d485fe536202062f48656eabb019f9a2e741777047af
+  version: 2.48-180.ve47b_264f849b_
+jersey3-api:
+  checksum: sha256:0257ff6b1a6a6661133460c067ebb2c166846c3b789e2acf46af61cdb66d9007
+  version: 3.1.11-4.v77818819c2e1
+jjwt-api:
+  checksum: sha256:899d28111df6c93b932616de5c6e2cf94a5144d2fdf6b5d0ccddf3014a37dbd3
+  version: 0.13.0-141.vd58b_a_9592b_6c
+job-dsl:
+  checksum: sha256:4991233cade18498ae3dc9cac4c7a880e5b5ac6077e45e181b231ab2cd69975b
+  version: 3732.v9a_c49a_61a_313
+joda-time-api:
+  checksum: sha256:29555985df3306fc9a7d1c6a6da855b19063694a5ea15a463a302634dedb6197
+  version: 2.15.1-211.ve499f52b_da_33
+jquery3-api:
+  checksum: sha256:16716d59a3df872a3b8700337de9e8306b2d5104320e6916731aa7185d3de880
+  version: 3.7.1-687.v68d468e40b_30
+json-api:
+  checksum: sha256:c5ac5ecfddd35c07087b3333ae05ec4167a70abae8bf0ebcb7338b6b54540889
+  version: 20260814-226.v20f9685d642c
+json-path-api:
+  checksum: sha256:c032db1c87e36a57246bce59837f399f8d5f4f53be3483689a69b5c3ac0a0125
+  version: 3.0.0-218.vcd4dd1355de2
+junit:
+  checksum: sha256:674ef6595168e4b12a7b0e9351c62978ff6dbc83a97dc9045da20b8d3bad3628
+  version: 1458.v38661c0638e2
+mailer:
+  checksum: sha256:5426a66a3f879d25fcb4baff678a28422afbabff22cd6e4f0f998fc67a3dc3fa
+  version: 534.v1b_36f5864073
+matrix-auth:
+  checksum: sha256:b8f7a916f1de0872d4c16264bcf9604fdb5b2da1827764745946c7ac5f613948
+  version: '3.3'
+matrix-project:
+  checksum: sha256:d48804fec60f2ebbc8e1b2d79510113b624cdad1c422fb860455f29ee0798879
+  version: 928.v1effc3f3a_236
+mina-sshd-api-common:
+  checksum: sha256:d9db07feb1f05b46f2595cef06d3167f9c63b5e43f2a672c61e98b2817291606
+  version: 2.20.1-199.v8ce76b_c93542
+mina-sshd-api-core:
+  checksum: sha256:b47c79efc0d435716a6df6c5e1bdefe73e3d8ee8ea884842e203ee36ac41f532
+  version: 2.20.1-199.v8ce76b_c93542
+oauth-credentials:
+  checksum: sha256:12cc1aa1beab8180c4367d9fc1980a56519d87b29e52212ad1a4a694b4193b6e
+  version: 0.668.vb_431feb_d8a_4e
+okhttp-api:
+  checksum: sha256:d870037d472dd6cfdcb5d8bf6e701f0a241d6991ec8b5aeb8ded6ae6e3e6cbcc
+  version: 5.5.0-242.v1482d48d3ea_3
+openstack-cloud:
+  checksum: sha256:aa3e7d60a10ba867f6ea0e5bec1733856e7eb90df7e8fcaaa9609b935937660d
+  version: 1495.vfc630a_109df0
+opentelemetry:
+  checksum: sha256:6c068ec9468c8c44fcdc7e215784bfaae273c0b91522ae2852d66abceff253cd
+  version: 3.1603.ve3fa_cc8a_b_f5e
+opentelemetry-api:
+  checksum: sha256:7e9a874aad1439e58b5b52f77ee24678f30df8afc8ef4e26db2f8a0e5b1012ad
+  version: 1.54.1.102.v276c93ee966d
+oracle-cloud-infrastructure-compute:
+  checksum: sha256:3ef6161edd920173a55f0ce13f8d5d16ad7772d630eeb733d6b31b0def589e33
+  version: 1.0.22-SNAPSHOT (private-09/04/2026 10:19-root)
+oracle-cloud-infrastructure-devops:
+  checksum: sha256:03385878932c1a8840dd718204c6ea4c4cc7a8ea28178377a2d4ac093f7030ea
+  version: 1.0.1
+oss-symbols-api:
+  checksum: sha256:a7b9d912a271735be54507782f4ec123e354ebed5411620be2b36c4597e09361
+  version: 477.v7197b_eb_3d8b_8
+pipeline-build-step:
+  checksum: sha256:1b61a1820844f3f72f9dfcd6d7eeab66fa0fbcee5e3923b912cd1ed10fbf63c5
+  version: 601.v6d4c6d1a_9dc7
+pipeline-graph-analysis:
+  checksum: sha256:8c89351cb13f694b9cc620501a75aed8bd4acdc0b9a6e6918b5dcb0543f08e7f
+  version: 254.v0f63a_a_447dca_
+pipeline-graph-view:
+  checksum: sha256:4a92651101fb02e0db24170211ef1b4cc14b7d3c20df51a2fa61807f75bff8ff
+  version: 1053.v9df19e6ceed2
+pipeline-groovy-lib:
+  checksum: sha256:a633824da17e95fe2a9f03e8d951a771c70a729e987fc51874146723f3b6343b
+  version: 822.vc95f70dea_db_7
+pipeline-input-step:
+  checksum: sha256:7c61bb745ecd1e4e5c7864dc7c8352148d9b2281bcca5a48fd3a7cca7290a135
+  version: 560.v56198a_642157
+pipeline-model-api:
+  checksum: sha256:cdd72a69bf2863a1683b282febd0256d5d266111134c3803a8c4a051b6b4c133
+  version: 2.2293.v6e7193cec599
+pipeline-model-definition:
+  checksum: sha256:9f4f62e0a13fefc9c5736a20ad5124af2a324357294fd8ea8d8f848b7c497f92
+  version: 2.2293.v6e7193cec599
+pipeline-model-extensions:
+  checksum: sha256:00fbf0938ef13f6aedaa0900ec4cd03fcc986e34b1820bf13f761c2f29831861
+  version: 2.2293.v6e7193cec599
+pipeline-rest-api:
+  checksum: sha256:6e463affa43f4013c4b0865d4c0442abd738440c54c8bb0cd70f0c1164743159
+  version: '2.41'
+pipeline-stage-step:
+  checksum: sha256:2eba433b28f2dfc90519e233b14264890f97b93b78e25c664d56607141fcd94b
+  version: 345.va_96187909426
+pipeline-stage-tags-metadata:
+  checksum: sha256:032f011fc50cb273b300d44fb6c2800e3dbdf0d78548b15e0f192ba7cc95d178
+  version: 2.2293.v6e7193cec599
+pipeline-stage-view:
+  checksum: sha256:fbc9dd724278f69b8c7638907363a609a8484cfaaa59321169468ee6c908952f
+  version: '2.41'
+plain-credentials:
+  checksum: sha256:b5e5e35cf93ad3b818a983916cbcdf3f7866699410a4df923e6a2968ecc3a448
+  version: 199.v9f8e1f741799
+plugin-util-api:
+  checksum: sha256:06ea312ee4c012ed5c2b8f091a6e6f7db7ccc714ab25d25d751f30dc22ad8307
+  version: 7.1403.vd380b_c42e90c
+prism-api:
+  checksum: sha256:2b7aa7809e0f656afce98c0b6a0a9b62885af6ae85ad90bed67a4f18f18e8354
+  version: 1.30.0-741.v034eb_0b_0a_a_fa_
+pubsub-light:
+  checksum: sha256:c06fa0da18d5586fe934fa30f84a7f96f23297c491fce3dfcf7326adfbc04d0d
+  version: '1.19'
+resource-disposer:
+  checksum: sha256:2794c871cc479ed37fd04a85fe8d4f4aa7fee1c7929c447c8b8fa239548e3bf2
+  version: '0.25'
+scm-api:
+  checksum: sha256:1336472987daa2fa912210aba00e1e37b739ce03f75c973a6794d1a0f55c0326
+  version: 728.vc30dcf7a_0df5
+script-security:
+  checksum: sha256:c2292e200c5796675c16d19325469aac4a5460c7ad23974952b9823f62066f6a
+  version: 1436.v1082791135e4
+simple-theme-plugin:
+  checksum: sha256:c50ec06403c9d2dc961c9e74f95afa0136f38b41b2ed0acb2b279f8d26e26b7c
+  version: 230.v8b_fd91b_b_800c
+snakeyaml-api:
+  checksum: sha256:bfa595a283634c8dd63aa8d1b039cf3d3f52e0952048058fc0b9a4826ca06508
+  version: 2.7-152.vc672728cf536
+snakeyaml-engine-api:
+  checksum: sha256:89c14c0ac2816c1efc192dd333b4b26d97ae58d2ab1d492e8b52feca406e220e
+  version: 3.2-18.v885ed7ff698f
+ssh-agent:
+  checksum: sha256:094361fc66c293d2d66dd7170bf1169ca46baabe0bc7ee3896e4216d9267b4a4
+  version: 433.v9e73d67c3f74
+ssh-credentials:
+  checksum: sha256:7b4d035b05b331038f3dfa99ddfef0cabbacede8f0ad2a6ca9611fb0844108a9
+  version: 372.va_250881b_08cd
+ssh-slaves:
+  checksum: sha256:8d6c4996aad23c885928a0d0dc742200ed94473189434a93833b8f0de306597f
+  version: 3.1097.v868116049892
+sshd:
+  checksum: sha256:aae61f39df9bfd46b24ad6b9f8cef10b3c23d85e7ab9cc7b3a5b7a02dea35c3c
+  version: 3.384.vc89b_5e138cf9
+structs:
+  checksum: sha256:a0a5db44f2cb082a9ec6572c088340521f033fff8c351fc7eba9ef7f07dbbf8d
+  version: 362.va_b_695ef4fdf9
+theme-manager:
+  checksum: sha256:9709a4503fda78f4801d30ab63fa1773b74467e892b5dc01588f9075799cbf48
+  version: 346.v06cca_64c6a_37
+thinBackup:
+  checksum: sha256:c8d54e65ddd538a7f10ffef4dd758604d09fd6be9a6e6ca850c17f08da1422e8
+  version: 2.1.5
+timestamper:
+  checksum: sha256:b4d6589e7a169f06b26bc7e15bc37ef2fb3986dc20b502cb91c2a9918eaf980b
+  version: '1.30'
+token-macro:
+  checksum: sha256:ef98e47b467571e7968925ace1c40d1103baefe230f5d4cf44250769b7b6b42b
+  version: 477.vd4f0dc3cb_cf1
+trilead-api:
+  checksum: sha256:804d2ba841f2c6d5cfca354451e47d409c4d3a71be1bba74df550abd2810dfed
+  version: 2.284.v1974ea_324382
+variant:
+  checksum: sha256:12e214ea694469a4461b55881ecb4074ae5dfb04797dbc0dad390f6f4bc75aaf
+  version: 70.va_d9f17f859e0
+view-job-filters:
+  checksum: sha256:5f9563b3f954efdf7c1a17325c38c49b01f73e32f17ac7991912d3bb8a1f9f09
+  version: 408.vb_ca_5e798e5b_5
+woodstox-core-api:
+  checksum: sha256:fca0ce7cd19274833df226cd6746d71ce4025b784a81bd5b8512730f5d34a9df
+  version: 7.3.0-16.v017f30ed004c
+workflow-api:
+  checksum: sha256:79001c37c117dc29cd2de2b19684d19e6fe77aa5439b609ba2111de5a81df9fb
+  version: 1429.v7a_1b_efb_a_f7c5
+workflow-basic-steps:
+  checksum: sha256:2bf01de85b659efe382560237e3c49760cb6e539074e6af31afcd5e7c2787527
+  version: 1129.v60e3c7e6654d
+workflow-cps:
+  checksum: sha256:5deef96aedaee29851a42144e7848f40c5c48816f6117a6e34b425d18bb6b526
+  version: 4403.v471713a_cea_19
+workflow-durable-task-step:
+  checksum: sha256:a0f0f1464ce3592f76d0f0079ce9fc2d4272594f995bf3d1a7ede4cd5031452e
+  version: 1479.v56e587f413a_7
+workflow-job:
+  checksum: sha256:e67c1ab5862b0d0a24c478feea4a420af787de08721853b014b58f8b5b8d04ab
+  version: 1622.vc41c189cb_e5f
+workflow-multibranch:
+  checksum: sha256:af26afd93b5d730d203d8f58d1e104712ad1a7ddcf6837886d3272b1c0057e46
+  version: 842.v3a_b_59b_57b_e6e
+workflow-scm-step:
+  checksum: sha256:532fc247cba83845df3c7fccaabfc3cb1f637729b145211728bcb974a3a67552
+  version: 487.v41313a_96b_65d
+workflow-step-api:
+  checksum: sha256:887491de444174228471993b0b2db958db2e7fb577857c8516c58e9618049896
+  version: 724.v538c2362b_dfb_
+workflow-support:
+  checksum: sha256:167b31b5f1e79c1e7becf13bd1e53add5f29b6944a634572abe538407999dd02
+  version: 1028.vc22910142650

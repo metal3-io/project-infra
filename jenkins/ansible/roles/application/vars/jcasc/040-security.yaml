@@ -1,0 +1,6 @@
+---
+security:
+  contentSecurityPolicy:
+    enforce: true
+  scriptApproval:
+    approvedSignatures: []

@@ -1,0 +1,12 @@
+---
+- name: reload Jenkins configuration
+  include_tasks: access_api.yaml
+  when:
+  - not ansible_check_mode
+  - '"jenkins" not in restarted_services | default([])'
+  vars:
+    api_path: configuration-as-code/reload
+    expected_status:
+    - 302
+    - 200 # sometimes returns OK
+    count_as_change: yes

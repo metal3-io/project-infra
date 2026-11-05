@@ -1,0 +1,7 @@
+---
+- name: check installed packages
+  package_facts:
+
+- name: configure networks
+  include_tasks: networks.yaml
+  when: '"podman" in ansible_facts.packages'

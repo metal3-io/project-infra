@@ -1,0 +1,6 @@
+---
+jenkins:
+  markupFormatter:
+    # NOTE: required by dynamic build information that renders a link to CLC in the description
+    rawHtml:
+      disableSyntaxHighlighting: false

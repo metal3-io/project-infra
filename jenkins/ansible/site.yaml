@@ -1,0 +1,26 @@
+# NOTE: required environment variables: NETLIFY_API_TOKEN, OP_SERVICE_ACCOUNT_TOKEN, OS_CLOUD (or equivalent local configuration)
+---
+- name: prepare virtual application host
+  hosts: localhost
+  gather_facts: no
+  vars:
+    env: test # corresponds to a vars_file and an OpenTofu workspace
+  vars_files:
+  - main.yaml
+  - roles/application/defaults/main.yaml
+  - "{{ env }}.yaml"
+  tasks:
+  - name: cloud provisioning
+    import_tasks: tasks/provision.yaml
+
+- name: deploy containerized application stack
+  hosts: "{{ config.cloud.instance_name | mandatory(msg='mandatory variable config.cloud.instance_name was not set') }}"
+  gather_facts: no
+  become: yes
+  vars:
+    env: test
+  vars_files:
+  - "{{ env }}.yaml"
+  roles:
+  - { name: host, tags: host }
+  - { name: application, tags: application }
