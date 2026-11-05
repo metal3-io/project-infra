@@ -1,0 +1,25 @@
+# OCI cloud controller manager / CSI config for the no-ESO / local-testing path.
+# Copy to cloud-provider.yaml (gitignored) and fill in real values. Format:
+# https://github.com/oracle/oci-cloud-controller-manager/blob/master/manifests/provider-config-example.yaml
+#
+# YAML NOTE: the key block scalar content MUST be indented deeper than "key: |"
+# (4 spaces under a 2-space "key:"). A flat indent makes the CCM exit 255.
+auth:
+  region: REPLACE_ME
+  tenancy: ocid1.tenancy.oc1..REPLACE_ME
+  user: ocid1.user.oc1..REPLACE_ME
+  fingerprint: REPLACE_ME
+  key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    REPLACE_ME
+    -----END RSA PRIVATE KEY-----
+  useInstancePrincipals: false
+compartment: ocid1.compartment.oc1..REPLACE_ME
+# BYO network: these OCIDs are fixed (skipNetworkManagement: true in
+# ocicluster.yaml). Copy them from cluster/ocicluster.yaml; they are stable
+# across cluster rebuilds, so there is no post-provision step.
+vcn: REPLACE_ME_FROM_OCICLUSTER_VCN_ID
+loadBalancer:
+  # public service-lb subnet OCID (the `service-lb` subnet in ocicluster.yaml)
+  subnet1: REPLACE_ME_FROM_OCICLUSTER_SERVICE_LB_SUBNET
+  securityListManagementMode: None
