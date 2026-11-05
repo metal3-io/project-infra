@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# oci-consistent-device-path
+#
+# Prints OCI_SYMLINK=oracleoci/oraclevd* for a block device; udev (see
+# 70-oci-consistent-device-paths.rules) imports it and owns the symlink via
+# SYMLINK+= (so it is also removed on detach). The OCI Block Volume CSI driver
+# waits for these links before mounting a PersistentVolume. Invoked with the
+# kernel device name as $1 (e.g. "sda", "sdb", "sdb3").
+#
+# The absolute SCSI LUN determines the suffix: LUN 1 = a, LUN 2 = b, and so on.
+# OCI documents suffixes a through af for up to 32 attachments.
+#
+# Scope: this assumes paravirtualized attachments, where OCI varies the LUN
+# (the StorageClass used here is attachment-type: paravirtualized). If the
+# StorageClass ever switches to iSCSI, OCI varies the target instead, so the
+# field that carries the slot MUST be re-evaluated.
+
+set -eu
+
+DEVNAME="${1:-}"
+[[ -n "${DEVNAME}" ]] || exit 0
+
+# Partition suffix, e.g. "sdb3" -> disk "sdb", partition "3".
+partition=""
+disk="${DEVNAME}"
+if [[ "${DEVNAME}" =~ ^([a-z]+)([0-9]+)$ ]]; then
+  disk="${BASH_REMATCH[1]}"
+  partition="${BASH_REMATCH[2]}"
+fi
+
+# Read this disk's SCSI address H:C:T:L from sysfs; skip non-SCSI devices.
+link="$(readlink -f "/sys/block/${disk}/device" 2>/dev/null || true)"
+[[ -n "${link}" ]] || exit 0
+addr="${link##*/}"                           # e.g. 0:0:0:2
+IFS=':' read -r h c t lun <<<"${addr}"
+[[ -n "${h}" && -n "${c}" && -n "${t}" && -n "${lun}" ]] || exit 0
+[[ "${lun}" =~ ^[0-9]+$ ]] || exit 0
+
+# Slot -> letter from the absolute LUN (boot = LUN 1 = a).
+[[ "${lun}" -ge 1 ]] || exit 0
+slot=$((lun - 1))
+[[ "${slot}" -le 701 ]] || exit 0
+printf -v letter '%b' "\\$(printf '%03o' "$((97 + slot % 26))")"
+if [[ "${slot}" -ge 26 ]]; then
+  printf -v prefix '%b' "\\$(printf '%03o' "$((96 + slot / 26))")"
+  letter="${prefix}${letter}"
+fi
+
+# udev imports this and creates/removes the /dev/oracleoci/oraclevd* link.
+echo "OCI_SYMLINK=oracleoci/oraclevd${letter}${partition}"
+exit 0
