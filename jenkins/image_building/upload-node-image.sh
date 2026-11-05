@@ -61,6 +61,7 @@ CURL_COMMON_OPTS=(
     --retry-delay "${CURL_RETRY_DELAY}"
     --retry "${CURL_RETRY}"
     --user "${RT_USER:?}:${RT_TOKEN:?}"
+    --continue-at -
     --silent
     --show-error
 )
@@ -78,23 +79,53 @@ rt_upload_artifact() {
     curl --fail-with-body -XPUT "${CURL_COMMON_OPTS[@]}" "${RT_URL}/${dst_path}" -T "${src_path}"
 }
 
+rt_modify_image() {
+    local src_path="${1:?}"
+    local dst_path="${2:?}"
+    local operation="${3:-copy}"
+
+    # Note! Move operation requires 'Artifactory Pro' license
+    curl --fail-with-body \
+        -XPOST \
+        "${CURL_COMMON_OPTS[@]}" \
+        --url "${RT_URL}/api/${operation,,}/${src_path}" \
+        --header 'accept: application/json' \
+        --data '{"to":"'${dst_path}'", "failFast":1}'
+}
+
 rt_list_directory() {
     local dst_path="${1:?}"
 
     curl -XGET "${CURL_COMMON_OPTS[@]}" "${RT_URL}/api/storage/${dst_path}"
 }
 
+purge_tmp_images() {
+    local rt_folder="${1:?}"
+    local img_name="${2:?}"
+
+    mapfile -t < <(rt_list_directory "${rt_folder}" 0 | \
+    jq '.children | .[] | .uri' | \
+    sort -r |\
+    grep "${img_name}_tmp_" | \
+    sed -e 's/\"\/\([^"]*\)"/\1/g')
+
+    for tmp_file in "${MAPFILE[@]}"; do
+        rt_delete_artifact "${rt_folder}/${tmp_file}"
+        echo "${tmp_file} has been purged!"
+    done
+}
+
 backup_old_image() {
     local dst_path="${1:?}"
     local img_name="${2:?}"
-    local tmp_image_name="test.qcow2"
 
-    set +e
-    curl -f -XGET "${CURL_COMMON_OPTS[@]}" --continue-at - "${RT_URL}/${dst_path}/${img_name}.qcow2" -o "${tmp_image_name}"
-    does_file_exist=$?
-    set -e
+    mapfile -t < <(rt_list_directory "${dst_path}" 0 | \
+    jq '.children | .[] | .uri' | \
+    sort -r |\
+    grep "${img_name}.qcow2" | \
+    sed -e 's/\"\/\([^"]*\)"/\1/g')
 
-    if [ $does_file_exist -ne 0 ]; then
+    if [[ "${#MAPFILE[@]}" -eq 0 ]]; then
         return
     fi
 
@@ -104,19 +135,25 @@ backup_old_image() {
 
     BACKUP_IMAGE_NAME="${img_name}_${NODE_IMAGE_IDENTIFIER}.qcow2"
     echo "BACKUP_IMAGE_NAME: ${BACKUP_IMAGE_NAME}"
-    rt_upload_artifact "${tmp_image_name}" "${dst_path}/${BACKUP_IMAGE_NAME}"
+
+    rt_modify_image "${RT_URL}/${dst_path}/${img_name}.qcow2" "${dst_path}/${BACKUP_IMAGE_NAME}"
 }
 
 upload_node_image() {
     local img_name="${1:?}"
     local rt_folder="metal3/images/k8s_${KUBERNETES_VERSION}"
     local retention_num=5
-
-    backup_old_image "${rt_folder}" "${img_name}"
+    local tmp_name="${img_name}_tmp_$(date --utc +"%Y%m%dT%H%MZ").qcow2"
 
     RT_URL="${RT_URL:-https://artifactory.nordix.org/artifactory}"
 
-    rt_upload_artifact "${img_name}.qcow2" "${rt_folder}/${img_name}.qcow2"
+    # Purge any temp files left behind from previous runs
+    purge_tmp_images "${rt_folder}" "${img_name}"
+
+    # Upload the name image with a temp name and replace the current image
+    rt_upload_artifact "${img_name}.qcow2" "${rt_folder}/${tmp_name}"
+    backup_old_image "${rt_folder}" "${img_name}"
+    rt_modify_image "${rt_folder}/${tmp_name}" "${rt_folder}/${img_name}.qcow2" "copy"
 
     # Remove outdated node images, keep n number of latest ones
     # Get list of artifacts into an array and delete those
