@@ -1,0 +1,41 @@
+---
+- name: mark API user
+  set_fact:
+    api_user: "{{ credentials.jenkins.users | json_query(user_query) | first }}"
+    api_token: "{{ credentials.jenkins.secrets | json_query(token_query) | first }}"
+  no_log: true
+  vars:
+    user_query: "[?name=='automation'].id"
+    token_query: "[?name=='jenkins-api-token'].data"
+  when: api_user is undefined
+
+- name: obtain container info
+  containers.podman.podman_container_info:
+    name: jenkins
+  register: jenkins_container_info
+  when:
+  - config.jenkins.protect
+  - jenkins_container_info is undefined
+
+- name: "call Jenkins API ({{ api_path }})"
+  uri:
+    url: "{{ api_scheme }}://{{ api_host }}{{ api_port }}/{{ api_path }}"
+    user: "{{ api_user }}"
+    password: "{{ api_token }}"
+    method: POST
+    body_format: "{{ body_format | default(omit) }}"
+    body: "{{ body | default(omit) }}"
+    force_basic_auth: true
+    return_content: true
+    status_code: "{{ expected_status | default(omit) }}"
+  become: false
+  no_log: "{{ sensitive | bool | default(omit) }}"
+  check_mode: false
+  changed_when: count_as_change | default('no') | bool
+  delegate_to: "{{ config.jenkins.protect | ternary(omit, 'localhost') }}"
+  register: api_call
+  vars: # NOTE: might be better to always make a "local" call
+    api_host: "{{ config.jenkins.protect | ternary(jenkins_container_info.containers[0].NetworkSettings.Networks.app.IPAddress | default(omit), config.traefik.host_fqdn) }}"
+    api_scheme: "{{ config.jenkins.protect | ternary('http', 'https') }}"
+    api_port: "{{ config.jenkins.protect | ternary(':8080', '') }}"
+    api_path: "{{ api_path | default('/') }}"

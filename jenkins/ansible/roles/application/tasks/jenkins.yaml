@@ -1,0 +1,488 @@
+---
+- name: create Jenkins volume
+  containers.podman.podman_volume:
+    name: jenkins
+    state: quadlet
+    quadlet_options: "{{ quadlet_options + jenkins_volume_options }}"
+  register: jenkins_volume
+  notify: recreate Jenkins
+  vars:
+    jenkins_volume_options:
+    - 'User=1000'
+    - 'Group=1000'
+
+- name: start Jenkins volume for inspection
+  service:
+    name: jenkins-volume
+    state: started
+    daemon_reload: true
+
+- name: inspect Jenkins volume
+  containers.podman.podman_volume_info:
+    name: jenkins
+  register: jenkins_volume_info
+
+- name: mark Jenkins volume path and plugins
+  set_fact:
+    jenkins_volume_path: "{{ jenkins_volume_info.volumes[0].Mountpoint }}"
+    jenkins_plugins: "{{ lookup('file', 'jenkins-plugins-' + env + '.yaml') | from_yaml | dict2items }}"
+
+- name: ensure correct volume ownership
+  file:
+    path: "{{ jenkins_volume_path }}"
+    state: directory
+    owner: 1000
+    group: 1000
+
+- name: create plugin directory
+  file:
+    path: "{{ jenkins_volume_path }}/plugins"
+    state: directory
+    owner: 1000
+    group: 1000
+
+- name: find local plugins
+  local_action: find
+  become: no
+  args:
+    paths: "{{ role_path }}/files/"
+    patterns: 'jenkins-plugin_*.hpi'
+  register: local_plugin_search
+
+- name: process local plugins
+  block:
+  - name: enumerate local plugins
+    set_fact:
+      local_plugins: "{{ local_plugin_files }}"
+    vars:
+      local_plugin_path_query: "[*].path"
+      local_plugin_files: "{{ local_plugin_search.files | json_query(local_plugin_path_query) | map('basename') | list }}"
+
+  - name: ensure local plugins
+    copy:
+      src: "{{ item }}"
+      dest: "{{ jenkins_volume_path }}/plugins/{{ plugin_name }}.jpi"
+    loop: "{{ local_plugins }}"
+    loop_control:
+      label: "{{ plugin_name }}:{{ plugin_version }}"
+    notify: recreate Jenkins
+    vars:
+      plugin_name_elements: "{{ ( item | regex_replace('\\.hpi$', '') | split('_') )[1:] }}"
+      plugin_name: "{{ plugin_name_elements | first }}"
+      plugin_version: "{{ plugin_name_elements | last }}"
+  when: local_plugin_search.files | length > 0
+  tags: plugins
+
+- name: download plugins
+  get_url:
+    url: "https://updates.jenkins.io/download/plugins/{{ item.key }}/{{ item.value.version }}/{{ item.key }}.hpi"
+    dest: "{{ jenkins_volume_path }}/plugins/{{ item.key }}.jpi"
+    checksum: "{{ item.value.checksum | default(omit) }}"
+    owner: 1000
+    group: 1000
+  loop: "{{ jenkins_plugins }}"
+  loop_control:
+    label: "{{ item.key }}:{{ item.value.version }}"
+  register: plugin_download
+  notify: recreate Jenkins
+  tags: plugins
+
+- name: create user content directory
+  file:
+    path: "{{ jenkins_volume_path }}/userContent"
+    state: directory
+    owner: 1000
+    group: 1000
+
+- name: deploy custom theme
+  copy:
+    dest: "{{ jenkins_volume_path }}/userContent/custom_theme.js"
+    content: |
+      current_title = document.title
+      document.title = current_title.replace("Jenkins", "{{ env | capitalize }} Jenkins")
+
+- name: configure encryption
+  include_tasks: encryption.yaml
+
+- name: create Jenkins secrets
+  containers.podman.podman_secret:
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    driver: pass
+  no_log: true
+  loop: "{{ credentials.jenkins.secrets }}"
+  register: jenkins_secrets
+  notify: recreate Jenkins
+
+- name: create custom Jenkins seccomp profile
+  copy:
+    src: "seccomp-jenkins.json"
+    dest: "{{ config.app.path }}"
+  notify: recreate Jenkins
+
+- name: survey host memory
+  setup:
+    filter:
+    - ansible_memtotal_mb
+    - ansible_processor_count
+
+- name: pull Jenkins image
+  containers.podman.podman_image:
+    name: "{{ config.images.jenkins }}"
+
+- name: configure Jenkins container
+  containers.podman.podman_container:
+    name: jenkins
+    image: "{{ config.images.jenkins }}"
+    cap_drop:
+    - ALL
+    read_only: yes
+    security_opt:
+    - "seccomp={{ config.app.path }}/seccomp-jenkins.json"
+    - no-new-privileges:true
+    restart_policy: on-failure:3
+    network:
+    - app
+    - access
+    volume:
+    - jenkins:/var/jenkins_home:z
+    secrets: "{{ credentials.jenkins.secrets | map(attribute='name') }}"
+    env:
+      JAVA_OPTS: "{{ ( java_options + additional_java_options ) | join(' ') }}"
+      JENKINS_OPTS: "--sessionTimeout={{ config.jenkins.session_timeout_minutes }} --sessionEviction={{ config.jenkins.session_timeout_minutes * 60 }}"
+    labels: "{{ default_labels | combine(config.jenkins.protect | ternary(optional_authn_labels, {})) }}"
+    state: quadlet
+    quadlet_options: "{{ container_quadlet_options + partial }}"
+  vars:
+    dependencies:
+    - app-network.service
+    - access-network.service
+    - jenkins-volume.service
+    partial:
+    - '[Service]'
+    - 'SetLoginEnvironment=true'
+    - '[Unit]'
+    - 'After={{ dependencies | join(" ") }}'
+    - 'Wants={{ dependencies | join(" ") }}'
+    middleware:
+      default:
+      - ban_failed_reqs@file
+      - retry_reqs@file
+      authn:
+      - auth_jenkins
+    router_default_rule: "Host(`{{ config.traefik.host_fqdn }}`)&&PathPrefix(`{{ config.jenkins.path }}`)"
+    router_deny_rule: "&&!PathRegexp(`^{{ config.jenkins.path.removesuffix('/') }}/({{ config.jenkins.hidden_paths | map('regex_replace', '^/', '') | join('|') }})`)"
+    router_rule: "{{ router_default_rule }}{{ config.jenkins.hidden_paths | ternary(router_deny_rule, '') }}"
+    default_labels:
+      traefik.enable: true
+      traefik.http.services.jenkins.loadbalancer.server.port: 8080
+      traefik.http.routers.jenkins.rule: "{{ router_rule }}"
+      traefik.http.routers.jenkins.entrypoints: websecure
+      traefik.http.routers.jenkins.tls.certresolver: letsencrypt
+      traefik.http.routers.jenkins.middlewares: "{{ ( config.jenkins.protect | ternary(middleware.authn, []) + middleware.default ) | join(',') }}"
+    optional_authn_labels:
+      traefik.http.middlewares.auth_jenkins.basicAuth.realm: 'Protected area'
+      traefik.http.middlewares.auth_jenkins.basicAuth.usersFile: '/etc/traefik/users_jenkins'
+      traefik.http.middlewares.auth_jenkins.basicAuth.removeHeader: true
+    metaspace_size_mb: 1024
+    heap_size_mb: "{{ 2 | pow(((ansible_facts['memtotal_mb'] * 0.8) - metaspace_size_mb) | log(2) | round(2, 'floor')) | int }}" # maximum is 80% of total including metaspace
+    java_options:
+    - "-Xms{{ heap_size_mb }}m" # preallocating whole, otherwise initial is half of maximum
+    - "-Xmx{{ heap_size_mb }}m"
+    - "-XX:MaxMetaspaceSize={{ metaspace_size_mb }}m"
+    - "-XX:MetaspaceSize={{ (metaspace_size_mb / 2) | int }}m" # initial is half of maximum
+    - '-Djenkins.install.runSetupWizard=false'
+    binary_wrapper_query: "[?value.USE_BINARY_WRAPPER].key"
+    binary_wrapped_task_types: "{{ config.jenkins.plugin.durabletask | dict2items | json_query(binary_wrapper_query) }}"
+    additional_java_options: "{{ binary_wrapped_task_types | map('regex_replace', '(^.*$)', '-Dorg.jenkinsci.plugins.durabletask.\\1.USE_BINARY_WRAPPER=true') | list }}"
+  register: jenkins_container
+  notify: recreate Jenkins
+
+- name: load common cloud options for Ubuntu
+  include_vars:
+    file: cloud-openstack-ubuntu.yaml
+    name: cloud_openstack_ubuntu_common_opts
+
+- name: load common cloud options for OCI
+  include_vars:
+    file: cloud-oci.yaml
+    name: cloud_oci_common_opts
+
+- name: map OpenStack flavor IDs to names
+  block:
+  - name: get OpenStack flavors
+    local_action: openstack.cloud.compute_flavor_info
+    become: no
+    check_mode: false
+    register: openstack_flavors
+
+  - name: mark OpenStack flavor IDs
+    set_fact:
+      openstack_flavor_ids:
+        c4m16-est: "{{ openstack_flavors | json_query(flavor_query1) | first }}"
+    vars:
+      flavor_query1: "flavors[?name=='c4m16-est'].id"
+  when: env == "staging" # NOTE: the staging environment is connected to an OpenStack cloud
+
+- name: obtain OCI credentials # NOTE: legacy metal3-oracle-paris-env-vars, to be superseded by metal3-oracle-paris-env-vars-new and removed
+  set_fact:
+    oci_credentials: "{{ oci_credentials | default({}) | combine({item.label: item.value}) }}"
+  loop: "{{ raw_data }}"
+  loop_control:
+    label: "{{ item.label }}"
+  no_log: true
+  vars:
+    fields_query: 'fields[*].{label: label, value: value}'
+    raw_data: "{{ lookup('community.general.onepassword_raw', 'OCI Jenkins cloud plugin credentials', vault=config.onepassword.vault) | json_query(fields_query) }}"
+
+- name: collate OCI envvars
+  set_fact:
+    oci_envvars_encoded: "{{ '{' + (oci_envvars | b64encode) + '}' }}"
+  no_log: true
+  vars:
+    oci_envvars: |
+      export OCI_CLI_USER={{ oci_credentials['ocid-userid'] }}
+      export OCI_CLI_FINGERPRINT={{ oci_credentials['oci-api-key-fingerprint'] }}
+      export OCI_CLI_TENANCY={{ oci_credentials.tenantid }}
+      export OCI_CLI_REGION={{ oci_credentials.region }}
+      export OCI_CLI_KEY_FILE=/tmp/oci_key.pem
+      export COMPARTMENT_OCID={{ oci_credentials.tenantid }}
+      export BUCKET_NAME=ImageStorage
+      export NAMESPACE_OCID=idknxc8t3pjc
+
+- name: obtain OCI compute credentials # NOTE: required by clean_resources.groovy's use of "metal3-oracle-paris-env-vars", and only provides compute access to manage instances
+  set_fact:
+    oci_compute_credentials: "{{ oci_compute_credentials | default({}) | combine({item.label: item.value}) }}"
+  loop: "{{ raw_data }}"
+  loop_control:
+    label: "{{ item.label }}"
+  no_log: true
+  vars:
+    fields_query: 'fields[*].{label: label, value: value}'
+    raw_data: "{{ lookup('community.general.onepassword_raw', 'OCI Jenkins cloud plugin credentials for provisioning', vault=config.onepassword.vault) | json_query(fields_query) }}"
+
+- name: collate OCI compute envvars
+  set_fact:
+    oci_compute_envvars_encoded: "{{ '{' + (oci_envvars | b64encode) + '}' }}"
+  no_log: true
+  vars:
+    oci_envvars: |
+      export OCI_CLI_USER={{ oci_compute_credentials['ocid-userid'] }}
+      export OCI_CLI_FINGERPRINT={{ oci_compute_credentials['oci-api-key-fingerprint'] }}
+      export OCI_CLI_TENANCY={{ oci_compute_credentials.tenantid }}
+      export OCI_CLI_REGION={{ oci_compute_credentials.region }}
+      export OCI_CLI_KEY_FILE=/tmp/oci_key.pem
+      export COMPARTMENT_OCID={{ oci_compute_credentials.tenantid }}
+
+- name: obtain OCI image credentials # NOTE: required by image_building.groovy's use of "metal3-oracle-paris-env-vars", and only provides object access to images
+  set_fact:
+    oci_image_credentials: "{{ oci_image_credentials | default({}) | combine({item.label: item.value}) }}"
+  loop: "{{ raw_data }}"
+  loop_control:
+    label: "{{ item.label }}"
+  no_log: true
+  vars:
+    fields_query: 'fields[*].{label: label, value: value}'
+    raw_data: "{{ lookup('community.general.onepassword_raw', 'OCI Jenkins CI image uploading and promoting credentials', vault=config.onepassword.vault) | json_query(fields_query) }}"
+
+- name: collate OCI image envvars
+  set_fact:
+    oci_image_envvars_encoded: "{{ '{' + (oci_envvars | b64encode) + '}' }}"
+  no_log: true
+  vars:
+    oci_envvars: |
+      export OCI_CLI_USER={{ oci_image_credentials['ocid-userid'] }}
+      export OCI_CLI_FINGERPRINT={{ oci_image_credentials['oci-api-key-fingerprint'] }}
+      export OCI_CLI_TENANCY={{ oci_image_credentials.tenantid }}
+      export OCI_CLI_REGION={{ oci_image_credentials.region }}
+      export OCI_CLI_KEY_FILE=/tmp/oci_key.pem
+      export COMPARTMENT_OCID={{ oci_image_credentials.tenantid }}
+
+- name: obtain OCI node image credentials # NOTE: required by "node-image-building" jobs
+  set_fact:
+    oci_node_image_credentials: "{{ oci_node_image_credentials | default({}) | combine({item.label: item.value}) }}"
+  loop: "{{ raw_data }}"
+  loop_control:
+    label: "{{ item.label }}"
+  no_log: true
+  vars:
+    fields_query: 'fields[*].{label: label, value: value}'
+    raw_data: "{{ lookup('community.general.onepassword_raw', 'OCI Jenkins node image uploading', vault=config.onepassword.vault) | json_query(fields_query) }}"
+
+- name: collate OCI node image envvars
+  set_fact:
+    oci_node_image_envvars_encoded: "{{ '{' + (oci_envvars | b64encode) + '}' }}"
+  no_log: true
+  vars:
+    oci_envvars: |
+      export OCI_CLI_USER={{ oci_node_image_credentials['ocid-userid'] }}
+      export OCI_CLI_FINGERPRINT={{ oci_node_image_credentials['oci-api-key-fingerprint'] }}
+      export OCI_CLI_TENANCY={{ oci_node_image_credentials.tenantid }}
+      export OCI_CLI_REGION={{ oci_node_image_credentials.region }}
+      export OCI_CLI_KEY_FILE=/tmp/oci_key.pem
+      export COMPARTMENT_OCID={{ oci_node_image_credentials.tenantid }}
+
+- name: obtain OCI node image PAR credentials # NOTE: required by "node-image-building" jobs
+  set_fact:
+    oci_node_image_par_credentials: "{{ oci_node_image_par_credentials | default({}) | combine({item.label: item.value}) }}"
+  loop: "{{ raw_data }}"
+  loop_control:
+    label: "{{ item.label }}"
+  no_log: true
+  vars:
+    fields_query: 'fields[*].{label: label, value: value}'
+    raw_data: "{{ lookup('community.general.onepassword_raw', 'OCI Jenkins node image PAR generating', vault=config.onepassword.vault) | json_query(fields_query) }}"
+
+- name: collate OCI node image PAR envvars
+  set_fact:
+    oci_node_image_par_envvars_encoded: "{{ '{' + (oci_envvars | b64encode) + '}' }}"
+  no_log: true
+  vars:
+    oci_envvars: |
+      export OCI_CLI_USER={{ oci_node_image_par_credentials['ocid-userid'] }}
+      export OCI_CLI_FINGERPRINT={{ oci_node_image_par_credentials['oci-api-key-fingerprint'] }}
+      export OCI_CLI_TENANCY={{ oci_node_image_par_credentials.tenantid }}
+      export OCI_CLI_REGION={{ oci_node_image_par_credentials.region }}
+      export OCI_CLI_KEY_FILE=/tmp/oci_key.pem
+      export COMPARTMENT_OCID={{ oci_node_image_par_credentials.tenantid }}
+
+# adapted from https://github.com/ansible/ansible/issues/83978#issuecomment-2369293904
+- name: generate Jenkins configuration
+  include_vars:
+    file: "{{ item }}"
+  loop: "{{ q('fileglob', 'vars/jcasc/' + env + '/*.yaml') | sort }}"
+  loop_control:
+    label: "{{ item | basename }}"
+  no_log: true
+  register: jcasc_configs
+
+- name: collate Jenkins configuration
+  set_fact:
+    jcasc: "{{ jcasc_configs.results | map(attribute='ansible_facts') | combine(list_merge='append', recursive=True) }}"
+  no_log: true
+  vars:
+    auto_user_query: "[?name=='automation'].id"
+    auto_user: "{{ credentials.jenkins.users | json_query(auto_user_query) | first }}"
+    prow_user_query: "[?name=='prow'].id"
+    prow_user: "{{ credentials.jenkins.users | json_query(prow_user_query) | first }}"
+    jjb_user_query: "[?name=='jjb'].id"
+    jjb_user: "{{ credentials.jenkins.users | json_query(jjb_user_query) | first }}"
+
+- name: read current configuration
+  slurp:
+    src: "{{ jenkins_volume_path }}/jenkins.yaml"
+  no_log: true
+  register: remote_config
+  ignore_errors: true
+
+- name: check Jenkins container
+  containers.podman.podman_container_info:
+    name: jenkins
+  register: jenkins_container_check
+
+- name: mark Jenkins presence
+  set_fact:
+    jenkins_present: "{{ not jenkins_container_check.stderr_lines }}"
+
+- block:
+  - name: validate configuration against schema
+    include_tasks: validate.yaml
+    when: config.jenkins.validate | bool
+
+  - name: test configuration
+    include_tasks: dryrun.yaml
+  when:
+  - config_changed
+  - jenkins_present
+  vars:
+    config_changed: "{{ remote_config.content | b64decode | default('{}') | from_yaml != jcasc }}"
+
+- name: configure Jenkins
+  copy:
+    content: |
+      {{ jcasc | to_yaml }}
+    dest: "{{ jenkins_volume_path }}/jenkins.yaml"
+    backup: yes
+  no_log: true
+  diff: no
+  notify: "{{ jenkins_container_check.stderr_lines | ternary([], ['reload Jenkins configuration']) }}" # don't reload without the container
+
+# NOTE: remove the following JJB-related section _IF_ JJB is updated through Prow
+- name: survey Python environment
+  setup:
+    gather_subset: python
+
+- name: install Jenkins Job Builder
+  pip:
+    name:
+    - 'setuptools<72' # pkg_resources API dependency
+    - "jenkins-job-builder=={{ config.jenkins.jobbuilder.version }}"
+    virtualenv: "{{ jenkins_volume_path }}/jjb-venv"
+    virtualenv_command: "{{ ansible_facts['python']['executable'] }} -m venv"
+
+- name: configure Jenkins Job Builder
+  block:
+  - name: obtain container info
+    containers.podman.podman_container_info:
+      name: jenkins
+    register: jenkins_container_info
+
+  - name: configure JJB
+    ini_file:
+      path: /root/.config/jenkins_jobs/jenkins_jobs.ini
+      section: job_builder
+      section_has_values:
+      - option: ignore_cache
+        value: true
+      - option: keep_descriptions
+        value: false
+      - option: recursive
+        value: true
+      - option: allow_duplicates
+        value: false
+      allow_no_value: true
+
+  - name: configure Jenkins server for JJB
+    ini_file:
+      path: /root/.config/jenkins_jobs/jenkins_jobs.ini
+      section: jenkins
+      option: "{{ item.option }}"
+      value: "{{ item.value }}"
+    loop: "{{ jjb_jenkins_opts }}"
+    loop_control:
+      label: "{{ item.option }}"
+    vars:
+      jjb_jenkins_opts:
+      - { 'option': 'url', 'value': "http://{{ jenkins_container_info.containers[0].NetworkSettings.Networks.app.IPAddress }}:8080" }
+      - { 'option': 'query_plugins_info', 'value': true }
+  when: jenkins_present
+
+- name: get job definitions
+  git:
+    repo: https://gerrit.nordix.org/infra/cicd # NOTE: might be better to turn this into a sparse checkout as right now any change will trigger a JJB run
+    dest: "{{ jenkins_volume_path }}/cicd"
+  register: cicd_checkout
+
+- name: deploy Metal³ jobs
+  block:
+  - name: test jobs
+    command: jjb-venv/bin/jenkins-jobs test --config-xml --recursive cicd/jjb/metal3
+    changed_when: false
+    register: jjb_test
+  - name: update jobs
+    command: jjb-venv/bin/jenkins-jobs update --workers 4 --delete-old --recursive cicd/jjb/metal3
+    when: jjb_test is success
+  module_defaults:
+    ansible.builtin.command:
+      chdir: "{{ jenkins_volume_path }}"
+  environment:
+    JJB_USER: "{{ credentials.jenkins.users | json_query(auto_user_query) | first }}"
+    JJB_PASSWORD: "{{ credentials.jenkins.secrets | json_query(token_query) | first }}"
+  vars:
+    auto_user_query: "[?name=='automation'].id"
+    token_query: "[?name=='jenkins-api-token'].data"
+  no_log: true
+  when:
+  - jenkins_present
+  - cicd_checkout is changed
+  tags: jobs

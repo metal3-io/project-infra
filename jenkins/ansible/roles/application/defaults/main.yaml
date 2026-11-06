@@ -1,0 +1,79 @@
+---
+config:
+  onepassword:
+    vault: Jenkins-OCI
+  gpg:
+    email: estjorvas@est.tech
+    cache_ttl_seconds: 600 # sufficient for deployment only
+  app:
+    path: /root
+  images:
+    traefik: docker.io/library/traefik:3.7.17@sha256:30ff62491aacdb862ceb8c9edcf2627da638d7deafdd4b6dab32fe34f8aa3e90
+    socket-proxy: ghcr.io/wollomatic/socket-proxy:1.13.2@sha256:82db5c4728e4fd68d969ec3d74d99bf6d990d06428b583a6f1daabab27de1bd3
+    jenkins: docker.io/jenkins/jenkins:2.580.2-lts@sha256:74401de6a6f92e1afe1b02d1c8e3d0c33f263bfb5275dd8813f9150355f2367b
+  quadlet:
+    default_options:
+      Install:
+      - 'WantedBy=multi-user.target default.target'
+    default_container_options:
+      Service:
+      - 'Restart=on-failure'
+      - 'RestartSec=10'
+      Unit:
+      - 'StartLimitIntervalSec=300'
+      - 'StartLimitBurst=3'
+  traefik:
+    host_fqdn: jenkins.apps.test.metal3.io
+    retry_attempts: 5
+    retry_interval: 1s
+    plugin:
+      fail2ban:
+        version: main
+        allowed_addresses:
+        - 192.89.51.88/29  # office network via provider 1
+        - 89.166.49.240/28 # office network via provider 2
+        findtime: 3m
+        bantime: 10m
+        maxretry: 10
+        statuscodes:
+        - '400'
+        - '401'
+        - '403-499'
+        errorcode: 403
+        loglevel: WARN
+  jenkins:
+    path: /
+    hidden_paths:
+    - /script
+    - /manage/script
+    - /computer/.*/script
+    protect: no
+    session_timeout_minutes: 480 # upstream default is 30
+    restart_allowed: no
+    validate: no
+    validation_critical: no
+    plugin:
+      durabletask:
+        BourneShellScript:
+          USE_BINARY_WRAPPER: true # NOTE: set via JAVA_OPTS, not a Groovy script; no JCasC way
+      opentelemetry:
+        endpoint: https://log.apps.test.metal3.io
+    jobbuilder:
+      version: 6.4.4
+    node:
+      label: built-in
+      executors: "{{ ansible_facts['processor_count'] }}" # NOTE: set this to 0 _IF_ JJB can be updated via Prow
+    message: |
+      {{ env | capitalize }} environment for Metal³ CI
+
+credentials:
+  pass:
+    gpg_keys: "{{ lookup('community.general.onepassword_doc', 'metal3ci GPG keys', vault=config.onepassword.vault) | b64encode | b64decode }}" # NOTE: rolled to convert bytes to string
+    passphrase: "{{ lookup('community.general.onepassword', 'metal3ci GPG keys', field='password', vault=config.onepassword.vault) }}"
+  traefik:
+    jenkins:
+    - user: "{{ lookup('community.general.onepassword', 'traefik_user_jenkins', field='username', vault=config.onepassword.vault) }}"
+      password: "{{ lookup('community.general.onepassword', 'traefik_user_jenkins', field='password', vault=config.onepassword.vault) }}"
+  jenkins:
+    secrets: [] # defined per environment
+    users: [] # defined per environment - NOTE: consumed by the access_api and jenkins tasks to identify users; NOT used for user provisioning

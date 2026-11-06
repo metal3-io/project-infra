@@ -1,0 +1,45 @@
+---
+- name: restart application host
+  hosts: "{{ config.cloud.instance_name | mandatory(msg='mandatory variable config.cloud.instance_name was not set') }}"
+  gather_facts: no
+  become: yes
+  vars:
+    env: test
+    services_with_secrets:
+    - jenkins
+    - traefik
+    update: no
+  vars_files:
+  - "{{ env }}.yaml"
+  tasks:
+  - name: perform system update
+    package:
+      name: '*'
+      state: latest
+    when: update | bool
+
+  - name: disable services consuming secrets
+    systemd_service:
+      name: "{{ item }}"
+      state: stopped
+      masked: yes
+    loop: "{{ services_with_secrets }}"
+
+  - name: perform system restart
+    reboot:
+
+  - name: unlock secrets
+    include_role:
+      name: application
+      tasks_from: encryption.yaml
+
+  - name: reset service failure states
+    command: /bin/systemctl reset-failed
+    changed_when: false
+
+  - name: enable services consuming secrets
+    service:
+      name: "{{ item }}"
+      masked: no
+      state: started
+    loop: "{{ services_with_secrets }}"

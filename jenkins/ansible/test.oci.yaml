@@ -1,0 +1,20 @@
+---
+plugin: oracle.oci.oci
+config_file: ~/.oci/config
+config_profile: DEFAULT
+compartments:
+- compartment_ocid: ocid1.tenancy.oc1..aaaaaaaalbjclmsqx5zyjbqgtywhfxns4qavoppuhp6peixiqmm6vu3qyn7a
+hostname_format_preferences:
+- "display_name"
+cache: no
+cache_plugin: jsonfile
+cache_timeout: 7200
+cache_connection: /tmp/oci-cache
+cache_prefix: oci_
+fetch_db_hosts: false
+fetch_compute_hosts: true
+primary_vnic_only: true
+enable_ipv6: false
+compose:
+  ansible_host: public_ip
+  ansible_ssh_host: public_ip

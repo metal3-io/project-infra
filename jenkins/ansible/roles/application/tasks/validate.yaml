@@ -1,0 +1,27 @@
+---
+- name: obtain Jenkins configuration schema
+  include_tasks: access_api.yaml
+  vars:
+    api_path: configuration-as-code/schema
+    expected_status: 200
+
+- name: validate Jenkins configuration
+  set_fact:
+    validation_findings: "{{ validation_findings | default([]) + [ '%s: %s' | format(item.0|default('. (root)', True), item.1) ] }}"
+  loop: "{{ raw_findings }}"
+  no_log: true
+  vars:
+    jcasc_schema: "{{ api_call.json }}"
+    finding_query: "[*].[data_path, message]"
+    raw_findings: "{{ lookup('ansible.utils.validate', jcasc, jcasc_schema, engine='ansible.utils.jsonschema', draft='draft7') | json_query(finding_query) }}"
+
+- name: display findings
+  debug:
+    var: validation_findings
+
+- name: bail out on findings
+  assert:
+    that: not ( validation_findings | default([]) )
+    quiet: yes
+    fail_msg: validation failed
+  when: config.jenkins.validation_critical | bool

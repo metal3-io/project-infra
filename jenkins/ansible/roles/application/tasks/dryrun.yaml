@@ -1,0 +1,24 @@
+---
+# NOTE: perhaps another endpoint checking a local file, so as not to pass the whole document over the network?
+#       at present the configuration file is generated only after this, if passed, so an alternate location could work,
+#       moving the file to its final location if the "local check" succeeds; no validation the first time, though?
+- name: apply Jenkins configuration in dry-run mode
+  include_tasks: access_api.yaml
+  no_log: true
+  vars:
+    api_path: configuration-as-code/check
+    expected_status:
+    - 200
+    - 400 # catching and raising in next step
+    body_format: json
+    body: "{{ jcasc | to_json }}"
+    sensitive: true
+
+- name: bail out on findings
+  fail:
+    msg: "{{ findings }}"
+  when:
+  - api_call.status != 200
+  - findings | length > 0
+  vars:
+    findings: "{{ api_call.json|json_query('[*].message') }}" # NOTE: the API seems to only list the last finding

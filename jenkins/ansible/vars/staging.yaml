@@ -1,0 +1,82 @@
+---
+config:
+  cloud:
+  # NOTE: defined here and mandatory
+    type: openstack
+    workspace: staging
+    instance_name: jenkins-staging
+    jumphost_name: metal3-ci-jumphost # ID queried and passed
+  # flavor: defaulted
+    image_id: c178c166-ae3c-4740-91e5-3468b5c70ffd
+  # volume_size: defaulted
+  # key_name: defaulted
+  # network_name: defaulted
+
+  # NOTE: overrides to role defaults
+  traefik:
+    host_fqdn: jenkins.apps.staging.metal3.io
+    plugin:
+      fail2ban:
+        loglevel: DEBUG
+  jenkins:
+    restart_allowed: yes
+    plugin:
+      opentelemetry:
+        endpoint: https://log.apps.staging.metal3.io
+
+  podman:
+    image_prune_schedule: hourly
+  onepassword:
+    vault: Jenkins-Xerces
+
+credentials:
+  jenkins:
+    secrets:
+    - name: jenkins-otel-token
+      data: "{{ lookup('community.general.onepassword', 'OpenTelemetry collector', field='credential', vault=config.onepassword.vault) }}"
+    - name: jenkins-api-token
+      data: "{{ lookup('community.general.onepassword', 'Jenkins automation user', field='password', vault=config.onepassword.vault) }}"
+    - name: jenkins-api-token-prow
+      data: "{{ lookup('community.general.onepassword', 'Prow integration user', field='password', vault=config.onepassword.vault) }}"
+    - name: jenkins-api-token-jjb
+      data: "{{ lookup('community.general.onepassword', 'JJB automation user', field='password', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-xerces-metal3ci-password
+      data: "{{ lookup('community.general.onepassword', 'Xerces metal3ci', field='password', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-api-privatekey
+      data: "{{ lookup('community.general.onepassword', 'oracle api private key ', field='notesPlain', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-api-privatekey-new
+      data: "{{ lookup('community.general.onepassword', 'OCI Jenkins cloud plugin credentials for provisioning', field='private-key', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-api-privatekey-new-image
+      data: "{{ lookup('community.general.onepassword', 'OCI Jenkins CI image uploading and promoting credentials', field='private-key', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-api-privatekey-node-image
+      data: "{{ lookup('community.general.onepassword', 'OCI Jenkins node image uploading', field='private-key', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-api-privatekey-node-image-par
+      data: "{{ lookup('community.general.onepassword', 'OCI Jenkins node image PAR generating', field='private-key', vault=config.onepassword.vault) }}"
+    - name: jenkins-cloud-oci-ssh-privatekey
+      data: "{{ lookup('community.general.onepassword', 'ssh rsa  private key for oracle machines', field='notesPlain', vault=config.onepassword.vault) }}"
+    - name: jenkins-github-oauth-clientid
+      data: "{{ lookup('community.general.onepassword', 'GitHub OAuth ' + env, field='username', vault=config.onepassword.vault) }}"
+    - name: jenkins-github-oauth-token
+      data: "{{ lookup('community.general.onepassword', 'GitHub OAuth ' + env, field='password', vault=config.onepassword.vault) }}"
+    - name: nordix-metal3-github-fork-sync-token
+      data: "{{ lookup('community.general.onepassword', 'nordix-metal3-github-fork-sync-token', field='password', vault=config.onepassword.vault) }}"
+    - name: infra-nordix-artifactory-api-key
+      data: "{{ lookup('community.general.onepassword', 'infra-nordix-artifactory-api-key', field='password', vault=config.onepassword.vault) }}"
+    - name: nordix-metal3-github-ssh
+      data: "{{ lookup('community.general.onepassword', 'nordix-metal3-github-ssh', field='private key', vault=config.onepassword.vault) }}"
+    - name: metal3-clusterctl-github-token
+      data: "{{ lookup('community.general.onepassword', 'metal3-clusterctl-github-token', field='password', vault=config.onepassword.vault) }}"
+    - name: metal3ci_harbor
+      data: "{{ lookup('community.general.onepassword', 'metal3ci_harbor', field='password', vault=config.onepassword.vault) }}"
+    - name: metal3-ci-log-collector-push
+      data: "{{ lookup('community.general.onepassword', 'traefik_user_loki_rw', field='password', vault=config.onepassword.vault) }}"
+    users:
+    - name: automation
+      id: "{{ lookup('community.general.onepassword', 'Jenkins automation user', field='username', vault=config.onepassword.vault) }}"
+      data: "{{ lookup('community.general.onepassword', 'Jenkins automation user', field='password', vault=config.onepassword.vault) }}"
+    - name: prow
+      id: "{{ lookup('community.general.onepassword', 'Prow integration user', field='username', vault=config.onepassword.vault) }}"
+      data: "{{ lookup('community.general.onepassword', 'Prow integration user', field='password', vault=config.onepassword.vault) }}"
+    - name: jjb
+      id: "{{ lookup('community.general.onepassword', 'JJB automation user', field='username', vault=config.onepassword.vault) }}"
+      data: "{{ lookup('community.general.onepassword', 'JJB automation user', field='password', vault=config.onepassword.vault) }}"

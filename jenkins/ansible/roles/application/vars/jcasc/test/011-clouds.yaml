@@ -1,0 +1,39 @@
+---
+jenkins:
+  clouds:
+  - baremetal:
+      cloudName: "metal3-oracle-cloud-paris"
+      instanceCapStr: "20" # was 10 until 04/09/26 - was meant to be a temporary raise to flush queues clogged overnight by cloud plugin error, then kept after a team debate
+      maxAsyncThreads: "50"
+      credentialsId: "oci-api-paris"
+      templates: # for "flavor changes" also override the defaults of "numberOfOcpus" and "memoryInGBs" (defined as "4" and "32" in "cloud-oci.yaml") for the standard Flex shape
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-ubuntu-staging',
+                                             'labelString': 'metal3ci-ubuntu-staging',
+                                             'imageId': 'metal3ci-ubuntu-staging',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-ubuntu',
+                                             'bootVolumeSizeInGBs': '300'}) }}"
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-centos-staging',
+                                             'labelString': 'metal3ci-centos-staging',
+                                             'imageId': 'metal3ci-centos-staging',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-centos',
+                                             'bootVolumeSizeInGBs': '300'}) }}"
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-leap-staging',
+                                             'labelString': 'metal3ci-leap-staging',
+                                             'imageId': 'metal3ci-leap-staging',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-leap',
+                                             'bootVolumeSizeInGBs': '300'}) }}"
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-8c32gb-ubuntu-oci',
+                                             'labelString': 'metal3ci-8c32gb-ubuntu-oci',
+                                             'imageId': 'metal3ci-ubuntu-latest',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-ubuntu',
+                                             'bootVolumeSizeInGBs': '300'}) }}"
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-8c32gb-centos-oci',
+                                             'labelString': 'metal3ci-8c32gb-centos-oci',
+                                             'imageId': 'metal3ci-centos-latest',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-centos',
+                                             'bootVolumeSizeInGBs': '300'}) }}"
+      - "{{ cloud_oci_common_opts | combine({'description': 'metal3ci-8c32gb-leap-oci',
+                                             'labelString': 'metal3ci-8c32gb-leap-oci',
+                                             'imageId': 'metal3ci-leap-latest',
+                                             'instanceNamePrefix': 'metal3ci-8c32g-leap',
+                                             'bootVolumeSizeInGBs': '300'}) }}"

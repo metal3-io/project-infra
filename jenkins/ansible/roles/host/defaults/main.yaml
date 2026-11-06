@@ -1,0 +1,14 @@
+---
+config:
+  os:
+    update: yes
+    packages:
+    - pass
+    - udica
+    - podman
+    - podman-docker
+    - container-selinux # not installed by default on Rocky 10.1
+  app:
+    path: /root
+  podman:
+    image_prune_schedule: daily

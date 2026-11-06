@@ -1,0 +1,12 @@
+---
+bootSource:
+  image:
+    name: metal3-ci-ubuntu-latest
+networkId: metal3-ci-net
+instanceCap: 1
+startTimeout: 1200000
+keyPairName: metal3ci-keypair
+userDataId: metal3ci-ubuntu
+jvmOptions: "--add-opens java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED"
+fsRoot: /home/metal3ci
+launcherFactory: jnlp

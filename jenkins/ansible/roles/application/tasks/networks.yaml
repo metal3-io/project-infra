@@ -1,0 +1,44 @@
+---
+- name: generate quadlet options
+  set_fact:
+    quadlet_options: "{{ quadlet_options | default([]) + ['[' + item + ']'] +  config.quadlet.default_options[item] }}"
+  loop: "{{ config.quadlet.default_options.keys() }}"
+
+- name: generate container quadlet options
+  set_fact:
+    container_quadlet_options: "{{ container_quadlet_options | default([]) + ['[' + item + ']'] +  container_options[item] }}"
+  loop: "{{ container_options.keys() }}"
+  vars:
+    container_options: "{{ config.quadlet.default_options | combine(config.quadlet.default_container_options, list_merge='append_rp') }}"
+
+- name: create socket network
+  containers.podman.podman_network:
+    name: socket
+    state: quadlet
+    internal: true
+    quadlet_options: "{{ quadlet_options }}"
+  register: socket_network
+  notify:
+  - recreate socket-proxy
+  - recreate Traefik
+
+- name: create app network
+  containers.podman.podman_network:
+    name: app
+    state: quadlet
+    internal: true
+    quadlet_options: "{{ quadlet_options }}"
+  register: app_network
+  notify:
+  - recreate Traefik
+  - recreate Jenkins
+
+- name: create access network
+  containers.podman.podman_network:
+    name: access
+    state: quadlet
+    quadlet_options: "{{ quadlet_options }}"
+  register: access_network
+  notify:
+  - recreate Traefik
+  - recreate Jenkins

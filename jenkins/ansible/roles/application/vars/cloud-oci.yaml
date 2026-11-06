@@ -1,0 +1,33 @@
+---
+mode: EXCLUSIVE
+maxTotalUses: 0
+availableDomain: SdxX:EU-PARIS-1-AD-1
+compartmentId: "{{ oci_compute_credentials.tenantid }}"
+shape: VM.Standard.E4.Flex
+numberOfOcpus: "4" # this gets you 8 vCPUs on x86 and is all you can set according to https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm and the API
+memoryInGBs: "32"
+vcnCompartmentId: "{{ oci_compute_credentials.tenantid }}"
+vcnId: ocid1.vcn.oc1.eu-paris-1.amaaaaaacuw4mniat3mxkopy5vnl3mcaxs5n5dyvdxf4qzupios357rd25ga
+subnetCompartmentId: "{{ oci_compute_credentials.tenantid }}"
+subnetId: ocid1.subnet.oc1.eu-paris-1.aaaaaaaabwxsdwco5qnvdd2plerxsmimodzllio2drtdwq3e2ahc47xkxwia
+assignPublicIP: true
+usePublicIP: true
+imageCompartmentId: "{{ oci_compute_credentials.tenantid }}"
+bootVolumeVPUs: 10 # balanced
+sshCredentialsId: metal3-oracle-cloud-ssh-private-key-rsa
+remoteFS: /home/metal3ci
+customJavaPath: /usr/bin/
+startTimeoutSeconds: "900"
+jenkinsAgentUser: metal3ci
+sshConnectTimeoutSeconds: "900"
+initScriptTimeoutSeconds: 120
+idleTerminationMinutes: "1" # setting this to 30 still resulted in termination during controller startup - only 0 would prevent that, but then nothing would clean up at all because maxTotalUses is also 0, which means "keep and use forever"
+stopOnIdle: false
+numExecutors: 1
+instanceCap: "30"
+doNotDisable: true
+retryTimeoutMins: 5
+autoImageUpdate: false
+disableLegacyImdsEndpoint: false
+exportJenkinsEnvVars: false
+verificationStrategy: false

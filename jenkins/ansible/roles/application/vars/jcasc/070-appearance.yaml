@@ -1,0 +1,9 @@
+---
+appearance:
+  themeManager:
+    disableUserThemes: false
+    theme: "darkSystem" # use 'dark' for forcing the dark theme regardless of OS settings
+  simpleTheme:
+    elements:
+    - jsUrl:
+        url: "https://{{ config.traefik.host_fqdn }}/userContent/custom_theme.js"
