@@ -95,7 +95,7 @@ periodics:
     base_ref: main
   spec:
     containers:
-    - image: docker.io/alpine/curl:8.22.0@sha256:d7720f8cffb47e7a80d01fb2c1b38562fab0e436948537e9b77dc312d29d12d6
+    - image: docker.io/alpine/curl:8.23.0@sha256:423fe846edd6e4d3181e3092f2c322c85861871d0dc1e774346e1d02684e5e4c
       command:
       - sh
       args:

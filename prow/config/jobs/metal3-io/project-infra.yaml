@@ -31,7 +31,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.14.41@sha256:60785c4a4ec97442f8986f1ce3cbea347f0097a05fc5f48c128714a120078716
         imagePullPolicy: Always
   - name: shellcheck
     run_if_changed: '((\.sh)|^Makefile)$'
@@ -73,7 +73,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: ghcr.io/streetsidesoftware/cspell:10.2.2@sha256:927835516e284e4eaf24d1ab8ed5c3cfcdeaa9ce975b24c843c36432db239752
+        image: ghcr.io/streetsidesoftware/cspell:10.4.0@sha256:fd4122112e33c4b1ca54082fdf3d7025d249f77d2b2fce0198bf1d4c1740f7e2
         imagePullPolicy: Always
   - name: renovate-config-validator
     run_if_changed: '(renovate\.json|renovate-validator\.sh)$'
