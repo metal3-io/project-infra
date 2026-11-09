@@ -157,3 +157,36 @@ sudo usermod --shell /bin/bash metal3ci
 
 # Hold JDK packages to prevent unintended upgrades
 sudo apt-mark hold openjdk-21-jre-headless openjdk-21-jre
+
+# Mitigate CVE-2026-98432
+cat <<'EOF' | sudo tee /etc/sysctl.d/90-cve-2026-98432.conf > /dev/null
+net.ipv4.tcp_migrate_req = 0
+EOF
+
+cat <<'EOF' | sudo tee /etc/cve-2026-98432.nft > /dev/null
+table ip cve_2026_98432 {
+  chain input {
+    type filter hook prerouting priority raw; policy accept;
+    ip hdrlength != 5 drop
+  }
+}
+EOF
+
+cat <<'EOF' | sudo tee /etc/systemd/system/cve-2026-98432.service > /dev/null
+[Unit]
+Description=Drop IPv4 packets with IP options (CVE-2026-98432)
+After=nftables.service
+Before=network-pre.target
+DefaultDependencies=no
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/cve-2026-98432.nft
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl enable cve-2026-98432.service
