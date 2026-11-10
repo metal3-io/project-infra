@@ -7,7 +7,9 @@ REPO_ROOT="$(realpath "${current_dir}/../..")"
 
 cleanup() {
   deactivate || true
-  sudo rm -rf "${REPO_ROOT}/${img_name}.d"
+  if [[ -n "${img_name:-}" ]]; then
+    sudo rm -rf "${REPO_ROOT}/${img_name}.d"
+  fi
   sudo rm -rf "${current_dir}/venv"
 }
 
