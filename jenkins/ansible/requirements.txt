@@ -1,5 +1,5 @@
 ansible==13.4.0
-ansible-core==2.20.3
+ansible-core==2.20.7rc1
 openstacksdk==4.10.0
 jmespath==1.1.0
 jsonschema==4.26.0
