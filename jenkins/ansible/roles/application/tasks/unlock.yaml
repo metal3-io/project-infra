@@ -1,0 +1,25 @@
+---
+- name: check passphrase
+  include_tasks: check_passphrase.yaml
+
+- name: cache passphrase
+  command: "/usr/libexec/gpg-preset-passphrase --preset {{ item }}"
+  args:
+    stdin: "{{ credentials.pass.passphrase }}"
+  loop: "{{ key_data.stdout_lines[1::2] }}"
+  no_log: true
+  register: caching
+  changed_when: false
+  check_mode: false
+  when: not unlocked
+
+- name: check passphrase
+  include_tasks: check_passphrase.yaml
+  when: caching is not skipped
+
+- name: proceed if unlocked
+  assert:
+    that: unlocked
+    quiet: yes
+    success_msg: "encryption passphrase is unlocked"
+    fail_msg: "encryption passphrase is locked"

@@ -1,0 +1,45 @@
+---
+jenkins:
+  views:
+  - list:
+      columns:
+      - status
+      - weather
+      - jobName
+      - lastSuccess
+      - lastFailure
+      - lastDuration
+      - buildButton
+      - builtOnColumn
+      includeRegex: ^metal3(_|-).*
+      name: Metal3
+  - list:
+      columns:
+      - status
+      - weather
+      - jobName
+      - lastSuccess
+      - lastFailure
+      - lastDuration
+      - builtOnColumn
+      - buildButton
+      includeRegex: (^metal3_(artifactory|docker|daily|nordix|openstack_node|openstack_image)_.*|^metal3(_|-).*periodic.*|^metal3-daily-.*)
+      name: Metal3 Periodic
+  - list:
+      columns:
+      - status
+      - jobName
+      - lastSuccess
+      - lastFailure
+      - lastDuration
+      - buildButton
+      includeRegex: (^metal3_(artifactory|docker|daily|nordix|openstack_node|openstack_image)_.*|^metal3(_|-).*periodic.*|^metal3-daily-.*)
+      jobFilters:
+      - jobStatusFilter:
+          aborted: true
+          disabled: false
+          failed: true
+          includeExcludeTypeString: excludeUnmatched
+          stable: false
+          unstable: false
+      name: Metal3 periodic FAIL

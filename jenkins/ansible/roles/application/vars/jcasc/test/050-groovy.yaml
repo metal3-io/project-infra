@@ -1,0 +1,34 @@
+---
+groovy:
+# configure predefined API user with a token for the automation account
+- script: |
+    import hudson.model.User
+    import jenkins.security.ApiTokenProperty
+    def token = new File("/run/secrets/jenkins-api-token").text
+    def user = User.get("{{ auto_user }}", true)
+    user.setFullName("automation")
+    user.addProperty(new hudson.tasks.Mailer.UserProperty("{{ config.gpg.email }}"))
+    def tokenProperty = user.getProperty(ApiTokenProperty.class)
+    def tokenStore = tokenProperty.getTokenStore()
+    def tokens = tokenStore.getTokenListSortedByName()
+    def matchedToken = tokenStore.findMatchingToken(token)
+    if (tokens.isEmpty() || matchedToken == null) {
+      tokenStore.addFixedNewToken("{{ auto_user }}-token", token, null)
+    }
+    user.save()
+# configure predefined API user with a token for Prow integration
+- script: |
+    import hudson.model.User
+    import jenkins.security.ApiTokenProperty
+    def token = new File("/run/secrets/jenkins-api-token-prow").text
+    def user = User.get("{{ prow_user }}", true)
+    user.setFullName("Prow integration")
+    user.addProperty(new hudson.tasks.Mailer.UserProperty("{{ config.gpg.email }}"))
+    def tokenProperty = user.getProperty(ApiTokenProperty.class)
+    def tokenStore = tokenProperty.getTokenStore()
+    def tokens = tokenStore.getTokenListSortedByName()
+    def matchedToken = tokenStore.findMatchingToken(token)
+    if (tokens.isEmpty() || matchedToken == null) {
+      tokenStore.addFixedNewToken("{{ prow_user }}-token", token, null)
+    }
+    user.save()

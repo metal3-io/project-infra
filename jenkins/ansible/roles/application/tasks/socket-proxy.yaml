@@ -1,0 +1,63 @@
+---
+- name: start socket network for inspection
+  service:
+    name: socket-network
+    state: started
+    daemon_reload: true
+
+- name: inspect socket network
+  containers.podman.podman_network_info:
+    name: socket
+  register: socket_network_info
+
+- name: create custom socket-proxy seccomp profile
+  copy:
+    src: "seccomp-socket-proxy.json"
+    dest: "{{ config.app.path }}"
+  notify: recreate socket-proxy
+
+- name: create non-privileged group
+  group:
+    name: podman
+  register: socket_access_group
+  check_mode: "{{ 'host' in ansible_role_names }}"
+
+- name: pull socket-proxy image
+  containers.podman.podman_image:
+    name: "{{ config.images['socket-proxy'] }}"
+
+- name: configure socket proxy container
+  containers.podman.podman_container:
+    name: socket-proxy
+    image: "{{ config.images['socket-proxy'] }}"
+    user: "65534:{{ socket_access_group.gid }}"
+    cap_drop:
+    - ALL
+    read_only: yes
+    security_opt:
+    - "seccomp={{ config.app.path }}/seccomp-socket-proxy.json"
+    - no-new-privileges:true
+    - label=type:socket-proxy.process
+    healthcheck: CMD /healthcheck
+    restart_policy: on-failure:3
+    network:
+    - socket
+    volume:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+    - --listenip=0.0.0.0
+    - --allowGET='/(v1\\..{1,2}/)?((info|version)$|events.*|containers/(json$|.*/json$))'
+    - --allowHEAD=/_ping
+    - "--allowfrom={{ socket_network_info.networks[0].subnets[0].subnet }}" # NOTE: in the container the software insists on using IPv6 localhost for name resolution
+    - --allowhealthcheck
+    state: quadlet
+    quadlet_options: "{{ container_quadlet_options + partial }}"
+  vars:
+    dependencies:
+    - socket-network.service
+    partial:
+    - '[Unit]'
+    - 'After={{ dependencies | join(" ") }}'
+    - 'Wants={{ dependencies | join(" ") }}'
+  register: socket_proxy_container
+  notify: recreate socket-proxy

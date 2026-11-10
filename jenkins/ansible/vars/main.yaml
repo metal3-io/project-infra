@@ -1,0 +1,6 @@
+---
+credentials:
+  tofu:
+    s3:
+      access_key: "{{ lookup('community.general.onepassword', 'Tofu S3', field='username', vault=config.onepassword.vault) }}"
+      secret_key: "{{ lookup('community.general.onepassword', 'Tofu S3', field='password', vault=config.onepassword.vault) }}"

@@ -1,0 +1,19 @@
+---
+- name: recreate socket-proxy
+  include_tasks: recreate.yaml
+  vars:
+    service_name: socket-proxy
+
+- name: recreate Traefik
+  include_tasks: recreate.yaml
+  vars:
+    service_name: Traefik
+
+- name: recreate Jenkins
+  include_tasks: recreate.yaml
+  vars:
+    service_name: Jenkins
+  when: config.jenkins.restart_allowed | bool
+
+- name: reload Jenkins configuration
+  include_tasks: reload.yaml

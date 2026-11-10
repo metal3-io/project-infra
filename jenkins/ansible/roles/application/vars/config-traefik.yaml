@@ -1,0 +1,29 @@
+---
+# Traefik plugins are configured here
+# NOTE: plugin enablement must either be in static configuration or a CLI option
+
+http:
+  middlewares:
+    ban_failed_reqs:
+      plugin:
+        fail2ban:
+          logLevel: "{{ config.traefik.plugin.fail2ban.loglevel }}"
+          alwaysAllowed:
+            ip: "{{ config.traefik.plugin.fail2ban.allowed_addresses | default([]) | join(',') }}"
+          urlRegexp:
+            allow:
+            - "^/widget/ExecutorsWidget/ajax$" # executor status widget
+            - "^/widget/BuildQueueWidget/ajax$" # build status widget
+            - "^/userContent/custom_theme.js$" # custom theme
+            - "^/i18n/resourceBundle" # content internationalization
+          rules:
+            findTime: "{{ config.traefik.plugin.fail2ban.findtime }}"
+            banTime: "{{ config.traefik.plugin.fail2ban.bantime }}"
+            maxRetries: "{{ config.traefik.plugin.fail2ban.maxretry }}"
+            response:
+              statusCodes: "{{ config.traefik.plugin.fail2ban.statuscodes }}"
+              errorCode: "{{ config.traefik.plugin.fail2ban.errorcode }}"
+    retry_reqs:
+      retry:
+        attempts: "{{ config.traefik.retry_attempts }}"
+        initialInterval: "{{ config.traefik.retry_interval }}"

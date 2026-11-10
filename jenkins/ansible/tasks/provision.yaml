@@ -1,0 +1,52 @@
+---
+- name: ensure cloud resources are provisioned
+  local_action: community.general.terraform
+  args:
+    binary_path: /usr/bin/tofu
+    project_path: "../tofu/{{ config.cloud.type | lower }}"
+    workspace: "{{ config.cloud.workspace | mandatory(msg='mandatory variable config.cloud.workspace was not set') }}"
+    state: present
+    complex_vars: yes
+    variables:
+      instance_name: "{{ config.cloud.instance_name | default(omit) }}"
+      flavor: "{{ config.cloud.flavor | default(omit) }}"
+      image_id: "{{ config.cloud.image_id | default(omit) }}"
+      volume_size: "{{ config.cloud.volume_size | default(omit) }}"
+      key: "{{ config.cloud.key_name | default(omit) }}"
+      private_network: "{{ config.cloud.network_name | default(omit) }}"
+      host_fqdn: "{{ config.traefik.host_fqdn | default(omit) }}"
+      jumphost_id: "{{ hostvars[config.cloud.jumphost_name | default('localhost')].openstack.id | default(omit) }}"
+      web_access_networks: "{{ config.cloud.access_networks | default(omit) }}"
+      ensure_access: "{{ config.cloud.ensure_access | bool | default(omit) }}"
+  register: provisioning
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ credentials.tofu.s3.access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ credentials.tofu.s3.secret_key }}"
+  tags:
+  - cloud
+  - tf
+
+- name: survey target
+  block:
+  - name: register host
+    add_host:
+      hostname: "{{ config.cloud.instance_name }}"
+      ansible_host: "{{ provisioning.outputs[output_name].value }}"
+    when:
+    - provisioning is defined
+    - provisioning is changed
+    - config.cloud.instance_name not in ansible_play_hosts
+    vars:
+      output_name: "{{ ( config.cloud.type == 'openstack' ) | ternary('internal_address', 'external_address') }}"
+
+  - name: wait for host
+    wait_for_connection:
+      sleep: 10
+      timeout: 300
+    delegate_to: "{{ config.cloud.instance_name }}"
+  become: no
+  when:
+  - "'tf' not in ansible_run_tags"
+  - "'cloud' not in ansible_run_tags"
+  tags:
+  - always

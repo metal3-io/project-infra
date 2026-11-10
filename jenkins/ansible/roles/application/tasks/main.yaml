@@ -1,0 +1,61 @@
+---
+- name: perform generic tasks
+  include_tasks: generic.yaml
+  args:
+    apply:
+      tags: always
+  tags: always
+
+- name: deploy socket-proxy
+  include_tasks: socket-proxy.yaml
+  args:
+    apply:
+      tags: socket-proxy
+  tags: socket-proxy
+
+- name: deploy Traefik
+  include_tasks: traefik.yaml
+  args:
+    apply:
+      tags: traefik
+  tags: traefik
+
+- name: deploy Jenkins
+  include_tasks: jenkins.yaml
+  args:
+    apply:
+      tags: jenkins
+  tags: jenkins
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+  tags: always
+  when: quadlets_changed
+  vars:
+    dummy: { changed: false }
+    quadlet_tasks:
+    - "{{ jenkins_volume | default(dummy) }}"
+    - "{{ jenkins_container | default(dummy) }}"
+    - "{{ traefik_container | default(dummy) }}"
+    - "{{ socket_proxy_container | default(dummy) }}"
+    - "{{ access_network | default(dummy) }}"
+    - "{{ app_network | default(dummy) }}"
+    - "{{ socket_network | default(dummy) }}"
+    quadlets_changed: "{{ quadlet_tasks | selectattr('changed') is any }}"
+
+- name: ensure services are running
+  service:
+    name: "{{ item }}"
+    state: started
+  loop: "{{ services }}"
+  tags: always
+  when:
+  - not ansible_check_mode
+  - item not in ansible_skip_tags
+  - '"all" in ansible_run_tags or item in ansible_run_tags'
+  vars:
+    services:
+    - socket-proxy
+    - traefik
+    - jenkins

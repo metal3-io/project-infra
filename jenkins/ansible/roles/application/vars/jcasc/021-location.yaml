@@ -1,0 +1,5 @@
+---
+unclassified:
+  location:
+    adminAddress: "{{ config.gpg.email }}"
+    url: "https://{{ config.traefik.host_fqdn }}"

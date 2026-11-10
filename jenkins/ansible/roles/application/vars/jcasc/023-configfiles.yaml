@@ -1,0 +1,14 @@
+# NOTE: not needed or included for test environment - the config-file-provider plugin is not installed there so this would break the schema anyway
+---
+unclassified:
+  globalConfigFiles:
+    configs:
+    - openstackUserData:
+        name: metal3ci-ubuntu
+        id: metal3ci-ubuntu
+        comment: used to auto-connect dynamic and ephemeral agents
+        content: |
+          #!/bin/bash
+          curl -s "^${SLAVE_JAR_URL}" -o "^${SLAVE_JENKINS_HOME}/slave.jar"
+          > /etc/jenkins.sec cat <<< "^${SLAVE_JNLP_SECRET}"
+          /usr/bin/sudo -i -u metal3ci /usr/bin/java ^${SLAVE_JVM_OPTIONS} -jar "^${SLAVE_JENKINS_HOME}/slave.jar" -url "^${JENKINS_URL}" -secret @/etc/jenkins.sec -webSocket -name "^${AGENT_NAME}" -workDir "^${SLAVE_JENKINS_HOME}"

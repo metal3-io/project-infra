@@ -1,0 +1,73 @@
+---
+- name: disable runtime dir service
+  service:
+    name: user-runtime-dir@0.service
+    state: stopped
+    enabled: false
+    masked: true
+
+- name: create GPG runtime directory
+  file:
+    path: /run/user/0/gnupg
+    state: directory
+
+- name: create GPG socket diversion
+  copy:
+    dest: /run/user/0/gnupg/S.gpg-agent
+    attributes: +i
+    content: |
+      %%Assuan%%
+      socket=/root/.gnupg/S.gpg-agent
+
+- name: create GPG configuration directory
+  file:
+    path: /root/.gnupg
+    state: directory
+    mode: '0700'
+
+- name: configure GPG agent
+  copy:
+    dest: /root/.gnupg/gpg-agent.conf
+    content: |
+      disable-scdaemon
+      allow-preset-passphrase
+      allow-loopback-pinentry
+      default-cache-ttl {{ config.gpg.cache_ttl_seconds }}
+      max-cache-ttl {{ config.gpg.cache_ttl_seconds }}
+  register: gpg_agent_configuration
+
+- name: reload GPG agent
+  command: /bin/gpgconf --reload gpg-agent
+  when: gpg_agent_configuration is changed
+
+- name: get fingerprints and keygrips
+  shell: "/bin/gpg --show-keys --with-keygrip --with-colons | awk -F: '/^(fpr|grp)/{print $10}'"
+  args:
+    stdin: "{{ credentials.pass.gpg_keys }}"
+  changed_when: false
+  no_log: true
+  check_mode: false
+  register: key_data
+
+- name: import key
+  command: "/bin/gpg --pinentry-mode loopback --batch --import"
+  args:
+    stdin: "{{ credentials.pass.gpg_keys }}"
+  changed_when: "'imported' in key_import.stdout_lines"
+  no_log: true
+  register: key_import
+
+- name: trust key
+  command: "/bin/gpg --import-ownertrust"
+  args:
+    stdin: "{{ key_data.stdout_lines | first }}:6:"
+  changed_when: "'setting' in key_trust.stdout_lines"
+  register: key_trust
+
+- name: initialize password store
+  command: "/bin/pass init {{ config.gpg.email }}"
+  args:
+    creates: /root/.password-store
+
+- name: unlock encryption
+  include_tasks: unlock.yaml

@@ -1,0 +1,123 @@
+---
+- name: survey bootups
+  command: /bin/journalctl --list-boots --quiet
+  changed_when: false
+  check_mode: false
+  register: boot_list
+
+- name: survey services
+  service_facts:
+
+- name: update pristine system
+  package:
+    name: '*'
+    state: latest
+  register: system_update
+  when:
+  - config["os"]["update"] | bool
+  - first_boot
+  - "'app-network' not in service_names"
+  vars:
+    known_systemd_services: "{{ ansible_facts['services'].values() | selectattr('source', 'equalto', 'systemd') }}"
+    existing_systemd_services: "{{ known_systemd_services | rejectattr('status', 'equalto', 'not-found') }}"
+    service_names: "{{ existing_systemd_services | map(attribute='name') | map('replace', '.service', '') }}"
+    first_boot: "{{ boot_list.stdout_lines | length == 1 }}"
+
+- name: enable SELinux
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
+  register: selinux_configuration
+
+- name: restart system
+  reboot:
+  when: system_update is not skipped or selinux_configuration is changed
+
+- name: configure EPEL repository
+  package:
+    name: epel-release
+
+- name: install necessary packages
+  package:
+    name: "{{ config.os.packages }}"
+
+- name: check SELinux modules
+  command: /sbin/semodule -l
+  changed_when: false
+  check_mode: false
+  register: selinux_modules
+
+- name: handle custom SELinux module
+  block:
+  - name: create custom SELinux module
+    copy:
+      src: selinux-socket_proxy.cil
+      dest: "{{ config.app.path }}/socket_proxy.cil"
+
+  - name: load custom SELinux module
+    command:
+      argv:
+      - semodule
+      - -i
+      - "{{ config.app.path }}/socket_proxy.cil"
+      - /usr/share/udica/templates/base_container.cil
+      - /usr/share/udica/templates/net_container.cil
+
+  - name: clean up
+    file:
+      path: "{{ config.app.path }}/socket_proxy.cil"
+      state: absent
+
+  when: '"socket_proxy" not in selinux_modules.stdout_lines'
+
+- name: disable execution in user-controlled directories
+  ansible.posix.seboolean:
+    name: container_user_exec_content
+    state: false
+    persistent: true
+
+- name: suppress Docker emulation warning
+  block:
+  - name: check suppression file
+    file:
+      path: /etc/containers/nodocker
+      state: file
+  rescue:
+  - name: create suppression file
+    file:
+      path: /etc/containers/nodocker
+      state: touch
+
+- name: create non-privileged group
+  group:
+    name: podman
+  register: socket_access_group
+
+- name: allow non-privileged group access to container runtime socket
+  ini_file:
+    path: '/etc/systemd/system/podman.socket.d/override.conf'
+    section: Socket
+    section_has_values:
+    - option: SocketGroup
+      value: podman
+    - option: SocketMode
+      value: '0660'
+    - option: DirectoryMode
+      value: '0750'
+    - option: ExecStartPost
+      value: 'chgrp podman %t/podman'
+    allow_no_value: yes
+    no_extra_spaces: true
+
+- name: create container runtime socket
+  service:
+    name: podman.socket
+    enabled: yes
+    state: started
+    daemon_reload: true
+
+- name: schedule container image prune
+  cron:
+    name: "podman image prune"
+    special_time: "{{ config.podman.image_prune_schedule }}"
+    job: "/bin/podman image prune -af >/dev/null"

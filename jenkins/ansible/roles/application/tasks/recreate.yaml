@@ -1,0 +1,10 @@
+---
+# NOTE: perhaps include encryption to unlock if hitting a timing problem
+- name: "recreate {{ service_name }}"
+  service:
+    name: "{{ service_name | lower }}"
+    state: restarted
+
+- name: mark service restart
+  set_fact:
+    restarted_services: "{{ services_restarted | default([]) + [ service_name | lower ] }}"

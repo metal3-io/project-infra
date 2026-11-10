@@ -1,0 +1,17 @@
+---
+unclassified:
+  globalLibraries:
+    libraries:
+    - defaultVersion: b49887de37e08fd05399ae60a8bc22fb80f6e82b
+      implicit: true
+      includeInChangesets: false
+      name: trustedPipelineLibs
+      retriever:
+        modernSCM:
+          libraryPath: jenkins/jobs/trusted_groovy_libraries/
+          scm:
+            gitSource:
+              credentialsId: nordix-metal3-github-ssh
+              remote: https://github.com/metal3-io/project-infra
+              traits:
+              - gitBranchDiscovery

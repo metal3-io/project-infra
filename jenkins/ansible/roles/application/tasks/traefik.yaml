@@ -1,0 +1,129 @@
+---
+- name: Jenkins protection sanity check
+  assert:
+    that:
+    - config.jenkins.protect | ternary(credentials.traefik.jenkins | length > 0, True)
+    quiet: yes
+    fail_msg: "Jenkins protection is enabled but no users are defined"
+
+- name: generate Traefik configuration
+  include_vars:
+    file: config-traefik.yaml
+    name: traefik_config
+
+# NOTE: 1PW calls are made here
+- name: generate users files
+  set_fact:
+    traefik_users_jenkins: |
+      {% for item in credentials.traefik.jenkins %}
+      {{item.user}}:{{item.password | password_hash(hashtype='bcrypt', salt=lookup('community.general.random_string', length=22, special=False, seed=item.user)) }}
+      {% endfor %}
+  no_log: true
+
+- name: create letsencrypt volume
+  containers.podman.podman_volume:
+    name: letsencrypt
+    state: quadlet
+    quadlet_options: "{{ quadlet_options }}"
+  register: letsencrypt_volume
+
+- name: download fail2ban plugin
+  git:
+    repo: https://github.com/Nordix/traefik-plugin-fail2ban
+    dest: /var/lib/traefik-plugin-fail2ban
+    version: "{{ config.traefik.plugin.fail2ban.version }}"
+    single_branch: yes
+    force: yes
+  notify: recreate Traefik
+  check_mode: false
+
+- name: configure encryption
+  include_tasks: encryption.yaml
+
+- name: create Traefik secrets
+  containers.podman.podman_secret:
+    name: "{{ item.name }}"
+    data: "{{ item.content }}"
+    driver: pass
+  loop: "{{ secrets }}"
+  no_log: true
+  notify: recreate Traefik
+  vars:
+    secrets:
+    - name: traefik
+      content: "{{ traefik_config }}"
+    - name: traefik_users_jenkins
+      content: "{{ traefik_users_jenkins }}"
+
+- name: create custom Traefik seccomp profile
+  copy:
+    src: "seccomp-traefik.json"
+    dest: "{{ config.app.path }}"
+  notify: recreate Traefik
+
+- name: pull Traefik image
+  containers.podman.podman_image:
+    name: "{{ config.images.traefik }}"
+
+- name: configure Traefik container
+  containers.podman.podman_container:
+    name: traefik
+    image: "{{ config.images.traefik }}"
+    user: '65534:65534'
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE # bind web ports
+    read_only: yes
+    security_opt:
+    - "seccomp={{ config.app.path }}/seccomp-traefik.json"
+    - no-new-privileges:true
+    command:
+    - --log.level=INFO
+    - --providers.docker=true
+    - --providers.docker.endpoint=tcp://socket-proxy.dns.podman:2375
+    - --providers.providersThrottleDuration=10s
+    - --providers.docker.exposedbydefault=false
+    - --providers.docker.network=app
+    - --providers.file.directory=/etc/traefik/dynamic/conf
+    - --providers.file.watch=false
+    - --entryPoints.websecure.address=:443
+    - --entryPoints.websecure.http.tls=true
+    - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+    - "--certificatesresolvers.letsencrypt.acme.email={{ config.gpg.email }}"
+    - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    - --experimental.localplugins.fail2ban.modulename=github.com/juitde/traefik-plugin-fail2ban
+    - --ping
+    healthcheck: traefik healthcheck --ping
+    restart_policy: on-failure:3
+    network:
+    - socket
+    - app
+    - access
+    ports:
+    - 443:443
+    mount:
+    - 'type=tmpfs,dst=/plugins-storage,tmpfs-size=10m,tmpfs-mode=1750,chown=true'
+    volume:
+    - letsencrypt:/letsencrypt:z
+    - /var/lib/traefik-plugin-fail2ban:/plugins-local/src/github.com/juitde/traefik-plugin-fail2ban:z,ro
+    secrets:
+    - traefik,target=/etc/traefik/dynamic/conf/config.yml
+    - traefik_users_jenkins,target=/etc/traefik/users_jenkins
+    state: quadlet
+    quadlet_options: "{{ container_quadlet_options + partial }}"
+  vars:
+    dependencies:
+    - socket-network.service
+    - app-network.service
+    - access-network.service
+    - letsencrypt-volume.service
+    - socket-proxy.service
+    partial:
+    - '[Service]'
+    - 'SetLoginEnvironment=true'
+    - '[Unit]'
+    - 'After={{ dependencies | join(" ") }}'
+    - 'Wants={{ dependencies | join(" ") }}'
+  register: traefik_container
+  notify: recreate Traefik
