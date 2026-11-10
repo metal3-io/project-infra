@@ -1,0 +1,212 @@
+#
+# ============LICENSE_START=======================================================
+#  Copyright (C) 2022 Nordix Foundation.
+#  Copyright 2026 The Metal3 Authors.
+# ================================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# ============LICENSE_END=========================================================
+
+# Description:
+# ============
+# This file contains job template definition for Cluster API Provider Metal3 (CAPM3) e2e basic integration tests.
+# This job can be triggered manually or through a Github pull request. It creates a
+# pipeline job. The pipeline scripts are maintained in Metal3 CI project infra repository.
+
+- job-template:
+    id: capm3_e2e_basic_tests
+    name: '{job_prefix}-{image_os}-e2e-basic-test-{capm3_target_branch}'
+    description: "CAPM3 {capm3_version} e2e basic integration tests on {image_os}."
+    project-type: pipeline
+    defaults: global
+    disabled: False
+    concurrent: True
+    parameters:
+    # Parameters set by Prow
+    - string:
+        name: BUILD_ID
+        description: 'Used by Prow when triggering jobs'
+    - string:
+        name: PROW_JOB_ID
+        description: 'Used by Prow when triggering jobs'
+    - string:
+        name: REPO_OWNER
+        default: 'metal3-io'
+        description: 'Project github repo org name'
+    - string:
+        name: REPO_NAME
+        default: 'cluster-api-provider-metal3'
+        description: 'Project github repo name'
+    - string:
+        name: PULL_BASE_REF
+        default: '{capm3_release_branch}'
+        description: 'Ref name of the base branch'
+    - string:
+        name: PULL_PULL_SHA
+        default: '{capm3_release_branch}'
+        description: 'Pull request head SHA'
+    - string:
+        name: PULL_NUMBER
+        description: 'Pull request number'
+    # End of Prow parameters
+    - string:
+        name: IMAGE_OS
+        default: '{image_os}'
+        description: 'Distribution to use for the target host as well as source and target cluster. Can be ubuntu, centos or leap'
+    - string:
+        name: capm3_release_branch
+        default: '{capm3_release_branch}'
+        description: 'The target branch of CAPM3 to be used for this test'
+    - string:
+        name: bmo_release_branch
+        default: '{bmo_release_branch}'
+        description: 'The target branch of BMO to be used for this test'
+    - string:
+        name: CAPI_VERSION
+        default: '{capi_version}'
+        description: 'Cluster API version. E.g. v1beta2.'
+    - string:
+        name: CAPM3_VERSION
+        default: '{capm3_version}'
+        description: 'Cluster API provider Metal3 version. E.g. v1beta2.'
+    - string:
+        name: NUM_NODES
+        default: 2
+        description: 'Number of libvirt VMs.'
+    - string:
+        name: GINKGO_FOCUS
+        default: "basic"
+        description: 'Select the e2e basic integration test'
+
+    properties:
+    - build-discarder:
+        days-to-keep: 30
+        num-to-keep: 300
+        artifact-days-to-keep: -1
+        artifact-num-to-keep: -1
+
+    triggers: "{triggers}"
+
+    pipeline-scm:
+      scm:
+      - git:
+          url: "{ci_github_repo}"
+          branches:
+          - '{branch|main}'
+          name: 'origin'
+          refspec: '+refs/heads/*:refs/remotes/origin/*'
+          wipe-workspace: True
+          honor-refspec: True
+          shallow-clone: False
+      script-path: "{e2e_tests_pipeline}"
+      lightweight-checkout: False
+
+# Below are job groups. One for each branch we want to generate pipelines for.
+# They are used to group together the variables. E.g. the "main" group sets
+# all the branches to "main". The group has two jobs, one for PRs and one periodic.
+- job-group:
+    name: main
+    capm3_target_branch: main
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: main
+    bmo_release_branch: main
+    target_branches:
+    - 'main'
+    jobs:
+    - capm3_e2e_basic_tests:
+        triggers: []
+    - capm3_e2e_basic_tests:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 0 * * *" # Runs every day at 0 am (2 am EET)
+- job-group:
+    name: release-1-14
+    capm3_target_branch: release-1-14
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: release-1.14
+    bmo_release_branch: release-0.14
+    target_branches:
+    - 'main'
+    - 'release-1.14'
+    - 'release-0.14'
+    jobs:
+    - capm3_e2e_basic_tests:
+        triggers: []
+    - capm3_e2e_basic_tests:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "40 1 * * *" # Runs every day at 1:40 am (3:40 am EET)
+- job-group:
+    name: release-1-13
+    capm3_target_branch: release-1-13
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: release-1.13
+    bmo_release_branch: release-0.13
+    target_branches:
+    - 'main'
+    - 'release-1.13'
+    - 'release-0.13'
+    jobs:
+    - capm3_e2e_basic_tests:
+        triggers: []
+    - capm3_e2e_basic_tests:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 1 * * *" # Runs every day at 1:00 am (3:00 am EET)
+- job-group:
+    name: release-1-12
+    capm3_target_branch: release-1-12
+    capi_version: v1beta1
+    capm3_version: v1beta1
+    capm3_release_branch: release-1.12
+    bmo_release_branch: release-0.12
+    target_branches:
+    - 'main'
+    - 'release-1.12'
+    - 'release-0.12'
+    jobs:
+    - capm3_e2e_basic_tests:
+        triggers: []
+    - capm3_e2e_basic_tests:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "40 0 * * *" # Runs every day at 0:40 am (2:40 am EET)
+
+# The project is where all jobs are generated from.
+# One job is created for each combination, e.g. there will
+# be one "main" job with image_os=ubuntu and one with image_os=centos.
+# The "jobs" list here refer to the names of job-groups, so "main"
+# means the job-group with name "main".
+- project:
+    name: "capm3-basic"
+    image_os:
+    - ubuntu
+    - centos
+    jobs:
+    - main
+    - release-1-14
+    - release-1-13
+    - release-1-12
+- project:
+    name: "capm3-basic-leap"
+    image_os:
+    - leap
+    jobs:
+    - main
+    - release-1-14
+    - release-1-13
+    - release-1-12

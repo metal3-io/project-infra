@@ -1,0 +1,766 @@
+#
+# ============LICENSE_START=======================================================
+#  Copyright (C) 2019 Nordix Foundation.
+#  Copyright 2026 The Metal3 Authors.
+# ================================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# ============LICENSE_END=========================================================
+
+# Description:
+# ============
+# This file contains the list of JJB projects in metal3 category. Each project
+# corresponds to a github repository. Under each project's 'jobs' list defines the
+# jobs associated with that github repository. The job definitions can be found
+# in job_{job_id}.yml files in any of JJB include folders.
+
+- project:
+    name: 'image_building'
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: main
+    bmo_release_branch: main
+    k8s_version: v1.37.0
+    crictl_version: v1.36.0
+    crio_version: v1.36.4
+    triggers: []
+    jobs:
+    - ci_image_building
+    - ci_image_building:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 6 */14 * *"
+    - node_image_building
+    - node_image_building:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 5 */14 * *"
+
+- project:
+    name: 'project_infra'
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    triggers: []
+    jobs:
+    - periodic_osv_scanner_metal3_repos
+    - fullstack_project_infra_building_test_prow
+    - fullstack_project_infra_building_test_prow:
+        job_prefix: metal3-periodic
+        # TODO: Is this really needed?
+        # Why do we have different values for periodic and PR jobs?
+        staging_default: "true"
+        triggers:
+        - timed: "0 4  * * 1,3,5,7"
+    - periodic_clean
+
+- project:
+    name: 'metal3_docs'
+    triggers: []
+    jobs:
+    - quick_start_guide_tests
+    - quick_start_guide_tests:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 0 * * *" # Runs every day at 0.00 UTC (matches the GitHub Action periodic)
+
+- job-group:
+    name: capm3-main
+    capm3_target_branch: main
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: main
+    bmo_release_branch: main
+    jobs:
+    - capm3_e2e_integration_tests_prow
+    - capm3_e2e_integration_tests_prow:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 4 * * *" # Runs every day at 4.00 UTC (6.00 EET)
+    - capm3_e2e_integration_tests_prow:
+        # Nightly build jobs (with suffix)
+        suffix: "-capi-nightly-build"
+        capi_nightly_build: true
+    - capm3_e2e_integration_tests_prow:
+        job_prefix: metal3-periodic
+        # Nightly build jobs (with suffix)
+        suffix: "-capi-nightly-build"
+        capi_nightly_build: true
+        triggers:
+        - timed: "0 5 * * *" # Runs every day at 5.00 UTC (7.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: main-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: main-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 15 * * *" # Runs every day at 15.00 UTC (17.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: main-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: main-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 17 * * *" # Runs every day at 17.00 UTC (19.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: main-features
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: main-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: main-features
+        ginkgo_focus: features
+        num_nodes: 4
+        cni_provider: "cilium"
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 19 * * *" # Runs every day at 19.00 UTC (21.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: main-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+        cni_provider: "cilium"
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 19 * * *" # Runs every day at 19.00 UTC (21.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: main-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: main-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 2 * * *" # Runs every day at 2.00 UTC (4.00 EET)
+    - capm3_e2e_k8s_conformance_tests_prow:
+        exclude:
+        - image_os: centos
+    - capm3_e2e_k8s_conformance_tests_prow:
+        job_prefix: metal3-periodic
+        exclude:
+        - image_os: centos
+        triggers:
+        - timed: "0 1 * * *" # Runs every day at 1.00 UTC (3.00 EET)
+    - capm3_e2e_capi_md_tests_prow
+    - capm3_e2e_capi_md_tests_prow:
+        job_prefix: metal3-periodic
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 2 * * *" # Runs every day at 2.00 UTC (4.00 EET)
+    - capm3_e2e_k8s_upgrade_n3_tests_prow:
+        kubernetes_n0_version: v1.34.9
+        kubernetes_n1_version: v1.35.6
+        kubernetes_n2_version: v1.36.2
+        kubernetes_n3_version: v1.37.0
+        exclude:
+        - image_os: centos
+    - capm3_e2e_k8s_upgrade_n3_tests_prow:
+        job_prefix: metal3-periodic
+        kubernetes_n0_version: v1.34.9
+        kubernetes_n1_version: v1.35.6
+        kubernetes_n2_version: v1.36.2
+        kubernetes_n3_version: v1.37.0
+        exclude:
+        - image_os: centos
+        triggers:
+        - timed: "0 8 * * 6" # Runs every Saturday at 8 AM (10 AM EET)
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        k8s_version_upgrade_from: v1.36.2
+        k8s_version_upgrade_to: v1.37.0
+        exclude:
+        - image_os: ubuntu
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        k8s_version_upgrade_from: v1.36.2
+        k8s_version_upgrade_to: v1.37.0
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 8 * * 6" # Runs every Saturday at 8 AM (10 AM EET)
+
+- job-group:
+    name: capm3-release-1-14
+    capm3_target_branch: release-1-14
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: release-1.14
+    bmo_release_branch: release-0.14
+    jobs:
+    - capm3_e2e_integration_tests_prow
+    - capm3_e2e_integration_tests_prow:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "30 5 * * *" # Runs every day at 5.30 UTC (7.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-14-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-14-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 16 * * *" # Runs every day at 16.30 UTC (18.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-14-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-14-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 18 * * *" # Runs every day at 18.30 UTC (20.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-14-features
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-14-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-14-features
+        ginkgo_focus: features
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 20 * * *" # Runs every day at 20.30 UTC (22.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-14-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 20 * * *" # Runs every day at 20.30 UTC (22.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-14-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-14-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 3 * * *" # Runs every day at 3.30 UTC (5.30 EET)
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        k8s_version_upgrade_from: v1.36.2
+        k8s_version_upgrade_to: v1.37.0
+        exclude:
+        - image_os: ubuntu
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        k8s_version_upgrade_from: v1.36.2
+        k8s_version_upgrade_to: v1.37.0
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 8 * * 6" # Runs every Saturday at 8.30 AM (10.30 AM EET)
+
+- job-group:
+    name: capm3-release-1-13
+    capm3_target_branch: release-1-13
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: release-1.13
+    bmo_release_branch: release-0.13
+    jobs:
+    - capm3_e2e_integration_tests_prow
+    - capm3_e2e_integration_tests_prow:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "0 5 * * *" # Runs every day at 5.00 UTC (7.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-13-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-13-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 16 * * *" # Runs every day at 16.00 UTC (18.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-13-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-13-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 18 * * *" # Runs every day at 18.00 UTC (20.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-13-features
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-13-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-13-features
+        ginkgo_focus: features
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 20 * * *" # Runs every day at 20.00 UTC (22.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-13-features
+        capm3_version: v1beta1
+        suffix: "-v1beta1"
+        ginkgo_focus: features
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 20 * * *" # Runs every day at 20.00 UTC (22.00 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-13-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-13-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 3 * * *" # Runs every day at 3.00 UTC (5.00 EET)
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        k8s_version_upgrade_from: v1.35.6
+        k8s_version_upgrade_to: v1.36.2
+        exclude:
+        - image_os: ubuntu
+    - capm3_e2e_k8s_in_place_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        k8s_version_upgrade_from: v1.35.6
+        k8s_version_upgrade_to: v1.36.2
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 8 * * 6" # Runs every Saturday at 8 AM (10 AM EET)
+
+- job-group:
+    name: capm3-release-1-12
+    capm3_target_branch: release-1-12
+    capi_version: v1beta1
+    capm3_version: v1beta1
+    capm3_release_branch: release-1.12
+    bmo_release_branch: release-0.12
+    jobs:
+    - capm3_e2e_integration_tests_prow
+    - capm3_e2e_integration_tests_prow:
+        job_prefix: metal3-periodic
+        triggers:
+        - timed: "30 4 * * *" # Runs every day at 4.30 UTC (6.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-12-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-12-pivoting
+        ginkgo_focus: pivoting
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 15 * * *" # Runs every day at 15.30 UTC (17.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-12-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-12-remediation
+        ginkgo_focus: remediation
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 17 * * *" # Runs every day at 17.30 UTC (19.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-12-features
+        ginkgo_focus: features
+        num_nodes: 4
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-12-features
+        ginkgo_focus: features
+        num_nodes: 4
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "30 19 * * *" # Runs every day at 19.30 UTC (21.30 EET)
+    - capm3_e2e_feature_tests_prow:
+        capm3_target_job: release-1-12-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+    - capm3_e2e_feature_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_job: release-1-12-scalability
+        ginkgo_focus: scalability
+        num_nodes: 30
+        exclude:
+        - image_os: ubuntu
+        triggers:
+        - timed: "0 4 * * *" # Runs every day at 4.00 UTC (6.00 EET)
+
+- job-group:
+    name: clusterctl-upgrade
+    exclude:
+    - image_os: centos
+    jobs:
+    - capm3_e2e_clusterctl_upgrade_tests_prow:
+        capm3_target_branch:
+        - main:
+            capm3_release_branch: main
+            bmo_release_branch: main
+            capi_version: v1beta2
+            capm3_version: v1beta2
+        - release-1-14:
+            capm3_release_branch: release-1.14
+            bmo_release_branch: release-0.14
+            capi_version: v1beta2
+            capm3_version: v1beta2
+        - release-1-13:
+            capm3_release_branch: release-1.13
+            bmo_release_branch: release-0.13
+            capi_version: v1beta2
+            capm3_version: v1beta2
+        - release-1-12:
+            capm3_release_branch: release-1.12
+            bmo_release_branch: release-0.12
+            capi_version: v1beta1
+            capm3_version: v1beta1
+    - capm3_e2e_clusterctl_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_target_branch:
+        - main:
+            capm3_release_branch: main
+            bmo_release_branch: main
+            capi_version: v1beta2
+            capm3_version: v1beta2
+            triggers:
+            - timed: "0 22 * * *" # Runs every day at 22.00 UTC (00.00 EET)
+        - release-1-14:
+            capm3_release_branch: release-1.14
+            bmo_release_branch: release-0.14
+            capi_version: v1beta2
+            capm3_version: v1beta2
+            triggers:
+            - timed: "25 22 * * *" # Runs every day at 22.25 UTC (00.25 EET)
+        - release-1-13:
+            capm3_release_branch: release-1.13
+            bmo_release_branch: release-0.13
+            capi_version: v1beta2
+            capm3_version: v1beta2
+            triggers:
+            - timed: "45 22 * * *" # Runs every day at 22.45 UTC (00.45 EET)
+        - release-1-12:
+            capm3_release_branch: release-1.12
+            bmo_release_branch: release-0.12
+            capi_version: v1beta1
+            capm3_version: v1beta1
+            triggers:
+            - timed: "30 22 * * *" # Runs every day at 22.30 UTC (00.30 EET)
+
+- job-group:
+    name: k8s-upgrade-1-36-1-37
+    k8s_versions: 1-36-1-37
+    k8s_version_upgrade_from: v1.36.2
+    k8s_version_upgrade_to: v1.37.0
+    exclude:
+    - image_os: centos
+    jobs:
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        capm3_release_branch: main
+        bmo_release_branch: main
+        capm3_target_branch: main
+        capi_version: v1beta2
+        capm3_version: v1beta2
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_release_branch: main
+        bmo_release_branch: main
+        capm3_target_branch: main
+        capi_version: v1beta2
+        capm3_version: v1beta2
+        triggers:
+        - timed: "0 1 * * *" # Runs every day at 1.00 UTC (3.00 EET)
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        capm3_release_branch: release-1.14
+        bmo_release_branch: release-0.14
+        capm3_target_branch: release-1-14
+        capi_version: v1beta2
+        capm3_version: v1beta2
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_release_branch: release-1.14
+        bmo_release_branch: release-0.14
+        capm3_target_branch: release-1-14
+        capi_version: v1beta2
+        capm3_version: v1beta2
+        triggers:
+        - timed: "25 3 * * *" # Runs every day at 3.25 UTC (5.25 EET)
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        capm3_release_branch: release-1.13
+        bmo_release_branch: release-0.13
+        capm3_target_branch: release-1-13
+        capi_version: v1beta2
+        capm3_version: v1beta2
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_release_branch: release-1.13
+        bmo_release_branch: release-0.13
+        capm3_target_branch: release-1-13
+        capi_version: v1beta2
+        capm3_version: v1beta2
+        triggers:
+        - timed: "45 2 * * *" # Runs every day at 2.45 UTC (4.45 EET)
+- job-group:
+    name: k8s-upgrade-1-35-1-36
+    k8s_versions: 1-35-1-36
+    k8s_version_upgrade_from: v1.35.6
+    k8s_version_upgrade_to: v1.36.2
+    exclude:
+    - image_os: centos
+    jobs:
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        capm3_release_branch: release-1.12
+        bmo_release_branch: release-0.12
+        capm3_target_branch: release-1-12
+        capi_version: v1beta1
+        capm3_version: v1beta1
+    - capm3_e2e_k8s_upgrade_tests_prow:
+        job_prefix: metal3-periodic
+        capm3_release_branch: release-1.12
+        bmo_release_branch: release-0.12
+        capm3_target_branch: release-1-12
+        capi_version: v1beta1
+        capm3_version: v1beta1
+        triggers:
+        - timed: "45 3 * * *" # Runs every day at 3.45 UTC (5.45 EET)
+- job-group:
+    name: k8s-upgrade-1-34-1-35
+    k8s_versions: 1-34-1-35
+    k8s_version_upgrade_from: v1.34.9
+    k8s_version_upgrade_to: v1.35.6
+    capi_version: v1beta1
+    capm3_version: v1beta1
+    exclude:
+    - image_os: centos
+
+- job-group:
+    name: k8s-pre-release
+    crictl_version: v1.34.0
+    crio_version: v1.34.0
+    capm3_target_branch: main
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: main
+    bmo_release_branch: main
+    jobs:
+    - capm3_e2e_integration_k8s_pre_release_tests_prow
+    - capm3_e2e_integration_k8s_pre_release_tests_prow:
+        # TODO: This job is not used. It has no trigger, so it is identical to the
+        # PR job above, except it is named "metal3-periodic-*".
+        job_prefix: metal3-periodic
+        exclude:
+        - image_os: ubuntu
+    - capm3_e2e_k8s_upgrade_pre_release_tests_prow:
+        k8s_version_upgrade_from: v1.34.9
+        exclude:
+        - image_os: centos
+    - capm3_e2e_k8s_upgrade_pre_release_tests_prow:
+        # TODO: This job is not used. It has no trigger, so it is identical to the
+        # PR job above, except it is named "metal3-periodic-*".
+        job_prefix: metal3-periodic
+        k8s_version_upgrade_from: v1.34.9
+        exclude:
+        - image_os: centos
+
+- project:
+    name: "capm3-prow"
+    triggers: []
+    image_os:
+    - ubuntu
+    - centos
+    jobs:
+    - capm3-main
+    - capm3-release-1-14
+    - capm3-release-1-13
+    - capm3-release-1-12
+    - clusterctl-upgrade
+    - k8s-upgrade-1-36-1-37
+    - k8s-upgrade-1-35-1-36
+    - k8s-upgrade-1-34-1-35
+    - k8s-pre-release
+
+- job-group:
+    name: dev-env-main
+    capm3_target_branch: main
+    capi_version: v1beta2
+    capm3_version: v1beta2
+    capm3_release_branch: main
+    bmo_release_branch: main
+    target_branches:
+    - 'main'
+    jobs:
+    - dev_env_integration_tests_prow
+    - dev_env_integration_tests_prow:
+        job_prefix: metal3-periodic
+        cni_provider: "cilium"
+        triggers:
+        - timed: "H 3 * * *"
+
+- project:
+    name: dev-env-integration-tests-prow
+    proj:
+    - metal3_dev_env:
+        repo: metal3-dev-env
+    - project_infra:
+        repo: project-infra
+    - capm3:
+        repo: cluster-api-provider-metal3
+    - bmo:
+        repo: baremetal-operator
+    - ipam:
+        repo: ip-address-manager
+    - ironic_image:
+        repo: ironic-image
+        name_postfix: '_ironic_from_source'
+        trigger_postfix: '-ironic-source'
+        ironic_install_type: 'source'
+    - ironic_ipa_downloader:
+        repo: ironic-ipa-downloader
+    - mariadb_image:
+        repo: mariadb-image
+        build_mariadb_image_locally: 'true'
+        ironic_use_mariadb: 'true'
+    - ironic_standalone_operator:
+        repo: ironic-standalone-operator
+        use_irso: 'true'
+        capm3_target_branch:
+        - main
+    image_os:
+    - ubuntu
+    - centos
+    triggers: []
+    jobs:
+    - dev-env-main
+    - dev_env_integration_tests_prow:
+        capm3_target_branch:
+        - release-1-14:
+            capi_version: v1beta2
+            capm3_version: v1beta2
+            capm3_release_branch: release-1.14
+            bmo_release_branch: release-0.14
+            target_branches:
+            - 'main'
+            - 'release-1.14'
+            - 'release-0.14'
+        - release-1-13:
+            capi_version: v1beta2
+            capm3_version: v1beta2
+            capm3_release_branch: release-1.13
+            bmo_release_branch: release-0.13
+            target_branches:
+            - 'main'
+            - 'release-1.13'
+            - 'release-0.13'
+        - release-1-12:
+            capi_version: v1beta1
+            capm3_version: v1beta1
+            capm3_release_branch: release-1.12
+            bmo_release_branch: release-0.12
+            target_branches:
+            - 'main'
+            - 'release-1.12'
+            - 'release-0.12'
+
+- project:
+    name: bmo
+    # Default "type" of job is "pull", as in pull request,
+    # and the default ginkgo_focus is empty (all tests required in BMO PRs)
+    type: pull
+    # Default BMO branch to trigger the test in is "main"
+    branch_name: "main"
+    # These jobs are triggered by prow for PRs (empty trigger here) or by timer (see below)
+    triggers: []
+    jobs:
+    - bmo_e2e_tests:
+        type:
+        - pull:
+            ginkgo_focus: " "
+        # This job runs the "optional" set, which currently includes only "upgrade" test
+        - optional-pull:
+            ginkgo_focus: "upgrade"
