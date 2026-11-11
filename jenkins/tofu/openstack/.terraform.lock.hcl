@@ -5,6 +5,15 @@ provider "registry.opentofu.org/hashicorp/http" {
   version     = "3.5.0"
   constraints = "3.5.0"
   hashes = [
+    "h1:JSui9Kmmvc4TDx6QhxyQaW5Mbka+6e2q9hoWvcFRI9M=",
+    "h1:S0yLjN9Fu6sZ+3SWq2zcFjNrZS8EyeGnBBlkErpNNXE=",
+    "h1:StUoUwy4UcNDl1gn1kuwOl6B37w2zhZTcY8/jabWJy0=",
+    "h1:YTB70v5NGaoI3T11B7pnwBnSL1ZEN0mp23Yrto05aY0=",
+    "h1:bSHOZnfmhragoS/ZaMQEffXMipITkKF6jhcmpxAWh9c=",
+    "h1:czB6w6tVJrPWFImze+cf2fIGqcJ3VxugKRgc6bDxZoE=",
+    "h1:dm7SwSSfnRFNwgKO7HOy98OEANn9Z6TI7rQAOaletsI=",
+    "h1:eClUBisXme48lqiUl3U2+H2a2mzDawS9biqfkd9synw=",
+    "h1:jXH9n2GTk7N9tzTA6inAgftL6wqQi2c0+bTKRw74xfc=",
     "h1:yvwvVZ0vdbsTUMru+7Cr0On1FVgDJHAaC6TNvy/OWzM=",
     "zh:0a2b33494eec6a91a183629cf217e073be063624c5d3f70870456ddb478308e9",
     "zh:180f40124fa01b98b3d2f79128646b151818e09d6a1a9ca08e0b032a0b1e9cb1",
@@ -24,6 +33,19 @@ provider "registry.opentofu.org/netlify/netlify" {
   constraints = "0.4.1"
   hashes = [
     "h1:3NWddc5XKZmhMchnRaEc6AYVAkaOWFIN7pUu6O5oCVQ=",
+    "h1:6n10gQtGkfW9ev+YDxjjAE4EDtfeUcvkRCVe/oFlqa4=",
+    "h1:8Sh+SmNDcPVsbVNsH0yoaiCNjJiyveXUl0at5Bc/jIk=",
+    "h1:BL9Njoi+k62Rf4idRKcpVvM4GdE6Gd4kJrHawNtV+kA=",
+    "h1:Qa+i7i1vxNeTwQfaQ62EczQgznPw6ZXoZFaV5fNdbiE=",
+    "h1:U2J8u1UWsJ1VSlbZClzLPhS9y9VB+z6IlUa6Gc9ECm0=",
+    "h1:YHvKUyWdN19DG3v39XnwzDagCTbmw/+B8uWIBu4c7h0=",
+    "h1:YbSMvqysI51S5Bk49+1pLYIFG51hXZpEsuFs+qRvxrs=",
+    "h1:anJs1HCLh4bi26EBdoTdBh1s4cL4U8gLqYytfbKK6Us=",
+    "h1:n7IQ/ILC2/efgC8AdJ1kjDDJjX99Q257/+KG1jrAXN4=",
+    "h1:u2FyKilYsSGw1PzQ/GDNyS2J/wt8e3ZlSCuHzSHCHYs=",
+    "h1:w08bE+ZfDp9CfhNyOtG0ziiJ2fNx9PIybkFvll8VxrU=",
+    "h1:yQSrw0gMVCzRYV9VKWAmeymSDfLNDAWHgWgFV2mPL08=",
+    "h1:zrImb/I8RFg45/B00mYXKehrorqHjf+RxQQDfhcgawU=",
     "zh:16180602d6f0fd7614bcfd59c4c06cd9577a63644fe7f0827b4b5812f9ef0dc6",
     "zh:472342fb70c64aada4a5c21f20baaef7839338721694db6746900cb17a0df302",
     "zh:6362429df7c39ebda53ddd43298654d225e876a0c92bf2d24c6e3830f3d1ccb7",
@@ -46,7 +68,20 @@ provider "registry.opentofu.org/terraform-provider-openstack/openstack" {
   version     = "3.4.0"
   constraints = "~> 3.4.0"
   hashes = [
+    "h1:BB0YFgWM3KZTFY16pCYIzBqM4IpmDpT03m29VZEV2OU=",
+    "h1:CalEmc/Tn9xv1Xx2bX92EUdsF8z6Lldmb4/gwT5lSRw=",
+    "h1:DwSYyG1VNcEMUVY1GE9gbo2C3UPS8W2bFGk4WGVJnDY=",
+    "h1:FpAT7j83xnW4SkiUL6A0eXo9V1bYbABt1Eh467INBgk=",
+    "h1:FqJxdGUazKAfnZa11qT7h5PstlSTeE4xTKPUiWEgPmg=",
+    "h1:GgJWG1fXiDuRBcdDuzOWRW0TMW1Lx5N8O6+80v17LZc=",
+    "h1:HsPiqtbovSqh8jHAuMDR3tNeRNCOBEeHCvRbkgAHiaY=",
+    "h1:IwC35geJo3X96yLwIqcjSzoLL1Nt+6qJA6BoBMlGgMw=",
     "h1:MVSoVvhjbu7s1pfYfsiYED8A++XfAoyOlSX1x9PW68E=",
+    "h1:YMwKmPy+svf02jWyflqaPaQVX3eIXciwGeA8uwYgRBw=",
+    "h1:n1yIddr5lsLoYBhlfUmCwIYiCsynDkLvzAE98Tceo/A=",
+    "h1:nON9j1AYtfbOAmaml0lcPCfEQcb0OLB0K693HjdFggQ=",
+    "h1:rqRC/cidHw8t2vQb85cjMoWThGSCWnkEmTmmNSaGBVs=",
+    "h1:tzU+JfFe/RN+7swp0k5V5wUmuZtRNOjKX+spIGcRuKM=",
     "zh:11b3c88e24197a29b13cf5ab41771944bd16707b561645323e8cbb4f1da00b7b",
     "zh:1c3e89cf19118fc07d7b04257251fc9897e722c16e0a0df7b07fcd261f8c12e7",
     "zh:2dc60dbbbb822fbb1e7b17e3b89e3e6a7a8fe54a716d4477d2fa40f836c4de0f",
