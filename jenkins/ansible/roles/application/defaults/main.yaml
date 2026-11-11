@@ -8,7 +8,7 @@ config:
   app:
     path: /root
   images:
-    traefik: docker.io/library/traefik:3.7.17@sha256:30ff62491aacdb862ceb8c9edcf2627da638d7deafdd4b6dab32fe34f8aa3e90
+    traefik: docker.io/library/traefik:3.7.18@sha256:9c437ac4f09ce6f4980a8544902d3475fdf70a1a7c578729581d2535dfa7d635
     socket-proxy: ghcr.io/wollomatic/socket-proxy:1.13.2@sha256:82db5c4728e4fd68d969ec3d74d99bf6d990d06428b583a6f1daabab27de1bd3
     jenkins: docker.io/jenkins/jenkins:2.580.2-lts@sha256:74401de6a6f92e1afe1b02d1c8e3d0c33f263bfb5275dd8813f9150355f2367b
   quadlet:
