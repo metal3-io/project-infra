@@ -1,8 +1,6 @@
-ansible==13.4.0
-ansible-core==2.20.11
-openstacksdk==4.10.0
+ansible==14.6.0
+ansible-core==2.21.6
+openstacksdk==4.22.0
 jmespath==1.1.0
 jsonschema==4.26.0
-passlib==1.7.4
-bcrypt==4.3.0
-oci==2.179.0
+oci==2.191.0
