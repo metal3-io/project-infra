@@ -63,9 +63,78 @@
       ],
       "description": "Base images only: open update PRs once a month",
       "schedule": ["* 0-3 15 * *"]
+    },
+    {
+      "matchDatasources": ["jenkins-plugins"],
+      "description": "Batch all Jenkins plugin updates into one weekly PR",
+      "groupName": "Jenkins plugins",
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "matchDepNames": ["jenkinsci/oracle-cloud-infrastructure-compute-plugin"],
+      "description": "Forked plugin: a bump is a NOTIFICATION only. Rebase patches, rebuild the .hpi, commit it to this branch, THEN merge. Never merge the marker bump alone.",
+      "groupName": "OCI compute plugin (forked, manual rebuild)",
+      "extractVersion": "^oracle-cloud-infrastructure-compute-(?<version>.+)$",
+      "addLabels": ["do-not-merge/hold"],
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/jenkins/jenkins"],
+      "description": "Jenkins LTS core bump: before merge, run jpm.py --allplugins --update to re-validate the plugin manifest against the new core. jpm.py reads this exact image tag via get_jenkins_version(). Only X.Y.Z-lts tags are tracked.",
+      "groupName": "Jenkins LTS image",
+      "addLabels": ["do-not-merge/hold"],
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "docker.io/library/traefik",
+        "ghcr.io/wollomatic/socket-proxy"
+      ],
+      "description": "Supporting container images for the Jenkins host (Traefik, socket-proxy)",
+      "groupName": "Jenkins host supporting images",
+      "minimumReleaseAge": "1 day"
     }
   ],
   "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Bump the Jenkins LTS image in the application role defaults (LTS only: X.Y.Z-lts)",
+      "managerFilePatterns": ["ansible/roles/application/defaults/main.yaml"],
+      "matchStrings": [
+        "jenkins: (?<depName>docker\\.io/jenkins/jenkins):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-lts$"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump the supporting container images (Traefik, socket-proxy) in the application role defaults",
+      "managerFilePatterns": ["ansible/roles/application/defaults/main.yaml"],
+      "matchStrings": [
+        "(?:traefik|socket-proxy): (?<depName>(?:[a-z0-9.-]+\\.[a-z]{2,})/[^:\\s]+):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Track upstream releases of the forked OCI compute plugin (bump = rebuild the bundled .hpi)",
+      "managerFilePatterns": ["ansible/roles/application/files/oracle-cloud-infrastructure-compute.upstream"],
+      "matchStrings": ["upstream_base_version=(?<currentValue>\\S+)"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "jenkinsci/oracle-cloud-infrastructure-compute-plugin",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump Jenkins plugin versions in the Ansible plugin manifests",
+      "managerFilePatterns": ["ansible/roles/application/files/jenkins-plugins-*.yaml"],
+      "matchStrings": [
+        "(?<depName>[A-Za-z0-9][\\w.-]*):\\s+version: '?(?<currentValue>[^'\\s]+)'?"
+      ],
+      "datasourceTemplate": "jenkins-plugins"
+    },
     {
       "customType": "regex",
       "description": "Bump container images in Prow job configs",

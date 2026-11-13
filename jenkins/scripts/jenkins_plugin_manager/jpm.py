@@ -43,7 +43,8 @@ def update_plugins(plugins: dict, filename: str) -> None:
         sys.exit(1)
     else:
         try:
-            f.write(yaml.safe_dump(plugins, explicit_start=True))
+            version_only = {name: {'version': plugins[name]['version']} for name in sorted(plugins)}
+            f.write(yaml.safe_dump(version_only, explicit_start=True, sort_keys=False))
         finally:
             f.close()
 
@@ -91,7 +92,6 @@ def get_plugin_version(plugin: str, jenkins_version: str) -> dict:
         logger.error(f"plugin {plugin} not found") # TODO: get_plugin_version() should not be invoked for plugins not found by get_deps(); try a single bogus name to see
         return {}
     versions = plugin_page.find_all('a', attrs={"class":"version"})[1:] # the first is "latest"
-    checksums = plugin_page.find_all('div', attrs={"class":"checksums"})
     core_deps = [ d.get_text().split(' ')[-1] for d in plugin_page.find_all('div', attrs={"class":"core-dependency"}) ]
     padded_deps = [ d if semver_version.is_valid(d) else f"{d}.0" for d in core_deps ]
     compatible_versions = [ index for index, required_version in enumerate(padded_deps) if semver_version.parse(required_version) <= semver_version.parse(jenkins_version) ]
@@ -100,8 +100,7 @@ def get_plugin_version(plugin: str, jenkins_version: str) -> dict:
         return {}
     newest_compatible_version = min(compatible_versions)
     version = versions[newest_compatible_version].get_text()
-    checksum = checksums[newest_compatible_version * 2 + 1].get_text().lower().replace(' ', '').replace('-', '') # each version has two checksums, of which SHA-256 comes second
-    return {'version': version, 'checksum': checksum}
+    return {'version': version}
 
 @click.command()
 @click.option("--debug", is_flag=True, default=False, help='print verbose debug messages')
