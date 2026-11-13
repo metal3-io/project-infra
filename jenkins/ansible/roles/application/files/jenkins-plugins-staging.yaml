@@ -30,8 +30,8 @@ caffeine-api:
   checksum: sha256:768ed05774f12d85bf8ecff5d509f037810d1359de8b4fb1385624f6f547c90b
   version: 3.3.1-214.v18eb_56b_34920
 checks-api:
-  checksum: sha256:2ec59ec4ec34c6a69d08388f36a71ca6432444eb97bcdaa2bb92dd35736bb8c1
-  version: 434.va_a_3dd79d7723
+  checksum: sha256:778848605a80070b2c5ec7700c467344870883513321f0e40378c95b3caf1530
+  version: 440.v53a_b_6c39a_b_b_b_
 cloud-stats:
   checksum: sha256:65adaf856cea8fdd88bcf624c362625f2d7f4b825e84ae947047b31a8474288d
   version: 423.v63f017a_f582c
@@ -90,8 +90,8 @@ git:
   checksum: sha256:bf4639abb65e6ca210bd0d7cb9b6570e93717894bdcd008b2e7e5a916dd818f6
   version: 5.11.0
 git-client:
-  checksum: sha256:69ab80e3bd51e2e4e676a18722c02c7b163eb11a758b52ecf179d58e1ca1738f
-  version: 6.6.1
+  checksum: sha256:3d19008808683667969b8575e63b37a0c6283bfa50b384096dc9a539ad60b441
+  version: 6.7.1
 github:
   checksum: sha256:b9f040a3280977f2012c0057b48db712959c665e685b74e79fa1cf43833878da
   version: 1.47.0
@@ -114,14 +114,14 @@ ionicons-api:
   checksum: sha256:95f3504375d628d887425ccdf32d5606a230261ee42dc683f13958d8e973ac3f
   version: 94.vcc3065403257
 jackson-annotations2-api:
-  checksum: sha256:f13d0a17af6f8c8939a6edd30952006b77dca4760b1f40e0289c363918b7d17d
-  version: 2.22-19.v10a_a_582ea_26e
+  checksum: sha256:791cf6f53addb5a11b4fc50e977de7d38657956b3d076a82b3000eae67c2b32c
+  version: 2.23-28.v3db_d0f5f2387
 jackson2-api:
   checksum: sha256:3333380ef2117532473792dbdd1c206d68e8a2c1b534c5a5a48d1fa5920503ae
   version: 2.22.4-449.v4ee9f4ec4123
 jackson3-api:
-  checksum: sha256:4397f73c11ba5085a40280555b519c9427cf8d69d63d5d60f4f623f72f953fe2
-  version: 3.2.4-103.vf5a_b_3f4ea_cec
+  checksum: sha256:b00e9aeb961ad9a64e4b27a472ed0bdfd0ee9f700a29058d14c905ca0f3d7e6b
+  version: 3.3.0-106.v7fce5d2b_e547
 jakarta-activation-api:
   checksum: sha256:e62298341742f14b374045387ba641ad8a19376793c76bdafebb4a05b5099712
   version: 2.1.4-1
@@ -168,8 +168,8 @@ json-path-api:
   checksum: sha256:c032db1c87e36a57246bce59837f399f8d5f4f53be3483689a69b5c3ac0a0125
   version: 3.0.0-218.vcd4dd1355de2
 junit:
-  checksum: sha256:674ef6595168e4b12a7b0e9351c62978ff6dbc83a97dc9045da20b8d3bad3628
-  version: 1458.v38661c0638e2
+  checksum: sha256:da5ee1df59a549f41cf2106a450ba82a536f9ee356aaae9244f717dfbc179e9e
+  version: 1458.1460.vd53b_087eeb_2c
 mailer:
   checksum: sha256:5426a66a3f879d25fcb4baff678a28422afbabff22cd6e4f0f998fc67a3dc3fa
   version: 534.v1b_36f5864073
@@ -192,11 +192,11 @@ okhttp-api:
   checksum: sha256:d870037d472dd6cfdcb5d8bf6e701f0a241d6991ec8b5aeb8ded6ae6e3e6cbcc
   version: 5.5.0-242.v1482d48d3ea_3
 openstack-cloud:
-  checksum: sha256:aa3e7d60a10ba867f6ea0e5bec1733856e7eb90df7e8fcaaa9609b935937660d
-  version: 1495.vfc630a_109df0
+  checksum: sha256:96dbbc7da9c1e7975a516fd8bb71ca81148d9d18a3ea80f0c1e38a71f886f350
+  version: 1497.vc6d281a_595c9
 opentelemetry:
-  checksum: sha256:6c068ec9468c8c44fcdc7e215784bfaae273c0b91522ae2852d66abceff253cd
-  version: 3.1603.ve3fa_cc8a_b_f5e
+  checksum: sha256:3210500aa89caf91574711428ecae18a19c6fe45c51c4011c9c98eac7a1c1271
+  version: 3.1604.vff94ecdc8a_57
 opentelemetry-api:
   checksum: sha256:7e9a874aad1439e58b5b52f77ee24678f30df8afc8ef4e26db2f8a0e5b1012ad
   version: 1.54.1.102.v276c93ee966d
@@ -210,8 +210,8 @@ oss-symbols-api:
   checksum: sha256:a7b9d912a271735be54507782f4ec123e354ebed5411620be2b36c4597e09361
   version: 477.v7197b_eb_3d8b_8
 pipeline-build-step:
-  checksum: sha256:1b61a1820844f3f72f9dfcd6d7eeab66fa0fbcee5e3923b912cd1ed10fbf63c5
-  version: 601.v6d4c6d1a_9dc7
+  checksum: sha256:c1d9bba2b2b0c072eba8770b58d464928fccb9db07acc6f1c5165e9b8a9f38fe
+  version: 605.v00486e8f4b_3e
 pipeline-graph-analysis:
   checksum: sha256:8c89351cb13f694b9cc620501a75aed8bd4acdc0b9a6e6918b5dcb0543f08e7f
   version: 254.v0f63a_a_447dca_
@@ -222,8 +222,8 @@ pipeline-groovy-lib:
   checksum: sha256:a633824da17e95fe2a9f03e8d951a771c70a729e987fc51874146723f3b6343b
   version: 822.vc95f70dea_db_7
 pipeline-input-step:
-  checksum: sha256:7c61bb745ecd1e4e5c7864dc7c8352148d9b2281bcca5a48fd3a7cca7290a135
-  version: 560.v56198a_642157
+  checksum: sha256:1cbbb3bcccb254f85f7e33d1416b47d687fdeceb85ff9e78d89b3bba41c7694b
+  version: 568.v0c9db_2652741
 pipeline-model-api:
   checksum: sha256:cdd72a69bf2863a1683b282febd0256d5d266111134c3803a8c4a051b6b4c133
   version: 2.2293.v6e7193cec599
@@ -291,8 +291,8 @@ structs:
   checksum: sha256:a0a5db44f2cb082a9ec6572c088340521f033fff8c351fc7eba9ef7f07dbbf8d
   version: 362.va_b_695ef4fdf9
 theme-manager:
-  checksum: sha256:9709a4503fda78f4801d30ab63fa1773b74467e892b5dc01588f9075799cbf48
-  version: 346.v06cca_64c6a_37
+  checksum: sha256:017a20ae464b03e641f976c462a3206b37e84e46ac1c8288e50ff010edb19f55
+  version: 368.v587224fde1f6
 thinBackup:
   checksum: sha256:c8d54e65ddd538a7f10ffef4dd758604d09fd6be9a6e6ca850c17f08da1422e8
   version: 2.1.5
@@ -327,8 +327,8 @@ workflow-durable-task-step:
   checksum: sha256:a0f0f1464ce3592f76d0f0079ce9fc2d4272594f995bf3d1a7ede4cd5031452e
   version: 1479.v56e587f413a_7
 workflow-job:
-  checksum: sha256:e67c1ab5862b0d0a24c478feea4a420af787de08721853b014b58f8b5b8d04ab
-  version: 1622.vc41c189cb_e5f
+  checksum: sha256:7fbdbbe2088d80fb1fd7807332179e879a1c4e85ff08a7e7b945ba9d4470fbb0
+  version: 1624.ve973eb_34e031
 workflow-multibranch:
   checksum: sha256:af26afd93b5d730d203d8f58d1e104712ad1a7ddcf6837886d3272b1c0057e46
   version: 842.v3a_b_59b_57b_e6e
@@ -339,5 +339,5 @@ workflow-step-api:
   checksum: sha256:887491de444174228471993b0b2db958db2e7fb577857c8516c58e9618049896
   version: 724.v538c2362b_dfb_
 workflow-support:
-  checksum: sha256:167b31b5f1e79c1e7becf13bd1e53add5f29b6944a634572abe538407999dd02
-  version: 1028.vc22910142650
+  checksum: sha256:9e284f3cc1e97a83996a7db1c2640044581ba2542ae1453f4a5bcfbd7b940a37
+  version: 1035.v6a_23b_e298a_5d
