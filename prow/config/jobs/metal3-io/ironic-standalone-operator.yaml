@@ -46,7 +46,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/markdownlint-cli2:0.12.0@sha256:a3977fba9814f10d33a1d69ae607dc808e7a6470b2ba03e84c17193c0791aac0
+        image: docker.io/pipelinecomponents/markdownlint-cli2:0.14.41@sha256:60785c4a4ec97442f8986f1ce3cbea347f0097a05fc5f48c128714a120078716
         imagePullPolicy: Always
   - name: unit
     branches:
@@ -146,7 +146,7 @@ presubmits:
         env:
         - name: IS_CONTAINER
           value: "TRUE"
-        image: docker.io/pipelinecomponents/yamllint:0.35.13@sha256:5ab5eb7da0ed5e606b07c1723fc8b275e925189f70ac259b26b7329cb5f8f44d
+        image: docker.io/pipelinecomponents/yamllint:0.35.27@sha256:f7f7b4f8824839e33690a880dbe20944128b0dc9c55522a0b92a29b3a905cecf
         imagePullPolicy: Always
   # name: metal3-dev-env-integration-test-{image_os}-main
   - name: metal3-dev-env-integration-test-ubuntu-main
