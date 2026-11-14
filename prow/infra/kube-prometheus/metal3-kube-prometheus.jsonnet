@@ -16,9 +16,9 @@ local kp =
         namespace: 'monitoring',
       },
       grafana+: {
-        dashboards+:: {  // use this method to import your dashboards to Grafana
-          'jobs.json': (import 'jobs.json'),
-        },
+        // Use rawDashboards for dashboards exported from Grafana as JSON.
+        // Do not also add the same dashboard to `dashboards`, that creates
+        // duplicate volumes and ConfigMaps (rejected by server-side apply).
         rawDashboards+:: {
           'jobs.json': (importstr 'jobs.json'),
         },
@@ -36,6 +36,12 @@ local kp =
             },
             'security': {
               disable_gravatar: true,
+            },
+            // The pod has a read-only root filesystem. Grafana 12+ tries to update
+            // the bundled core plugins (e.g. prometheus) at startup, which fails and
+            // leaves them unregistered, so no datasource type is found.
+            'plugins': {
+              preinstall_disabled: true,
             },
           },
         },
