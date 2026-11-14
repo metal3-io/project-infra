@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# OCI equivalent of ../../infra. The gateway/cert-manager pieces are
+# cloud-agnostic; the OCI-specific changes are the StorageClass (Block Volume
+# CSI) and the traefik LoadBalancer Service annotations/hostname (see traefik/).
+resources:
+- namespaces.yaml
+- traefik
+- staging-cluster-issuer-http.yaml
+- cluster-issuer-http.yaml
+- certificate.yaml
+- storageclass.yaml
+- referencegrant.yaml

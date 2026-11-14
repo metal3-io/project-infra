@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- crier.yaml
+- deck.yaml
+- ghproxy.yaml
+- hook.yaml
+- horologium.yaml
+- namespace.yaml
+- prow-controller-manager.yaml
+- sinker.yaml
+- statusreconciler.yaml
+- test-pods.yaml
+- tide.yaml
+
+# OCI: pin ALL Prow component images to the late-2024 tag, same as the
+# pod-utility images in config.yaml. Newer tags bundle aws-sdk-go-v2 with
+# RequestChecksumCalculation defaulting to "when_supported", which sends
+# Content-Encoding: aws-chunked on S3 PutObject; OCI Object Storage rejects it
+# with HTTP 501 ("AWS chunked encoding not supported"). That breaks crier
+# (job reporting -> stuck gcsk8sreporter finalizers) and tide (merge-pool state
+# writes to s3://tide -> cannot merge). The AWS_REQUEST_CHECKSUM_CALCULATION
+# env var does NOT fix these components (verified on crier). This tag predates
+# the SDK default. Revert once Prow/the SDK defaults to when_required for a
+# custom S3 endpoint.
+images:
+- name: us-docker.pkg.dev/k8s-infra-prow/images/crier
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/deck
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/ghproxy
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/hook
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/horologium
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/prow-controller-manager
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/sinker
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/status-reconciler
+  newTag: v20241202-687763763
+- name: us-docker.pkg.dev/k8s-infra-prow/images/tide
+  newTag: v20241202-687763763

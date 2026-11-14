@@ -1,0 +1,77 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# CAPI components for the OCI Prow instance. Mirrors ../../capi but swaps the
+# OpenStack infrastructure provider (+ ORC) for the OCI provider (CAPOCI).
+# The core/bootstrap/control-plane providers and cert-manager are cloud-agnostic;
+# they are copied locally (rather than referenced from ../../capi) so this
+# kustomization builds under kubectl's default load restrictor.
+resources:
+- https://github.com/cert-manager/cert-manager/releases/download/v1.21.1/cert-manager.yaml
+- https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.29.0/operator-components.yaml
+# Gateway API CRDs: cert-manager is patched with --enable-gateway-api below and
+# refuses to start without these. Also installed by prow-oci/infra (traefik),
+# but capi is applied first, so include them here to be self-sufficient on a
+# fresh (kind bootstrap) cluster. Keep in sync with prow-oci/infra/traefik.
+- https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+- core.yaml
+- control-plane.yaml
+- bootstrap.yaml
+- infrastructure.yaml
+# --- CAPOCI controller credentials ---
+# 1PASSWORD / ESO MODE (active): the oci-variables secret is synced from the
+# `prow-oci-credentials` 1Password item by External Secrets Operator.
+# For local testing WITHOUT ESO, comment out externalsecret.yaml, uncomment the
+# secretGenerator block at the bottom, and provide oci-variables.env.
+- externalsecret.yaml
+
+patches:
+# Enable Gateway API support for cert-manager controller
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --enable-gateway-api
+  target:
+    kind: Deployment
+    name: cert-manager
+    namespace: cert-manager
+# Cert-manager does not set any toleration so we have to first create
+# the array/map before we can add values to them...
+- patch: |-
+    - op: add
+      path: /spec/template/spec/tolerations
+      value: []
+  target:
+    kind: Deployment
+    name: cert-manager|cert-manager-cainjector|cert-manager-webhook
+    namespace: cert-manager
+- patch: |-
+    - op: add
+      path: /spec/template/spec/nodeSelector
+      value: {}
+  target:
+    kind: Deployment
+    name: capi-operator-controller-manager
+    namespace: capi-operator-system
+# Add toleration and node selector to run on infra nodes
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: cert-manager|cert-manager-cainjector|cert-manager-webhook
+    namespace: cert-manager
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: capi-operator-controller-manager
+    namespace: capi-operator-system
+
+## LOCAL-SECRETS ALTERNATIVE (inactive): create the CAPOCI configSecret from a
+## local file (oci-variables.env, gitignored) instead of ESO. To use, uncomment
+## this block and comment out externalsecret.yaml above. See
+## oci-variables.env.example.
+# generatorOptions:
+#   disableNameSuffixHash: true
+# secretGenerator:
+# - name: oci-variables
+#   namespace: cluster-api-provider-oci-system
+#   envs:
+#   - oci-variables.env

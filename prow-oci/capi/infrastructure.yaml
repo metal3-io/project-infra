@@ -1,0 +1,30 @@
+# Cluster API infrastructure provider for Oracle Cloud (CAPOCI).
+# Replaces the OpenStack provider (see ../../capi/infrastructure.yaml) for the
+# OCI Prow instance. No ORC dependency for OCI.
+#
+# TODO: verify the latest stable CAPOCI version before deploying:
+# https://github.com/oracle/cluster-api-provider-oci/releases
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: oci
+  namespace: cluster-api-provider-oci-system
+spec:
+  version: v0.16.0
+  # The operator substitutes the CAPOCI component variables (OCI credentials)
+  # from this secret. Populated either by the local secretGenerator (see
+  # kustomization.yaml) or by External Secrets Operator (externalsecret.yaml).
+  configSecret:
+    name: oci-variables
+  deployment:
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+    tolerations:
+    - key: node-role.kubernetes.io/infra
+      operator: Exists
+      effect: NoSchedule
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cluster-api-provider-oci-system

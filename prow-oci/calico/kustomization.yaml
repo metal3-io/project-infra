@@ -1,0 +1,55 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# OCI variant of ../../bootstrap/calico. Same upstream Calico manifest, but
+# switched from IP-in-IP to VXLAN encapsulation. On OCI, IP-in-IP (protocol 4)
+# requires disabling VNIC source/dest checks and opening protocol 4 in NSGs;
+# VXLAN rides UDP 4789 and works with OCI's default NSG handling, so it is far
+# less fragile. The shared bootstrap/calico (IP-in-IP) is left untouched for the
+# OpenStack instance.
+resources:
+- https://raw.githubusercontent.com/projectcalico/calico/v3.30.1/manifests/calico.yaml
+
+patches:
+# Run calico-kube-controllers on infra nodes (matches bootstrap/calico).
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+# Switch the datastore backend from BGP (bird) to VXLAN.
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: calico-config
+      namespace: kube-system
+    data:
+      calico_backend: vxlan
+# Switch the IP pool encapsulation to VXLAN, drop the BGP cluster type, and
+# remove the bird health checks (bird does not run with the VXLAN backend).
+- patch: |-
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: calico-node
+      namespace: kube-system
+    spec:
+      template:
+        spec:
+          containers:
+          - name: calico-node
+            env:
+            - name: CALICO_IPV4POOL_IPIP
+              value: Never
+            - name: CALICO_IPV4POOL_VXLAN
+              value: Always
+            - name: CLUSTER_TYPE
+              value: k8s
+            livenessProbe:
+              exec:
+                command:
+                - /bin/calico-node
+                - -felix-live
+            readinessProbe:
+              exec:
+                command:
+                - /bin/calico-node
+                - -felix-ready
