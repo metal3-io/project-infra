@@ -111,13 +111,9 @@ Jenkins UI. Your YAML formatted job definition will create a Jenkins job, which
 in turn executes your specified jenkins pipeline. Check
 [Job definitions](https://docs.openstack.org/infra/jenkins-job-builder/attic/definition.html)
 to familiarize yourself with the JJB syntax. Our job definitions are stored in
-[OpeninfraEurope Gerrit](https://gerrit.nordix.org/admin/repos/infra/cicd)
-instance under `cicd/jjb/metal3/` path. Please, note that
-[cicd](https://gerrit.nordix.org/admin/repos/infra/cicd)
-gerrit repository includes job definitions for other projects as well that share
-the same Jenkins environment.
+this repository under the [`jenkins/jobs/jjb/`](jobs/jjb/) path.
 
-When you add/remove a new job definition in `cicd/jjb/metal3/` path, you will
+When you add/remove a new job definition in `jenkins/jobs/jjb/` path, you will
 be able to see that job added/removed in Jenkins UI under the
 [Metal3 view](https://jenkins.nordix.org/view/Metal3/).
 

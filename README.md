@@ -20,8 +20,8 @@ Our CI is split across two systems, each suited to a different kind of job:
 Prow also runs **Tide**, which automatically merges PRs once they pass
 required checks and carry the necessary labels (`lgtm`, `approved`).
 
-Job definitions for the Jenkins side live in a separate repository
-([Nordix Gerrit `infra/cicd`](https://gerrit.nordix.org/gitweb?p=infra/cicd.git;a=tree;f=jjb/metal3),
-JJB YAML format) and reference pipeline scripts in this repo's
-[`jenkins/jobs/`](jenkins/jobs/) directory. See `jjb/metal3/defaults.yml` in
-that repository for the exact pipeline-to-script mapping.
+Job definitions for the Jenkins side live in this repo's
+[`jenkins/jobs/jjb/`](jenkins/jobs/jjb/) directory (JJB YAML format) and
+reference pipeline scripts in the [`jenkins/jobs/`](jenkins/jobs/) directory.
+See [`jenkins/jobs/jjb/defaults.yml`](jenkins/jobs/jjb/defaults.yml) for the
+exact pipeline-to-script mapping.
