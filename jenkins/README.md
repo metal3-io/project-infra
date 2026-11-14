@@ -92,6 +92,10 @@ Pods, CRDs logs are collected at the end of each Jenkins job run and
 archived so that they can be later used for debugging purposes. You can
 find the archived logs under the  "*Build artifacts*" section of the
 [job](https://jenkins.nordix.org/view/Metal3%20Periodic/job/metal3-periodic-centos-e2e-integration-test-main/).
+For every reachable cluster, an overview of the cluster state (nodes, pods,
+events and the main Metal3 and Cluster API resources) is stored in the
+`k8s_<cluster>/cluster_state` directory of the logs. It is a good starting
+point for finding where to look next when debugging a failed job.
 Please note that the logs will be removed 30 days after creation or after 100
 subsequent job runs, whichever occurs first.
 
