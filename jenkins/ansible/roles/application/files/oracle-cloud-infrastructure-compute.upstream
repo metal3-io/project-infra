@@ -1,0 +1,24 @@
+# Upstream base for the locally-built
+# jenkins-plugin_oracle-cloud-infrastructure-compute_*.hpi in this directory.
+#
+# This plugin is a FORK of the upstream repo, carrying patches from unmerged
+# upstream PRs that we require. It is installed from the bundled .hpi (see the
+# "ensure local plugins" task), NOT from the Jenkins update center, so Renovate
+# cannot bump the artifact itself.
+#
+# Renovate watches upstream RELEASES via the marker below. When a newer upstream
+# release exists, it opens a PR bumping upstream_base_version. That PR is a
+# NOTIFICATION, not a drop-in update:
+#
+#   1. Check whether our required PRs have merged upstream (if so, consider
+#      dropping the fork and returning this plugin to the normal manifest).
+#   2. Rebase our patches onto the new upstream tag.
+#   3. Rebuild the .hpi and replace jenkins-plugin_oracle-cloud-infrastructure-compute_*.hpi.
+#   4. Commit the rebuilt .hpi onto the SAME Renovate branch, THEN merge.
+#
+# NEVER merge the marker bump on its own: doing so desyncs this recorded base
+# from the deployed artifact. The PR carries the "do-not-merge/hold" label, which
+# Tide enforces, so the PR cannot merge until someone removes the hold.
+#
+# renovate: datasource=github-releases depName=jenkinsci/oracle-cloud-infrastructure-compute-plugin
+upstream_base_version=1.0.21
