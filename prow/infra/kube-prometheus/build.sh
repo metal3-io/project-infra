@@ -13,8 +13,11 @@ PATH="$(pwd)/tmp/bin:${PATH}"
 
 # Install needed tools
 go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@v0.6.0
-go install github.com/google/go-jsonnet/cmd/jsonnet@v0.20.0
+go install github.com/google/go-jsonnet/cmd/jsonnet@v0.22.0
 go install github.com/brancz/gojsontoyaml@v0.1.0
+
+# Install the jsonnet dependencies pinned in jsonnetfile.lock.json into vendor/
+jb install
 
 
 # Make sure to start with a clean 'manifests' dir
