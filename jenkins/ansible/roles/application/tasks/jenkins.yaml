@@ -192,6 +192,7 @@
     - "-XX:MaxMetaspaceSize={{ metaspace_size_mb }}m"
     - "-XX:MetaspaceSize={{ (metaspace_size_mb / 2) | int }}m" # initial is half of maximum
     - '-Djenkins.install.runSetupWizard=false'
+    - "-XX:-UseBASE64Intrinsics" # mitigation for CVE-2026-114938
     binary_wrapper_query: "[?value.USE_BINARY_WRAPPER].key"
     binary_wrapped_task_types: "{{ config.jenkins.plugin.durabletask | dict2items | json_query(binary_wrapper_query) }}"
     additional_java_options: "{{ binary_wrapped_task_types | map('regex_replace', '(^.*$)', '-Dorg.jenkinsci.plugins.durabletask.\\1.USE_BINARY_WRAPPER=true') | list }}"
