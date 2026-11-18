@@ -117,6 +117,19 @@ pipeline {
                                 }
                             }
                         }
+                        post {
+                            always {
+                                script {
+                                    // Collect the dev-env logs. All matrix cells use the same BUILD_TAG,
+                                    // so add IMAGE_OS to the tarball name to keep one archive for each OS.
+                                    sh """
+                                    ./jenkins/scripts/dynamic_worker_workflow/fetch_logs.sh || true
+                                    mv "logs-${env.BUILD_TAG}.tgz" "logs-${env.BUILD_TAG}-${IMAGE_OS}.tgz" || true
+                                    """
+                                    archiveArtifacts artifacts: "logs-${env.BUILD_TAG}-${IMAGE_OS}.tgz", allowEmptyArchive: true
+                                }
+                            }
+                        }
                     }
                     stage('Verify the new CI image') {
                         agent { label "metal3ci-${IMAGE_OS}-staging" }
