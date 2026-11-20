@@ -70,8 +70,7 @@ Focus on: `jenkins/jobs/`, `prow/config/`, `jenkins/scripts/`.
 ## Integration
 
 - **Jenkins**: <https://jenkins.nordix.org/>
-- **JJB definitions**: [Nordix cicd repo](https://gerrit.nordix.org/gitweb?p=infra/cicd.git;a=tree;f=jjb/metal3)
-  at `jjb/metal3/`
+- **JJB definitions**: `jenkins/jobs/jjb/` in this repo
 - Jobs triggered by PRs in Metal3 repos
 - Uses [metal3-dev-env](https://github.com/metal3-io/metal3-dev-env)
   for e2e tests
