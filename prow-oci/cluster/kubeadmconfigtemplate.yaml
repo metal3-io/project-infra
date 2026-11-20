@@ -1,0 +1,22 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
+kind: KubeadmConfigTemplate
+metadata:
+  name: prow-md-0
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          # v1beta2: kubeletExtraArgs is a list of {name, value}, not a map.
+          kubeletExtraArgs:
+          - name: cloud-provider
+            value: external
+          # providerID set at boot from cloud-init's v1.instance_id (upstream
+          # CAPOCI pattern). See kubeadmcontrolplane.yaml for the full rationale.
+          - name: provider-id
+            value: 'oci://{{ v1.instance_id }}'
+          - name: kube-reserved
+            value: cpu=200m,memory=100Mi
+          - name: system-reserved
+            value: cpu=100m,memory=100Mi
+          name: '{{ v1.local_hostname }}'

@@ -1,0 +1,23 @@
+# Secrets and generated deploy artifacts - never commit these.
+# (prow-oci is a top-level tree, so it is NOT covered by prow/.gitignore.)
+clouds.yaml
+cloud.conf
+kubeconfig.yaml
+.s3cfg
+s3-credentials.json
+service-account.json
+github-token
+cherrypick-bot-github-token
+hmac-token
+jenkins-token
+oci-variables.env
+cloud-provider.yaml
+prow-cloud-provider.yaml
+
+# Kustomize / Helm chart download cache (re-fetched with --enable-helm)
+charts
+vendor
+
+# Internal-only docs - not pushed upstream.
+docs/OCI_MIGRATION_PLAN.md
+docs/OCI_MIGRATION_DEMO.md

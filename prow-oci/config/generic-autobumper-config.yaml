@@ -1,0 +1,19 @@
+gitHubToken: "/etc/github/token"
+skipPullRequest: false
+gitHubOrg: "metal3-io"
+gitHubRepo: "project-infra"
+remoteName: "project-infra"
+includedConfigPaths:
+- "prow"
+targetVersion: "latest"
+extraFiles:
+- "prow/Makefile"
+prefixes:
+- name: "k8s-prow images"
+  prefix: "us-docker.pkg.dev/k8s-infra-prow/images/"
+  repo: "https://github.com/metal3-io/project-infra"
+  summarise: false
+- name: "test-infra images"
+  prefix: "gcr.io/k8s-staging-test-infra/"
+  repo: "https://github.com/metal3-io/project-infra"
+  summarise: false
