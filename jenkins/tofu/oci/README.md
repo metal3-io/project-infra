@@ -38,6 +38,7 @@
 - host\_fqdn (_ci.apps.test.metal3.io_)
 - instance\_name (_jenkins-poc_)
 - image\_id (_empty_, discovered by name: "Rocky-10-\*")
+- volume\_size (_50_)
 - shape (_VM.Standard.E4.Flex_)
 - ocpus (_2_)
 - memory\_gb (_16_)

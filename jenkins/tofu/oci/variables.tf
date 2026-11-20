@@ -45,6 +45,12 @@ variable "image_id" {
  default     = null
 }
 
+variable "volume_size" {
+ description = "Volume size"
+ type        = number
+ default     = 50
+}
+
 variable "web_access_networks" {
  description = "A list of networks in CIDR notation to allow access from"
  type        = list(string)

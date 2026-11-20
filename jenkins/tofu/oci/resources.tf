@@ -82,26 +82,27 @@ resource "oci_core_network_security_group_security_rule" "https" {
 }
 
 resource "oci_core_instance" "server" {
-  availability_domain   = var.availability_domain
-  compartment_id        = var.compartment_id
-  display_name          = var.instance_name
-  shape                 = var.shape
+  availability_domain       = var.availability_domain
+  compartment_id            = var.compartment_id
+  display_name              = var.instance_name
+  shape                     = var.shape
   shape_config {
-    ocpus               = var.ocpus # 2x vCPU on x86
-    memory_in_gbs       = var.memory_gb
+    ocpus                   = var.ocpus # 2x vCPU on x86
+    memory_in_gbs           = var.memory_gb
   }
   source_details {
-    source_id           = local.boot_image
-    source_type         = "image"
+    source_id               = local.boot_image
+    source_type             = "image"
+    boot_volume_size_in_gbs = var.volume_size
   }
   create_vnic_details {
-    subnet_id           = local.private_subnet.id
-    nsg_ids             = [resource.oci_core_network_security_group.access.id]
+    subnet_id               = local.private_subnet.id
+    nsg_ids                 = [resource.oci_core_network_security_group.access.id]
   }
-  metadata              = {
-    ssh_authorized_keys = local.ssh_public_key
+  metadata                  = {
+    ssh_authorized_keys     = local.ssh_public_key
   }
-  freeform_tags         = local.resource_tags
+  freeform_tags             = local.resource_tags
 }
 
 output "external_address" {
