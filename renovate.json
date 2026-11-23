@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "configMigration": true,
+  "dependencyDashboard": true,
   "baseBranchPatterns": ["main"],
   "enabledManagers": ["custom.regex"],
   "prCreation": "immediate",
@@ -68,7 +69,7 @@
       "matchDatasources": ["jenkins-plugins"],
       "description": "Batch all Jenkins plugin updates into one weekly PR",
       "groupName": "Jenkins plugins",
-      "schedule": ["before 6am on monday"]
+      "schedule": ["* 0-5 * * 1"]
     },
     {
       "matchDepNames": ["jenkinsci/oracle-cloud-infrastructure-compute-plugin"],
@@ -76,7 +77,7 @@
       "groupName": "OCI compute plugin (forked, manual rebuild)",
       "extractVersion": "^oracle-cloud-infrastructure-compute-(?<version>.+)$",
       "addLabels": ["do-not-merge/hold"],
-      "schedule": ["before 6am on monday"]
+      "schedule": ["* 0-5 * * 1"]
     },
     {
       "matchDatasources": ["docker"],
@@ -101,7 +102,7 @@
     {
       "customType": "regex",
       "description": "Bump the Jenkins LTS image in the application role defaults (LTS only: X.Y.Z-lts)",
-      "managerFilePatterns": ["ansible/roles/application/defaults/main.yaml"],
+      "managerFilePatterns": ["jenkins/ansible/roles/application/defaults/main.yaml"],
       "matchStrings": [
         "jenkins: (?<depName>docker\\.io/jenkins/jenkins):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
@@ -111,7 +112,7 @@
     {
       "customType": "regex",
       "description": "Bump the supporting container images (Traefik, socket-proxy) in the application role defaults",
-      "managerFilePatterns": ["ansible/roles/application/defaults/main.yaml"],
+      "managerFilePatterns": ["jenkins/ansible/roles/application/defaults/main.yaml"],
       "matchStrings": [
         "(?:traefik|socket-proxy): (?<depName>(?:[a-z0-9.-]+\\.[a-z]{2,})/[^:\\s]+):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
@@ -120,7 +121,7 @@
     {
       "customType": "regex",
       "description": "Track upstream releases of the forked OCI compute plugin (bump = rebuild the bundled .hpi)",
-      "managerFilePatterns": ["ansible/roles/application/files/oracle-cloud-infrastructure-compute.upstream"],
+      "managerFilePatterns": ["jenkins/ansible/roles/application/files/oracle-cloud-infrastructure-compute.upstream"],
       "matchStrings": ["upstream_base_version=(?<currentValue>\\S+)"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "jenkinsci/oracle-cloud-infrastructure-compute-plugin",
@@ -129,11 +130,12 @@
     {
       "customType": "regex",
       "description": "Bump Jenkins plugin versions in the Ansible plugin manifests",
-      "managerFilePatterns": ["ansible/roles/application/files/jenkins-plugins-*.yaml"],
+      "managerFilePatterns": ["jenkins/ansible/roles/application/files/jenkins-plugins-*.yaml"],
       "matchStrings": [
         "(?<depName>[A-Za-z0-9][\\w.-]*):\\s+version: '?(?<currentValue>[^'\\s]+)'?"
       ],
-      "datasourceTemplate": "jenkins-plugins"
+      "datasourceTemplate": "jenkins-plugins",
+      "versioningTemplate": "regex:^(?<major>\\d+)(?:\\.(?<minor>\\d+))?(?:\\.(?<patch>\\d+))?(?:\\.\\d+)*(?:-(?<build>\\d+))?(?:\\.v[0-9a-f_]+)?$"
     },
     {
       "customType": "regex",
