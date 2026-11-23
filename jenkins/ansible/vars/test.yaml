@@ -9,7 +9,7 @@ config:
   # ensure_access: defaulted
   # flavor: defaulted
     image_id: ocid1.image.oc1.eu-paris-1.aaaaaaaatafuvhm3uhfcrr347tnihnzwosbbkwoyygr37ysw5s3edijfuvrq
-  # volume_size: defaulted
+    volume_size: 47
   # key_name: defaulted
   # network_name: defaulted
 
