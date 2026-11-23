@@ -113,7 +113,6 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
   - name: metal3-centos-e2e-feature-test-main-pivoting
     agent: jenkins
     labels:

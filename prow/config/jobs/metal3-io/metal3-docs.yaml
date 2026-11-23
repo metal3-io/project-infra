@@ -47,4 +47,3 @@ presubmits:
     labels:
       jenkins_operator: oci
     run_if_changed: '(^docs/user-guide/src/quick-start\.md$|^hack/quick-start/)'
-    optional: false

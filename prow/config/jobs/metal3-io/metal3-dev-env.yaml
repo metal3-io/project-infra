@@ -71,7 +71,6 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
   - name: metal3-dev-env-integration-test-ubuntu-release-1-14
     agent: jenkins
     labels:
