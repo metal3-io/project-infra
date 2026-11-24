@@ -95,7 +95,8 @@
       ],
       "description": "Supporting container images for the Jenkins host (Traefik, socket-proxy)",
       "groupName": "Jenkins host supporting images",
-      "minimumReleaseAge": "1 day"
+      "minimumReleaseAge": "1 day",
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
     }
   ],
   "customManagers": [
