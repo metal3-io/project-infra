@@ -97,6 +97,7 @@
       ],
       "description": "Supporting container images for the Jenkins host (Traefik, socket-proxy)",
       "groupName": "Jenkins host supporting images",
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+$/",
       "minimumReleaseAge": "1 day",
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     }
