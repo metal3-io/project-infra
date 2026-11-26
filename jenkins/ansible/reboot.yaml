@@ -12,14 +12,22 @@
   vars_files:
   - "{{ env }}.yaml"
   tasks:
-  - name: perform system update
-    package:
-      name: '*'
-      state: latest
+  - name: update
+    block:
+    - name: expire metadata cache
+      command: /bin/dnf clean expire-cache
+      changed_when: false
+
+    - name: perform system update
+      package:
+        name: '*'
+        state: latest
+        update_only: yes
+        update_cache: yes
     when: update | bool
 
   - name: disable services consuming secrets
-    systemd_service:
+    service:
       name: "{{ item }}"
       state: stopped
       masked: yes
