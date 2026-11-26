@@ -267,7 +267,6 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
   - name: metal3-ubuntu-e2e-integration-test-main
     branches:
     - main
@@ -275,7 +274,6 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
   # name: {job_prefix}-{image_os}-e2e-integration-test-{capm3_target_branch}{suffix|} # suffix is optional
   - name: metal3-centos-e2e-integration-test-main-capi-nightly-build
     branches:

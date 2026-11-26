@@ -194,7 +194,6 @@ presubmits:
     labels:
       jenkins_operator: oci
     always_run: false
-    optional: false
   - name: metal3-ubuntu-e2e-integration-test-release-1-12
     branches:
     - release-1.12
