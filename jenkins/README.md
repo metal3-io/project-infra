@@ -169,8 +169,8 @@ To use the token in Jenkins, `metal3-jenkins-github-token` secret is created
 in Jenkins credentials. See the usage
 [reference](https://github.com/metal3-io/project-infra/blob/12660dd59d368c86e471007d86ca781cf2539ec9/jenkins/jobs/integration_tests.pipeline#L3).
 
-You can see ghprb logs in [here](https://jenkins.nordix.org/log/GHPRB/) only if
-you have admin rights in the Nordix Jenkins.
+Jenkins jobs are now triggered via Prow, using the relevant Prow plugin that
+calls the Jenkins REST API directly.
 
 Sometimes, when changing the credentials related to ghprb, the system might
 still be using the old credentials. If you see that your changes aren't
