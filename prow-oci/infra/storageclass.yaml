@@ -1,0 +1,18 @@
+# OCI Block Volume CSI storage class, replacing the Cinder one
+# (../../infra/storageclass.yaml, provisioner cinder.csi.openstack.org).
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: oci-bv
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: blockvolume.csi.oraclecloud.com
+parameters:
+  # "paravirtualized" attachment works without extra privileges; use "iscsi"
+  # for higher performance if the node images/config support it.
+  attachment-type: paravirtualized
+reclaimPolicy: Delete
+# OCI block volumes are AD-specific, so bind on first consumer to schedule the
+# volume in the same availability domain as the pod.
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

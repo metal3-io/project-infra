@@ -1,0 +1,68 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# OCI equivalent of ../../cluster-resources. Swaps cloud-provider-openstack (OCCM)
+# and the Cinder CSI driver for the Oracle cloud controller manager and the OCI
+# Block Volume CSI driver. The cluster-autoscaler (clusterapi provider) is
+# reused, with its infrastructure RBAC pointed at ocimachinetemplates.
+resources:
+# OCI cloud controller manager (RBAC + DaemonSet)
+- https://github.com/oracle/oci-cloud-controller-manager/releases/download/v1.31.0/oci-cloud-controller-manager-rbac.yaml
+- https://github.com/oracle/oci-cloud-controller-manager/releases/download/v1.31.0/oci-cloud-controller-manager.yaml
+# OCI Block Volume CSI driver (RBAC + controller + node plugins)
+- https://github.com/oracle/oci-cloud-controller-manager/releases/download/v1.31.0/oci-csi-node-rbac.yaml
+- https://github.com/oracle/oci-cloud-controller-manager/releases/download/v1.31.0/oci-csi-controller-driver.yaml
+- https://github.com/oracle/oci-cloud-controller-manager/releases/download/v1.31.0/oci-csi-node-driver.yaml
+# VolumeSnapshot CRDs - the csi-oci-controller bundles a snapshot-controller
+# sidecar that crash-loops without these CRDs.
+- https://github.com/kubernetes-csi/external-snapshotter/raw/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+- https://github.com/kubernetes-csi/external-snapshotter/raw/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+- https://github.com/kubernetes-csi/external-snapshotter/raw/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+- autoscaler.yaml
+- coredns-pdb.yaml
+# --- OCI cloud provider / CSI credentials ---
+# 1PASSWORD / ESO MODE (active): the oci-cloud-controller-manager and
+# oci-volume-provisioner secrets are synced from the `prow-cloud-provider`
+# 1Password item by External Secrets Operator.
+# For local testing WITHOUT ESO, comment out externalsecret.yaml, uncomment the
+# secretGenerator block at the bottom, and provide prow-cloud-provider.yaml.
+- externalsecret.yaml
+
+images:
+# Check available tags at https://github.com/kubernetes/autoscaler/tags
+- name: registry.k8s.io/autoscaling/cluster-autoscaler
+  newTag: v1.35.0
+
+patches:
+# Run the CSI controller plugin on infra nodes. Create the toleration/
+# nodeSelector fields first if the upstream manifest omits them.
+- patch: |-
+    - op: add
+      path: /spec/template/spec/tolerations
+      value: []
+    - op: add
+      path: /spec/template/spec/nodeSelector
+      value: {}
+  target:
+    kind: Deployment
+    name: csi-oci-controller
+- path: toleration-node-selector-patch.yaml
+  target:
+    kind: Deployment
+    name: csi-oci-controller|calico-kube-controllers
+
+## LOCAL-SECRETS ALTERNATIVE (inactive): create the OCI credential secrets from
+## the local prow-cloud-provider.yaml (gitignored) instead of ESO. To use,
+## uncomment this block and comment out externalsecret.yaml above. The mounted
+## secret keys stay cloud-provider.yaml (CCM) and config.yaml (CSI). See
+## prow-cloud-provider.yaml.example.
+# generatorOptions:
+#   disableNameSuffixHash: true
+# secretGenerator:
+# - name: oci-cloud-controller-manager
+#   namespace: kube-system
+#   files:
+#   - cloud-provider.yaml=prow-cloud-provider.yaml
+# - name: oci-volume-provisioner
+#   namespace: kube-system
+#   files:
+#   - config.yaml=prow-cloud-provider.yaml
