@@ -59,6 +59,7 @@
     "tmpfs",
     "traefik",
     "vcns",
+    "virtio",
     "xerces"
   ]
 }

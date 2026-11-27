@@ -24,3 +24,4 @@ See cloud-init element documentation for more information
 * [openssh-server](https://docs.openstack.org/diskimage-builder/latest/elements/openssh-server/README.html)
 * [modprobe](https://docs.openstack.org/diskimage-builder/latest/elements/modprobe/README.html)
 * [package-installs](https://docs.openstack.org/diskimage-builder/latest/elements/package-installs/README.html)
+* oci-storage (local element: OCI consistent device paths for CSI block volumes)
