@@ -33,6 +33,45 @@ else
 fi
 
 
+# Collect cluster wide listings that give an overview of the cluster state,
+# so it is easy to see where to start debugging before diving into the
+# per pod logs.
+fetch_cluster_state()
+{
+    local state_dir="${LOGS_DIR}/${1}/cluster_state"
+    local kconfig="$2"
+    local kind
+
+    # Metal3 and Cluster API resources, not all of them exist in every cluster
+    local kinds=(
+      bmh
+      cluster
+      machine
+      machinedeployment
+      kubeadmcontrolplane
+      m3machine
+      ironic
+    )
+
+    mkdir -p "${state_dir}"
+    kubectl --kubeconfig="${kconfig}" get nodes -o wide \
+        > "${state_dir}/nodes.log" 2>&1
+    kubectl --kubeconfig="${kconfig}" describe nodes \
+        > "${state_dir}/nodes_describe.log" 2>&1
+    kubectl --kubeconfig="${kconfig}" get pods --all-namespaces -o wide \
+        > "${state_dir}/pods.log" 2>&1
+    kubectl --kubeconfig="${kconfig}" get all --all-namespaces -o wide \
+        > "${state_dir}/all_resources.log" 2>&1
+    kubectl --kubeconfig="${kconfig}" get events --all-namespaces \
+        --sort-by=.metadata.creationTimestamp \
+        > "${state_dir}/events.log" 2>&1
+    for kind in "${kinds[@]}"; do
+        # Drop the listing of resources that are not installed in the cluster
+        kubectl --kubeconfig="${kconfig}" get "${kind}" --all-namespaces -o wide \
+            > "${state_dir}/${kind}.log" 2>&1 || rm -f "${state_dir}/${kind}.log"
+    done
+}
+
 fetch_k8s_logs()
 {
     dir_name="k8s_${1}"
@@ -40,6 +79,10 @@ fetch_k8s_logs()
 
     NAMESPACES="$(kubectl --kubeconfig="${kconfig}" get namespace -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
     mkdir -p "${LOGS_DIR}/${dir_name}"
+    # Skip the overview if the cluster is not reachable
+    if [[ -n "${NAMESPACES}" ]]; then
+        fetch_cluster_state "${dir_name}" "${kconfig}"
+    fi
     for NAMESPACE in ${NAMESPACES}; do
         mkdir -p "${LOGS_DIR}/${dir_name}/${NAMESPACE}"
         PODS="$(kubectl --kubeconfig="${kconfig}" get pods -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}' 2> /dev/null)"
