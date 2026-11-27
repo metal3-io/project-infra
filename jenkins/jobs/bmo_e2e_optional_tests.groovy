@@ -16,12 +16,19 @@ currentBuild.description = """<a href='${GRAFANA_VIEW}'>View in log collector</a
 
 pipeline {
     environment {
-        GINKGO_FOCUS = "${GINKGO_FOCUS}"
+        // Tier to run, set per job in JJB. See test/e2e/README.md in the
+        // baremetal-operator repository.
+        GINKGO_LABEL_FILTER = "${params.GINKGO_LABEL_FILTER ?: 'optional'}"
+        // Release branches ignore GINKGO_LABEL_FILTER and select the upgrade
+        // specs via GINKGO_FOCUS. On main an unset focus is required, or the
+        // script maps it onto the upgrade tier and overrides the filter above.
+        // TODO: drop once the release branches carry the tier split.
+        GINKGO_FOCUS = "${(env.PULL_BASE_REF ?: 'main') == 'main' ? '' : 'upgrade'}"
         LOKI_URL = 'https://log.apps.test.metal3.io/store/api/v1/push'
     }
     agent none
     stages {
-        stage('Run Baremetal Operator optional e2e tests') {
+        stage('Run Baremetal Operator e2e tests') {
             matrix {
                 agent { label 'metal3ci-8c32gb-ubuntu-oci' }
                 axes {
@@ -49,7 +56,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Run Baremetal Operator optional e2e test') {
+                    stage('Run Baremetal Operator e2e test') {
                         options {
                             timeout(time: TIMEOUT, unit: 'SECONDS')
                             ansiColor('xterm')
