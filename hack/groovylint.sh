@@ -16,6 +16,6 @@ else
         --volume "${PWD}:${WORKDIR}:ro,z" \
         --entrypoint sh \
         --workdir "${WORKDIR}" \
-        docker.io/nvuillam/npm-groovy-lint:v19.0.0@sha256:8a815bcf7f193d1ccf53091e56ee6bf9911ab0917ea4d361470096585fae0d99 \
+        docker.io/nvuillam/npm-groovy-lint:v19.0.1@sha256:d614f73d8f6d9cb1289f2872cee59b1ca0519b40bcfb0a5f4c8d1ca2dbb08573 \
         "${WORKDIR}"/hack/groovylint.sh "$@"
 fi
