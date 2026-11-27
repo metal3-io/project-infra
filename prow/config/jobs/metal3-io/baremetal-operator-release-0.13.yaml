@@ -187,6 +187,14 @@ presubmits:
         imagePullPolicy: Always
         securityContext:
           runAsUser: 0
+  - name: metal3-bmo-e2e-test-pull
+    branches:
+    - release-0.13
+    agent: jenkins
+    labels:
+      jenkins_operator: oci
+    always_run: false
+    optional: true
   - name: metal3-bmo-e2e-test-optional-pull
     branches:
     - release-0.13
